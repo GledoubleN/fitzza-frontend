@@ -1,6 +1,7 @@
 import { MainPage } from "./pages/MainPage.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ShoppingCartPage } from "./pages/ShoppingCartPage.jsx";
+import {SignInPage} from "./pages/SignInPage.jsx";
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={ <MainPage/> }/>
         <Route path="/shopping-cart" element={ <ShoppingCartPage/> }/>
+        <Route path="/signInPage" element={ <SignInPage/> }/>
       </Routes>
     </BrowserRouter>
   )
