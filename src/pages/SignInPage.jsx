@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Container, Field, Heading, Input, Stack } from "@chakra-ui/react";
+import { Button, Container, Field, Grid, GridItem, Heading, Input, Stack } from "@chakra-ui/react";
 
 export const SignInPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [ email, setEmail ] = useState("");
+  const [ password, setPassword ] = useState("");
+  const [ loading, setLoading ] = useState(false);
   const moveUrl = useNavigate();
 
   const changeHandler = async (e) => {
@@ -21,50 +21,56 @@ export const SignInPage = () => {
   };
 
   return (
-    <Container maxWidth={ "md" } py={ 16 }>
-      <Stack as="form" gap={ 6 } onSubmit={ changeHandler }>
-        <Heading size="lg">로그인</Heading>
+    <Container maxWidth={ "md" } height={ "100vh" }>
+      <Grid height={ "100%" } templateRows={ "1fr auto 1fr" }>
+        <GridItem></GridItem>
+        <GridItem>
+          <Stack as="form" gap={ 6 } onSubmit={ changeHandler }>
+            <Heading size="lg">로그인</Heading>
 
-        <Field.Root required>
-          <Field.Label>이메일</Field.Label>
-          <Input
-            type="email"
-            placeholder="이메일을 입력해주세요"
-            value={ email }
-            onChange={ (e) => setEmail(e.target.value) }
-          />
-        </Field.Root>
+            <Field.Root required>
+              <Field.Label>이메일</Field.Label>
+              <Input
+                type="email"
+                placeholder="이메일을 입력해주세요"
+                value={ email }
+                onChange={ (e) => setEmail(e.target.value) }
+              />
+            </Field.Root>
 
-        <Field.Root required>
-          <Field.Label>비밀번호</Field.Label>
-          <Input
-            type="password"
-            placeholder="비밀번호 관련 규약 필요"
-            value={ password }
-            onChange={ (e) => setPassword(e.target.value) }
-          />
-        </Field.Root>
+            <Field.Root required>
+              <Field.Label>비밀번호</Field.Label>
+              <Input
+                type="password"
+                placeholder="비밀번호 관련 규약 필요"
+                value={ password }
+                onChange={ (e) => setPassword(e.target.value) }
+              />
+            </Field.Root>
 
-        <Button
-          type="submit"
-          loading={ loading }
-          size="lg"
-          width="full"
-          color="white"
-          fontWeight="semibold"
-          rounded="xl"
-          bg="rgba(225, 76, 47, 0.75)"
-          backdropFilter="blur(12px) saturate(180%)"
-          borderWidth="1px"
-          borderColor="rgba(255, 255, 255, 0.35)"
-          boxShadow="0 8px 24px rgba(225, 76, 47, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45)"
-          transition="all 0.2s"
-          _hover={ { bg: "rgba(225, 76, 47, 0.9)", transform: "translateY(-1px)" } }
-          _active={ { bg: "rgba(225, 76, 47, 1)", transform: "translateY(0)" } }
-        >
-          로그인
-        </Button>
-      </Stack>
+            <Button
+              type="submit"
+              loading={ loading }
+              size="lg"
+              width="full"
+              color="white"
+              fontWeight="semibold"
+              rounded="xl"
+              bg="rgba(225, 76, 47, 0.75)"
+              backdropFilter="blur(12px) saturate(180%)"
+              borderWidth="1px"
+              borderColor="rgba(255, 255, 255, 0.35)"
+              boxShadow="0 8px 24px rgba(225, 76, 47, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45)"
+              transition="all 0.2s"
+              _hover={ { bg: "rgba(225, 76, 47, 0.9)", transform: "translateY(-1px)" } }
+              _active={ { bg: "rgba(225, 76, 47, 1)", transform: "translateY(0)" } }
+            >
+              로그인
+            </Button>
+          </Stack>
+        </GridItem>
+        <GridItem></GridItem>
+      </Grid>
     </Container>
   );
 }
