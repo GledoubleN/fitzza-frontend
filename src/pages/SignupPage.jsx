@@ -3,12 +3,11 @@ import {
     Box,
     Button,
     Container,
-    FormControl,
-    FormLabel,
     Input,
     Heading,
     Text,
     VStack,
+    Field
 } from '@chakra-ui/react';
 
 export default function SignupPage() {
@@ -62,8 +61,8 @@ export default function SignupPage() {
                     <Heading size="lg" mb={2}>회원가입</Heading>
 
                     {/* 이메일 입력 */}
-                    <FormControl isRequired>
-                        <FormLabel>이메일</FormLabel>
+                    <Field.Root>
+                        <Field.Label>이메일</Field.Label>
                         <Input
                             type="email"
                             name="email"
@@ -71,11 +70,11 @@ export default function SignupPage() {
                             onChange={handleChange}
                             placeholder="example@email.com"
                         />
-                    </FormControl>
+                    </Field.Root>
 
                     {/* 닉네임 입력 */}
-                    <FormControl isRequired>
-                        <FormLabel>닉네임</FormLabel>
+                    <Field.Root isRequired>
+                        <Field.Label>닉네임</Field.Label>
                         <Input
                             type="text"
                             name="nickname"
@@ -83,11 +82,11 @@ export default function SignupPage() {
                             onChange={handleChange}
                             placeholder="사용하실 닉네임을 입력하세요"
                         />
-                    </FormControl>
+                    </Field.Root>
 
                     {/* 비밀번호 입력 */}
-                    <FormControl isRequired>
-                        <FormLabel>비밀번호</FormLabel>
+                    <Field.Root isRequired>
+                        <Field.Label>비밀번호</Field.Label>
                         <Input
                             type="password"
                             name="password"
@@ -95,11 +94,11 @@ export default function SignupPage() {
                             onChange={handleChange}
                             placeholder="비밀번호를 입력하세요"
                         />
-                    </FormControl>
+                    </Field.Root>
 
                     {/* 비밀번호 확인 */}
-                    <FormControl isRequired>
-                        <FormLabel>비밀번호 확인</FormLabel>
+                    <Field.Root isRequired>
+                        <Field.Label>비밀번호 확인</Field.Label>
                         <Input
                             type="password"
                             name="passwordConfirm"
@@ -107,7 +106,7 @@ export default function SignupPage() {
                             onChange={handleChange}
                             placeholder="비밀번호를 다시 입력하세요"
                         />
-                    </FormControl>
+                    </Field.Root>
 
                     {/* 에러 메시지 출력 */}
                     {errorMessage && (
