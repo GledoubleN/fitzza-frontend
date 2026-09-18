@@ -38,7 +38,7 @@ export const MainPage = () => {
             </Switch.Control>
             <Switch.Label/>
           </Switch.Root>
-          <InputGroup endElement={ <LuSearch></LuSearch> }>
+          <InputGroup startElement={ <LuSearch></LuSearch> }>
             <Input></Input>
           </InputGroup>
         </Stack>
