@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Button } from '@chakra-ui/react';
+import { Box, Flex, Heading, Button, Text } from '@chakra-ui/react';
 import './MyPage.css';
 
 export default function MyPage() {
@@ -27,6 +27,34 @@ export default function MyPage() {
                 >
                     고객센터
                 </Button>
+            </Flex>
+
+            <Flex
+                className="profile-section"
+                direction="column"
+                align="center"
+                pt="24px"
+                pb="20px"
+            >
+                <Box className="profile-image">
+                    👤
+                </Box>
+
+                <Heading
+                    size="md"
+                    mt="10px"
+                    fontWeight="600"
+                >
+                    사용자
+                </Heading>
+
+                <Text
+                    mt="2px"
+                    fontSize="14px"
+                    color="gray.500"
+                >
+                    @fit_user
+                </Text>
             </Flex>
 
         </Box>
