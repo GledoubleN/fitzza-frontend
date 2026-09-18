@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Container, Field, Heading, Input, Stack, Text } from "@chakra-ui/react";
+import { Button, Container, Field, Grid, GridItem, Heading, Input, Stack, Text } from "@chakra-ui/react";
 import { api } from "../api/axios.js";
 
 export const SignInPage = () => {
@@ -35,40 +35,46 @@ export const SignInPage = () => {
   };
 
   return (
-    <Container maxWidth={ "md" } py={ 16 }>
-      <Stack as="form" gap={ 6 } onSubmit={ changeHandler }>
-        <Heading size="lg">로그인</Heading>
+    <Container maxWidth={ "md" } height={ "100vh" }>
+      <Grid height={ "100%" } templateRows={ "1fr auto 1fr" }>
+        <GridItem></GridItem>
+        <GridItem>
+          <Stack as="form" gap={ 6 } onSubmit={ changeHandler }>
+            <Heading size="lg">로그인</Heading>
 
-        <Field.Root required>
-          <Field.Label>이메일</Field.Label>
-          <Input
-            type="email"
-            placeholder="이메일을 입력해주세요"
-            value={ email }
-            onChange={ (e) => setEmail(e.target.value) }
-          />
-        </Field.Root>
+            <Field.Root required>
+              <Field.Label>이메일</Field.Label>
+              <Input
+                type="email"
+                placeholder="이메일을 입력해주세요"
+                value={ email }
+                onChange={ (e) => setEmail(e.target.value) }
+              />
+            </Field.Root>
 
-        <Field.Root required>
-          <Field.Label>비밀번호</Field.Label>
-          <Input
-            type="password"
-            placeholder="비밀번호 관련 규약 필요"
-            value={ password }
-            onChange={ (e) => setPassword(e.target.value) }
-          />
-        </Field.Root>
+            <Field.Root required>
+              <Field.Label>비밀번호</Field.Label>
+              <Input
+                type="password"
+                placeholder="비밀번호 관련 규약 필요"
+                value={ password }
+                onChange={ (e) => setPassword(e.target.value) }
+              />
+            </Field.Root>
 
-        { error && <Text color="red.500" fontSize="sm">{ error }</Text> }
+            { error && <Text color="red.500" fontSize="sm">{ error }</Text> }
 
-        <Button
-          type="submit"
-          loading={ loading }
-          size="lg"
-          width="full">
-          로그인
-        </Button>
-      </Stack>
+            <Button
+              type="submit"
+              loading={ loading }
+              size="lg"
+              width="full">
+              로그인
+            </Button>
+          </Stack>
+        </GridItem>
+        <GridItem></GridItem>
+      </Grid>
     </Container>
   );
 }
