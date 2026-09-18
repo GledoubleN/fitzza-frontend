@@ -16,12 +16,12 @@ import {
 import {
   LuBell,
   LuChevronLeft,
-  LuGift,
   LuMessageCircle,
   LuPencil,
   LuSearch,
   LuShoppingBag,
   LuThumbsUp,
+  LuUsers,
 } from "react-icons/lu";
 import {useNavigate} from "react-router-dom";
 import {api} from "../../api/axios.js";
@@ -138,7 +138,7 @@ export const CommunityMainPage = () => {
   };
 
   const articleHandler = (id) => {
-    console.log(">>> debug articleHandler Clicked : " + {id});
+    console.log(">>> debug articleHandler Clicked : " + id);
     moveUrl(`/communityarticle/${id}`);
   }
 
@@ -157,7 +157,7 @@ export const CommunityMainPage = () => {
           </Text>
           <HStack gap="1">
             <IconButton rounded="full" variant="ghost" aria-label="커뮤니티">
-              <LuGift />
+              <LuUsers />
             </IconButton>
             <IconButton rounded="full" variant="ghost" aria-label="알림">
               <LuBell />
@@ -186,7 +186,7 @@ export const CommunityMainPage = () => {
         {/* 검색 입력 (선택) */}
         <InputGroup startElement={<LuSearch />}>
           <Input placeholder="검색" rounded="lg" bg="gray.50" />
-        {/*  제목 및 내용으로 검색?? TO-DO-NEXT */}
+        {/*  제목 및 내용으로 검색 기능 추가 필요 TO-DO-NEXT */}
         </InputGroup>
 
         {/* 카테고리 탭 */}
@@ -207,7 +207,7 @@ export const CommunityMainPage = () => {
         </HStack>
 
         {/* 게시글 리스트 */}
-        <Stack direction="column" gap="0" separator={<Box borderBottomWidth="1px" />}>
+        <Stack direction="column" gap="0" paddingBottom="20" separator={<Box borderBottomWidth="1px" />}>
           {loading && <Text color="gray.500" paddingY="4">불러오는 중...</Text>}
           {error && <Text color="red.500" paddingY="4">{error}</Text>}
           {articles.map((article) => (
@@ -221,18 +221,20 @@ export const CommunityMainPage = () => {
       </Stack>
 
       {/* 글쓰기 플로팅 버튼 */}
-      <Button
-        position="fixed"
-        bottom="6"
-        right="6"
-        rounded="full"
-        colorPalette="orange"
-        size="lg"
-        onClick={writeHandler}
-      >
-        <LuPencil />
-        글쓰기
-      </Button>
+      <Box position="fixed" bottom="6" left="0" right="0" pointerEvents="none">
+        <Container maxWidth="xl" display="flex" justifyContent="flex-end">
+          <IconButton
+            rounded="full"
+            colorPalette="orange"
+            size="xl"
+            aria-label="글쓰기"
+            pointerEvents="auto"
+            onClick={writeHandler}
+          >
+            <LuPencil />
+          </IconButton>
+        </Container>
+      </Box>
     </Container>
   );
 };
