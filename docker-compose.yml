@@ -1,8 +1,10 @@
 services:
-  react-app:
+  fitzza:
+    image: fitzza-frontend:dev
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: fitzza
     ports:
       - "80:80"
     restart: unless-stopped
