@@ -9,3 +9,13 @@
     font-size: 38px;
     background-color: #f7f7f7;
 }
+.menu-section {
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 20px;
+}
+
+.menu-item {
+    min-width: 70px;
+    height: auto;
+    padding: 6px;
+}
