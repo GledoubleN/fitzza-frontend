@@ -17,28 +17,14 @@ import exampleBannerImage from '/src/assets/vite.svg'
 import { products } from '/src/data/products.js'
 import { banners } from '/src/data/banners.js'
 import { HiCheck, HiX } from 'react-icons/hi'
+import { AppBar } from '../components/AppBar.jsx'
 
 export const MainPage = () => {
 
   return (
     <Container maxWidth={ 'xl' } height="100vh" paddingY={ '4' }>
       <Stack direction={ 'column' } gap={ '4' }>
-        <Grid templateColumns={ 'auto 1fr auto auto' } gap={ '4' }>
-          <GridItem alignContent={ 'center' }>
-            <Text>Fitzza</Text>
-          </GridItem>
-          <GridItem></GridItem>
-          <GridItem>
-            <IconButton rounded={ 'full' }>
-              <LuBell></LuBell>
-            </IconButton>
-          </GridItem>
-          <GridItem>
-            <IconButton rounded={ 'full' }>
-              <LuShoppingBag></LuShoppingBag>
-            </IconButton>
-          </GridItem>
-        </Grid>
+        <AppBar></AppBar>
 
         <Stack direction={ 'row' }>
           <Switch.Root>
