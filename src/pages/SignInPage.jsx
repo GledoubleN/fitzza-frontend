@@ -1,20 +1,34 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Container, Field, Heading, Input, Stack } from "@chakra-ui/react";
+import { Button, Container, Field, Heading, Input, Stack, Text } from "@chakra-ui/react";
+import { api } from "../api/axios.js";
 
 export const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const moveUrl = useNavigate();
 
   const changeHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
-      console.log("로그인 시도:", { email, password });
-      console.log("로그인 완료됨 처리");
+      await api.post("/auth/login/sample", { email, password });
+      console.log("로그인 성공, 메인페이지로 이동", {email, password});
       moveUrl("/");
+    } catch (err) {
+      if (err.response?.status === 401) {
+        setError("이메일 혹은 비밀번호가 틀렸습니다.");
+        // console.log("401 err: " + err);
+      } else if(window.confirm("로그인에 실패했습니다. 메인페이지로 넘어가기 (개발 중)")){
+        // setError("로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        // console.log("other err: " + err);
+        // 현재 api endPoint 미구성으로 위 코드는 주석처리 되어있습니다. 완료되면 else 뒤의 If문도 지워야함.
+        console.log("로그인 없이 넘어감(개발)", {email, password});
+        moveUrl("/");
+      }
     } finally {
       setLoading(false);
     }
@@ -45,23 +59,13 @@ export const SignInPage = () => {
           />
         </Field.Root>
 
+        { error && <Text color="red.500" fontSize="sm">{ error }</Text> }
+
         <Button
           type="submit"
           loading={ loading }
           size="lg"
-          width="full"
-          color="white"
-          fontWeight="semibold"
-          rounded="xl"
-          bg="rgba(225, 76, 47, 0.75)"
-          backdropFilter="blur(12px) saturate(180%)"
-          borderWidth="1px"
-          borderColor="rgba(255, 255, 255, 0.35)"
-          boxShadow="0 8px 24px rgba(225, 76, 47, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45)"
-          transition="all 0.2s"
-          _hover={ { bg: "rgba(225, 76, 47, 0.9)", transform: "translateY(-1px)" } }
-          _active={ { bg: "rgba(225, 76, 47, 1)", transform: "translateY(0)" } }
-        >
+          width="full">
           로그인
         </Button>
       </Stack>
