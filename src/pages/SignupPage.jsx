@@ -6,7 +6,7 @@ import {
     Input,
     Heading,
     Text,
-    VStack,
+    Stack,
     Field
 } from '@chakra-ui/react';
 
@@ -57,7 +57,7 @@ export default function SignupPage() {
                 w="100%"
                 maxW="400px"
             >
-                <VStack spacing={4} as="form" onSubmit={handleSubmit}>
+                <Stack gap={4} as="form" onSubmit={handleSubmit}>
                     <Heading size="lg" mb={2}>회원가입</Heading>
 
                     {/* 이메일 입력 */}
@@ -119,7 +119,7 @@ export default function SignupPage() {
                     <Button type="submit" colorScheme="blue" w="100%" mt={4}>
                         가입하기
                     </Button>
-                </VStack>
+                </Stack>
             </Box>
         </Container>
     );
