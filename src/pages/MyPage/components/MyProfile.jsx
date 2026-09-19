@@ -9,7 +9,18 @@ export default function MyProfile() {
             pt="24px"
             pb="20px"
         >
-            <Box className="profile-image">
+            <Box
+                width="80px"
+                height="80px"
+                border="1px solid"
+                borderColor="#e5e5e5"
+                borderRadius="50%"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                fontSize="38px"
+                bg="#f7f7f7"
+            >
                 👤
             </Box>
 

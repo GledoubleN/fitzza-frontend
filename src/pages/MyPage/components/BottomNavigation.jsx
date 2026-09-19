@@ -1,16 +1,15 @@
 import { Box, Flex, Button, Text } from '@chakra-ui/react';
 import {
-    Menu,
-    Camera,
-    House,
-    Heart,
-    User
-} from 'lucide-react';
+    LuMenu,
+    LuCamera,
+    LuHouse,
+    LuHeart,
+    LuUser
+} from 'react-icons/lu';
 
 export default function BottomNavigation() {
     return (
         <Box
-            className="bottom-navigation"
             position="fixed"
             bottom="0"
             left="50%"
@@ -27,45 +26,70 @@ export default function BottomNavigation() {
                 align="center"
                 py="8px"
             >
-                <Button variant="ghost" className="bottom-item">
+                <Button
+                    variant="ghost"
+                    minWidth="55px"
+                    height="auto"
+                    p="4px"
+                >
                     <Flex direction="column" align="center" gap="2px">
-                        <Menu size={20} />
+                        <LuMenu size={20} />
                         <Text fontSize="10px">
                             카테고리
                         </Text>
                     </Flex>
                 </Button>
 
-                <Button variant="ghost" className="bottom-item">
+                <Button
+                    variant="ghost"
+                    minWidth="55px"
+                    height="auto"
+                    p="4px"
+                >
                     <Flex direction="column" align="center" gap="2px">
-                        <Camera size={20} />
+                        <LuCamera size={20} />
                         <Text fontSize="10px">
                             스냅
                         </Text>
                     </Flex>
                 </Button>
 
-                <Button variant="ghost" className="bottom-item">
+                <Button
+                    variant="ghost"
+                    minWidth="55px"
+                    height="auto"
+                    p="4px"
+                >
                     <Flex direction="column" align="center" gap="2px">
-                        <House size={20} />
+                        <LuHouse size={20} />
                         <Text fontSize="10px">
                             홈
                         </Text>
                     </Flex>
                 </Button>
 
-                <Button variant="ghost" className="bottom-item">
+                <Button
+                    variant="ghost"
+                    minWidth="55px"
+                    height="auto"
+                    p="4px"
+                >
                     <Flex direction="column" align="center" gap="2px">
-                        <Heart size={20} />
+                        <LuHeart size={20} />
                         <Text fontSize="10px">
                             좋아요
                         </Text>
                     </Flex>
                 </Button>
 
-                <Button variant="ghost" className="bottom-item">
+                <Button
+                    variant="ghost"
+                    minWidth="55px"
+                    height="auto"
+                    p="4px"
+                >
                     <Flex direction="column" align="center" gap="2px">
-                        <User size={20} />
+                        <LuUser size={20} />
                         <Text fontSize="10px">
                             프로필
                         </Text>

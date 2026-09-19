@@ -3,7 +3,6 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 export default function FollowInfo() {
     return (
         <Flex
-            className="follow-section"
             justify="center"
             align="center"
             py="16px"

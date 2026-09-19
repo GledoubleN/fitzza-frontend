@@ -1,15 +1,14 @@
 import { Flex, Button, Text } from '@chakra-ui/react';
 import {
-    Package,
-    PartyPopper,
-    Users,
-    Settings
-} from 'lucide-react';
+    LuPackage,
+    LuPartyPopper,
+    LuUsers,
+    LuSettings
+} from 'react-icons/lu';
 
 export default function MyMenu() {
     return (
         <Flex
-            className="menu-section"
             justify="space-around"
             mt="22px"
             px="10px"
@@ -19,10 +18,12 @@ export default function MyMenu() {
         >
             <Button
                 variant="ghost"
-                className="menu-item"
+                minWidth="70px"
+                height="auto"
+                p="6px"
             >
                 <Flex direction="column" align="center" gap="6px">
-                    <Package size={22} strokeWidth={1.7} />
+                    <LuPackage size={22} />
                     <Text fontSize="13px">
                         주문
                     </Text>
@@ -31,10 +32,12 @@ export default function MyMenu() {
 
             <Button
                 variant="ghost"
-                className="menu-item"
+                minWidth="70px"
+                height="auto"
+                p="6px"
             >
                 <Flex direction="column" align="center" gap="6px">
-                    <PartyPopper size={22} strokeWidth={1.7} />
+                    <LuPartyPopper size={22} />
                     <Text fontSize="13px">
                         이벤트
                     </Text>
@@ -43,10 +46,12 @@ export default function MyMenu() {
 
             <Button
                 variant="ghost"
-                className="menu-item"
+                minWidth="70px"
+                height="auto"
+                p="6px"
             >
                 <Flex direction="column" align="center" gap="6px">
-                    <Users size={22} strokeWidth={1.7} />
+                    <LuUsers size={22} />
                     <Text fontSize="13px">
                         커뮤니티
                     </Text>
@@ -55,10 +60,12 @@ export default function MyMenu() {
 
             <Button
                 variant="ghost"
-                className="menu-item"
+                minWidth="70px"
+                height="auto"
+                p="6px"
             >
                 <Flex direction="column" align="center" gap="6px">
-                    <Settings size={22} strokeWidth={1.7} />
+                    <LuSettings size={22} />
                     <Text fontSize="13px">
                         설정
                     </Text>
