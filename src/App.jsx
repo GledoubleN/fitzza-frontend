@@ -10,6 +10,7 @@ import {CommunityMainPage} from "./pages/community/CommunityMainPage.jsx";
 import {CommunityWritePage} from "./pages/community/CommunityWritePage.jsx";
 import {CommunityArticlePage} from "./pages/community/CommunityArticlePage.jsx";
 import { PromptPage } from './pages/PromptPage.jsx'
+import MyPage from './pages/MyPage.jsx'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/communityarticle/:id" element={ <CommunityArticlePage/> }/>
         <Route path="/communitywrite" element={ <CommunityWritePage/> }/>
         <Route path="/prompt" element={ <PromptPage/> }/>
+        <Route path="/mypage" element={ <MyPage/> }/>
       </Routes>
     </BrowserRouter>
   )
