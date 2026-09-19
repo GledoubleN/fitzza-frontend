@@ -26,6 +26,7 @@ import {
 import {useNavigate} from "react-router-dom";
 import {api} from "../../api/axios.js";
 import { ARTICLES } from '/src/data/articles.js'
+import { AppBar } from '../../components/AppBar.jsx'
 
 const CATEGORIES = ["전체", "투표", "코디 질문", "자유"];
 
@@ -93,22 +94,7 @@ export const CommunityMainPage = () => {
     <Container maxWidth="xl" minHeight="100vh" paddingY="4" position="relative">
       <Stack direction="column" gap="4">
         {/* 상단 로고 바 */}
-        <Flex align="center" justify="space-between">
-          <Text fontSize="2xl" fontWeight="bold">
-            Fitzza
-          </Text>
-          <HStack gap="1">
-            <IconButton rounded="full" variant="ghost" aria-label="커뮤니티">
-              <LuUsers />
-            </IconButton>
-            <IconButton rounded="full" variant="ghost" aria-label="알림">
-              <LuBell />
-            </IconButton>
-            <IconButton rounded="full" variant="ghost" aria-label="장바구니">
-              <LuShoppingBag />
-            </IconButton>
-          </HStack>
-        </Flex>
+        <AppBar></AppBar>
 
         {/* 커뮤니티 헤더 */}
         <Flex align="center" justify="space-between">
