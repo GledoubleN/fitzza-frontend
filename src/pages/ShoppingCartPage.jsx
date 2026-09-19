@@ -10,7 +10,7 @@ export const ShoppingCartPage = () => {
       <Stack height={ '100%' } gap={ '4' }>
         <AppBar></AppBar>
         {
-          products.map((product, index) => {
+          products.slice(0, 3).map((product, index) => {
             return (
               <Card.Root key={ index }>
                 <Card.Body>
