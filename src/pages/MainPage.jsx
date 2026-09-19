@@ -18,8 +18,14 @@ import { products } from '/src/data/products.js'
 import { banners } from '/src/data/banners.js'
 import { HiCheck, HiX } from 'react-icons/hi'
 import { AppBar } from '../components/AppBar.jsx'
+import { useNavigate } from 'react-router-dom'
 
 export const MainPage = () => {
+  const navigate = useNavigate()
+
+  const onSubmit = () => {
+    navigate('/prompt')
+  }
 
   return (
     <Container maxWidth={ 'xl' } height="100vh" paddingY={ '4' }>
@@ -38,7 +44,7 @@ export const MainPage = () => {
             </Switch.Control>
             <Switch.Label/>
           </Switch.Root>
-          <InputGroup startElement={ <LuSearch></LuSearch> }>
+          <InputGroup onClick={ onSubmit } startElement={ <LuSearch></LuSearch> }>
             <Input></Input>
           </InputGroup>
         </Stack>
