@@ -8,7 +8,7 @@ export const AppBar = () => {
   return (
     <Grid templateColumns={ 'auto 1fr auto' } gap={ '4' }>
       <GridItem alignContent={ 'center' }>
-        <Text fontSize="2xl" fontWeight="bold">
+        <Text fontSize="2xl" fontWeight="bold" onClick={() => navigate('/')}>
           Fitzza
         </Text>
       </GridItem>
