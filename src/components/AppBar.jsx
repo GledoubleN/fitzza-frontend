@@ -1,5 +1,5 @@
 import { Grid, GridItem, IconButton, Stack, Text } from '@chakra-ui/react'
-import { LuBell, LuShoppingBag, LuUsers } from 'react-icons/lu'
+import { LuBell, LuShirt, LuShoppingBag, LuUsers } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 
 export const AppBar = () => {
@@ -14,7 +14,10 @@ export const AppBar = () => {
       </GridItem>
       <GridItem></GridItem>
       <GridItem>
-        <Stack direction={ 'row' }>
+        <Stack direction={ 'row' } gap={ 2 }>
+          <IconButton rounded={ 'full' } onClick={ () => { navigate('/try-on') } }>
+            <LuShirt></LuShirt>
+          </IconButton>
           <IconButton rounded={ 'full' }>
             <LuUsers></LuUsers>
           </IconButton>
