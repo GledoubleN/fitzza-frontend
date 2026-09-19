@@ -7,6 +7,8 @@ export const ARTICLES = [
     time: "10분 전",
     likes: 0,
     comments: 3,
+    content:
+      "겨울 코트 하나 장만하려는데 두 개 중에 못 고르겠어요.\n왼쪽은 오버핏 울코트, 오른쪽은 좀 더 클래식한 핏이에요.\n둘 중에 뭐가 더 나을까요?",
     images: ["/src/assets/hero.png", "/src/assets/hero.png"],
     vote: true,
   },
@@ -18,6 +20,8 @@ export const ARTICLES = [
     time: "20분 전",
     likes: 12,
     comments: 8,
+    content:
+      "주말에 데이트 가는데 어떤 아우터가 나을까요?\n날씨는 좀 쌀쌀할 것 같아요.",
     images: ["/src/assets/hero.png", "/src/assets/hero.png"],
     vote: true,
   },
@@ -29,6 +33,8 @@ export const ARTICLES = [
     time: "35분 전",
     likes: 7,
     comments: 5,
+    content:
+      "얼마 전에 산 스트라이프 셔츠인데 뭐랑 매치해야 할지 모르겠어요.\n슬랙스? 데님? 추천 부탁드립니다.",
     images: ["/src/assets/hero.png"],
   },
   {
@@ -39,6 +45,7 @@ export const ARTICLES = [
     time: "1시간 전",
     likes: 24,
     comments: 6,
+    content: "오늘 출근룩입니다. 니트에 슬랙스 조합 요즘 자주 입어요.",
     images: ["/src/assets/hero.png"],
   },
   {
@@ -49,6 +56,8 @@ export const ARTICLES = [
     time: "2시간 전",
     likes: 9,
     comments: 4,
+    content:
+      "흰 스니커즈가 금방 더러워지는데 다들 어떻게 관리하시나요?\n좋은 방법 있으면 공유 부탁해요!",
     images: ["/src/assets/hero.png"],
   },
 ];
