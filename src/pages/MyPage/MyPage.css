@@ -40,3 +40,16 @@
     object-fit: cover;
     display: block;
 }
+.bottom-item {
+    min-width: 55px;
+    height: auto;
+    padding: 4px;
+}
+.my-page {
+    width: 100%;
+    max-width: 390px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding-bottom: 70px;
+    background-color: #ffffff;
+}
