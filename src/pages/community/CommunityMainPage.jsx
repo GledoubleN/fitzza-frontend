@@ -25,66 +25,9 @@ import {
 } from "react-icons/lu";
 import {useNavigate} from "react-router-dom";
 import {api} from "../../api/axios.js";
+import { ARTICLES } from '/src/data/articles.js'
 
-// Dummy Data Start, API 통신 시 삭제 요망. TO-DO-NEXT
 const CATEGORIES = ["전체", "투표", "코디 질문", "자유"];
-
-const ARTICLES = [
-  {
-    id: 1,
-    category: "투표",
-    title: "코트 사려는데 둘 중 고민입니다",
-    author: "민준",
-    time: "10분 전",
-    likes: 0,
-    comments: 3,
-    images: ["/src/assets/hero.png", "/src/assets/hero.png"],
-    vote: true,
-  },
-  {
-    id: 2,
-    category: "투표",
-    title: "주말에 입을 아우터 골라주세요",
-    author: "서연",
-    time: "20분 전",
-    likes: 12,
-    comments: 8,
-    images: ["/src/assets/hero.png", "/src/assets/hero.png"],
-    vote: true,
-  },
-  {
-    id: 3,
-    category: "코디 질문",
-    title: "이 셔츠에 어떤 바지가 어울릴까요?",
-    author: "도윤",
-    time: "35분 전",
-    likes: 7,
-    comments: 5,
-    images: ["/src/assets/hero.png"],
-  },
-  {
-    id: 4,
-    category: "자유",
-    title: "오늘의 출근룩 공유해요",
-    author: "지우",
-    time: "1시간 전",
-    likes: 24,
-    comments: 6,
-    images: ["/src/assets/hero.png"],
-  },
-  {
-    id: 5,
-    category: "자유",
-    title: "흰 스니커즈 관리 팁 있나요?",
-    author: "하린",
-    time: "2시간 전",
-    likes: 9,
-    comments: 4,
-    images: ["/src/assets/hero.png"],
-  },
-];
-
-// Dummy Data End, TO-DO-NEXT
 
 export const CommunityMainPage = () => {
 
