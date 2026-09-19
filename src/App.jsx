@@ -1,4 +1,4 @@
-import MyPage from './pages/MyPage/MyPage';
+import MyPage from './pages/MyPage';
 
 function App() {
     return (
