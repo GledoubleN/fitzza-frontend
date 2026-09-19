@@ -106,7 +106,6 @@ export const CommunityMainPage = () => {
       });
       setArticles(res.data);
     } catch (err) {
-      // BE 미구성 개발용 목업 데이터
       if(err.response?.status === 401) {
         console.log(">>>Debug Articles not found");
         console.log(err);

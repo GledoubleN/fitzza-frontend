@@ -9,43 +9,47 @@ import {
   GridItem,
   Image,
   Carousel,
-  Box, Center
-} from "@chakra-ui/react";
-import { LuBell, LuChevronLeft, LuChevronRight, LuHeart, LuShoppingBag } from "react-icons/lu";
-import exampleProductImage from "/src/assets/hero.png"
-import exampleBannerImage from "/src/assets/vite.svg"
-import { products } from "/src/data/products.js"
-import { banners } from "/src/data/banners.js"
+  Box, Center, InputGroup, Input, Switch,
+} from '@chakra-ui/react'
+import { LuBell, LuChevronLeft, LuChevronRight, LuHeart, LuSearch, LuShoppingBag } from 'react-icons/lu'
+import exampleProductImage from '/src/assets/hero.png'
+import exampleBannerImage from '/src/assets/vite.svg'
+import { products } from '/src/data/products.js'
+import { banners } from '/src/data/banners.js'
+import { HiCheck, HiX } from 'react-icons/hi'
+import { AppBar } from '../components/AppBar.jsx'
 
 export const MainPage = () => {
 
   return (
-    <Container maxWidth={ "xl" } height="100vh" paddingY={ "4" }>
-      <Stack direction={ "column" } gap={ "4" }>
-        <Grid templateColumns={ "auto 1fr auto auto" } gap={ "4" }>
-          <GridItem alignContent={ "center" }>
-            <Text>Fitzza</Text>
-          </GridItem>
-          <GridItem></GridItem>
-          <GridItem>
-            <IconButton rounded={ "full" }>
-              <LuBell></LuBell>
-            </IconButton>
-          </GridItem>
-          <GridItem>
-            <IconButton rounded={ "full" }>
-              <LuShoppingBag></LuShoppingBag>
-            </IconButton>
-          </GridItem>
-        </Grid>
+    <Container maxWidth={ 'xl' } height="100vh" paddingY={ '4' }>
+      <Stack direction={ 'column' } gap={ '4' }>
+        <AppBar></AppBar>
+
+        <Stack direction={ 'row' }>
+          <Switch.Root>
+            <Switch.HiddenInput/>
+            <Switch.Control>
+              <Switch.Thumb>
+                <Switch.ThumbIndicator fallback={ <HiX color="black"/> }>
+                  <HiCheck/>
+                </Switch.ThumbIndicator>
+              </Switch.Thumb>
+            </Switch.Control>
+            <Switch.Label/>
+          </Switch.Root>
+          <InputGroup startElement={ <LuSearch></LuSearch> }>
+            <Input></Input>
+          </InputGroup>
+        </Stack>
 
         <Carousel.Root slideCount={ banners.length }>
-          <Carousel.ItemGroup height={ "100px" }>
+          <Carousel.ItemGroup height={ '100px' }>
             {
               banners.map((_, index) => (
-                <Carousel.Item key={ index } index={ index } alignContent={ "center" }>
-                  <Center height={ "100%" }>
-                    <Image height={ "100%" } src={ exampleBannerImage }></Image>
+                <Carousel.Item key={ index } index={ index } alignContent={ 'center' }>
+                  <Center height={ '100%' }>
+                    <Image height={ '100%' } src={ exampleBannerImage }></Image>
                   </Center>
                 </Carousel.Item>
               ))
@@ -68,7 +72,7 @@ export const MainPage = () => {
           </Carousel.Control>
         </Carousel.Root>
 
-        <Grid templateColumns={ "repeat(3, 1fr)" } gap={ "4" }>
+        <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ '4' }>
           {
             products.map((product, index) => {
               return (
@@ -85,7 +89,7 @@ export const MainPage = () => {
                       <LuHeart></LuHeart>
                     </IconButton>
                     <Image src={ exampleProductImage }></Image>
-                    <Card.Body padding={ "2" }>
+                    <Card.Body padding={ '2' }>
                       <Text>{ product.name }</Text>
                       <Text>{ product.price.toLocaleString() } 원</Text>
                     </Card.Body>
@@ -97,5 +101,5 @@ export const MainPage = () => {
         </Grid>
       </Stack>
     </Container>
-  );
+  )
 }
