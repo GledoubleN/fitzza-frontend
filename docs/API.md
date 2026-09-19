@@ -1,15 +1,42 @@
 # API
 
+Base URL: `/api/v1`
+
+## 인증
+
+### `POST /auth/signup`
+
+#### Request Body
+
+```json
+{
+  "email": "john@email.com",
+  "username": "John Doe",
+  "password": "password"
+}
+```
+
+### `POST /auth/signin`
+
+#### Request Body
+
+```json
+{
+  "email": "john@email.com",
+  "password": "password"
+}
+```
+
+### `POST /auth/signout`
+
 ## 사용자
 
-### `GET /api/v1/users`
+### `GET /users/{userId}`
 
-### `GET /api/v1/users/{user_id}`
+### `POST /users`
 
 ## 상품
 
-### `GET /api/v1/products`
+### `GET /products`
 
-### `GET /api/v1/products/{product_id}`
-
-### ``
+### `GET /products/{productId}`
