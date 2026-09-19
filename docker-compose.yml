@@ -1,6 +1,6 @@
 services:
   fitzza-frontend:
-    image: fitzza-frontend:development
+    image: uniquecolor/fitzza-frontend:development
     build:
       context: .
       dockerfile: Dockerfile
