@@ -7,10 +7,16 @@ import {
   Image,
   HStack,
   Center,
+  Button,
 } from '@chakra-ui/react';
-import { LuChevronLeft, LuHouse, LuSun, LuMoon } from 'react-icons/lu';
+import { LuChevronLeft, LuHouse, LuRotateCcw, LuShare2 } from 'react-icons/lu';
 
 export default function WorldCupPage() {
+  // 게임 종료 여부를 관리하는 상태
+  const [isFinished, setIsFinished] = useState(false);
+  // 최종 우승 상품을 담을 상태
+  const [winnerProduct, setWinnerProduct] = useState(null);
+
   const leftProduct = {
     name: '코튼 워크 재킷',
     image: 'https://images.unsplash.com/photo-1544441893-675973e31985?w=500&auto=format&fit=crop&q=60',
@@ -29,10 +35,158 @@ export default function WorldCupPage() {
     tpo: '캐주얼 · 포멀',
   };
 
-  const handleSelect = (productName) => {
-    console.log(`선택된 상품: ${productName}`);
+  // 상품을 선택했을 때 실행되는 함수
+  const handleSelect = (product) => {
+    // 실제 월드컵 구현 시에는 다음 라운드로 넘어가거나 대진표를 업데이트하는 로직이 들어갑니다.
+    // 여기서는 예시로 선택된 상품을 우승 상품으로 지정하고 결과 화면으로 전환합니다.
+    setWinnerProduct(product);
+    setIsFinished(true);
   };
 
+  // 다시 시작하기 버튼
+  const handleRestart = () => {
+    setIsFinished(false);
+    setWinnerProduct(null);
+  };
+
+  // 홈으로 가기 (예시)
+  const handleGoHome = () => {
+    console.log('홈으로 이동');
+  };
+
+  // ----------------------------------------------------
+  // 🏆 1. 결과 화면 (isFinished가 true일 때)
+  // ----------------------------------------------------
+  if (isFinished && winnerProduct) {
+    return (
+      <Center minH="100vh">
+        <Box
+          w="100%"
+          maxW="480px"
+          minH="100vh"
+          display="flex"
+          flexDirection="column"
+          p={4}
+          boxShadow="md"
+          position="relative"
+        >
+          {/* 상단 네비게이션 */}
+          <Flex justify="space-between" align="center" mb={3}>
+            <HStack spacing={1} w="80px" justify="flex-start">
+              <IconButton variant="ghost" aria-label="뒤로 가기" onClick={handleRestart}>
+                <LuChevronLeft size={22} />
+              </IconButton>
+            </HStack>
+
+            <Text fontSize="lg" fontWeight="bold" textAlign="center" flex="1">
+              이상형 월드컵 결과
+            </Text>
+
+            <HStack spacing={1} w="80px" justify="flex-end">
+              <IconButton variant="ghost" aria-label="홈으로" onClick={handleGoHome}>
+                <LuHouse size={20} />
+              </IconButton>
+            </HStack>
+          </Flex>
+
+          <Text textAlign="center" fontSize="md" fontWeight="bold" mb={4} color="purple.500">
+            🎉 당신의 최종 선택은? 🎉
+          </Text>
+
+          {/* 우승 상품 카드 */}
+          <Box
+            w="100%"
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="16px"
+            p={4}
+            boxShadow="sm"
+            mb={6}
+            textAlign="center"
+          >
+            <Box w="100%" h="240px" borderRadius="12px" overflow="hidden" mb={4}>
+              <Image
+                src={winnerProduct.image}
+                alt={winnerProduct.name}
+                w="100%"
+                h="100%"
+                objectFit="cover"
+              />
+            </Box>
+            <Text fontSize="lg" fontWeight="bold" mb={2}>
+              {winnerProduct.name}
+            </Text>
+          </Box>
+
+          {/* 우승 상품 스펙 요약 */}
+          <Box border="1px solid" borderColor="gray.200" borderRadius="16px" p={3} mb={6}>
+            <Text fontSize="xs" fontWeight="bold" mb={3} textAlign="center" color="gray.500">
+              우승 상품 스펙 요약
+            </Text>
+            <Box as="table" w="100%" style={{ borderCollapse: 'collapse' }}>
+              <Box as="tbody">
+                <Box as="tr">
+                  <Box as="th" fontWeight="medium" w="30%" textAlign="left" py={2} pl={2} fontSize="xs">색상</Box>
+                  <Box as="td" textAlign="right" fontSize="xs" fontWeight="medium" py={2} pr={2}>
+                    <HStack justify="flex-end" spacing={1}>
+                      <Box w="10px" h="10px" borderRadius="full" bg={winnerProduct.color.hex} border="1px solid rgba(0,0,0,0.1)" />
+                      <Text>{winnerProduct.color.name}</Text>
+                    </HStack>
+                  </Box>
+                </Box>
+                <Box as="tr">
+                  <Box as="th" fontWeight="medium" textAlign="left" py={2} pl={2} fontSize="xs">사이즈</Box>
+                  <Box as="td" textAlign="right" fontSize="xs" fontWeight="medium" py={2} pr={2}>{winnerProduct.size}</Box>
+                </Box>
+                <Box as="tr">
+                  <Box as="th" fontWeight="medium" textAlign="left" py={2} pl={2} fontSize="xs">소재</Box>
+                  <Box as="td" textAlign="right" fontSize="xs" fontWeight="medium" py={2} pr={2}>{winnerProduct.material}</Box>
+                </Box>
+                <Box as="tr">
+                  <Box as="th" fontWeight="medium" textAlign="left" py={2} pl={2} fontSize="xs">TPO</Box>
+                  <Box as="td" textAlign="right" fontSize="xs" fontWeight="medium" py={2} pr={2}>{winnerProduct.tpo}</Box>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* 하단 액션 버튼 */}
+          <HStack spacing={3} mb={4}>
+            <Button
+              flex="1"
+              leftIcon={<LuRotateCcw size={16} />}
+              variant="outline"
+              borderRadius="12px"
+              onClick={handleRestart}
+            >
+              다시 하기
+            </Button>
+            <Button
+              flex="1"
+              leftIcon={<LuShare2 size={16} />}
+              colorScheme="blackAlpha"
+              bg="black"
+              color="white"
+              borderRadius="12px"
+              _hover={{ bg: 'gray.800' }}
+            >
+              결과 공유
+            </Button>
+          </HStack>
+
+          <Box mt="auto" pb={2} textAlign="center">
+            <Text fontSize="11px" color="gray.400">
+              상품 정보는 판매처 기준입니다
+            </Text>
+          </Box>
+        </Box>
+      </Center>
+    );
+  }
+
+  // ----------------------------------------------------
+  // 🎮 2. 월드컵 진행 화면 (기본 화면)
+  // ----------------------------------------------------
   return (
     <Center minH="100vh">
       <Box
@@ -47,7 +201,7 @@ export default function WorldCupPage() {
       >
         <Flex justify="space-between" align="center" mb={3}>
           <HStack spacing={1} w="80px" justify="flex-start">
-            <IconButton variant="ghost" aria-label="뒤로 가기">
+            <IconButton variant="ghost" aria-label="뒤로 가기" onClick={handleGoHome}>
               <LuChevronLeft size={22} />
             </IconButton>
           </HStack>
@@ -57,13 +211,13 @@ export default function WorldCupPage() {
           </Text>
 
           <HStack spacing={1} w="80px" justify="flex-end">
-            <IconButton variant="ghost" aria-label="홈으로">
+            <IconButton variant="ghost" aria-label="홈으로" onClick={handleGoHome}>
               <LuHouse size={20} />
             </IconButton>
           </HStack>
         </Flex>
 
-        <Text textAlign="center" fontSize="sm">
+        <Text textAlign="center" fontSize="sm" mb={4}>
           마음에 드는 상품을 선택해 주세요
         </Text>
 
@@ -71,12 +225,13 @@ export default function WorldCupPage() {
           <Box
             w="46%"
             border="1px solid"
+            borderColor="gray.200"
             borderRadius="16px"
             p={3}
             cursor="pointer"
             boxShadow="sm"
             _hover={{ transform: 'translateY(-2px)' }}
-            onClick={() => handleSelect(leftProduct.name)}
+            onClick={() => handleSelect(leftProduct)}
           >
             <Box w="100%" h="160px" borderRadius="12px" overflow="hidden" mb={3}>
               <Image
@@ -102,6 +257,9 @@ export default function WorldCupPage() {
             w="36px"
             h="36px"
             zIndex="10"
+            bg="white"
+            border="1px solid"
+            borderColor="gray.200"
           >
             <Text fontSize="xs" fontWeight="bold">
               VS
@@ -111,12 +269,13 @@ export default function WorldCupPage() {
           <Box
             w="46%"
             border="1px solid"
+            borderColor="gray.200"
             borderRadius="16px"
             p={3}
             cursor="pointer"
             boxShadow="sm"
             _hover={{ transform: 'translateY(-2px)' }}
-            onClick={() => handleSelect(rightProduct.name)}
+            onClick={() => handleSelect(rightProduct)}
           >
             <Box w="100%" h="160px" borderRadius="12px" overflow="hidden" mb={3}>
               <Image
@@ -133,7 +292,7 @@ export default function WorldCupPage() {
           </Box>
         </Flex>
 
-        <Box border="1px solid" borderRadius="16px" p={3} mb={6} overflowX="auto">
+        <Box border="1px solid" borderColor="gray.200" borderRadius="16px" p={3} mb={6} overflowX="auto">
           <Box as="table" w="100%" style={{ borderCollapse: 'collapse' }}>
             <Box as="tbody">
               <Box as="tr">
@@ -174,7 +333,7 @@ export default function WorldCupPage() {
         </Box>
 
         <Box mt="auto" pb={2} textAlign="center">
-          <Text fontSize="11px">
+          <Text fontSize="11px" color="gray.400">
             상품 정보는 판매처 기준입니다
           </Text>
         </Box>
