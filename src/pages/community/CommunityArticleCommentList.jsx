@@ -1,7 +1,7 @@
 import { Stack, Text } from "@chakra-ui/react";
 import { CommunityArticleCommentItem } from "./CommunityArticleCommentItem.jsx";
 
-export const CommunityArticleCommentList = ({ comments, onLike, onReply }) => {
+export const CommunityArticleCommentList = ({ comments, articleAuthor, onLike, onReply }) => {
   const roots = comments.filter((c) => !c.parentId); // 최상위 댓글
 
   return (
@@ -17,6 +17,7 @@ export const CommunityArticleCommentList = ({ comments, onLike, onReply }) => {
           key={comment.id}
           comment={comment}
           comments={comments}
+          articleAuthor={articleAuthor}
           onLike={onLike}
           onReply={onReply}
           depth={0}

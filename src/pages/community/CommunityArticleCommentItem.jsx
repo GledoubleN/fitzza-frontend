@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, HStack, Input, Stack, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import { LuThumbsUp } from "react-icons/lu";
 
 const INDENT_STEP = "6"; // 한 단계 들여쓰기 폭
@@ -9,12 +9,15 @@ const CONTINUE_DEPTH = 3; // 대댓글 3개 이상의 답글은 "계속 보기"�
 export const CommunityArticleCommentItem = ({
   comment,
   comments,
+  articleAuthor,
   onLike,
   onReply,
   depth = 0,
 }) => {
   const { id, author, time, content, likes, liked } = comment;
   const replies = comments.filter((c) => c.parentId === id); // 댓글 직속 답글
+  const isAuthor = author === articleAuthor; // 글 작성자가 댓글 작성자인지 확인
+  // To-Do-Next: isAuthor는 id를 받지 않는 구조로 같은 닉네임을 허용한다면 수정 필요합니다.
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [expanded, setExpanded] = useState(false); // "계속보기" 펼침여부
@@ -38,6 +41,9 @@ export const CommunityArticleCommentItem = ({
         <HStack gap="2" fontSize="sm">
           <Box boxSize="6" rounded="full" bg="bg.muted" flexShrink="0" />
           <Text>{author}</Text>
+          {isAuthor && (
+            <Badge colorPalette="orange" size="sm">작성자</Badge>
+          )}
           <Text color="fg.muted">·</Text>
           <Text color="fg.muted">{time}</Text>
         </HStack>
@@ -102,6 +108,7 @@ export const CommunityArticleCommentItem = ({
             key={reply.id}
             comment={reply}
             comments={comments}
+            articleAuthor={articleAuthor}
             onLike={onLike}
             onReply={onReply}
             depth={depth + 1}

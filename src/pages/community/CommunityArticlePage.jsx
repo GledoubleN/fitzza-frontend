@@ -102,8 +102,8 @@ export const CommunityArticlePage = () => {
     }
   };
 
-  // 최상위 댓글 등록 (하단 입력창)
-  const changeHandler = async () => {
+  // 댓글 등록 (하단 입력창)
+  const submitCommentHandler = async () => {
     await submitComment(comment);
     setComment("");
   };
@@ -111,7 +111,6 @@ export const CommunityArticlePage = () => {
   // 대댓글 등록
   const replyHandler = (parentId, text) => submitComment(text, parentId);
 
-  // 댓글 좋아요 토글. TO-DO-NEXT: 실제 API 계약 시 수정 필요
   // 게시글 좋아요 토글. TO-DO-NEXT: 실제 API 계약 시 수정 필요
   const articleLikeHandler = async () => {
     const nextLiked = !article.liked;
@@ -133,7 +132,7 @@ export const CommunityArticlePage = () => {
     }
   };
 
-  // 댓글 좋아요 토글. TO-DO-NEXT: endpoint·메서드(POST/DELETE) 확정되면 수정
+  // 댓글 좋아요. TO-DO-NEXT: endpoint 확정되면 수정
   const likeHandler = async (commentId) => {
     const target = comments.find((c) => c.id === commentId);
     if (!target) return;
@@ -151,14 +150,15 @@ export const CommunityArticlePage = () => {
     applyLike(nextLiked);
 
     try {
-      // 좋아요=POST, 취소=DELETE 가정
+      // 좋아요=POST, 취소=DELETE 가정, TO-DO-NEXT : apiEndpoint 확정시 변경 필요
       if (nextLiked) {
         await api.post(`/communityarticle/${id}/comments/${commentId}/like`);
       } else {
         await api.delete(`/communityarticle/${id}/comments/${commentId}/like`);
       }
     } catch (err) {
-      // BE 미구성/실패 시 롤백 없이 로컬 유지(개발용). 완성되면 여기서 applyLike(!nextLiked)로 롤백
+      // BE 미구성/실패 시 롤백 없이 로컬 유지(개발용).
+      //TO-DO-NEXT : 실제 통신 시 댓글별 좋아요 요청 중 중복 클릭 방지에 대한 부분 구성 필요합니다.
       console.log("좋아요 처리 실패, 로컬 유지(개발용)", err);
     }
   };
@@ -257,6 +257,7 @@ export const CommunityArticlePage = () => {
         {/* 댓글 목록 */}
         <CommunityArticleCommentList
           comments={comments}
+          articleAuthor={article.author}
           onLike={likeHandler}
           onReply={replyHandler}
         />
@@ -269,10 +270,10 @@ export const CommunityArticlePage = () => {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") changeHandler();
+              if (e.key === "Enter") submitCommentHandler();
             }}
           />
-          <Button colorPalette="orange" flexShrink="0" onClick={changeHandler}>
+          <Button colorPalette="orange" flexShrink="0" onClick={submitCommentHandler}>
             등록
           </Button>
         </HStack>
