@@ -3,8 +3,8 @@ import { Badge, Box, Button, HStack, Input, Stack, Text } from "@chakra-ui/react
 import { LuThumbsUp } from "react-icons/lu";
 
 const INDENT_STEP = "6"; // 한 단계 들여쓰기 폭
-const MAX_INDENT_DEPTH = 3; // 대댓글 3개 부터는 더 들여쓰지 않음
-const CONTINUE_DEPTH = 3; // 대댓글 3개 이상의 답글은 "계속 보기"로 접음
+const MAX_INDENT_DEPTH = 3; // 대댓글 3개 부터는 더 들여쓰지 않음 임의값 합의 필요
+const CONTINUE_DEPTH = 3; // 대댓글 3개 이상의 답글은 "계속 보기"로 접음 임의값 합의 필요
 
 export const CommunityArticleCommentItem = ({
   comment,
@@ -29,10 +29,10 @@ export const CommunityArticleCommentItem = ({
     setShowReply(false);
   };
 
-  // 대댓글 3개 이상은 더 들여쓰지 않음
+  // 정해진 Depth 이상은 더 들여쓰지 않음
   const padLeft = depth === 0 || depth > MAX_INDENT_DEPTH ? "0" : INDENT_STEP;
-  // 대댓글 3개 넘어가면 답글을 바로 안 펼치고 "계속 보기"로
-  const collapsed = depth >= CONTINUE_DEPTH && replies.length > 0 && !expanded;
+  // depth가 CONTINUE_DEPTH 이상이고 답글이 있으면 접기/펼치기 가능한 지점
+  const canCollapse = depth >= CONTINUE_DEPTH && replies.length > 0;
 
   return (
     <Stack direction="column" gap="2" paddingLeft={padLeft}>
@@ -72,7 +72,7 @@ export const CommunityArticleCommentItem = ({
         </HStack>
       </Stack>
 
-      {/* 답글 입력 */}
+      {/* 답글 입력 / 길이는 임의값 합의 필요*/}
       {showReply && (
         <HStack gap="2" paddingLeft="8">
           <Input
@@ -92,17 +92,21 @@ export const CommunityArticleCommentItem = ({
       )}
 
       {/* 대댓글: 너무 깊으면 "계속 보기"로 접음 */}
-      {collapsed ? (
+      {/* 계속 보기 / 접기 토글 */}
+      {canCollapse && (
         <Text
           paddingLeft="8"
           fontSize="sm"
           color="blue.500"
           cursor="pointer"
-          onClick={() => setExpanded(true)}
+          onClick={() => setExpanded((v) => !v)}
         >
-          답글 {replies.length}개 계속 보기
+          {expanded ? "답글 접기" : `답글 ${replies.length}개 계속 보기`}
         </Text>
-      ) : (
+      )}
+
+      {/* 접기 지점이 아니면 항상표시, 접기 지점이면서 펼쳐졌을 때만 답글 렌더 */}
+      {(!canCollapse || expanded) &&
         replies.map((reply) => (
           <CommunityArticleCommentItem
             key={reply.id}
@@ -113,8 +117,7 @@ export const CommunityArticleCommentItem = ({
             onReply={onReply}
             depth={depth + 1}
           />
-        ))
-      )}
+        ))}
     </Stack>
   );
 };

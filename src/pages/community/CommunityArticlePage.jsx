@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { LuChevronLeft, LuMessageCircle, LuThumbsUp } from "react-icons/lu";
 import { AppBar } from "../../components/AppBar.jsx";
+import { ScrollToTopButton } from "../../components/ScrollToTopButton.jsx";
 import { CommunityArticleCommentList } from "./CommunityArticleCommentList.jsx";
 import { api } from "../../api/axios.js";
 import { ARTICLES } from "/src/data/articles.js";
@@ -262,7 +263,7 @@ export const CommunityArticlePage = () => {
           onReply={replyHandler}
         />
 
-        {/* 댓글 입력 */}
+        {/* 댓글 입력 / 길이는 임의값 합의 필요*/}
         <HStack gap="2" paddingBottom="4">
           <Input
             maxLength={500}
@@ -278,6 +279,8 @@ export const CommunityArticlePage = () => {
           </Button>
         </HStack>
       </Stack>
+
+      <ScrollToTopButton />
     </Container>
   );
 };
