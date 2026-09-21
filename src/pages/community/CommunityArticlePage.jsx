@@ -37,7 +37,8 @@ export const CommunityArticlePage = () => {
       setLoading(true);
       setError(null);
       try {
-        const [articleRes, commentsRes] = await Promise.all([
+        const [articleRes, commentsRes]
+          = await Promise.all([
           api.get(`/communityarticle/${id}`),
           api.get(`/communityarticle/${id}/comments`),
         ]);
@@ -48,7 +49,8 @@ export const CommunityArticlePage = () => {
           // 개발용 목업 폴백 — 완성되면 setError로 교체
           console.log("글 조회 실패, 더미 사용(개발용)", err);
           const found = ARTICLES.find((a) => a.id === Number(id));
-          // const found 부터는 목업에 없는 id 번호로 들어왔을 때를 방지하는 코드입니다. 그냥 여기 아래 블럭들은 싹다 목업용이니 개발 완료되면 수정 필요
+          // const found 부터는 목업에 없는 id 번호로 들어왔을 때를 방지하는 코드입니다.
+          // 그냥 여기 아래 블럭은 싹다 목업용이니 개발 완료되면 수정 필요
           // TO-DO-NEXT : 실제로 통신되면 수정하기
           if (found) {
             setArticle(found);
@@ -66,13 +68,14 @@ export const CommunityArticlePage = () => {
     fetchArticle();
   }, [id]);
 
-  // 댓글 등록. TO-DO-NEXT: apiEndPoint 확정되면 수정 필요
-  const changeHandler = async () => {
-    const text = comment.trim();
-    if (!text) return;
+  // 댓글 및 답글 등록. parentId null이면 최상위 댓글, 값 있으면 대댓글. TO-DO-NEXT: apiEndPoint 확정되면 수정 필요
+  const submitComment = async (text, parentId = null) => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
     try {
       const res = await api.post(`/communityarticle/${id}/comments`, {
-        content: text,
+        content: trimmed,
+        parentId,
       });
       setComments((prev) => [...prev, res.data]);
     } catch (err) {
@@ -80,10 +83,79 @@ export const CommunityArticlePage = () => {
       console.log("댓글 등록 실패, 로컬 추가(개발용)", err);
       setComments((prev) => [
         ...prev,
-        { id: Date.now(), articleId: Number(id), author: "나", time: "방금", content: text },
+        {
+          id: Date.now(),
+          articleId: Number(id),
+          parentId,
+          author: "나",
+          time: "방금",
+          content: trimmed,
+          likes: 0,
+          liked: false,
+        },
       ]);
     }
+  };
+
+  // 최상위 댓글 등록 (하단 입력창)
+  const changeHandler = async () => {
+    await submitComment(comment);
     setComment("");
+  };
+
+  // 대댓글 등록
+  const replyHandler = (parentId, text) => submitComment(text, parentId);
+
+  // 댓글 좋아요 토글. TO-DO-NEXT: 실제 API 계약 시 수정 필요
+  // 게시글 좋아요 토글. TO-DO-NEXT: 실제 API 계약 시 수정 필요
+  const articleLikeHandler = async () => {
+    const nextLiked = !article.liked;
+    // 좋아요는 낙관적 업데이트를 진행합니다.
+    setArticle((prev) => ({
+      ...prev,
+      liked: nextLiked,
+      likes: prev.likes + (nextLiked ? 1 : -1),
+    }));
+    try {
+      if (nextLiked) {
+        await api.post(`/communityarticle/${id}/like`);
+      } else {
+        await api.delete(`/communityarticle/${id}/like`);
+      }
+    } catch (err) {
+      // BE 미구성으로 실패시 로컬 유지(개발용).
+      console.log("게시글 좋아요 실패, 로컬 유지(개발용)", err);
+    }
+  };
+
+  // 댓글 좋아요 토글. TO-DO-NEXT: endpoint·메서드(POST/DELETE) 확정되면 수정
+  const likeHandler = async (commentId) => {
+    const target = comments.find((c) => c.id === commentId);
+    if (!target) return;
+    const nextLiked = !target.liked;
+
+    // 낙관적 업데이트: 응답 기다리지 않고 화면 먼저 반영
+    const applyLike = (liked) =>
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === commentId
+            ? { ...c, liked, likes: c.likes + (liked ? 1 : -1) }
+            : c
+        )
+      );
+    applyLike(nextLiked);
+
+    try {
+      // 좋아요=POST, 취소=DELETE 가정
+      if (nextLiked) {
+        await api.post(`/communityarticle/${id}/comments/${commentId}/like`);
+      } else {
+        await api.delete(`/communityarticle/${id}/comments/${commentId}/like`);
+      }
+    } catch (err) {
+      // BE 미구성/실패 시 롤백 없이 로컬 유지(개발용). 완성되면 여기서 applyLike(!nextLiked)로 롤백
+      console.log("좋아요 처리 실패, 로컬 유지(개발용)", err);
+    }
   };
 
   if (loading) {
@@ -159,7 +231,12 @@ export const CommunityArticlePage = () => {
           <Text whiteSpace="pre-wrap">{article.content}</Text>
 
           <HStack gap="4" color="fg.muted" fontSize="sm">
-            <HStack gap="1">
+            <HStack
+              gap="1"
+              cursor="pointer"
+              color={article.liked ? "orange.500" : "fg.muted"}
+              onClick={articleLikeHandler}
+            >
               <LuThumbsUp />
               <Text>{article.likes}</Text>
             </HStack>
@@ -173,7 +250,11 @@ export const CommunityArticlePage = () => {
         <Box borderBottomWidth="1px" />
 
         {/* 댓글 목록 */}
-        <CommunityArticleCommentList comments={comments} />
+        <CommunityArticleCommentList
+          comments={comments}
+          onLike={likeHandler}
+          onReply={replyHandler}
+        />
 
         {/* 댓글 입력 */}
         <HStack gap="2" paddingBottom="4">
