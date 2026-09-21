@@ -15,6 +15,7 @@ import MyPage from './pages/MyPage.jsx'
 import WorldCupPage from './pages/WorldCupPage.jsx'
 import { DevNavi } from './pages/ForDev/DevNavi.jsx'
 import { LikesPage } from './pages/LikesPage.jsx'
+import { CategoryPage } from './pages/CategoryPage.jsx'
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
         <Route path="/dev" element={ <DevNavi/> }/>
         <Route path="/likes" element={ <LikesPage/> }/>
+        <Route path="/category" element={ <CategoryPage/> }/>
       </Routes>
     </BrowserRouter>
   )
