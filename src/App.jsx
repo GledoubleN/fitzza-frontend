@@ -10,8 +10,10 @@ import {CommunityMainPage} from "./pages/community/CommunityMainPage.jsx";
 import {CommunityWritePage} from "./pages/community/CommunityWritePage.jsx";
 import {CommunityArticlePage} from "./pages/community/CommunityArticlePage.jsx";
 import { PromptPage } from './pages/PromptPage.jsx'
+import { ProductPage } from './pages/ProductPage.jsx'
 import MyPage from './pages/MyPage.jsx'
 import { DevNavi } from './pages/ForDev/DevNavi.jsx'
+import { LikesPage } from './pages/LikesPage.jsx'
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
         <Route path="/signup" element={ <SignupPage/> }/>
         <Route path="/try-on" element={ <TryOnPage/> }/>
         <Route path="/search" element={ <SearchResultPage/> }/>
+        <Route path="/products/:id" element={ <ProductPage/> }/>
         <Route path="/checkout" element={ <CheckoutPage/> }/>
         <Route path="/communitymain" element={ <CommunityMainPage/> }/>
         <Route path="/communityarticle/:id" element={ <CommunityArticlePage/> }/>
@@ -30,6 +33,7 @@ function App() {
         <Route path="/prompt" element={ <PromptPage/> }/>
         <Route path="/mypage" element={ <MyPage/> }/>
         <Route path="/dev" element={ <DevNavi/> }/>
+        <Route path="/likes" element={ <LikesPage/> }/>
       </Routes>
     </BrowserRouter>
   )

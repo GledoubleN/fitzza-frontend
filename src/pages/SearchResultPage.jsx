@@ -3,8 +3,11 @@ import { AppBar } from '../components/AppBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
 import { products } from '../data/products.js'
 import exampleProductImage from '../assets/hero.png'
+import { useNavigate } from 'react-router-dom'
 
 export const SearchResultPage = () => {
+  const navigate = useNavigate();
+
   return (
     <Container maxWidth={ 'xl' } paddingY={ '4' }>
       <Grid gap={ '4' }>
@@ -22,7 +25,7 @@ export const SearchResultPage = () => {
               products.map((product, index) => {
                 return (
                   <GridItem>
-                    <Card.Root>
+                    <Card.Root onClick={() => navigate('/products/1')}>
                       <IconButton
                         position="absolute"
                         top="2"
