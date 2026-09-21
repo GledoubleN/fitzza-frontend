@@ -3,7 +3,7 @@ import { Badge, Box, Button, HStack, Input, Stack, Text } from "@chakra-ui/react
 import { LuThumbsUp } from "react-icons/lu";
 
 const INDENT_STEP = "6"; // 한 단계 들여쓰기 폭
-const MAX_INDENT_DEPTH = 3; // 대댓글 3개 부터는 더 들여쓰지 않음 임의값 합의 필요
+const MAX_INDENT_DEPTH = 1; // depth 1까지만 들여쓰기
 const CONTINUE_DEPTH = 3; // 대댓글 3개 이상의 답글은 "계속 보기"로 접음 임의값 합의 필요
 
 export const CommunityArticleCommentItem = ({
