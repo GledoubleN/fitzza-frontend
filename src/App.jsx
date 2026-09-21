@@ -12,6 +12,7 @@ import {CommunityArticlePage} from "./pages/community/CommunityArticlePage.jsx";
 import { PromptPage } from './pages/PromptPage.jsx'
 import { ProductPage } from './pages/ProductPage.jsx'
 import MyPage from './pages/MyPage.jsx'
+import { LikesPage } from './pages/LikesPage.jsx'
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/communitywrite" element={ <CommunityWritePage/> }/>
         <Route path="/prompt" element={ <PromptPage/> }/>
         <Route path="/mypage" element={ <MyPage/> }/>
+        <Route path="/likes" element={ <LikesPage/> }/>
       </Routes>
     </BrowserRouter>
   )
