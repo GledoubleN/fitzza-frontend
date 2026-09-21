@@ -83,7 +83,7 @@ export const MainPage = () => {
             products.map((product, index) => {
               return (
                 <GridItem>
-                  <Card.Root>
+                  <Card.Root onClick={() => navigate('/products/1')}>
                     <IconButton
                       position="absolute"
                       top="2"
