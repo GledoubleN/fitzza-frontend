@@ -30,10 +30,10 @@ export const ProductPage = () => {
 
         <Tabs.Root>
           <Tabs.List>
-            <Tabs.Trigger value={ 'information' }>정보</Tabs.Trigger>
-            <Tabs.Trigger value={ 'projects' }>사이즈</Tabs.Trigger>
-            <Tabs.Trigger value={ 'tasks' }>후기</Tabs.Trigger>
-            <Tabs.Trigger value={ 'inquiries' }>문의</Tabs.Trigger>
+            <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'information' }>정보</Tabs.Trigger>
+            <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'projects' }>사이즈</Tabs.Trigger>
+            <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'tasks' }>후기</Tabs.Trigger>
+            <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'inquiries' }>문의</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="information">
             <Box width={ '100%' } height={ '100vh' }>
