@@ -72,6 +72,11 @@ export const CommunityArticlePage = () => {
   const submitComment = async (text, parentId = null) => {
     const trimmed = text.trim();
     if (!trimmed) return;
+    if (trimmed.length > 500) {
+      alert("댓글의 길이는 최대 500자입니다")
+      return;
+    }
+
     try {
       const res = await api.post(`/communityarticle/${id}/comments`, {
         content: trimmed,
@@ -259,6 +264,7 @@ export const CommunityArticlePage = () => {
         {/* 댓글 입력 */}
         <HStack gap="2" paddingBottom="4">
           <Input
+            maxLength={500}
             placeholder="댓글을 입력하세요"
             value={comment}
             onChange={(e) => setComment(e.target.value)}

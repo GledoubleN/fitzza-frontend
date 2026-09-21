@@ -3,8 +3,8 @@ import { Box, Button, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import { LuThumbsUp } from "react-icons/lu";
 
 const INDENT_STEP = "6"; // 한 단계 들여쓰기 폭
-const MAX_INDENT_DEPTH = 3; // 이 depth 초과부터는 더 들여쓰지 않음(평평하게)
-const CONTINUE_DEPTH = 3; // 이 depth 이상의 답글은 "계속 보기"로 접음
+const MAX_INDENT_DEPTH = 3; // 대댓글 3개 부터는 더 들여쓰지 않음
+const CONTINUE_DEPTH = 3; // 대댓글 3개 이상의 답글은 "계속 보기"로 접음
 
 export const CommunityArticleCommentItem = ({
   comment,
@@ -14,10 +14,10 @@ export const CommunityArticleCommentItem = ({
   depth = 0,
 }) => {
   const { id, author, time, content, likes, liked } = comment;
-  const replies = comments.filter((c) => c.parentId === id); // 내 직속 답글
+  const replies = comments.filter((c) => c.parentId === id); // 댓글 직속 답글
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState("");
-  const [expanded, setExpanded] = useState(false); // 깊은 답글 펼침 여부
+  const [expanded, setExpanded] = useState(false); // "계속보기" 펼침여부
 
   const submitReply = () => {
     if (!replyText.trim()) return;
@@ -26,9 +26,9 @@ export const CommunityArticleCommentItem = ({
     setShowReply(false);
   };
 
-  // depth가 상한을 넘으면 더 들여쓰지 않음
+  // 대댓글 3개 이상은 더 들여쓰지 않음
   const padLeft = depth === 0 || depth > MAX_INDENT_DEPTH ? "0" : INDENT_STEP;
-  // 너무 깊으면 답글을 바로 안 펼치고 "계속 보기"로
+  // 대댓글 3개 넘어가면 답글을 바로 안 펼치고 "계속 보기"로
   const collapsed = depth >= CONTINUE_DEPTH && replies.length > 0 && !expanded;
 
   return (
@@ -71,6 +71,7 @@ export const CommunityArticleCommentItem = ({
         <HStack gap="2" paddingLeft="8">
           <Input
             size="sm"
+            maxLength = {500}
             placeholder="답글을 입력하세요"
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
