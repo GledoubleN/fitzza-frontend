@@ -1,0 +1,35 @@
+{
+  "user": [
+    {
+      "email": "espresso",
+      "password": "password"
+    },
+    {
+      "email": "latte",
+      "password": "password"
+    },
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "T-Shirt",
+      "price": 29900
+    },
+    {
+      "id": 2,
+      "name": "Jeans",
+      "price": 59900
+    }
+  ],
+  "articles": [
+    {
+      "id": "",
+      "title": "",
+      "category": "",
+      "author": "",
+      "time": "",
+      "likes": "",
+      "comments": ""
+    },
+  ]
+}
