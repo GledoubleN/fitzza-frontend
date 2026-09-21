@@ -14,14 +14,11 @@ import {
   Text,
 } from "@chakra-ui/react";
 import {
-  LuBell,
   LuChevronLeft,
   LuMessageCircle,
   LuPencil,
   LuSearch,
-  LuShoppingBag,
   LuThumbsUp,
-  LuUsers,
 } from "react-icons/lu";
 import {useNavigate} from "react-router-dom";
 import {api} from "../../api/axios.js";
