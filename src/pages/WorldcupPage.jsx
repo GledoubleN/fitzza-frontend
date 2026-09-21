@@ -12,9 +12,7 @@ import {
 import { LuChevronLeft, LuHouse, LuRotateCcw, LuShare2 } from 'react-icons/lu';
 
 export default function WorldCupPage() {
-  // 게임 종료 여부를 관리하는 상태
   const [isFinished, setIsFinished] = useState(false);
-  // 최종 우승 상품을 담을 상태
   const [winnerProduct, setWinnerProduct] = useState(null);
 
   const leftProduct = {
@@ -35,28 +33,20 @@ export default function WorldCupPage() {
     tpo: '캐주얼 · 포멀',
   };
 
-  // 상품을 선택했을 때 실행되는 함수
   const handleSelect = (product) => {
-    // 실제 월드컵 구현 시에는 다음 라운드로 넘어가거나 대진표를 업데이트하는 로직이 들어갑니다.
-    // 여기서는 예시로 선택된 상품을 우승 상품으로 지정하고 결과 화면으로 전환합니다.
     setWinnerProduct(product);
     setIsFinished(true);
   };
 
-  // 다시 시작하기 버튼
   const handleRestart = () => {
     setIsFinished(false);
     setWinnerProduct(null);
   };
 
-  // 홈으로 가기 (예시)
   const handleGoHome = () => {
     console.log('홈으로 이동');
   };
 
-  // ----------------------------------------------------
-  // 🏆 1. 결과 화면 (isFinished가 true일 때)
-  // ----------------------------------------------------
   if (isFinished && winnerProduct) {
     return (
       <Center minH="100vh">
@@ -70,7 +60,6 @@ export default function WorldCupPage() {
           boxShadow="md"
           position="relative"
         >
-          {/* 상단 네비게이션 */}
           <Flex justify="space-between" align="center" mb={3}>
             <HStack spacing={1} w="80px" justify="flex-start">
               <IconButton variant="ghost" aria-label="뒤로 가기" onClick={handleRestart}>
@@ -93,7 +82,6 @@ export default function WorldCupPage() {
             🎉 당신의 최종 선택은? 🎉
           </Text>
 
-          {/* 우승 상품 카드 */}
           <Box
             w="100%"
             border="1px solid"
@@ -118,7 +106,6 @@ export default function WorldCupPage() {
             </Text>
           </Box>
 
-          {/* 우승 상품 스펙 요약 */}
           <Box border="1px solid" borderColor="gray.200" borderRadius="16px" p={3} mb={6}>
             <Text fontSize="xs" fontWeight="bold" mb={3} textAlign="center" color="gray.500">
               우승 상품 스펙 요약
@@ -150,7 +137,6 @@ export default function WorldCupPage() {
             </Box>
           </Box>
 
-          {/* 하단 액션 버튼 */}
           <HStack spacing={3} mb={4}>
             <Button
               flex="1"
@@ -184,9 +170,6 @@ export default function WorldCupPage() {
     );
   }
 
-  // ----------------------------------------------------
-  // 🎮 2. 월드컵 진행 화면 (기본 화면)
-  // ----------------------------------------------------
   return (
     <Center minH="100vh">
       <Box
