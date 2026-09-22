@@ -24,7 +24,7 @@ import {useNavigate} from "react-router-dom";
 import {api} from "../../api/axios.js";
 import { ARTICLES } from '/src/data/articles.js'
 import { AppBar } from '../../components/AppBar.jsx'
-import { BottomNavigationBar } from '../../components/BottomNavigationBar.jsx'
+import { TabBar } from '../../components/TabBar.jsx'
 
 const CATEGORIES = ["전체", "투표", "코디 질문", "자유"];
 
@@ -163,7 +163,7 @@ export const CommunityMainPage = () => {
         </Container>
       </Box>
     </Container>
-    <BottomNavigationBar />
+    <TabBar />
     </>
   );
 };

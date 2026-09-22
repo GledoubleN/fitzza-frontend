@@ -1,6 +1,6 @@
 import { Container, Grid, GridItem, Stack, Card, Image, Text, IconButton } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
-import { BottomNavigationBar } from '../components/BottomNavigationBar.jsx'
+import { TabBar } from '../components/TabBar.jsx'
 import exampleProductImage from '/src/assets/hero.png'
 import { LuX } from 'react-icons/lu'
 
@@ -34,7 +34,7 @@ export const LikesPage = () => {
         </Grid>
       </Stack>
     </Container>
-    <BottomNavigationBar />
+    <TabBar />
     </>
   )
 }

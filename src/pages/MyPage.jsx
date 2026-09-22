@@ -14,7 +14,7 @@ import {
     LuUsers,
     LuSettings
 } from 'react-icons/lu';
-import { BottomNavigationBar } from '../components/BottomNavigationBar.jsx';
+import { TabBar } from '../components/TabBar.jsx';
 
 export default function MyPage() {
     return (
@@ -334,7 +334,7 @@ export default function MyPage() {
             </Box>
 
         </Container>
-        <BottomNavigationBar />
+        <TabBar />
         </>
     );
 }

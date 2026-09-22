@@ -1,6 +1,6 @@
 import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
-import { BottomNavigationBar } from '../components/BottomNavigationBar.jsx'
+import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
 import { products } from '../data/products.js'
 import exampleProductImage from '../assets/hero.png'
@@ -52,7 +52,7 @@ export const SearchResultPage = () => {
         </GridItem>
       </Grid>
     </Container>
-    <BottomNavigationBar />
+    <TabBar />
     </>
   )
 }

@@ -3,7 +3,7 @@ import { Box, Button, Container, Grid, GridItem, Heading, Icon, SimpleGrid, Stac
 import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../components/AppBar.jsx'
-import { BottomNavigationBar } from '../components/BottomNavigationBar.jsx'
+import { TabBar } from '../components/TabBar.jsx'
 import { categories } from '../data/categories.js'
 
 export const CategoryPage = () => {
@@ -74,7 +74,7 @@ export const CategoryPage = () => {
         </Grid>
       </Stack>
     </Container>
-    <BottomNavigationBar />
+    <TabBar />
     </>
   )
 }

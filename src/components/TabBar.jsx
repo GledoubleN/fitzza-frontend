@@ -20,7 +20,7 @@ const items = [
   { to: "/mypage", label: "프로필", icon: LuUser },
 ];
 
-export const BottomNavigationBar = () => {
+export const TabBar = () => {
   return (
     <Box
       as="nav"
