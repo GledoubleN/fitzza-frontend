@@ -3,6 +3,7 @@ import { Box, Button, Container, Grid, GridItem, Heading, Icon, SimpleGrid, Stac
 import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../components/AppBar.jsx'
+import { BottomNavigationBar } from '../components/BottomNavigationBar.jsx'
 import { categories } from '../data/categories.js'
 
 export const CategoryPage = () => {
@@ -14,8 +15,9 @@ export const CategoryPage = () => {
   const search = (query) => navigate(`/search?${ new URLSearchParams({ q: query }) }`)
 
   return (
+    <>
     <Container maxWidth={ 'xl' }>
-      <Stack paddingY={ '4' } height={ '100vh' } gap={ '4' }>
+      <Stack paddingY={ '4' } paddingBottom="96px" height={ '100vh' } gap={ '4' }>
         <AppBar></AppBar>
         <Heading size={ 'xl' }>카테고리</Heading>
         <Grid templateColumns={ '7rem 1fr' } gap={ '4' } flex={ '1' } minHeight={ '0' }>
@@ -72,5 +74,7 @@ export const CategoryPage = () => {
         </Grid>
       </Stack>
     </Container>
+    <BottomNavigationBar />
+    </>
   )
 }

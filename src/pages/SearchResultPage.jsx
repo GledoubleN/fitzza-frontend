@@ -1,5 +1,6 @@
 import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
+import { BottomNavigationBar } from '../components/BottomNavigationBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
 import { products } from '../data/products.js'
 import exampleProductImage from '../assets/hero.png'
@@ -9,7 +10,8 @@ export const SearchResultPage = () => {
   const navigate = useNavigate();
 
   return (
-    <Container maxWidth={ 'xl' } paddingY={ '4' }>
+    <>
+    <Container maxWidth={ 'xl' } paddingY={ '4' } paddingBottom="96px">
       <Grid gap={ '4' }>
         <GridItem>
           <AppBar></AppBar>
@@ -50,5 +52,7 @@ export const SearchResultPage = () => {
         </GridItem>
       </Grid>
     </Container>
+    <BottomNavigationBar />
+    </>
   )
 }

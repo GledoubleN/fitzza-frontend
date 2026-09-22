@@ -18,6 +18,7 @@ import { products } from '/src/data/products.js'
 import { banners } from '/src/data/banners.js'
 import { HiCheck, HiX } from 'react-icons/hi'
 import { AppBar } from '../components/AppBar.jsx'
+import { BottomNavigationBar } from '../components/BottomNavigationBar.jsx'
 import { useNavigate } from 'react-router-dom'
 
 export const MainPage = () => {
@@ -28,7 +29,8 @@ export const MainPage = () => {
   }
 
   return (
-    <Container maxWidth={ 'xl' } height="100vh" paddingY={ '4' }>
+    <>
+    <Container maxWidth={ 'xl' } height="100vh" paddingY={ '4' } paddingBottom="96px">
       <Stack direction={ 'column' } gap={ '4' }>
         <AppBar></AppBar>
 
@@ -107,5 +109,7 @@ export const MainPage = () => {
         </Grid>
       </Stack>
     </Container>
+    <BottomNavigationBar />
+    </>
   )
 }

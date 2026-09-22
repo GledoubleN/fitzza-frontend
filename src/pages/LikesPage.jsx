@@ -1,12 +1,14 @@
 import { Container, Grid, GridItem, Stack, Card, Image, Text, IconButton } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
+import { BottomNavigationBar } from '../components/BottomNavigationBar.jsx'
 import exampleProductImage from '/src/assets/hero.png'
 import { LuX } from 'react-icons/lu'
 
 export const LikesPage = () => {
   return (
+    <>
     <Container maxWidth="xl">
-      <Stack paddingY={ 4 } height={ '100vh' } gap={ 4 }>
+      <Stack paddingY={ 4 } paddingBottom="96px" height={ '100vh' } gap={ 4 }>
         <AppBar></AppBar>
         <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ 2 }>
           {
@@ -32,5 +34,7 @@ export const LikesPage = () => {
         </Grid>
       </Stack>
     </Container>
+    <BottomNavigationBar />
+    </>
   )
 }

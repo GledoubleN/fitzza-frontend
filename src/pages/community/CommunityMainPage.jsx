@@ -24,6 +24,7 @@ import {useNavigate} from "react-router-dom";
 import {api} from "../../api/axios.js";
 import { ARTICLES } from '/src/data/articles.js'
 import { AppBar } from '../../components/AppBar.jsx'
+import { BottomNavigationBar } from '../../components/BottomNavigationBar.jsx'
 
 const CATEGORIES = ["전체", "투표", "코디 질문", "자유"];
 
@@ -88,6 +89,7 @@ export const CommunityMainPage = () => {
   }
 
   return (
+    <>
     <Container maxWidth="xl" minHeight="100vh" paddingY="4" position="relative">
       <Stack direction="column" gap="4">
         {/* 상단 로고 바 */}
@@ -146,7 +148,7 @@ export const CommunityMainPage = () => {
       </Stack>
 
       {/* 글쓰기 플로팅 버튼 */}
-      <Box position="fixed" bottom="6" left="0" right="0" pointerEvents="none">
+      <Box position="fixed" bottom="calc(env(safe-area-inset-bottom, 0px) + 96px)" left="0" right="0" pointerEvents="none">
         <Container maxWidth="xl" display="flex" justifyContent="flex-end">
           <IconButton
             rounded="full"
@@ -161,6 +163,8 @@ export const CommunityMainPage = () => {
         </Container>
       </Box>
     </Container>
+    <BottomNavigationBar />
+    </>
   );
 };
 
