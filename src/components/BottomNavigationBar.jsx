@@ -29,7 +29,7 @@ export const BottomNavigationBar = () => {
       borderRadius="full"
       boxShadow="0 8px 32px rgba(0,0,0,0.12)"
     >
-      <Flex align="stretch" justify="space-around" px={2} py={2}>
+      <Flex align="stretch" justify="space-around" px={2} py={1}>
         {items.map(({ to, label, icon, end }) => (
           <NavLink key={to} to={to} end={end} style={{ flex: 1 }}>
             {({ isActive }) => (
@@ -38,7 +38,7 @@ export const BottomNavigationBar = () => {
                 align="center"
                 gap={1}
                 px={2}
-                py={2}
+                py={1}
                 borderRadius="2xl"
                 color={isActive ? "fg" : "fg.muted"}
                 bg={isActive ? "bg.muted" : "transparent"}
