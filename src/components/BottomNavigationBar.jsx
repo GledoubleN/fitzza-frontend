@@ -1,6 +1,15 @@
 import { Box, Flex, Icon, Text } from "@chakra-ui/react";
+import { keyframes } from "@emotion/react";
 import { NavLink } from "react-router-dom";
 import { LuLayoutGrid, LuUsers, LuHouse, LuHeart, LuUser } from "react-icons/lu";
+
+// 마운트 시 1회 재생되는 팝(살짝 오버슈트). 바가 페이지마다 새로 마운트되므로
+// 탭 전환마다 활성 아이콘이 톡 튀어오름.
+const pop = keyframes`
+  0%   { transform: scale(0.6); opacity: 0.3; }
+  60%  { transform: scale(1.22); }
+  100% { transform: scale(1.12); opacity: 1; }
+`;
 
 // 순서: 카테고리, 커뮤니티, 홈, 찜, 프로필. 활성 시 strokeWidth로 볼드 강조.
 const items = [
@@ -22,7 +31,7 @@ export const BottomNavigationBar = () => {
       mx="auto"
       maxW="480px"
       zIndex="docked"
-      bg="bg.panel/70"
+      bg="bg.panel/10"
       backdropFilter="blur(6px) saturate(150%)"
       borderWidth="1px"
       borderColor="border.subtle"
@@ -45,8 +54,15 @@ export const BottomNavigationBar = () => {
                 borderWidth="1px"
                 borderColor={isActive ? "border.subtle" : "transparent"}
                 backdropFilter={isActive ? "blur(1px)" : undefined}
+                transition="background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease"
               >
-                <Icon as={icon} boxSize={6} strokeWidth={isActive ? 2.75 : 2} />
+                <Icon
+                  as={icon}
+                  boxSize={6}
+                  strokeWidth={isActive ? 2.5 : 2}
+                  transform={isActive ? "scale(1.05)" : "scale(1)"}
+                  animation={isActive ? `${pop} 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)` : undefined}
+                />
                 <Text fontSize="xs" whiteSpace="nowrap" fontWeight={isActive ? "semibold" : "medium"}>
                   {label}
                 </Text>
