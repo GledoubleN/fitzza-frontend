@@ -54,7 +54,8 @@ export const TabBar = () => {
                 borderWidth="1px"
                 borderColor={isActive ? "border.subtle" : "transparent"}
                 backdropFilter={isActive ? "blur(1px)" : undefined}
-                transition="background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease"
+                transition="background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, transform 0.12s ease"
+                _active={{ transform: "scale(0.9)" }}
               >
                 <Icon
                   as={icon}
