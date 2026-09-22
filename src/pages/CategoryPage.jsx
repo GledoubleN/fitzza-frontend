@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Box, Button, Container, Grid, GridItem, Heading, Icon, SimpleGrid, Stack, Text } from '@chakra-ui/react'
+import { Box, Button, Grid, GridItem, Heading, Icon, SimpleGrid, Stack, Text } from '@chakra-ui/react'
+import { PageLayout } from '../components/PageLayout.jsx'
 import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../components/AppBar.jsx'
@@ -14,7 +15,7 @@ export const CategoryPage = () => {
   const search = (query) => navigate(`/search?${ new URLSearchParams({ q: query }) }`)
 
   return (
-    <Container maxWidth={ 'xl' }>
+    <PageLayout>
       <Stack paddingY={ '4' } height={ '100vh' } gap={ '4' }>
         <AppBar></AppBar>
         <Heading size={ 'xl' }>카테고리</Heading>
@@ -71,6 +72,6 @@ export const CategoryPage = () => {
           </GridItem>
         </Grid>
       </Stack>
-    </Container>
+    </PageLayout>
   )
 }

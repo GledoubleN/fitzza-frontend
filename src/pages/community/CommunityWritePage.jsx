@@ -3,7 +3,6 @@ import {
   Button,
   ButtonGroup,
   Card,
-  Container,
   Grid,
   Group,
   IconButton,
@@ -12,6 +11,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { AppBar } from '../../components/AppBar.jsx'
+import { PageLayout } from '../../components/PageLayout.jsx'
 import { Control, RichTextEditor } from '/src/components/ui/rich-text-editor'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
@@ -83,7 +83,7 @@ export const CommunityWritePage = () => {
   }
 
   return (
-    <Container maxWidth={ 'xl' } height={ '100vh' }>
+    <PageLayout>
       <Stack paddingY={ '4' } gap={ '4' }>
         <AppBar></AppBar>
 
@@ -110,6 +110,6 @@ export const CommunityWritePage = () => {
 
         <Button>작성하기</Button>
       </Stack>
-    </Container>
+    </PageLayout>
   )
 }

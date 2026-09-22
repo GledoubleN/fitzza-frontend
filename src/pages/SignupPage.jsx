@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import {
   Card,
   Button,
-  Container,
   Input,
   Heading,
   Text,
   Stack,
   Field, GridItem, Grid, IconButton
 } from '@chakra-ui/react';
+import { PageLayout } from '../components/PageLayout.jsx';
 import { LuHouse } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 
@@ -51,7 +51,7 @@ export default function SignupPage() {
   const navigate = useNavigate();
 
   return (
-    <Container maxWidth="md" height="100vh">
+    <PageLayout maxWidth="md">
       <Grid height={ "100%" } templateRows={ "1fr auto 1fr" }>
         <GridItem></GridItem>
         <GridItem>
@@ -139,6 +139,6 @@ export default function SignupPage() {
         </GridItem>
         <GridItem></GridItem>
       </Grid>
-    </Container>
+    </PageLayout>
   );
 }

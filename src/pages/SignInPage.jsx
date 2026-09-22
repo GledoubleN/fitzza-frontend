@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Container, Field, Grid, GridItem, Heading, Input, Stack, Text } from "@chakra-ui/react";
+import { Button, Field, Grid, GridItem, Heading, Input, Stack, Text } from "@chakra-ui/react";
+import { PageLayout } from '../components/PageLayout.jsx'
 import { api } from "../api/axios.js";
 
 export const SignInPage = () => {
@@ -35,7 +36,7 @@ export const SignInPage = () => {
   };
 
   return (
-    <Container maxWidth={ "md" } height={ "100vh" }>
+    <PageLayout maxWidth="md">
       <Grid height={ "100%" } templateRows={ "1fr auto 1fr" }>
         <GridItem></GridItem>
         <GridItem>
@@ -75,6 +76,6 @@ export const SignInPage = () => {
         </GridItem>
         <GridItem></GridItem>
       </Grid>
-    </Container>
+    </PageLayout>
   );
 }

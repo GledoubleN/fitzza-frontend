@@ -4,7 +4,6 @@ import {
   Badge,
   Box,
   Button,
-  Container,
   Flex,
   HStack,
   IconButton,
@@ -15,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { LuChevronLeft, LuMessageCircle, LuThumbsUp } from "react-icons/lu";
 import { AppBar } from "../../components/AppBar.jsx";
+import { PageLayout } from "../../components/PageLayout.jsx";
 import { ScrollToTopButton } from "../../components/ScrollToTopButton.jsx";
 import { CommunityArticleCommentList } from "./CommunityArticleCommentList.jsx";
 import { api } from "../../api/axios.js";
@@ -166,25 +166,25 @@ export const CommunityArticlePage = () => {
 
   if (loading) {
     return (
-      <Container maxWidth="xl" paddingY="4">
+      <PageLayout>
         <Text color="fg.muted">불러오는 중...</Text>
-      </Container>
+      </PageLayout>
     );
   }
 
   if (error) {
     return (
-      <Container maxWidth="xl" paddingY="4">
+      <PageLayout>
         <Text color="red.500">{"Error 잠시 후 다시 시도해주세요"}</Text>
         <Text color="red.500">{"지금 페이지는 없는 페이지 id입니다(개발용 문구)"}</Text>
-      </Container>
+      </PageLayout>
     );
   }
 
   const images = article.images ?? [];
 
   return (
-    <Container maxWidth="xl" minHeight="100vh" paddingY="4">
+    <PageLayout>
       <Stack direction="column" gap="4">
         <AppBar />
 
@@ -281,6 +281,6 @@ export const CommunityArticlePage = () => {
       </Stack>
 
       <ScrollToTopButton />
-    </Container>
+    </PageLayout>
   );
 };

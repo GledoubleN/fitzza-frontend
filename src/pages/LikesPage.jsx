@@ -1,11 +1,12 @@
-import { Container, Grid, GridItem, Stack, Card, Image, Text, IconButton } from '@chakra-ui/react'
+import { Grid, GridItem, Stack, Card, Image, Text, IconButton } from '@chakra-ui/react'
+import { PageLayout } from '../components/PageLayout.jsx'
 import { AppBar } from '../components/AppBar.jsx'
 import exampleProductImage from '/src/assets/hero.png'
 import { LuX } from 'react-icons/lu'
 
 export const LikesPage = () => {
   return (
-    <Container maxWidth="xl">
+    <PageLayout>
       <Stack paddingY={ 4 } height={ '100vh' } gap={ 4 }>
         <AppBar></AppBar>
         <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ 2 }>
@@ -31,6 +32,6 @@ export const LikesPage = () => {
           }
         </Grid>
       </Stack>
-    </Container>
+    </PageLayout>
   )
 }

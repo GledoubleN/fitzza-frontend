@@ -1,4 +1,5 @@
-import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text } from '@chakra-ui/react'
+import { Card, Grid, GridItem, IconButton, Image, Input, InputGroup, Text } from '@chakra-ui/react'
+import { PageLayout } from '../components/PageLayout.jsx'
 import { AppBar } from '../components/AppBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
 import { products } from '../data/products.js'
@@ -9,7 +10,7 @@ export const SearchResultPage = () => {
   const navigate = useNavigate();
 
   return (
-    <Container maxWidth={ 'xl' } paddingY={ '4' }>
+    <PageLayout>
       <Grid gap={ '4' }>
         <GridItem>
           <AppBar></AppBar>
@@ -20,11 +21,11 @@ export const SearchResultPage = () => {
           </InputGroup>
         </GridItem>
         <GridItem>
-          <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ '4' }>
+          <Grid templateColumns={ { base: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' } } gap={ '4' }>
             {
               products.map((product, index) => {
                 return (
-                  <GridItem>
+                  <GridItem key={ index }>
                     <Card.Root onClick={() => navigate('/products/1')}>
                       <IconButton
                         position="absolute"
@@ -49,6 +50,6 @@ export const SearchResultPage = () => {
           </Grid>
         </GridItem>
       </Grid>
-    </Container>
+    </PageLayout>
   )
 }

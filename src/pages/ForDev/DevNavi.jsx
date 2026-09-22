@@ -1,4 +1,5 @@
-import { Button, Container, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { Button, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { PageLayout } from '../../components/PageLayout.jsx'
 import { useNavigate } from "react-router-dom";
 
 // 개발용 페이지 네비게이션. 모든 라우트를 버튼으로 이동. 실제 배포엔 포함하지 말것...
@@ -25,7 +26,7 @@ export const DevNavi = () => {
   const moveUrl = useNavigate();
 
   return (
-    <Container maxWidth="xl" minHeight="100vh" paddingY="6">
+    <PageLayout paddingY="6">
       <Stack direction="column" gap="4">
         <Heading size="lg">🛠 Dev Navigation</Heading>
         <Text color="fg.muted" fontSize="sm">
@@ -45,6 +46,6 @@ export const DevNavi = () => {
           ))}
         </SimpleGrid>
       </Stack>
-    </Container>
+    </PageLayout>
   );
 };

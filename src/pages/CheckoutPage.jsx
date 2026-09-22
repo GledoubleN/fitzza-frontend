@@ -1,5 +1,4 @@
 import {
-  Container,
   IconButton,
   Stack,
   Text,
@@ -12,6 +11,7 @@ import {
   Button, Input,
   Select, createListCollection, Portal,
 } from '@chakra-ui/react'
+import { PageLayout } from '../components/PageLayout.jsx'
 import { LuChevronLeft, LuMinus, LuPlus } from 'react-icons/lu'
 import { products } from '../data/products.js'
 import exampleProductImage from '/src/assets/react.svg'
@@ -27,7 +27,7 @@ export const CheckoutPage = () => {
   })
 
   return (
-    <Container maxWidth={ 'xl' } paddingY={ '4' }>
+    <PageLayout>
       <Stack direction={ 'column' }>
         <Stack direction={ 'row' } gap={ '4' }>
           <IconButton rounded={ 'full' }>
@@ -161,6 +161,6 @@ export const CheckoutPage = () => {
           결제하기
         </Button>
       </Stack>
-    </Container>
+    </PageLayout>
   )
 }

@@ -1,4 +1,5 @@
-import { Button, Container, Grid, Stack, Card, Text, Image, IconButton, Box } from '@chakra-ui/react'
+import { Button, Grid, Stack, Card, Text, Image, IconButton, Box } from '@chakra-ui/react'
+import { PageLayout } from '../components/PageLayout.jsx'
 import { AppBar } from '../components/AppBar.jsx'
 import { products } from '../data/products.js'
 import exampleProductImage from '/src/assets/react.svg'
@@ -6,7 +7,7 @@ import { LuArrowLeft, LuBrackets, LuChevronLeft, LuChevronRight, LuX } from 'rea
 
 export const ShoppingCartPage = () => {
   return (
-    <Container maxWidth={ 'xl' } height={ '100vh' } paddingY={ '4' }>
+    <PageLayout>
       <Stack height={ '100%' } gap={ '4' }>
         <AppBar></AppBar>
         {
@@ -41,7 +42,7 @@ export const ShoppingCartPage = () => {
         </Box>
         <Button>주문하기</Button>
       </Stack>
-    </Container>
+    </PageLayout>
   )
 
 }

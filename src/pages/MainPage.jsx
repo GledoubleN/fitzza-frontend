@@ -1,6 +1,5 @@
 import {
   Button,
-  Container,
   Grid,
   IconButton,
   Stack,
@@ -11,6 +10,7 @@ import {
   Carousel,
   Box, Center, InputGroup, Input, Switch,
 } from '@chakra-ui/react'
+import { PageLayout } from '../components/PageLayout.jsx'
 import { LuBell, LuChevronLeft, LuChevronRight, LuHeart, LuSearch, LuShoppingBag } from 'react-icons/lu'
 import exampleProductImage from '/src/assets/hero.png'
 import exampleBannerImage from '/src/assets/vite.svg'
@@ -28,7 +28,7 @@ export const MainPage = () => {
   }
 
   return (
-    <Container maxWidth={ 'xl' } height="100vh" paddingY={ '4' }>
+    <PageLayout>
       <Stack direction={ 'column' } gap={ '4' }>
         <AppBar></AppBar>
 
@@ -78,11 +78,11 @@ export const MainPage = () => {
           </Carousel.Control>
         </Carousel.Root>
 
-        <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ '4' }>
+        <Grid templateColumns={ { base: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' } } gap={ '4' }>
           {
             products.map((product, index) => {
               return (
-                <GridItem>
+                <GridItem key={ index }>
                   <Card.Root onClick={() => navigate('/products/1')}>
                     <IconButton
                       position="absolute"
@@ -106,6 +106,6 @@ export const MainPage = () => {
           }
         </Grid>
       </Stack>
-    </Container>
+    </PageLayout>
   )
 }

@@ -1,4 +1,5 @@
-import { Container, Stack, Card, Image, Button, Tabs, Box, Heading, Text } from '@chakra-ui/react'
+import { Stack, Card, Image, Button, Tabs, Box, Heading, Text } from '@chakra-ui/react'
+import { PageLayout } from '../components/PageLayout.jsx'
 import { AppBar } from '../components/AppBar.jsx'
 import exampleProductImage from '/src/assets/hero.png'
 import { useParams } from 'react-router-dom'
@@ -7,7 +8,7 @@ export const ProductPage = () => {
   const { id } = useParams()
 
   return (
-    <Container maxWidth="xl" height={ '100vh' }>
+    <PageLayout>
       <Stack height={ '100%' } direction={ 'column' } paddingY={ '4' } gap={ '4' }>
         <AppBar></AppBar>
 
@@ -79,6 +80,6 @@ export const ProductPage = () => {
           </Tabs.Content>
         </Tabs.Root>
       </Stack>
-    </Container>
+    </PageLayout>
   )
 }

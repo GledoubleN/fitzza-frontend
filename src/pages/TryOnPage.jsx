@@ -1,4 +1,5 @@
-import { Button, Container, Grid, Stack, Image, GridItem } from '@chakra-ui/react'
+import { Button, Grid, Stack, Image, GridItem } from '@chakra-ui/react'
+import { PageLayout } from '../components/PageLayout.jsx'
 import { AppBar } from '../components/AppBar.jsx'
 import exampleResultImage from '/src/assets/hero.png'
 import examplePersonImage from '/src/assets/react.svg'
@@ -6,7 +7,7 @@ import exampleClotheImage from '/src/assets/vite.svg'
 
 export const TryOnPage = () => {
   return (
-    <Container maxWidth={ 'xl' } height={ '100vh' } paddingY={ '4' }>
+    <PageLayout>
       <Grid templateRows={ 'auto 2fr 1fr auto' } gap={ '4' }>
         <GridItem>
           <AppBar></AppBar>
@@ -24,6 +25,6 @@ export const TryOnPage = () => {
           <Button width={ '100%' }>입어보기</Button>
         </GridItem>
       </Grid>
-    </Container>
+    </PageLayout>
   )
 }

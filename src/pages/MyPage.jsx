@@ -20,11 +20,14 @@ import {
     LuSettings
 } from 'react-icons/lu';
 
+// 폰 앱 스타일 프레임 폭. 컨테이너와 하단 고정 네비가 같은 값을 써야 정렬이 안 깨짐.
+const FRAME_MAX_WIDTH = { base: '100%', md: '480px' }
+
 export default function MyPage() {
     return (
         <Container
             width="100%"
-            maxWidth="390px"
+            maxWidth={ FRAME_MAX_WIDTH }
             minHeight="100vh"
             mx="auto"
             pb="70px"
@@ -343,7 +346,7 @@ export default function MyPage() {
                 left="50%"
                 transform="translateX(-50%)"
                 width="100%"
-                maxWidth="390px"
+                maxWidth={ FRAME_MAX_WIDTH }
                 bg="white"
                 borderTop="1px solid"
                 borderColor="gray.100"

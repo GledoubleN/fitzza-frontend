@@ -1,10 +1,11 @@
-import { Card, Container, Grid, GridItem, Input, InputGroup, Stack } from '@chakra-ui/react'
+import { Card, Grid, GridItem, Input, InputGroup, Stack } from '@chakra-ui/react'
+import { PageLayout } from '../components/PageLayout.jsx'
 
 export const PromptPage = () => {
   const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in urna sit amet mi venenatis interdum a vel felis.'
 
   return (
-    <Container maxWidth={ 'xl' } paddingY={ 4 }>
+    <PageLayout>
       <Grid templateRows={ '1fr auto' } gap={ '4' } height={ '100vh' }>
         <GridItem>
           <Stack gap={ '4' }>
@@ -28,6 +29,6 @@ export const PromptPage = () => {
           </InputGroup>
         </GridItem>
       </Grid>
-    </Container>
+    </PageLayout>
   )
 }
