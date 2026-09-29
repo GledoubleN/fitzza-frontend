@@ -92,11 +92,11 @@ export const CommunityMainPage = () => {
     <>
     <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
       {/* 상단 로고 바 */}
-      <Container maxWidth="xl">
+      <Container maxWidth="4xl">
         <AppBar></AppBar>
       </Container>
 
-      <Container maxWidth="xl">
+      <Container maxWidth="4xl">
         <Stack direction="column" gap="4">
           {/* 커뮤니티 헤더 */}
           <Flex align="center" justify="space-between">
@@ -139,7 +139,7 @@ export const CommunityMainPage = () => {
       </Container>
 
       {/* 게시글 리스트 */}
-      <Container maxWidth="xl" paddingBottom="20">
+      <Container maxWidth="4xl" paddingBottom="20">
         <Stack direction="column" gap="0" separator={<Box borderBottomWidth="1px" />}>
           {loading && <Text color="gray.500" paddingY="4">불러오는 중...</Text>}
           {error && <Text color="red.500" paddingY="4">{error}</Text>}
@@ -156,7 +156,7 @@ export const CommunityMainPage = () => {
 
       {/* 글쓰기 플로팅 버튼 */}
       <Box position="fixed" bottom="calc(env(safe-area-inset-bottom, 0px) + 96px)" left="0" right="0" pointerEvents="none">
-        <Container maxWidth="xl" display="flex" justifyContent="flex-end">
+        <Container maxWidth="4xl" display="flex" justifyContent="flex-end">
           <IconButton
             rounded="full"
             colorPalette="orange"
