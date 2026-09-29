@@ -17,10 +17,10 @@ export const CategoryPage = () => {
   return (
     <>
     <Stack paddingY={ '4' } paddingBottom="96px" height={ '100vh' } gap={ '4' }>
-      <Container maxWidth={ 'xl' }>
+      <Container maxWidth={ '4xl' }>
         <AppBar></AppBar>
       </Container>
-      <Container maxWidth={ 'xl' } flex={ '1' } minHeight={ '0' }>
+      <Container maxWidth={ '4xl' } flex={ '1' } minHeight={ '0' }>
         <Stack height={ 'full' } gap={ '4' }>
           <Heading size={ 'xl' }>카테고리</Heading>
           <Grid templateColumns={ '7rem 1fr' } gap={ '4' } flex={ '1' } minHeight={ '0' }>
