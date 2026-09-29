@@ -7,9 +7,11 @@ import { LuX } from 'react-icons/lu'
 export const LikesPage = () => {
   return (
     <>
-    <Container maxWidth="xl">
-      <Stack paddingY={ 4 } paddingBottom="96px" height={ '100vh' } gap={ 4 }>
+    <Stack paddingY={ 4 } paddingBottom="96px" height={ '100vh' } gap={ 4 }>
+      <Container maxWidth="xl">
         <AppBar></AppBar>
+      </Container>
+      <Container maxWidth="xl">
         <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ 2 }>
           {
             Array.from({ length: 9 }, (_, index) => (
@@ -32,8 +34,8 @@ export const LikesPage = () => {
             ))
           }
         </Grid>
-      </Stack>
-    </Container>
+      </Container>
+    </Stack>
     <TabBar />
     </>
   )
