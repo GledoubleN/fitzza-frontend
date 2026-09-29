@@ -83,33 +83,37 @@ export const CommunityWritePage = () => {
   }
 
   return (
-    <Container maxWidth={ 'xl' } height={ '100vh' }>
-      <Stack paddingY={ '4' } gap={ '4' }>
+    <Stack paddingY={ '4' } gap={ '4' } height={ '100vh' }>
+      <Container maxWidth={ 'xl' }>
         <AppBar></AppBar>
+      </Container>
 
-        <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ '4' }>
-          <Button onClick={ () => {setMode('default')} }>기본</Button>
-          <Button onClick={ () => {setMode('versus')} }>비교</Button>
-          <Button onClick={ () => {setMode('vote')} }>투표</Button>
-        </Grid>
+      <Container maxWidth={ 'xl' }>
+        <Stack gap={ '4' }>
+          <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ '4' }>
+            <Button onClick={ () => {setMode('default')} }>기본</Button>
+            <Button onClick={ () => {setMode('versus')} }>비교</Button>
+            <Button onClick={ () => {setMode('vote')} }>투표</Button>
+          </Grid>
 
-        {
-          getAdditionalInput()
-        }
+          {
+            getAdditionalInput()
+          }
 
-        <RichTextEditor.Root editor={ editor } height={ '400px' }>
-          <RichTextEditor.Toolbar>
-            <RichTextEditor.ControlGroup>
-              <Control.Bold/>
-              <Control.Italic/>
-              <Control.Underline/>
-            </RichTextEditor.ControlGroup>
-          </RichTextEditor.Toolbar>
-          <RichTextEditor.Content/>
-        </RichTextEditor.Root>
+          <RichTextEditor.Root editor={ editor } height={ '400px' }>
+            <RichTextEditor.Toolbar>
+              <RichTextEditor.ControlGroup>
+                <Control.Bold/>
+                <Control.Italic/>
+                <Control.Underline/>
+              </RichTextEditor.ControlGroup>
+            </RichTextEditor.Toolbar>
+            <RichTextEditor.Content/>
+          </RichTextEditor.Root>
 
-        <Button>작성하기</Button>
-      </Stack>
-    </Container>
+          <Button>작성하기</Button>
+        </Stack>
+      </Container>
+    </Stack>
   )
 }
