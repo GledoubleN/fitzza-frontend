@@ -20,7 +20,7 @@ export const LikesPage = () => {
     <>
       <Stack paddingY={ 4 } height={ '100vh' } gap={ 4 }>
         <AppBar></AppBar>
-        <Container maxWidth="5xl">
+        <Container maxWidth="4xl">
           <Grid
             templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.2} * 4) / 5)), 1fr))' }
             gapX={ 4 }
