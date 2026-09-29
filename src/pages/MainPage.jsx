@@ -9,9 +9,19 @@ import {
   GridItem,
   Image,
   Carousel,
-  Box, Center, InputGroup, Input, Switch,
+  Box, Center, InputGroup, Input, Switch, Textarea, Marquee,
 } from '@chakra-ui/react'
-import { LuBell, LuChevronLeft, LuChevronRight, LuHeart, LuSearch, LuShoppingBag } from 'react-icons/lu'
+import {
+  LuArrowUp,
+  LuBell,
+  LuBot,
+  LuBotOff, LuCamera,
+  LuChevronLeft,
+  LuChevronRight,
+  LuHeart, LuPlus,
+  LuSearch,
+  LuShoppingBag, LuSparkle,
+} from 'react-icons/lu'
 import exampleProductImage from '/src/assets/hero.png'
 import exampleBannerImage from '/src/assets/vite.svg'
 import { products } from '/src/data/products.js'
@@ -20,6 +30,10 @@ import { HiCheck, HiX } from 'react-icons/hi'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { useNavigate } from 'react-router-dom'
+import { IoLogoFigma, IoLogoGitlab } from 'react-icons/io5'
+import { IoLogoJavascript, IoLogoLinkedin, IoLogoTwitter, IoLogoVimeo } from 'react-icons/io'
+import { Footer } from '../components/Footer.jsx'
+import { useRef, useState } from 'react'
 
 export const MainPage = () => {
   const navigate = useNavigate()
@@ -28,88 +42,79 @@ export const MainPage = () => {
     navigate('/prompt')
   }
 
+  const [isLongPrompt, setIsLongPrompt] = useState(false)
+
   return (
-    <>
-    <Container maxWidth={ 'xl' } height="100vh" paddingY={ '4' } paddingBottom="96px">
-      <Stack direction={ 'column' } gap={ '4' }>
-        <AppBar></AppBar>
+    <Stack
+      gap={ 4 }
+      paddingY={ '4' }
+      minHeight={ '100vh' }
+    >
+      <AppBar></AppBar>
 
-        <Stack direction={ 'row' }>
-          <Switch.Root>
-            <Switch.HiddenInput/>
-            <Switch.Control>
-              <Switch.Thumb>
-                <Switch.ThumbIndicator fallback={ <HiX color="black"/> }>
-                  <HiCheck/>
-                </Switch.ThumbIndicator>
-              </Switch.Thumb>
-            </Switch.Control>
-            <Switch.Label/>
-          </Switch.Root>
-          <InputGroup onClick={ onSubmit } startElement={ <LuSearch></LuSearch> }>
-            <Input></Input>
-          </InputGroup>
-        </Stack>
+      <Container maxWidth={ '3xl' }>
+        <Card.Root
+          height={ '100%' }
+          rounded={ '3xl' }
+        >
+          <Card.Body padding={ 2 }>
+            <Stack height={ '100%' } gap={ 2 } position="relative">
+              <Grid templateColumns={ 'auto 1fr auto' } gap={ 2 }>
+                <IconButton
+                  rounded={ 'full' }
+                  onClick={ () => { setIsLongPrompt((isLongPrompt) => !isLongPrompt) } }
+                >
+                  <LuSparkle/>
+                </IconButton>
+                <Input variant={ 'none' }></Input>
+                <IconButton rounded={ 'full' }>
+                  <LuArrowUp/>
+                </IconButton>
+              </Grid>
+              {
+                isLongPrompt &&
+                <Textarea
+                  resize={ 'none' }
+                  variant={ 'none' }
+                  padding={ 4 }
+                  rows={ 3 }
+                ></Textarea>
+              }
+            </Stack>
+          </Card.Body>
+        </Card.Root>
+      </Container>
 
-        <Carousel.Root slideCount={ banners.length }>
-          <Carousel.ItemGroup height={ '100px' }>
-            {
-              banners.map((_, index) => (
-                <Carousel.Item key={ index } index={ index } alignContent={ 'center' }>
-                  <Center height={ '100%' }>
-                    <Image height={ '100%' } src={ exampleBannerImage }></Image>
-                  </Center>
-                </Carousel.Item>
-              ))
-            }
-          </Carousel.ItemGroup>
-          <Carousel.Control justifyContent="center" gap="4">
-            <Carousel.PrevTrigger asChild>
-              <IconButton size="xs" variant="ghost">
-                <LuChevronLeft/>
-              </IconButton>
-            </Carousel.PrevTrigger>
-
-            <Carousel.Indicators/>
-
-            <Carousel.NextTrigger asChild>
-              <IconButton size="xs" variant="ghost">
-                <LuChevronRight/>
-              </IconButton>
-            </Carousel.NextTrigger>
-          </Carousel.Control>
-        </Carousel.Root>
-
-        <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ '4' }>
+      <Container maxWidth={ '5xl' }>
+        <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ 4 }>
           {
-            products.map((product, index) => {
-              return (
-                <GridItem>
-                  <Card.Root onClick={() => navigate('/products/1')}>
-                    <IconButton
-                      position="absolute"
-                      top="2"
-                      right="2"
-                      aria-label="Close"
-                      rounded="full"
-                      size="xs"
-                    >
-                      <LuHeart></LuHeart>
-                    </IconButton>
-                    <Image src={ exampleProductImage }></Image>
-                    <Card.Body padding={ '2' }>
-                      <Text>{ product.name }</Text>
-                      <Text>{ product.price.toLocaleString() } 원</Text>
-                    </Card.Body>
-                  </Card.Root>
-                </GridItem>
-              )
-            })
+            products.map((product, index) => (
+              <Stack gap={ 4 }>
+                <Box position={ 'relative' }>
+                  <Image src={ exampleProductImage }></Image>
+                  <IconButton
+                    position={ 'absolute' }
+                    bottom={ 0 }
+                    right={ 0 }
+                    variant={ 'ghost' }
+                    rounded={ 'full' }
+                  >
+                    <LuHeart></LuHeart>
+                  </IconButton>
+                </Box>
+                <Stack gap={ 0 }>
+                  <Text>{ product.brand }</Text>
+                  <Text>{ product.price.toLocaleString() }원</Text>
+                </Stack>
+              </Stack>
+            ))
           }
         </Grid>
-      </Stack>
-    </Container>
-    <TabBar />
-    </>
+      </Container>
+
+      <Footer></Footer>
+
+      <TabBar></TabBar>
+    </Stack>
   )
 }
