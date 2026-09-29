@@ -184,103 +184,111 @@ export const CommunityArticlePage = () => {
   const images = article.images ?? [];
 
   return (
-    <Container maxWidth="xl" minHeight="100vh" paddingY="4">
-      <Stack direction="column" gap="4">
+    <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
+      <Container maxWidth="xl">
         <AppBar />
+      </Container>
 
-        {/* 헤더 */}
-        <Flex align="center" gap="2">
-          <IconButton
-            rounded="full"
-            variant="ghost"
-            size="sm"
-            aria-label="뒤로"
-            onClick={() => moveUrl(-1)}
-          >
-            <LuChevronLeft />
-          </IconButton>
-          <Text fontSize="lg" fontWeight="semibold">
-            커뮤니티
-          </Text>
-        </Flex>
-
-        {/* 글 본문 */}
-        <Stack direction="column" gap="3">
-          <Badge width="fit-content" colorPalette="gray">
-            {article.category}
-          </Badge>
-          <Text fontSize="xl" fontWeight="bold">
-            {article.title}
-          </Text>
-          <HStack gap="2" color="black" fontSize="sm">
-            <Box boxSize="6" rounded="full" bg="bg.muted" flexShrink="0" />
-            <Text>{article.author}</Text>
-            <Text>·</Text>
-            <Text>{article.time}</Text>
-          </HStack>
-
-          {images.length > 0 && (
-            <HStack gap="2" overflowX="auto">
-              {images.map((src, i) => (
-                <Image
-                  key={i}
-                  src={src}
-                  maxHeight="240px"
-                  objectFit="cover"
-                  rounded="md"
-                  bg="bg.muted"
-                />
-              ))}
-            </HStack>
-          )}
-
-          <Text whiteSpace="pre-wrap">{article.content}</Text>
-
-          <HStack gap="4" color="fg.muted" fontSize="sm">
-            <HStack
-              gap="1"
-              cursor="pointer"
-              color={article.liked ? "orange.500" : "fg.muted"}
-              onClick={articleLikeHandler}
+      <Container maxWidth="xl">
+        <Stack direction="column" gap="4">
+          {/* 헤더 */}
+          <Flex align="center" gap="2">
+            <IconButton
+              rounded="full"
+              variant="ghost"
+              size="sm"
+              aria-label="뒤로"
+              onClick={() => moveUrl(-1)}
             >
-              <LuThumbsUp />
-              <Text>{article.likes}</Text>
+              <LuChevronLeft />
+            </IconButton>
+            <Text fontSize="lg" fontWeight="semibold">
+              커뮤니티
+            </Text>
+          </Flex>
+
+          {/* 글 본문 */}
+          <Stack direction="column" gap="3">
+            <Badge width="fit-content" colorPalette="gray">
+              {article.category}
+            </Badge>
+            <Text fontSize="xl" fontWeight="bold">
+              {article.title}
+            </Text>
+            <HStack gap="2" color="black" fontSize="sm">
+              <Box boxSize="6" rounded="full" bg="bg.muted" flexShrink="0" />
+              <Text>{article.author}</Text>
+              <Text>·</Text>
+              <Text>{article.time}</Text>
             </HStack>
-            <HStack gap="1">
-              <LuMessageCircle />
-              <Text>{comments.length}</Text>
+
+            {images.length > 0 && (
+              <HStack gap="2" overflowX="auto">
+                {images.map((src, i) => (
+                  <Image
+                    key={i}
+                    src={src}
+                    maxHeight="240px"
+                    objectFit="cover"
+                    rounded="md"
+                    bg="bg.muted"
+                  />
+                ))}
+              </HStack>
+            )}
+
+            <Text whiteSpace="pre-wrap">{article.content}</Text>
+
+            <HStack gap="4" color="fg.muted" fontSize="sm">
+              <HStack
+                gap="1"
+                cursor="pointer"
+                color={article.liked ? "orange.500" : "fg.muted"}
+                onClick={articleLikeHandler}
+              >
+                <LuThumbsUp />
+                <Text>{article.likes}</Text>
+              </HStack>
+              <HStack gap="1">
+                <LuMessageCircle />
+                <Text>{comments.length}</Text>
+              </HStack>
             </HStack>
+          </Stack>
+        </Stack>
+      </Container>
+
+      <Container maxWidth="xl">
+        <Stack direction="column" gap="4">
+          <Box borderBottomWidth="1px" />
+
+          {/* 댓글 목록 */}
+          <CommunityArticleCommentList
+            comments={comments}
+            articleAuthor={article.author}
+            onLike={likeHandler}
+            onReply={replyHandler}
+          />
+
+          {/* 댓글 입력 / 길이는 임의값 합의 필요*/}
+          <HStack gap="2" paddingBottom="4">
+            <Input
+              maxLength={500}
+              placeholder="댓글을 입력하세요"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") submitCommentHandler();
+              }}
+            />
+            <Button colorPalette="orange" flexShrink="0" onClick={submitCommentHandler}>
+              등록
+            </Button>
           </HStack>
         </Stack>
-
-        <Box borderBottomWidth="1px" />
-
-        {/* 댓글 목록 */}
-        <CommunityArticleCommentList
-          comments={comments}
-          articleAuthor={article.author}
-          onLike={likeHandler}
-          onReply={replyHandler}
-        />
-
-        {/* 댓글 입력 / 길이는 임의값 합의 필요*/}
-        <HStack gap="2" paddingBottom="4">
-          <Input
-            maxLength={500}
-            placeholder="댓글을 입력하세요"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") submitCommentHandler();
-            }}
-          />
-          <Button colorPalette="orange" flexShrink="0" onClick={submitCommentHandler}>
-            등록
-          </Button>
-        </HStack>
-      </Stack>
+      </Container>
 
       <ScrollToTopButton />
-    </Container>
+    </Stack>
   );
 };
