@@ -2,6 +2,7 @@ import { Box, Flex, Icon, Text } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { NavLink } from "react-router-dom";
 import { LuLayoutGrid, LuUsers, LuHouse, LuHeart, LuUser } from "react-icons/lu";
+import { useEffect, useState } from 'react'
 
 // 마운트 시 1회 재생되는 팝(살짝 오버슈트). 바가 페이지마다 새로 마운트되므로
 // 탭 전환마다 활성 아이콘이 톡 튀어오름.
@@ -21,6 +22,38 @@ const items = [
 ];
 
 export const TabBar = () => {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(function setInvisibleWhenScrolledDown() {
+    const THRESHOLD = 50;
+
+    function isScrolledDown (currentScrollY, previousScrollY) {
+      return currentScrollY > previousScrollY;
+    }
+
+    function isAboveThreshold (currentScrollY) {
+      return currentScrollY > THRESHOLD
+    }
+
+    let previousScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      let isInvisible = true;
+      isInvisible &= isScrolledDown(currentScrollY, previousScrollY);
+      isInvisible &= isAboveThreshold(currentScrollY);
+
+      setVisible(!isInvisible)
+
+      previousScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <Box
       as="nav"
@@ -37,6 +70,8 @@ export const TabBar = () => {
       borderColor="border.subtle"
       borderRadius="full"
       boxShadow="0 8px 32px rgba(0,0,0,0.12)"
+      transform={visible ? "translateY(0)" : "translateY(calc(100% + 20px))"}
+      transition="transform 0.2s ease"
     >
       <Flex align="stretch" justify="space-around" px={2} py={1}>
         {items.map(({ to, label, icon, end }) => (
