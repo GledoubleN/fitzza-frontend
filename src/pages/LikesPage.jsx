@@ -16,7 +16,7 @@ export const LikesPage = () => {
       <Container maxWidth="3xl">
         <Grid templateColumns={ 'repeat(auto-fill, minmax(110px, 1fr))' } gap={ 2 }>
           {
-            Array.from({ length: 9 }, (_, index) => (
+            Array.from({ length: 50 }, (_, index) => (
               <Card.Root key={ index }>
                 <Image src={ exampleProductImage }></Image>
                 <Card.Body padding = { '3' }>
