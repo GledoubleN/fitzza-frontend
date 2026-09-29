@@ -2,6 +2,7 @@ import { Box, Flex, Icon, Text } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { NavLink } from "react-router-dom";
 import { LuLayoutGrid, LuUsers, LuHouse, LuHeart, LuUser } from "react-icons/lu";
+import { useEffect, useState } from 'react'
 
 // 마운트 시 1회 재생되는 팝(살짝 오버슈트). 바가 페이지마다 새로 마운트되므로
 // 탭 전환마다 활성 아이콘이 톡 튀어오름.
@@ -21,7 +22,29 @@ const items = [
 ];
 
 export const TabBar = () => {
-  return (
+  const [visible, setVisible] = useState(true);
+
+  useEffect(function setInvisibleWhenScrolledDown() {
+    function isScrolledDown (currentScrollY, previousScrollY) {
+      return currentScrollY > previousScrollY;
+    }
+
+    let previousScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      setVisible(!isScrolledDown(currentScrollY, previousScrollY))
+
+      previousScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return visible ? (
     <Box
       as="nav"
       position="fixed"
@@ -73,5 +96,5 @@ export const TabBar = () => {
         ))}
       </Flex>
     </Box>
-  );
+  ) : null;
 };
