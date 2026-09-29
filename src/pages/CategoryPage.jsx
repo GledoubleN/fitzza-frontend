@@ -32,6 +32,7 @@ export const CategoryPage = () => {
                       key={ category.name }
                       variant={ selected.name === category.name ? 'subtle' : 'ghost' }
                       justifyContent={ 'flex-start' }
+                      borderRadius={ 'full' }
                       onClick={ () => setSelected(category) }
                     >
                       { category.name }
@@ -49,6 +50,7 @@ export const CategoryPage = () => {
                         variant={ 'ghost' }
                         width={ 'full' }
                         justifyContent={ 'space-between' }
+                        borderRadius={ 'full' }
                         onClick={ () => search(section.name) }
                       >
                         <Heading size={ 'md' }>{ section.name }</Heading>
@@ -61,6 +63,7 @@ export const CategoryPage = () => {
                               key={ item }
                               variant={ 'ghost' }
                               justifyContent={ 'space-between' }
+                              borderRadius={ 'full' }
                               onClick={ () => search(`${ section.name } ${ item }`) }
                             >
                               <Text truncate>{ item }</Text>
