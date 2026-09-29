@@ -32,7 +32,12 @@ export const CommunityArticleCommentItem = ({
   // 정해진 Depth 이상은 더 들여쓰지 않음
   const padLeft = depth === 0 || depth > MAX_INDENT_DEPTH ? "0" : INDENT_STEP;
   // depth가 CONTINUE_DEPTH 이상이고 답글이 있으면 접기/펼치기 가능한 지점
-  const canCollapse = depth >= CONTINUE_DEPTH && replies.length > 0;
+  const canCollapse = depth === CONTINUE_DEPTH && replies.length > 0;
+
+  const countDescendants = (id, comments) =>
+    comments
+      .filter((c) => c.parentId === id)
+      .reduce((sum, c) => sum + 1 + countDescendants(c.id, comments), 0);
 
   return (
     <Stack direction="column" gap="2" paddingLeft={padLeft}>
@@ -101,7 +106,7 @@ export const CommunityArticleCommentItem = ({
           cursor="pointer"
           onClick={() => setExpanded((v) => !v)}
         >
-          {expanded ? "답글 접기" : `답글 ${replies.length}개 계속 보기`}
+          {expanded ? "답글 접기" : `답글 ${countDescendants(id,comments)}개 계속 보기`}
         </Text>
       )}
 
