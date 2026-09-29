@@ -25,8 +25,14 @@ export const TabBar = () => {
   const [visible, setVisible] = useState(true);
 
   useEffect(function setInvisibleWhenScrolledDown() {
+    const THRESHOLD = 50;
+
     function isScrolledDown (currentScrollY, previousScrollY) {
       return currentScrollY > previousScrollY;
+    }
+
+    function isAboveThreshold (currentScrollY) {
+      return currentScrollY > THRESHOLD
     }
 
     let previousScrollY = window.scrollY;
@@ -34,7 +40,11 @@ export const TabBar = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      setVisible(!isScrolledDown(currentScrollY, previousScrollY))
+      let isVisible = true;
+      isVisible &= isScrolledDown(currentScrollY, previousScrollY);
+      isVisible &= isAboveThreshold(currentScrollY);
+
+      setVisible(isVisible)
 
       previousScrollY = currentScrollY;
     };
@@ -44,7 +54,7 @@ export const TabBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return visible ? (
+  return (
     <Box
       as="nav"
       position="fixed"
@@ -60,6 +70,8 @@ export const TabBar = () => {
       borderColor="border.subtle"
       borderRadius="full"
       boxShadow="0 8px 32px rgba(0,0,0,0.12)"
+      transform={visible ? "translateY(0)" : "translateY(calc(100% + 20px))"}
+      transition="transform 0.2s ease"
     >
       <Flex align="stretch" justify="space-around" px={2} py={1}>
         {items.map(({ to, label, icon, end }) => (
@@ -96,5 +108,5 @@ export const TabBar = () => {
         ))}
       </Flex>
     </Box>
-  ) : null;
+  );
 };
