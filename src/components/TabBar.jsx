@@ -40,11 +40,11 @@ export const TabBar = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      let isVisible = true;
-      isVisible &= isScrolledDown(currentScrollY, previousScrollY);
-      isVisible &= isAboveThreshold(currentScrollY);
+      let isInvisible = true;
+      isInvisible &= isScrolledDown(currentScrollY, previousScrollY);
+      isInvisible &= isAboveThreshold(currentScrollY);
 
-      setVisible(isVisible)
+      setVisible(!isInvisible)
 
       previousScrollY = currentScrollY;
     };
