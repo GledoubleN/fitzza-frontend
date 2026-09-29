@@ -29,7 +29,7 @@ export const ScrollToTopButton = ({
   return (
     // 글쓰기 버튼과 동일하게 Container로 감싸 컬럼 안쪽(오른쪽 아래)에 정렬
     <Box position="fixed" bottom={bottom} left="0" right="0" pointerEvents="none">
-      <Container maxWidth="xl" display="flex" justifyContent={align}>
+      <Container maxWidth="4xl" display="flex" justifyContent={align}>
         <IconButton
           rounded="full"
           bg="fg"

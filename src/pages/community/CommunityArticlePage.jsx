@@ -166,7 +166,7 @@ export const CommunityArticlePage = () => {
 
   if (loading) {
     return (
-      <Container maxWidth="xl" paddingY="4">
+      <Container maxWidth="4xl" paddingY="4">
         <Text color="fg.muted">불러오는 중...</Text>
       </Container>
     );
@@ -174,7 +174,7 @@ export const CommunityArticlePage = () => {
 
   if (error) {
     return (
-      <Container maxWidth="xl" paddingY="4">
+      <Container maxWidth="4xl" paddingY="4">
         <Text color="red.500">{"Error 잠시 후 다시 시도해주세요"}</Text>
         <Text color="red.500">{"지금 페이지는 없는 페이지 id입니다(개발용 문구)"}</Text>
       </Container>
@@ -185,11 +185,11 @@ export const CommunityArticlePage = () => {
 
   return (
     <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
-      <Container maxWidth="xl">
+      <Container maxWidth="4xl">
         <AppBar />
       </Container>
 
-      <Container maxWidth="xl">
+      <Container maxWidth="4xl">
         <Stack direction="column" gap="4">
           {/* 헤더 */}
           <Flex align="center" gap="2">
@@ -258,7 +258,7 @@ export const CommunityArticlePage = () => {
         </Stack>
       </Container>
 
-      <Container maxWidth="xl">
+      <Container maxWidth="4xl">
         <Stack direction="column" gap="4">
           <Box borderBottomWidth="1px" />
 
