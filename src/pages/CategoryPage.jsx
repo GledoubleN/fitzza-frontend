@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, Container, Grid, GridItem, Heading, Icon, SimpleGrid, Stack, Text } from '@chakra-ui/react'
+import { Button, Container, Grid, GridItem, Heading, Icon, SimpleGrid, Stack, Text } from '@chakra-ui/react'
 import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../components/AppBar.jsx'
@@ -45,7 +45,7 @@ export const CategoryPage = () => {
               <Stack gap={ '6' } paddingRight={ '2' }>
                 {
                   sections.map((section) => (
-                    <Box key={ section.name }>
+                    <Stack key={ section.name } gap={ '1' }>
                       <Button
                         variant={ 'ghost' }
                         width={ 'full' }
@@ -73,7 +73,7 @@ export const CategoryPage = () => {
                           ))
                         }
                       </SimpleGrid>
-                    </Box>
+                    </Stack>
                   ))
                 }
               </Stack>
