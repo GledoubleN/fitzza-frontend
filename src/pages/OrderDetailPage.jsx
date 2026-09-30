@@ -31,7 +31,7 @@ export const OrderDetail = () => {
 
         <Flex align="center" justify="space-between" mb={4}>
           <HStack gap={2} cursor="pointer" onClick={() => window.history.back()}>
-            <LuChevronLeft size={24}/>
+            <Box as={LuChevronLeft} boxSize={6} />
             <Heading textStyle="lg">주문 상세</Heading>
           </HStack>
         </Flex>
@@ -47,7 +47,7 @@ export const OrderDetail = () => {
               <Card.Body>
                 <HStack gap={4} align="flex-start">
                   <Image
-                    src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=300&q=80"
+                    src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop"
                     alt="올 블렌드 니트"
                     boxSize={20}
                     objectFit="cover"
@@ -73,11 +73,11 @@ export const OrderDetail = () => {
                 <Text fontWeight="bold" textStyle="sm">배송 현황</Text>
                 <Flex justify="space-between" align="center" position="relative" px={2}>
                   <Stack align="center" gap={1}>
-                    <Circle size={6} bg="colorPalette.solid" color="white"><LuCheck size={12}/></Circle>
+                    <Circle size={6} bg="colorPalette.solid" color="white"><Box as={LuCheck} boxSize={3}/></Circle>
                     <Text textStyle="2xs" color="fg.muted">발송 완료</Text>
                   </Stack>
                   <Stack align="center" gap={1}>
-                    <Circle size={6} bg="colorPalette.solid" color="white"><LuCheck size={12}/></Circle>
+                    <Circle size={6} bg="colorPalette.solid" color="white"><Box as={LuCheck} boxSize={3}/></Circle>
                     <Text textStyle="2xs" color="fg.muted">입고 완료</Text>
                   </Stack>
                   <Stack align="center" gap={1}>
@@ -139,14 +139,14 @@ export const OrderDetail = () => {
                 </Stack>
                 <HStack justify="space-between" py={1} cursor="pointer">
                   <HStack gap={2}>
-                    <LuFileText/>
+                    <Box as={LuFileText}/>
                     <Text textStyle="sm">취소 안내</Text>
                   </HStack>
                   <Text color="fg.muted">&gt;</Text>
                 </HStack>
                 <HStack justify="space-between" py={1} cursor="pointer">
                   <HStack gap={2}>
-                    <LuPackage/>
+                    <Box as={LuPackage}/>
                     <Text textStyle="sm">반품 안내</Text>
                   </HStack>
                   <Text color="fg.muted">&gt;</Text>
