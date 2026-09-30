@@ -58,7 +58,6 @@ export const SignInPage = () => {
               />
             </Field.Root>
 
-            {/* fontSize="sm" 속성을 Chakra 디자인 토큰 체계인 textStyle="sm"으로 변경 */}
             {error && <Text color="red.500" textStyle="sm">{error}</Text>}
 
             <Button
