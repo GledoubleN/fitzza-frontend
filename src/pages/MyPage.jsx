@@ -13,27 +13,27 @@ import { TabBar } from '../components/TabBar.jsx';
 
 export default function MyPage() {
   return (
-    <Box position="relative" minH="100vh" pb="120px" bg="bg">
+    <Box position="relative" minH="100vh" pb={28} bg="bg">
       <Container
-        maxW="1200px"
+        maxW="container.xl"
         mx="auto"
-        py="40px"
-        px="20px"
+        py={10}
+        px={5}
       >
-        <Box mb="24px">
+        <Box mb={6}>
           <AppBar />
         </Box>
 
         <Flex
           align="center"
           justify="space-between"
-          mb="32px"
-          pb="16px"
-          borderBottom="1px solid"
+          mb={8}
+          pb={4}
+          borderBottomWidth="thin"
           borderColor="border.subtle"
           bg="bg.panel"
-          p="20px"
-          borderRadius="16px"
+          p={5}
+          borderRadius="2xl"
         >
           <Heading textStyle="lg" fontWeight="700">
             마이페이지
@@ -44,86 +44,103 @@ export default function MyPage() {
         </Flex>
 
         <Grid
-          templateColumns={{ base: '1fr', lg: '350px 1fr' }}
-          gap="32px"
+          templateColumns={{ base: '1fr', lg: '88 1fr' }}
+          gap={8}
           alignItems="start"
         >
-          <Flex direction="column" gap="24px">
+          <Flex direction="column" gap={6}>
 
-            <Card.Root borderWidth="1px" borderColor="border.subtle" borderRadius="16px" p="24px" bg="bg.panel">
-              <Card.Body p="0">
-                <Flex direction="column" align="center" pt="4px" pb="4px">
+            <Card.Root borderWidth="thin" borderColor="border.subtle" borderRadius="2xl" p={6} bg="bg.panel">
+              <Card.Body p={0}>
+                <Flex direction="column" align="center" pt={1} pb={1}>
                   <Box
-                    width="90px"
-                    height="90px"
-                    border="1px solid"
+                    boxSize="22"
+                    borderWidth="thin"
                     borderColor="border.subtle"
-                    borderRadius="50%"
+                    borderRadius="full"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
-                    fontSize="42px"
+                    fontSize="4xl"
                     bg="bg.muted"
-                    mb="12px"
+                    mb={3}
                   >
                     👤
                   </Box>
-                  <Heading textStyle="md" mt="4px" fontWeight="600">
+                  <Heading textStyle="md" mt={1} fontWeight="600">
                     사용자
                   </Heading>
-                  <Text textStyle="sm" mt="4px" color="fg.muted">
+                  <Text textStyle="sm" mt={1} color="fg.muted">
                     @fit_user
                   </Text>
                 </Flex>
 
-                <Box
-                  mt="20px"
-                  px="10px"
-                  py="16px"
-                  border="1px solid"
-                  borderColor="border.subtle"
-                  borderRadius="12px"
-                  bg="bg.muted"
-                >
-                  <Flex align="center">
-                    <Box flex="1" px="12px" textAlign="center">
-                      <Text textStyle="xs" color="fg.muted" mb="4px">적립금</Text>
-                      <Text textStyle="sm" fontWeight="600">7,777원</Text>
-                    </Box>
-                    <Box width="1px" height="30px" bg="border.subtle" />
-                    <Box flex="1" px="12px" textAlign="center">
-                      <Text textStyle="xs" color="fg.muted" mb="4px">쿠폰</Text>
-                      <Text textStyle="sm" fontWeight="600">11장</Text>
-                    </Box>
-                  </Flex>
-                </Box>
+                <Grid templateColumns="repeat(2, 1fr)" gap={3} mt={5}>
+                  <Box
+                    p={4}
+                    borderWidth="thin"
+                    borderColor="border.subtle"
+                    borderRadius="xl"
+                    bg="bg.muted"
+                    textAlign="center"
+                  >
+                    <Text textStyle="xs" color="fg.muted" mb={1}>적립금</Text>
+                    <Text textStyle="sm" fontWeight="600">7,777원</Text>
+                  </Box>
+
+                  <Box
+                    p={4}
+                    borderWidth="thin"
+                    borderColor="border.subtle"
+                    borderRadius="xl"
+                    bg="bg.muted"
+                    textAlign="center"
+                  >
+                    <Text textStyle="xs" color="fg.muted" mb={1}>쿠폰</Text>
+                    <Text textStyle="sm" fontWeight="600">11장</Text>
+                  </Box>
+                </Grid>
               </Card.Body>
             </Card.Root>
 
-            <Card.Root borderWidth="1px" borderColor="border.subtle" borderRadius="16px" p="16px" bg="bg.panel">
-              <Card.Body p="0">
-                <Flex justify="space-around">
-                  <Button variant="ghost" height="auto" p="8px">
-                    <Text textStyle="xs">주문</Text>
-                  </Button>
-                  <Button variant="ghost" height="auto" p="8px">
-                    <Text textStyle="xs">TMI/이벤트</Text>
-                  </Button>
-                  <Button variant="ghost" height="auto" p="8px">
-                    <Text textStyle="xs">커뮤니티</Text>
-                  </Button>
-                  <Button variant="ghost" height="auto" p="8px">
-                    <Text textStyle="xs">설정</Text>
-                  </Button>
-                </Flex>
+            <Card.Root borderWidth="thin" borderColor="border.subtle" borderRadius="2xl" p={4} bg="bg.panel">
+              <Card.Body p={0}>
+                <Grid templateColumns="repeat(4, 1fr)" gap={2}>
+                  {[
+                    { label: '주문', icon: '📦' },
+                    { label: 'TMI/이벤트', icon: '🎉' },
+                    { label: '커뮤니티', icon: '💬' },
+                    { label: '설정', icon: '⚙️' },
+                  ].map((item) => (
+                    <Button
+                      key={item.label}
+                      variant="outline"
+                      borderWidth="thin"
+                      borderColor="border.subtle"
+                      borderRadius="xl"
+                      height="auto"
+                      py={3}
+                      px={1}
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="center"
+                      bg="bg.muted"
+                      _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
+                    >
+                      <Text fontSize="lg" mb={1}>{item.icon}</Text>
+                      <Text textStyle="xs" fontWeight="600" color="fg">{item.label}</Text>
+                    </Button>
+                  ))}
+                </Grid>
               </Card.Body>
             </Card.Root>
 
           </Flex>
 
-          <Card.Root borderWidth="1px" borderColor="border.subtle" borderRadius="16px" p="24px" bg="bg.panel">
-            <Card.Body p="0">
-              <Flex justify="space-between" align="center" mb="16px">
+          <Card.Root borderWidth="thin" borderColor="border.subtle" borderRadius="2xl" p={6} bg="bg.panel">
+            <Card.Body p={0}>
+              <Flex justify="space-between" align="center" mb={4}>
                 <Heading textStyle="md" fontWeight="700">
                   나의 스냅
                 </Heading>
@@ -134,11 +151,11 @@ export default function MyPage() {
 
               <Grid
                 templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', xl: 'repeat(4, 1fr)' }}
-                gap="12px"
+                gap={3}
               >
                 {['1', '2', '3', '4'].map((num) => (
-                  <Card.Root key={num} overflow="hidden" borderRadius="12px" variant="outline" borderColor="border.subtle">
-                    <Card.Body p="0" aspectRatio="1 / 1" bg="bg.muted" display="flex" alignItems="center" justifyContent="center">
+                  <Card.Root key={num} overflow="hidden" borderRadius="xl" variant="outline" borderColor="border.subtle">
+                    <Card.Body p={0} aspectRatio="1 / 1" bg="bg.muted" display="flex" alignItems="center" justifyContent="center">
                       <Text textStyle="xs" color="fg.muted">스냅 {num}</Text>
                     </Card.Body>
                   </Card.Root>
