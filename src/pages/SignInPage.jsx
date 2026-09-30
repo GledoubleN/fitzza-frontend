@@ -21,11 +21,7 @@ export const SignInPage = () => {
     } catch (err) {
       if (err.response?.status === 401) {
         setError("이메일 혹은 비밀번호가 틀렸습니다.");
-        // console.log("401 err: " + err);
       } else if(window.confirm("로그인에 실패했습니다. 메인페이지로 넘어가기 (개발 중)")){
-        // setError("로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-        // console.log("other err: " + err);
-        // 현재 api endPoint 미구성으로 위 코드는 주석처리 되어있습니다. 완료되면 else 뒤의 If문도 지워야함.
         console.log("로그인 없이 넘어감(개발)", {email, password});
         moveUrl("/");
       }
@@ -35,11 +31,11 @@ export const SignInPage = () => {
   };
 
   return (
-    <Container maxWidth={ "md" } height={ "100vh" }>
-      <Grid height={ "100%" } templateRows={ "1fr auto 1fr" }>
+    <Container maxW="container.md" height="100vh">
+      <Grid height="100%" templateRows="1fr auto 1fr">
         <GridItem></GridItem>
         <GridItem>
-          <Stack as="form" gap={ 6 } onSubmit={ changeHandler }>
+          <Stack as="form" gap={6} onSubmit={changeHandler}>
             <Heading size="lg">로그인</Heading>
 
             <Field.Root required>
@@ -47,8 +43,8 @@ export const SignInPage = () => {
               <Input
                 type="email"
                 placeholder="이메일을 입력해주세요"
-                value={ email }
-                onChange={ (e) => setEmail(e.target.value) }
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </Field.Root>
 
@@ -57,16 +53,17 @@ export const SignInPage = () => {
               <Input
                 type="password"
                 placeholder="비밀번호 관련 규약 필요"
-                value={ password }
-                onChange={ (e) => setPassword(e.target.value) }
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </Field.Root>
 
-            { error && <Text color="red.500" fontSize="sm">{ error }</Text> }
+            {/* fontSize="sm" 속성을 Chakra 디자인 토큰 체계인 textStyle="sm"으로 변경 */}
+            {error && <Text color="red.500" textStyle="sm">{error}</Text>}
 
             <Button
               type="submit"
-              loading={ loading }
+              loading={loading}
               size="lg"
               width="full">
               로그인
