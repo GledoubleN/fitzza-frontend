@@ -1,340 +1,173 @@
 import {
-    Container,
-    Box,
-    Flex,
-    Heading,
-    Button,
-    Text,
-    Grid,
-    Image
+  Container,
+  Box,
+  Flex,
+  Heading,
+  Button,
+  Text,
+  Grid,
+  Card
 } from '@chakra-ui/react';
-import {
-    LuPackage,
-    LuPartyPopper,
-    LuUsers,
-    LuSettings
-} from 'react-icons/lu';
+import { AppBar } from '../components/AppBar.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 
 export default function MyPage() {
-    return (
-        <>
-        <Container
-            width="100%"
-            maxWidth="390px"
-            minHeight="100vh"
-            mx="auto"
-            pb="96px"
-            bg="white"
+  return (
+    <Box position="relative" minH="100vh" pb={28} bg="bg">
+      <Container
+        maxW="container.xl"
+        mx="auto"
+        py={10}
+        px={5}
+      >
+        <Box mb={6}>
+          <AppBar />
+        </Box>
+
+        <Flex
+          align="center"
+          justify="space-between"
+          mb={8}
+          pb={4}
+          borderBottomWidth="thin"
+          borderColor="border.subtle"
+          bg="bg.panel"
+          p={5}
+          borderRadius="2xl"
         >
-            {/* MyHeader */}
-            <Flex
-                align="center"
-                justify="space-between"
-                px="20px"
-                height="60px"
-                borderBottom="1px solid"
-                borderColor="gray.100"
-            >
-                <Heading
-                    size="md"
-                    fontWeight="700"
-                >
-                    마이페이지
-                </Heading>
+          <Heading textStyle="lg" fontWeight="700">
+            마이페이지
+          </Heading>
+          <Button variant="outline" size="md">
+            고객센터
+          </Button>
+        </Flex>
 
-                <Button
-                    variant="ghost"
-                    size="sm"
-                >
-                    고객센터
-                </Button>
-            </Flex>
+        <Grid
+          templateColumns={{ base: '1fr', lg: '88 1fr' }}
+          gap={8}
+          alignItems="start"
+        >
+          <Flex direction="column" gap={6}>
 
-            {/* MyProfile */}
-            <Flex
-                direction="column"
-                align="center"
-                pt="24px"
-                pb="20px"
-            >
-                <Box
-                    width="80px"
-                    height="80px"
-                    border="1px solid"
-                    borderColor="#e5e5e5"
-                    borderRadius="50%"
+            <Card.Root borderWidth="thin" borderColor="border.subtle" borderRadius="2xl" p={6} bg="bg.panel">
+              <Card.Body p={0}>
+                <Flex direction="column" align="center" pt={1} pb={1}>
+                  <Box
+                    boxSize="22"
+                    borderWidth="thin"
+                    borderColor="border.subtle"
+                    borderRadius="full"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
-                    fontSize="38px"
-                    bg="#f7f7f7"
-                >
+                    fontSize="4xl"
+                    bg="bg.muted"
+                    mb={3}
+                  >
                     👤
-                </Box>
-
-                <Heading
-                    size="md"
-                    mt="10px"
-                    fontWeight="600"
-                >
+                  </Box>
+                  <Heading textStyle="md" mt={1} fontWeight="600">
                     사용자
-                </Heading>
-
-                <Text
-                    mt="2px"
-                    fontSize="14px"
-                    color="gray.500"
-                >
+                  </Heading>
+                  <Text textStyle="sm" mt={1} color="fg.muted">
                     @fit_user
-                </Text>
-            </Flex>
-
-            {/* MySummary */}
-            <Box
-                mx="16px"
-                px="10px"
-                py="18px"
-                border="1px solid"
-                borderColor="gray.100"
-                borderRadius="16px"
-            >
-                <Flex align="center">
-                    <Box flex="1" px="12px">
-                        <Text
-                            fontSize="13px"
-                            color="gray.500"
-                            mb="4px"
-                        >
-                            적립금
-                        </Text>
-
-                        <Text
-                            fontSize="17px"
-                            fontWeight="600"
-                        >
-                            7,777원
-                        </Text>
-                    </Box>
-
-                    <Box
-                        width="1px"
-                        height="35px"
-                        bg="gray.100"
-                    />
-
-                    <Box flex="1" px="12px">
-                        <Text
-                            fontSize="13px"
-                            color="gray.500"
-                            mb="4px"
-                        >
-                            쿠폰
-                        </Text>
-
-                        <Text
-                            fontSize="17px"
-                            fontWeight="600"
-                        >
-                            11장
-                        </Text>
-                    </Box>
-                </Flex>
-            </Box>
-
-            {/* MyMenu */}
-            <Flex
-                justify="space-around"
-                mt="22px"
-                px="10px"
-                pb="20px"
-                borderBottom="1px solid"
-                borderColor="gray.100"
-            >
-                <Button
-                    variant="ghost"
-                    minWidth="70px"
-                    height="auto"
-                    p="6px"
-                >
-                    <Flex direction="column" align="center" gap="6px">
-                        <LuPackage size={22} />
-                        <Text fontSize="13px">주문</Text>
-                    </Flex>
-                </Button>
-
-                <Button
-                    variant="ghost"
-                    minWidth="70px"
-                    height="auto"
-                    p="6px"
-                >
-                    <Flex direction="column" align="center" gap="6px">
-                        <LuPartyPopper size={22} />
-                        <Text fontSize="13px">이벤트</Text>
-                    </Flex>
-                </Button>
-
-                <Button
-                    variant="ghost"
-                    minWidth="70px"
-                    height="auto"
-                    p="6px"
-                >
-                    <Flex direction="column" align="center" gap="6px">
-                        <LuUsers size={22} />
-                        <Text fontSize="13px">커뮤니티</Text>
-                    </Flex>
-                </Button>
-
-                <Button
-                    variant="ghost"
-                    minWidth="70px"
-                    height="auto"
-                    p="6px"
-                >
-                    <Flex direction="column" align="center" gap="6px">
-                        <LuSettings size={22} />
-                        <Text fontSize="13px">설정</Text>
-                    </Flex>
-                </Button>
-            </Flex>
-
-            {/* FollowInfo */}
-            <Flex
-                justify="center"
-                align="center"
-                py="16px"
-                borderBottom="1px solid"
-                borderColor="gray.100"
-            >
-                <Flex
-                    flex="1"
-                    direction="column"
-                    align="center"
-                >
-                    <Text fontSize="13px" color="gray.500">
-                        팔로잉
-                    </Text>
-                    <Text fontSize="16px" fontWeight="600" mt="3px">
-                        36
-                    </Text>
+                  </Text>
                 </Flex>
 
-                <Box
-                    width="1px"
-                    height="28px"
-                    bg="gray.100"
-                />
+                <Grid templateColumns="repeat(2, 1fr)" gap={3} mt={5}>
+                  <Box
+                    p={4}
+                    borderWidth="thin"
+                    borderColor="border.subtle"
+                    borderRadius="xl"
+                    bg="bg.muted"
+                    textAlign="center"
+                  >
+                    <Text textStyle="xs" color="fg.muted" mb={1}>적립금</Text>
+                    <Text textStyle="sm" fontWeight="600">7,777원</Text>
+                  </Box>
 
-                <Flex
-                    flex="1"
-                    direction="column"
-                    align="center"
-                >
-                    <Text fontSize="13px" color="gray.500">
-                        팔로워
-                    </Text>
-                    <Text fontSize="16px" fontWeight="600" mt="3px">
-                        128
-                    </Text>
-                </Flex>
-            </Flex>
-
-            {/* MySnap */}
-            <Box
-                px="16px"
-                pt="20px"
-            >
-                <Flex
-                    justify="space-between"
-                    align="center"
-                    mb="12px"
-                >
-                    <Heading
-                        size="sm"
-                        fontWeight="700"
-                    >
-                        나의 스냅
-                    </Heading>
-
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        color="gray.500"
-                    >
-                        전체보기 &gt;
-                    </Button>
-                </Flex>
-
-                <Grid
-                    templateColumns="repeat(2, 1fr)"
-                    gap="4px"
-                >
-                    <Box
-                        width="100%"
-                        aspectRatio="1 / 1"
-                        overflow="hidden"
-                    >
-                        <Image
-                            src="/images/snap1.jpg"
-                            alt="나의 스냅 1"
-                            width="100%"
-                            height="100%"
-                            objectFit="cover"
-                            display="block"
-                        />
-                    </Box>
-
-                    <Box
-                        width="100%"
-                        aspectRatio="1 / 1"
-                        overflow="hidden"
-                    >
-                        <Image
-                            src="/images/snap2.jpg"
-                            alt="나의 스냅 2"
-                            width="100%"
-                            height="100%"
-                            objectFit="cover"
-                            display="block"
-                        />
-                    </Box>
-
-                    <Box
-                        width="100%"
-                        aspectRatio="1 / 1"
-                        overflow="hidden"
-                    >
-                        <Image
-                            src="/images/snap3.jpg"
-                            alt="나의 스냅 3"
-                            width="100%"
-                            height="100%"
-                            objectFit="cover"
-                            display="block"
-                        />
-                    </Box>
-
-                    <Box
-                        width="100%"
-                        aspectRatio="1 / 1"
-                        overflow="hidden"
-                    >
-                        <Image
-                            src="/images/snap4.jpg"
-                            alt="나의 스냅 4"
-                            width="100%"
-                            height="100%"
-                            objectFit="cover"
-                            display="block"
-                        />
-                    </Box>
+                  <Box
+                    p={4}
+                    borderWidth="thin"
+                    borderColor="border.subtle"
+                    borderRadius="xl"
+                    bg="bg.muted"
+                    textAlign="center"
+                  >
+                    <Text textStyle="xs" color="fg.muted" mb={1}>쿠폰</Text>
+                    <Text textStyle="sm" fontWeight="600">11장</Text>
+                  </Box>
                 </Grid>
-            </Box>
+              </Card.Body>
+            </Card.Root>
 
-        </Container>
-        <TabBar />
-        </>
-    );
+            <Card.Root borderWidth="thin" borderColor="border.subtle" borderRadius="2xl" p={4} bg="bg.panel">
+              <Card.Body p={0}>
+                <Grid templateColumns="repeat(4, 1fr)" gap={2}>
+                  {[
+                    { label: '주문', icon: '📦' },
+                    { label: 'TMI/이벤트', icon: '🎉' },
+                    { label: '커뮤니티', icon: '💬' },
+                    { label: '설정', icon: '⚙️' },
+                  ].map((item) => (
+                    <Button
+                      key={item.label}
+                      variant="outline"
+                      borderWidth="thin"
+                      borderColor="border.subtle"
+                      borderRadius="xl"
+                      height="auto"
+                      py={3}
+                      px={1}
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="center"
+                      bg="bg.muted"
+                      _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
+                    >
+                      <Text fontSize="lg" mb={1}>{item.icon}</Text>
+                      <Text textStyle="xs" fontWeight="600" color="fg">{item.label}</Text>
+                    </Button>
+                  ))}
+                </Grid>
+              </Card.Body>
+            </Card.Root>
+
+          </Flex>
+
+          <Card.Root borderWidth="thin" borderColor="border.subtle" borderRadius="2xl" p={6} bg="bg.panel">
+            <Card.Body p={0}>
+              <Flex justify="space-between" align="center" mb={4}>
+                <Heading textStyle="md" fontWeight="700">
+                  나의 스냅
+                </Heading>
+                <Button variant="ghost" size="sm" color="fg.muted">
+                  전체보기 &gt;
+                </Button>
+              </Flex>
+
+              <Grid
+                templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', xl: 'repeat(4, 1fr)' }}
+                gap={3}
+              >
+                {['1', '2', '3', '4'].map((num) => (
+                  <Card.Root key={num} overflow="hidden" borderRadius="xl" variant="outline" borderColor="border.subtle">
+                    <Card.Body p={0} aspectRatio="1 / 1" bg="bg.muted" display="flex" alignItems="center" justifyContent="center">
+                      <Text textStyle="xs" color="fg.muted">스냅 {num}</Text>
+                    </Card.Body>
+                  </Card.Root>
+                ))}
+              </Grid>
+            </Card.Body>
+          </Card.Root>
+
+        </Grid>
+      </Container>
+
+      <TabBar />
+    </Box>
+  );
 }
