@@ -84,11 +84,11 @@ export const CommunityWritePage = () => {
 
   return (
     <Stack paddingY={ '4' } gap={ '4' } height={ '100vh' }>
-      <Container maxWidth={ '4xl' }>
+      <Container maxWidth={ '3xl' }>
         <AppBar></AppBar>
       </Container>
 
-      <Container maxWidth={ '4xl' }>
+      <Container maxWidth={ '3xl' }>
         <Stack gap={ '4' }>
           <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ '4' }>
             <Button onClick={ () => {setMode('default')} }>기본</Button>

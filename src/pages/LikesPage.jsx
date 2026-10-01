@@ -10,10 +10,10 @@ export const LikesPage = () => {
   return (
     <>
     <Stack paddingY={ 4 } paddingBottom="96px" height={ '100vh' } gap={ 4 }>
-      <Container maxWidth="4xl">
+      <Container maxWidth="3xl">
         <AppBar></AppBar>
       </Container>
-      <Container maxWidth="4xl">
+      <Container maxWidth="3xl">
         <Grid templateColumns={ 'repeat(auto-fill, minmax(100px, 1fr))' } gap={ 2 }>
           {
             Array.from({ length: 50 }, (_, index) => (
