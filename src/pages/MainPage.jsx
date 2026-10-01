@@ -91,7 +91,7 @@ export const MainPage = () => {
             products.map((product, index) => (
               <Stack gap={ 4 }>
                 <Box position={ 'relative' }>
-                  <Image src={ exampleProductImage }></Image>
+                  <Image src={ exampleProductImage } onClick={ () => {navigate('products/1')} }></Image>
                   <IconButton
                     position={ 'absolute' }
                     bottom={ 0 }
