@@ -1,50 +1,92 @@
 export const products = [
   {
-    "name": "product",
-    "price": 1000,
+    "id": 1,
+    "name": "T-Shirt",
+    "brand": "Nike",
+    "price": 29900
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 2,
+    "name": "Jeans",
+    "brand": "Puma",
+    "price": 59900
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 3,
+    "name": "Hoodie",
+    "brand": "Adidas",
+    "price": 79900
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 4,
+    "name": "Running Shoes",
+    "brand": "New Balance",
+    "price": 129000
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 5,
+    "name": "Denim Jacket",
+    "brand": "Levi's",
+    "price": 109000
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 6,
+    "name": "Sweatshirt",
+    "brand": "Champion",
+    "price": 69000
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 7,
+    "name": "Cargo Pants",
+    "brand": "Dickies",
+    "price": 89000
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 8,
+    "name": "Windbreaker",
+    "brand": "The North Face",
+    "price": 159000
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 9,
+    "name": "Polo Shirt",
+    "brand": "Lacoste",
+    "price": 99000
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 10,
+    "name": "Chino Pants",
+    "brand": "Uniqlo",
+    "price": 49900
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 11,
+    "name": "Baseball Cap",
+    "brand": "New Era",
+    "price": 39000
   },
   {
-    "name": "product",
-    "price": 1000,
+    "id": 12,
+    "name": "Long Sleeve Shirt",
+    "brand": "Zara",
+    "price": 45900
   },
+  {
+    "id": 13,
+    "name": "Fleece Jacket",
+    "brand": "Columbia",
+    "price": 119000
+  },
+  {
+    "id": 14,
+    "name": "Track Pants",
+    "brand": "Asics",
+    "price": 79000
+  },
+  {
+    "id": 15,
+    "name": "Oversized Shirt",
+    "brand": "Musinsa Standard",
+    "price": 39900
+  }
 ]
