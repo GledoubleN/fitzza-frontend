@@ -215,11 +215,11 @@ export const CommunityArticlePage = () => {
             <Text fontSize="xl" fontWeight="bold">
               {article.title}
             </Text>
-            <HStack gap="2" color="black" fontSize="sm">
+            <HStack gap="2" fontSize="sm">
               <Box boxSize="6" rounded="full" bg="bg.muted" flexShrink="0" />
-              <Text>{article.author}</Text>
-              <Text>·</Text>
-              <Text>{article.time}</Text>
+              <Text color = "fg">{article.author}</Text>
+              <Text color = "fg.muted">·</Text>
+              <Text color = "fg.muted">{article.time}</Text>
             </HStack>
 
             {images.length > 0 && (

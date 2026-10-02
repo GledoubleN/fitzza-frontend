@@ -115,7 +115,7 @@ export const CommunityMainPage = () => {
 
           {/* 검색 입력 (선택) */}
           <InputGroup startElement={<LuSearch />}>
-            <Input placeholder="검색" rounded="lg" bg="gray.50" />
+            <Input placeholder="검색" rounded="lg" bg="bg.subtle" />
           {/*  제목 및 내용으로 검색 기능 추가 필요 TO-DO-NEXT */}
           </InputGroup>
 
@@ -141,7 +141,7 @@ export const CommunityMainPage = () => {
       {/* 게시글 리스트 */}
       <Container maxWidth="3xl" paddingBottom="20">
         <Stack direction="column" gap="0" separator={<Box borderBottomWidth="1px" />}>
-          {loading && <Text color="gray.500" paddingY="4">불러오는 중...</Text>}
+          {loading && <Text color="fg.muted" paddingY="4">불러오는 중...</Text>}
           {error && <Text color="red.500" paddingY="4">{error}</Text>}
           {articles.map((article) => (
             <ArticleItem
@@ -188,13 +188,13 @@ const ArticleItem = ({ article, onClick }) => {
         <Badge width="fit-content" colorPalette="gray">
           {category}
         </Badge>
-        <HStack gap="2" color="gray.500" fontSize="sm">
+        <HStack gap="2" color="fg.muted" fontSize="sm">
           <Box boxSize="6" rounded="full" bg="gray.200" flexShrink="0" />
           <Text>{author}</Text>
           <Text>·</Text>
           <Text>{time}</Text>
         </HStack>
-        <HStack gap="4" color="gray.500" fontSize="sm">
+        <HStack gap="4" color="fg.muted" fontSize="sm">
           <HStack gap="1">
             <LuThumbsUp />
             <Text>{likes}</Text>
