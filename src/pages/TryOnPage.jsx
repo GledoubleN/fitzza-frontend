@@ -19,104 +19,91 @@ import { Footer } from '../components/Footer.jsx'
 import { LuPlus, LuX } from 'react-icons/lu'
 
 export const TryOnPage = () => {
+  const getReferenceImages = (direction) => {
+    return (
+      <Stack
+        direction={ direction }
+        gap={ 4 }
+        separator={ <Separator/> }
+        height={ '100%' }
+        width={ '100%' }
+      >
+        <Card.Root justifyContent={ 'center' } alignContent={ 'center' } aspectRatio={ 1 } flexShrink={ 0 }>
+          <Image objectFit={ 'cover' } src={ examplePersonImage }></Image>
+          <IconButton
+            position={ 'absolute' }
+            top={ 0 }
+            right={ 0 }
+            variant={ 'ghost' }
+            rounded={ 'full' }
+          >
+            <LuX></LuX>
+          </IconButton>
+        </Card.Root>
+        <Stack direction={ direction }>
+          <Card.Root aspectRatio={ 1 } flexShrink={ 0 }>
+            <Flex height={ '100%' } align={ 'center' } justify={ 'center' }>
+              <IconButton rounded={ 'full' }>
+                <LuPlus></LuPlus>
+              </IconButton>
+            </Flex>
+          </Card.Root>
+          {
+            Array.from({ length: 5 }, (_, index) => (
+              <Card.Root
+                justifyContent={ 'center' }
+                alignContent={ 'center' }
+                aspectRatio={ 1 }
+                flexShrink={ 0 }
+                key={ index }
+              >
+                <Image objectFit={ 'cover' } src={ exampleClothesImage }></Image>
+                <IconButton
+                  position={ 'absolute' }
+                  top={ 0 }
+                  right={ 0 }
+                  variant={ 'ghost' }
+                  rounded={ 'full' }
+                >
+                  <LuX></LuX>
+                </IconButton>
+              </Card.Root>
+            ))
+          }
+        </Stack>
+      </Stack>
+    )
+  }
+
   return (
-    <Grid templateRows={ 'auto 1fr auto auto' } paddingY={ 4 } height={ '100vh' } gap={ 4 }>
+    <Grid templateRows={ 'auto 1fr auto' } paddingY={ 4 } height={ '100vh' } gap={ 4 }>
       <AppBar></AppBar>
       <Container maxWidth={ '3xl' }>
-        <Grid templateRows={ '3fr 1fr auto' } height={ '100%' } gap={ 4 }>
-          <GridItem justifyItems={ 'center' } alignContent={ 'center' }>
-            <Image src={ exampleResultImage }></Image>
-          </GridItem>
-          <Stack
-            direction={ 'row' }
-            gap={ 4 }
-            overflowX="auto"
+        <Grid templateColumns={ { base: '1fr', md: '3fr 1fr' } } height={ '100%' } gap={ 4 }>
+          <Grid templateRows={ { base: '3fr 1fr auto', md: '1fr auto' } } gap={ 4 }>
+            <GridItem justifyItems={ 'center' } alignContent={ 'center' }>
+              <Image src={ exampleResultImage }></Image>
+            </GridItem>
+            <GridItem
+              display={ { md: 'none' } }
+              overflowX="auto"
+              flexWrap="nowrap"
+            >
+              {
+                getReferenceImages('row')
+              }
+            </GridItem>
+            <Button width={ '100%' }>입어보기</Button>
+          </Grid>
+          <Flex
+            display={ { base: 'none', sm: 'flex' } }
+            overflowY="auto"
             flexWrap="nowrap"
-            separator={ <Separator/> }
           >
-            <Card.Root justifyContent={ 'center' } alignContent={ 'center' } aspectRatio={ 1 } flexShrink={ 0 }>
-              <Image objectFit={ 'cover' } src={ examplePersonImage }></Image>
-              <IconButton
-                position={ 'absolute' }
-                top={ 0 }
-                right={ 0 }
-                variant={ 'ghost' }
-                rounded={ 'full' }
-              >
-                <LuX></LuX>
-              </IconButton>
-            </Card.Root>
-            <Stack direction={ 'row' }>
-              <Card.Root justifyContent={ 'center' } alignContent={ 'center' } aspectRatio={ 1 } flexShrink={ 0 }>
-                <Image objectFit={ 'cover' } src={ exampleClothesImage }></Image>
-                <IconButton
-                  position={ 'absolute' }
-                  top={ 0 }
-                  right={ 0 }
-                  variant={ 'ghost' }
-                  rounded={ 'full' }
-                >
-                  <LuX></LuX>
-                </IconButton>
-              </Card.Root>
-              <Card.Root justifyContent={ 'center' } alignContent={ 'center' } aspectRatio={ 1 } flexShrink={ 0 }>
-                <Image objectFit={ 'cover' } src={ exampleClothesImage }></Image>
-                <IconButton
-                  position={ 'absolute' }
-                  top={ 0 }
-                  right={ 0 }
-                  variant={ 'ghost' }
-                  rounded={ 'full' }
-                >
-                  <LuX></LuX>
-                </IconButton>
-              </Card.Root>
-              <Card.Root justifyContent={ 'center' } alignContent={ 'center' } aspectRatio={ 1 } flexShrink={ 0 }>
-                <Image objectFit={ 'cover' } src={ exampleClothesImage }></Image>
-                <IconButton
-                  position={ 'absolute' }
-                  top={ 0 }
-                  right={ 0 }
-                  variant={ 'ghost' }
-                  rounded={ 'full' }
-                >
-                  <LuX></LuX>
-                </IconButton>
-              </Card.Root>
-              <Card.Root justifyContent={ 'center' } alignContent={ 'center' } aspectRatio={ 1 } flexShrink={ 0 }>
-                <Image objectFit={ 'cover' } src={ exampleClothesImage }></Image>
-                <IconButton
-                  position={ 'absolute' }
-                  top={ 0 }
-                  right={ 0 }
-                  variant={ 'ghost' }
-                  rounded={ 'full' }
-                >
-                  <LuX></LuX>
-                </IconButton>
-              </Card.Root>
-              <Card.Root justifyContent={ 'center' } alignContent={ 'center' } aspectRatio={ 1 } flexShrink={ 0 }>
-                <Image objectFit={ 'cover' } src={ exampleClothesImage }></Image>
-                <IconButton
-                  position={ 'absolute' }
-                  top={ 0 }
-                  right={ 0 }
-                  variant={ 'ghost' }
-                  rounded={ 'full' }
-                >
-                  <LuX></LuX>
-                </IconButton>
-              </Card.Root>
-              <Card.Root aspectRatio={ 1 } flexShrink={ 0 }>
-                <Flex height={ '100%' } align={ 'center' } justify={ 'center' }>
-                  <IconButton rounded={ 'full' }>
-                    <LuPlus></LuPlus>
-                  </IconButton>
-                </Flex>
-              </Card.Root>
-            </Stack>
-          </Stack>
-          <Button width={ '100%' }>입어보기</Button>
+            {
+              getReferenceImages('column')
+            }
+          </Flex>
         </Grid>
       </Container>
       <Footer></Footer>
