@@ -76,11 +76,23 @@ export const TryOnPage = () => {
   }
 
   return (
-    <Grid templateRows={ 'auto 1fr auto' } paddingY={ 4 } height={ '100vh' } gap={ 4 }>
+    <Grid
+      templateRows={ 'auto minmax(0, 1fr) auto' }
+      paddingY={ 4 }
+      height={ '100vh' }
+      gap={ 4 }
+    >
       <AppBar></AppBar>
       <Container maxWidth={ '3xl' }>
-        <Grid templateColumns={ { base: '1fr', md: '3fr 1fr' } } height={ '100%' } gap={ 4 }>
-          <Grid templateRows={ { base: '3fr 1fr auto', md: '1fr auto' } } gap={ 4 }>
+        <Grid
+          templateColumns={ { base: '1fr', md: '3fr 1fr' } }
+          height={ '100%' }
+          gap={ 4 }
+        >
+          <Grid
+            templateRows={ { base: '3fr 1fr auto', md: '1fr auto' } }
+            gap={ 4 }
+          >
             <GridItem justifyItems={ 'center' } alignContent={ 'center' }>
               <Image src={ exampleResultImage }></Image>
             </GridItem>
@@ -97,6 +109,7 @@ export const TryOnPage = () => {
           </Grid>
           <Flex
             display={ { base: 'none', sm: 'flex' } }
+            direction={ 'column' }
             overflowY="auto"
             flexWrap="nowrap"
           >
