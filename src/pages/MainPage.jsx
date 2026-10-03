@@ -112,9 +112,9 @@ export const MainPage = () => {
         </Grid>
       </Container>
 
-      <Footer></Footer>
-
       <TabBar></TabBar>
+
+      <Footer></Footer>
     </Stack>
   )
 }
