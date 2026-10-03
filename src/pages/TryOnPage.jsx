@@ -5,11 +5,11 @@ import {
   Stack,
   Image,
   GridItem,
-  Box,
+  Text,
   IconButton,
   Flex,
   Card,
-  Separator,
+  Separator, Heading,
 } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
 import exampleResultImage from '/src/assets/hero.png'
@@ -28,7 +28,12 @@ export const TryOnPage = () => {
         height={ '100%' }
         width={ '100%' }
       >
-        <Card.Root justifyContent={ 'center' } alignContent={ 'center' } aspectRatio={ 1 } flexShrink={ 0 }>
+        <Card.Root
+          justifyContent={ 'center' }
+          alignContent={ 'center' }
+          aspectRatio={ 1 }
+          flexShrink={ 0 }
+        >
           <Image objectFit={ 'cover' } src={ examplePersonImage }></Image>
           <IconButton
             position={ 'absolute' }
@@ -57,7 +62,10 @@ export const TryOnPage = () => {
                 flexShrink={ 0 }
                 key={ index }
               >
-                <Image objectFit={ 'cover' } src={ exampleClothesImage }></Image>
+                <Image
+                  objectFit={ 'cover' }
+                  src={ exampleClothesImage }
+                ></Image>
                 <IconButton
                   position={ 'absolute' }
                   top={ 0 }
@@ -77,12 +85,17 @@ export const TryOnPage = () => {
 
   return (
     <Grid
-      templateRows={ 'auto minmax(0, 1fr) auto' }
+      templateRows={ 'auto auto minmax(0, 1fr) auto' }
       paddingY={ 4 }
       height={ '100vh' }
       gap={ 4 }
     >
       <AppBar></AppBar>
+
+      <Container maxWidth={ '7xl' }>
+        <Heading>입어보기</Heading>
+      </Container>
+
       <Container maxWidth={ '3xl' }>
         <Grid
           templateColumns={ { base: '1fr', md: '3fr 1fr' } }
@@ -119,7 +132,9 @@ export const TryOnPage = () => {
           </Flex>
         </Grid>
       </Container>
+
       <Footer></Footer>
+
     </Grid>
   )
 }
