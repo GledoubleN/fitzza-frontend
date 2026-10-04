@@ -62,10 +62,10 @@ const config = defineConfig({
       },
 
       fonts: {
-        heading: { value: "Inter, sans-serif" },
-        body: { value: "Roboto, sans-serif" },
-        mono: { value: "JetBrains Mono, monospace" },
-      }
+        heading: { value: "Montserrat, sans-serif" },
+        body: { value: "Open Sans, sans-serif" },
+        mono: { value: "Roboto Mono, monospace" },
+      },
     },
 
     semanticTokens: {
