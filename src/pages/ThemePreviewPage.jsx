@@ -129,6 +129,8 @@ const fontWeights = [
   'black',
 ]
 
+const fonts = ["heading", "body", "mono"]
+
 function Section ({ title, children }) {
   return (
     <Stack gap={ 4 }>
@@ -306,18 +308,22 @@ export function ThemePreviewPage () {
         </Section>
 
         <Section title="Fonts">
-          <Stack gap={ 4 }>
-            <Text fontFamily="heading" fontSize="2xl">
-              { system.tokens.getByName('fonts.heading').value } — heading
-            </Text>
+          <Stack gap={4}>
+            {fonts.map((name) => {
+              const font = system.tokens.getByName(`fonts.${name}`)
 
-            <Text fontFamily="body" fontSize="lg">
-              { system.tokens.getByName('fonts.body').value } — body
-            </Text>
+              return (
+                <Box key={name}>
+                  <Text fontFamily={name} fontSize="2xl">
+                    {name}
+                  </Text>
 
-            <Text fontFamily="mono">
-              { system.tokens.getByName('fonts.mono').value } — monospace
-            </Text>
+                  <Text fontSize="sm" color="fg.muted">
+                    {font.value}
+                  </Text>
+                </Box>
+              )
+            })}
           </Stack>
         </Section>
       </Stack>
