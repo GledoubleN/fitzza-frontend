@@ -62,9 +62,9 @@ const config = defineConfig({
       },
 
       fonts: {
-        heading: { value: "Montserrat, sans-serif" },
-        body: { value: "Open Sans, sans-serif" },
-        mono: { value: "Roboto Mono, monospace" },
+        heading: { value: "'Nanum Gothic', sans-serif" },
+        body: { value: "'Nanum Gothic', sans-serif" },
+        mono: { value: "'Nanum Gothic Coding', monospace" },
       },
     },
 
