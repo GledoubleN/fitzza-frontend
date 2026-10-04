@@ -6,7 +6,8 @@ import {
   SimpleGrid,
   Stack,
   Text,
-} from "@chakra-ui/react"
+} from '@chakra-ui/react'
+import system from '../theme.js'
 
 const colorScales = {
   primary: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900],
@@ -307,15 +308,15 @@ export function ThemePreviewPage() {
         <Section title="Fonts">
           <Stack gap={4}>
             <Text fontFamily="heading" fontSize="2xl">
-              Montserrat — heading
+              {system.tokens.getByName('fonts.heading').value} — heading
             </Text>
 
             <Text fontFamily="body" fontSize="lg">
-              Open Sans — body
+              {system.tokens.getByName('fonts.body').value} — body
             </Text>
 
             <Text fontFamily="mono">
-              Roboto Mono — monospace
+              {system.tokens.getByName('fonts.mono').value} — monospace
             </Text>
           </Stack>
         </Section>

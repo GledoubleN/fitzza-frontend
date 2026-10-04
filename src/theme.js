@@ -60,6 +60,12 @@ const config = defineConfig({
           900: { value: "#044f5e" },
         },
       },
+
+      fonts: {
+        heading: { value: "Montserrat, sans-serif" },
+        body: { value: "Open Sans, sans-serif" },
+        mono: { value: "Roboto Mono, monospace" },
+      },
     },
 
     semanticTokens: {
