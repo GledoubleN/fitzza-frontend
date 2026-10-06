@@ -14,7 +14,7 @@ export const LikesPage = () => {
         <AppBar></AppBar>
       </Container>
       <Container maxWidth="3xl">
-        <Grid templateColumns={ 'repeat(auto-fill, minmax(100px, 1fr))' } gap={ 2 }>
+        <Grid templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.2} * 4) / 5)), 1fr))' } gap={ 2 }>
           {
             Array.from({ length: 50 }, (_, index) => (
               <Card.Root key={ index }>
