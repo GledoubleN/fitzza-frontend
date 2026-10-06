@@ -115,6 +115,20 @@ export const ProductPage = () => {
     )
   }
 
+  function getEstimatedArrivalDate () {
+    const date = new Date()
+    const ESTIMATED_SHIPPING = 3
+    date.setDate(date.getDate() + ESTIMATED_SHIPPING)
+
+    return (
+      date.toLocaleDateString('ko-KR', {
+        month: '2-digit',
+        day: '2-digit',
+        weekday: 'short',
+      }).replace(/\. \(/, ' (')
+    );
+  }
+
   return (
     <Stack height={ '100%' } direction={ 'column' } paddingY={ '4' } gap={ '4' }>
       <AppBar></AppBar>
@@ -133,7 +147,7 @@ export const ProductPage = () => {
             <Card.Root>
               <Card.Body>
                 <Stack>
-                  <Text fontSize={ 'sm' }>09.22 (화) 도착 예정 · 도착 확률 99%</Text>
+                  <Text fontSize={ 'sm' }>{ getEstimatedArrivalDate() } 도착 예정 · 도착 확률 99%</Text>
                   <Text fontSize={ 'sm' }>결제 3일 이내 발송 예정 · 우체국택배</Text>
                 </Stack>
               </Card.Body>
@@ -144,7 +158,6 @@ export const ProductPage = () => {
                 <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'information' }>정보</Tabs.Trigger>
                 <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'size' }>사이즈</Tabs.Trigger>
                 <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'review' }>후기</Tabs.Trigger>
-                <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'question' }>문의</Tabs.Trigger>
               </Tabs.List>
               <Tabs.Content value="information">
                 <Box width={ '100%' } height={ '100vh' }>
@@ -159,11 +172,6 @@ export const ProductPage = () => {
               <Tabs.Content value="review">
                 <Stack width={ '100%' } height={ '100vh' }>
                   후기입니다.
-                </Stack>
-              </Tabs.Content>
-              <Tabs.Content value="question">
-                <Stack width={ '100%' } height={ '100vh' }>
-                  문의입니다.
                 </Stack>
               </Tabs.Content>
             </Tabs.RootProvider>
