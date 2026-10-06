@@ -49,8 +49,8 @@ export default function SignupPage() {
   };
 
   return (
-    <Box position="relative" minH="100vh" pt={24} pb={12} bg="bg">
-      <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
+    <Grid templateRows={'auto 1fr'} minHeight="100vh" paddingY={4} bg="bg">
+      <Box px={5} py={4}>
         <Container maxW="7xl" mx="auto" px={0}>
           <AppBar />
         </Container>
@@ -59,8 +59,8 @@ export default function SignupPage() {
       <Container maxW="3xl" mx="auto" px={5}>
         <Center w="100%" minH="65vh">
           <Box w="100%" maxW="lg">
-            <Card.Root variant="subtle" borderWidth="thin" borderColor="border.subtle" bg="bg.panel" borderRadius="2xl" p={8} boxShadow="md">
-              <Card.Body>
+            <Card.Root>
+              <Card.Body p={8}>
                 <Grid as="form" onSubmit={handleSubmit} templateRows="auto repeat(3, auto) auto auto" gap={6} alignItems="center">
 
                   <GridItem textAlign="center" w="100%" mb={2}>
@@ -78,7 +78,6 @@ export default function SignupPage() {
                           placeholder="이메일"
                           variant="outline"
                           size="lg"
-                          borderRadius="xl"
                           textAlign="left"
                         />
                       </InputGroup>
@@ -96,7 +95,6 @@ export default function SignupPage() {
                           placeholder="사용자명"
                           variant="outline"
                           size="lg"
-                          borderRadius="xl"
                           textAlign="left"
                         />
                       </InputGroup>
@@ -114,7 +112,6 @@ export default function SignupPage() {
                           placeholder="비밀번호"
                           variant="outline"
                           size="lg"
-                          borderRadius="xl"
                           textAlign="left"
                         />
                       </InputGroup>
@@ -134,7 +131,6 @@ export default function SignupPage() {
                       type="submit"
                       size="lg"
                       width="full"
-                      borderRadius="xl"
                     >
                       가입하기
                     </Button>
@@ -146,6 +142,6 @@ export default function SignupPage() {
           </Box>
         </Center>
       </Container>
-    </Box>
+    </Grid>
   );
 }
