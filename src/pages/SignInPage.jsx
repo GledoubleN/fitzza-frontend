@@ -1,138 +1,93 @@
-import { useState } from 'react';
-import {
-  Card,
-  Button,
-  Container,
-  Input,
-  InputGroup,
-  Heading,
-  Text,
-  Field,
-  GridItem,
-  Grid,
-  Box,
-  Center
-} from '@chakra-ui/react';
-import { LuMail, LuUser, LuLockKeyhole } from "react-icons/lu";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppBar } from '../components/AppBar.jsx';
+import { Button, Container, Field, Grid, GridItem, Heading, Input, Text, Box, Center, Card } from "@chakra-ui/react";
+import { api } from "../api/axios.js";
+import { AppBar } from "../components/AppBar.jsx";
 
-export default function SignupPage() {
-  const [ formData, setFormData ] = useState({
-    email: '',
-    password: '',
-    nickname: '',
-  });
+export const SignInPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const moveUrl = useNavigate();
 
-  const [ errorMessage, setErrorMessage ] = useState('');
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
+  const changeHandler = async (e) => {
     e.preventDefault();
-
-    if (!formData.email || !formData.password || !formData.nickname) {
-      setErrorMessage('모든 항목을 입력해주세요.');
-      return;
+    setLoading(true);
+    setError("");
+    try {
+      await api.post("/auth/login/sample", { email, password });
+      console.log("로그인 성공, 메인페이지로 이동", {email, password});
+      moveUrl("/");
+    } catch (err) {
+      if (err.response?.status === 401) {
+        setError("이메일 혹은 비밀번호가 틀렸습니다.");
+      } else if(window.confirm("로그인에 실패했습니다. 메인페이지로 넘어가기 (개발 중)")){
+        console.log("로그인 없이 넘어감(개발)", {email, password});
+        moveUrl("/");
+      }
+    } finally {
+      setLoading(false);
     }
-
-    setErrorMessage('');
-    console.log('회원가입 요청 데이터:', formData);
-    alert('회원가입 검증 완료! (콘솔창을 확인하세요)');
   };
 
   return (
     <Grid templateRows={'auto 1fr'} minHeight="100vh" paddingY={4} bg="bg">
-      <Box px={5} py={4}>
-        <Container maxW="7xl" mx="auto" px={0}>
-          <AppBar />
-        </Container>
-      </Box>
+      <AppBar />
 
       <Container maxW="3xl" mx="auto" px={5}>
         <Center w="100%" minH="65vh">
           <Box w="100%" maxW="lg">
             <Card.Root variant="subtle" borderWidth="thin" borderColor="border.subtle" bg="bg.panel" boxShadow="md">
               <Card.Body p={8}>
-                <Grid as="form" onSubmit={handleSubmit} templateRows="auto repeat(3, auto) auto auto" gap={6} alignItems="center">
+                <Grid as="form" onSubmit={changeHandler} templateRows="auto repeat(3, auto) auto auto" gap={6} alignItems="center">
 
                   <GridItem textAlign="center" w="100%" mb={2}>
-                    <Heading size="lg">회원가입</Heading>
+                    <Heading size="lg">로그인</Heading>
                   </GridItem>
 
                   <GridItem w="100%">
                     <Field.Root required w="100%">
-                      <InputGroup startElement={<Box as={LuMail} boxSize={5} color="fg.muted" />}>
-                        <Input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          placeholder="이메일"
-                          variant="outline"
-                          size="lg"
-                          textAlign="left"
-                        />
-                      </InputGroup>
+                      <Field.Label>이메일</Field.Label>
+                      <Input
+                        type="email"
+                        placeholder="이메일"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        variant="outline"
+                        size="lg"
+                      />
                     </Field.Root>
                   </GridItem>
 
                   <GridItem w="100%">
                     <Field.Root required w="100%">
-                      <InputGroup startElement={<Box as={LuUser} boxSize={5} color="fg.muted" />}>
-                        <Input
-                          type="text"
-                          name="nickname"
-                          value={formData.nickname}
-                          onChange={handleChange}
-                          placeholder="사용자명"
-                          variant="outline"
-                          size="lg"
-                          textAlign="left"
-                        />
-                      </InputGroup>
+                      <Field.Label>비밀번호</Field.Label>
+                      <Input
+                        type="password"
+                        placeholder="비밀번호"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        variant="outline"
+                        size="lg"
+                      />
                     </Field.Root>
                   </GridItem>
 
-                  <GridItem w="100%">
-                    <Field.Root required w="100%">
-                      <InputGroup startElement={<Box as={LuLockKeyhole} boxSize={5} color="fg.muted" />}>
-                        <Input
-                          type="password"
-                          name="password"
-                          value={formData.password}
-                          onChange={handleChange}
-                          placeholder="비밀번호"
-                          variant="outline"
-                          size="lg"
-                          textAlign="left"
-                        />
-                      </InputGroup>
-                    </Field.Root>
-                  </GridItem>
-
-                  {errorMessage && (
+                  {error && (
                     <GridItem textAlign="center">
-                      <Text color="red.500" textStyle="sm">
-                        {errorMessage}
-                      </Text>
+                      <Text color="red.500" textStyle="sm">{error}</Text>
                     </GridItem>
                   )}
 
                   <GridItem w="100%" mt={2}>
                     <Button
                       type="submit"
+                      loading={loading}
                       size="lg"
                       width="full"
                     >
-                      가입하기
+                      로그인
                     </Button>
                   </GridItem>
 

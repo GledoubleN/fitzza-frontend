@@ -50,16 +50,12 @@ export default function SignupPage() {
 
   return (
     <Grid templateRows={'auto 1fr'} minHeight="100vh" paddingY={4} bg="bg">
-      <Box px={5} py={4}>
-        <Container maxW="7xl" mx="auto" px={0}>
-          <AppBar />
-        </Container>
-      </Box>
+      <AppBar />
 
       <Container maxW="3xl" mx="auto" px={5}>
         <Center w="100%" minH="65vh">
           <Box w="100%" maxW="lg">
-            <Card.Root>
+            <Card.Root variant="subtle" borderWidth="thin" borderColor="border.subtle" bg="bg.panel" boxShadow="md">
               <Card.Body p={8}>
                 <Grid as="form" onSubmit={handleSubmit} templateRows="auto repeat(3, auto) auto auto" gap={6} alignItems="center">
 
