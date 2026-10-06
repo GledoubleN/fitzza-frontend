@@ -50,11 +50,7 @@ export default function SignupPage() {
 
   return (
     <Grid templateRows={'auto 1fr'} minHeight="100vh" paddingY={4} bg="bg">
-      <Box px={5} py={4}>
-        <Container maxW="7xl" mx="auto" px={0}>
-          <AppBar />
-        </Container>
-      </Box>
+      <AppBar />
 
       <Container maxW="3xl" mx="auto" px={5}>
         <Center w="100%" minH="65vh">
