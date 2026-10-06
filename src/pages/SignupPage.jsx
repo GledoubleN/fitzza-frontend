@@ -4,23 +4,29 @@ import {
   Button,
   Container,
   Input,
+  InputGroup,
   Heading,
   Text,
-  Stack,
-  Field, GridItem, Grid, IconButton
+  Field,
+  GridItem,
+  Grid,
+  Box,
+  Center
 } from '@chakra-ui/react';
-import { LuHouse } from "react-icons/lu";
+import { LuMail, LuUser, LuLockKeyhole } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { AppBar } from '../components/AppBar.jsx';
+import { TabBar } from '../components/TabBar.jsx';
 
 export default function SignupPage() {
   const [ formData, setFormData ] = useState({
     email: '',
     password: '',
-    passwordConfirm: '',
     nickname: '',
   });
 
   const [ errorMessage, setErrorMessage ] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,107 +44,113 @@ export default function SignupPage() {
       return;
     }
 
-    if (formData.password !== formData.passwordConfirm) {
-      setErrorMessage('비밀번호가 일치하지 않습니다.');
-      return;
-    }
-
     setErrorMessage('');
     console.log('회원가입 요청 데이터:', formData);
     alert('회원가입 검증 완료! (콘솔창을 확인하세요)');
   };
 
-  const navigate = useNavigate();
-
   return (
-    <Container maxWidth="md" height="100vh">
-      <Grid height={ "100%" } templateRows={ "1fr auto 1fr" }>
-        <GridItem></GridItem>
-        <GridItem>
-          <Card.Root>
-            <Card.Body>
-              <Stack gap={ 4 } as="form" onSubmit={ handleSubmit }>
+    <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
+      <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
+        <Container maxW="7xl" mx="auto" px={0}>
+          <AppBar />
+        </Container>
+      </Box>
 
-                <Grid templateColumns={ "auto 1fr auto" }>
-                  <GridItem>
-                    <Heading size="lg" mb={ 2 }>회원가입</Heading>
+      <Container maxW="3xl" mx="auto" px={5}>
+        <Center w="100%" minH="65vh">
+          <Box w="100%" maxW="lg">
+            <Card.Root variant="subtle" borderWidth="thin" borderColor="border.subtle" bg="bg.panel" borderRadius="2xl" p={8} boxShadow="md">
+              <Card.Body>
+                <Grid as="form" onSubmit={handleSubmit} templateRows="auto repeat(3, auto) auto auto" gap={6} alignItems="center">
+
+                  <GridItem textAlign="center" w="100%" mb={2}>
+                    <Heading size="lg">회원가입</Heading>
                   </GridItem>
-                  <GridItem></GridItem>
-                  <GridItem>
-                    <IconButton rounded={ "full" } variant={ "ghost" } onClick={ () => {
-                      navigate("/");
-                    } }>
-                      <LuHouse></LuHouse>
-                    </IconButton>
+
+                  <GridItem w="100%">
+                    <Field.Root required w="100%">
+                      <InputGroup startElement={<Box as={LuMail} boxSize={5} color="fg.muted" />}>
+                        <Input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder="이메일"
+                          variant="outline"
+                          size="lg"
+                          borderRadius="xl"
+                          textAlign="left"
+                        />
+                      </InputGroup>
+                    </Field.Root>
                   </GridItem>
+
+                  <GridItem w="100%">
+                    <Field.Root required w="100%">
+                      <InputGroup startElement={<Box as={LuUser} boxSize={5} color="fg.muted" />}>
+                        <Input
+                          type="text"
+                          name="nickname"
+                          value={formData.nickname}
+                          onChange={handleChange}
+                          placeholder="사용자명"
+                          variant="outline"
+                          size="lg"
+                          borderRadius="xl"
+                          textAlign="left"
+                        />
+                      </InputGroup>
+                    </Field.Root>
+                  </GridItem>
+
+                  <GridItem w="100%">
+                    <Field.Root required w="100%">
+                      <InputGroup startElement={<Box as={LuLockKeyhole} boxSize={5} color="fg.muted" />}>
+                        <Input
+                          type="password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          placeholder="비밀번호"
+                          variant="outline"
+                          size="lg"
+                          borderRadius="xl"
+                          textAlign="left"
+                        />
+                      </InputGroup>
+                    </Field.Root>
+                  </GridItem>
+
+                  {errorMessage && (
+                    <GridItem textAlign="center">
+                      <Text color="red.500" textStyle="sm">
+                        {errorMessage}
+                      </Text>
+                    </GridItem>
+                  )}
+
+                  <GridItem w="100%" mt={2}>
+                    <Button
+                      type="submit"
+                      size="lg"
+                      width="full"
+                      borderRadius="xl"
+                    >
+                      가입하기
+                    </Button>
+                  </GridItem>
+
                 </Grid>
+              </Card.Body>
+            </Card.Root>
+          </Box>
+        </Center>
+      </Container>
 
-                {/* 이메일 입력 */ }
-                <Field.Root>
-                  <Field.Label>이메일</Field.Label>
-                  <Input
-                    type="email"
-                    name="email"
-                    value={ formData.email }
-                    onChange={ handleChange }
-                    placeholder="example@email.com"
-                  />
-                </Field.Root>
-
-                {/* 닉네임 입력 */ }
-                <Field.Root isRequired>
-                  <Field.Label>닉네임</Field.Label>
-                  <Input
-                    type="text"
-                    name="nickname"
-                    value={ formData.nickname }
-                    onChange={ handleChange }
-                    placeholder="사용하실 닉네임을 입력하세요"
-                  />
-                </Field.Root>
-
-                {/* 비밀번호 입력 */ }
-                <Field.Root isRequired>
-                  <Field.Label>비밀번호</Field.Label>
-                  <Input
-                    type="password"
-                    name="password"
-                    value={ formData.password }
-                    onChange={ handleChange }
-                    placeholder="비밀번호를 입력하세요"
-                  />
-                </Field.Root>
-
-                {/* 비밀번호 확인 */ }
-                <Field.Root isRequired>
-                  <Field.Label>비밀번호 확인</Field.Label>
-                  <Input
-                    type="password"
-                    name="passwordConfirm"
-                    value={ formData.passwordConfirm }
-                    onChange={ handleChange }
-                    placeholder="비밀번호를 다시 입력하세요"
-                  />
-                </Field.Root>
-
-                {/* 에러 메시지 출력 */ }
-                { errorMessage && (
-                  <Text color="red.500" fontSize="sm">
-                    { errorMessage }
-                  </Text>
-                ) }
-
-                {/* 가입 버튼 */ }
-                <Button type="submit" colorScheme="blue" w="100%" mt={ 4 }>
-                  가입하기
-                </Button>
-
-              </Stack>
-            </Card.Body>
-          </Card.Root>
-        </GridItem>
-        <GridItem></GridItem>
-      </Grid>
-    </Container>
+      <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
+        <TabBar />
+      </Box>
+    </Box>
   );
 }
