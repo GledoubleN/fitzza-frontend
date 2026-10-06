@@ -84,9 +84,7 @@ export const CommunityWritePage = () => {
 
   return (
     <Stack paddingY={ '4' } gap={ '4' } height={ '100vh' }>
-      <Container maxWidth={ '3xl' }>
         <AppBar></AppBar>
-      </Container>
 
       <Container maxWidth={ '3xl' }>
         <Stack gap={ '4' }>

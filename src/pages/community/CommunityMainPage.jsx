@@ -92,9 +92,7 @@ export const CommunityMainPage = () => {
     <>
     <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
       {/* 상단 로고 바 */}
-      <Container maxWidth="3xl">
         <AppBar></AppBar>
-      </Container>
 
       <Container maxWidth="3xl">
         <Stack direction="column" gap="4">

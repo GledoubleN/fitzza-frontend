@@ -185,9 +185,7 @@ export const CommunityArticlePage = () => {
 
   return (
     <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
-      <Container maxWidth="3xl">
         <AppBar />
-      </Container>
 
       <Container maxWidth="3xl">
         <Stack direction="column" gap="4">
