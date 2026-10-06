@@ -11,7 +11,7 @@ import {CommunityWritePage} from "./pages/community/CommunityWritePage.jsx";
 import {CommunityArticlePage} from "./pages/community/CommunityArticlePage.jsx";
 import { PromptPage } from './pages/PromptPage.jsx'
 import { ProductPage } from './pages/ProductPage.jsx'
-import MyPage from './pages/MyPage.jsx'
+import ProfilePage from './pages/ProfilePage.jsx'
 import WorldCupPage from './pages/WorldCupPage.jsx'
 import { DevNavi } from './pages/ForDev/DevNavi.jsx'
 import { LikesPage } from './pages/LikesPage.jsx'
@@ -34,7 +34,7 @@ function App() {
         <Route path="/communityarticle/:id" element={ <CommunityArticlePage/> }/>
         <Route path="/communitywrite" element={ <CommunityWritePage/> }/>
         <Route path="/prompt" element={ <PromptPage/> }/>
-        <Route path="/mypage" element={ <MyPage/> }/>
+        <Route path="/profile" element={ <ProfilePage/> }/>
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
         <Route path="/dev" element={ <DevNavi/> }/>
         <Route path="/likes" element={ <LikesPage/> }/>
