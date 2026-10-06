@@ -21,7 +21,7 @@ export const CategoryPage = () => {
         <AppBar></AppBar>
       </Container>
       <Container maxWidth={ '3xl' } flex={ '1' } minHeight={ '0' }>
-        <Stack height={ 'full' } gap={ '6' }>
+        <Stack height={ 'full' } gap={ '4' }>
           <Heading size={ 'xl' }>카테고리</Heading>
           <Grid templateColumns={ '5.5rem 1fr' } gap={ '3' } flex={ '1' } minHeight={ '0' }>
             <GridItem overflowY={ 'auto' }>
@@ -42,7 +42,7 @@ export const CategoryPage = () => {
               </Stack>
             </GridItem>
             <GridItem overflowY={ 'auto' }>
-              <Stack gap={ '6' } paddingRight={ '2' }>
+              <Stack gap={ '4' } paddingRight={ '2' }>
                 {
                   sections.map((section) => (
                     <Stack key={ section.name } gap={ '1' }>
