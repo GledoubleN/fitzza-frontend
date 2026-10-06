@@ -56,8 +56,8 @@ export const CategoryPage = () => {
                         <Heading size={ 'md' }>{ section.name }</Heading>
                         <Icon><LuChevronRight></LuChevronRight></Icon>
                       </Button>
-                      <SimpleGrid templateColumns={ 'repeat(auto-fill, minmax(max(140px, calc((100% - 2 * 0.25rem)/3)), 1fr))' } gap={ '1' }>
-                        {/* 칸 최소 140px, 최대 3열: 칸 폭을 max(140px, 1/3)로 잡아 4열 이상 생기지 않게 함. 0.25rem = gap 1 */}
+                      <SimpleGrid templateColumns={ 'repeat(auto-fill, minmax(max(140px, calc((100% - 2 * {spacing.1})/3)), 1fr))' } gap={ '1' }>
+                        {/* 칸 최소 140px, 최대 3열: 칸 폭을 max(140px, 1/3)로 잡아 4열 이상 생기지 않게 함. {spacing.1} = gap 1과 같은 토큰 */}
                         {
                           section.items.map((item) => (
                             <Button
