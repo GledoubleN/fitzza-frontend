@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Card,
   Button,
@@ -16,7 +16,6 @@ import {
 import { LuMail, LuUser, LuLockKeyhole } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { AppBar } from '../components/AppBar.jsx';
-import { TabBar } from '../components/TabBar.jsx';
 
 export default function SignupPage() {
   const [ formData, setFormData ] = useState({
@@ -50,7 +49,7 @@ export default function SignupPage() {
   };
 
   return (
-    <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
+    <Box position="relative" minH="100vh" pt={24} pb={12} bg="bg">
       <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
         <Container maxW="7xl" mx="auto" px={0}>
           <AppBar />
@@ -147,10 +146,6 @@ export default function SignupPage() {
           </Box>
         </Center>
       </Container>
-
-      <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
-        <TabBar />
-      </Box>
     </Box>
   );
 }
