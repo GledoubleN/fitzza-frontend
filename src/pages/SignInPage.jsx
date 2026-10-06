@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Container, Field, Grid, GridItem, Heading, Input, Stack, Text, Box } from "@chakra-ui/react";
+import { Button, Container, Field, Grid, GridItem, Heading, Input, Text, Box, Center } from "@chakra-ui/react";
 import { api } from "../api/axios.js";
 import { AppBar } from "../components/AppBar.jsx";
 import { TabBar } from "../components/TabBar.jsx";
@@ -33,56 +33,87 @@ export const SignInPage = () => {
   };
 
   return (
-    <Box position="relative" minH="100vh" pb={28} bg="bg">
-      <Container maxW="container.xl" mx="auto" py={10} px={5}>
-        <Box mb={6}>
+    <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
+      <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
+        <Container maxW="7xl" mx="auto" px={0}>
           <AppBar />
-        </Box>
-
-        <Container maxW="container.md" minH="70vh">
-          <Grid height="100%" templateRows="1fr auto 1fr">
-            <GridItem></GridItem>
-            <GridItem>
-              <Stack as="form" gap={6} onSubmit={changeHandler}>
-                <Heading size="lg">로그인</Heading>
-
-                <Field.Root required>
-                  <Field.Label>이메일</Field.Label>
-                  <Input
-                    type="email"
-                    placeholder="이메일을 입력해주세요"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </Field.Root>
-
-                <Field.Root required>
-                  <Field.Label>비밀번호</Field.Label>
-                  <Input
-                    type="password"
-                    placeholder="비밀번호 관련 규약 필요"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </Field.Root>
-
-                {error && <Text color="red.500" textStyle="sm">{error}</Text>}
-
-                <Button
-                  type="submit"
-                  loading={loading}
-                  size="lg"
-                  width="full">
-                  로그인
-                </Button>
-              </Stack>
-            </GridItem>
-            <GridItem></GridItem>
-          </Grid>
         </Container>
+      </Box>
+
+      <Container maxW="3xl" mx="auto" px={5}>
+        <Center w="100%" minH="65vh">
+          <Box w="100%" maxW="lg">
+            <Box
+              variant="subtle"
+              borderWidth="thin"
+              borderColor="border.subtle"
+              bg="bg.panel"
+              borderRadius="2xl"
+              p={8}
+              boxShadow="md"
+            >
+              <Grid as="form" onSubmit={changeHandler} templateRows="auto repeat(3, auto) auto auto" gap={6} alignItems="center">
+
+                <GridItem textAlign="center" w="100%" mb={2}>
+                  <Heading size="lg">로그인</Heading>
+                </GridItem>
+
+                <GridItem w="100%">
+                  <Field.Root required w="100%">
+                    <Field.Label>이메일</Field.Label>
+                    <Input
+                      type="email"
+                      placeholder="이메일"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      variant="outline"
+                      size="lg"
+                      borderRadius="xl"
+                    />
+                  </Field.Root>
+                </GridItem>
+
+                <GridItem w="100%">
+                  <Field.Root required w="100%">
+                    <Field.Label>비밀번호</Field.Label>
+                    <Input
+                      type="password"
+                      placeholder="비밀번호"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      variant="outline"
+                      size="lg"
+                      borderRadius="xl"
+                    />
+                  </Field.Root>
+                </GridItem>
+
+                {error && (
+                  <GridItem textAlign="center">
+                    <Text color="red.500" textStyle="sm">{error}</Text>
+                  </GridItem>
+                )}
+
+                <GridItem w="100%" mt={2}>
+                  <Button
+                    type="submit"
+                    loading={loading}
+                    size="lg"
+                    width="full"
+                    borderRadius="xl">
+                    로그인
+                  </Button>
+                </GridItem>
+
+              </Grid>
+            </Box>
+          </Box>
+        </Center>
       </Container>
 
-      <TabBar />
+      <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
+        <TabBar />
+      </Box>
     </Box>
   );
 }
