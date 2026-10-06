@@ -32,7 +32,7 @@ export const SignInPage = () => {
   };
 
   return (
-    <Box position="relative" minH="100vh" pt={24} pb={12} bg="bg">
+    <Grid templateRows={'auto 1fr'} minHeight="100vh" paddingY={ 4 }>
       <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
         <Container maxW="7xl" mx="auto" px={0}>
           <AppBar />
@@ -109,6 +109,6 @@ export const SignInPage = () => {
           </Box>
         </Center>
       </Container>
-    </Box>
+    </Grid>
   );
 }
