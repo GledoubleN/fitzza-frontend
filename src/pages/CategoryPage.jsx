@@ -17,9 +17,7 @@ export const CategoryPage = () => {
   return (
     <>
     <Stack paddingY={ '4' } paddingBottom="96px" height={ '100vh' } gap={ '4' }>
-      <Container maxWidth={ '3xl' }>
         <AppBar></AppBar>
-      </Container>
       <Container maxWidth={ '3xl' } flex={ '1' } minHeight={ '0' }>
         <Stack height={ 'full' } gap={ '4' }>
           <Heading size={ 'xl' }>카테고리</Heading>
