@@ -1,4 +1,13 @@
-import { Container, Grid, GridItem, Stack, Card, Image, Text, IconButton } from '@chakra-ui/react'
+import {
+  Container,
+  Grid,
+  GridItem,
+  Stack,
+  Card,
+  Image,
+  Text,
+  IconButton,
+} from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import exampleProductImage from '/src/assets/hero.png'
@@ -9,34 +18,38 @@ import { LuX } from 'react-icons/lu'
 export const LikesPage = () => {
   return (
     <>
-    <Stack paddingY={ 4 } paddingBottom="96px" height={ '100vh' } gap={ 4 }>
+      <Stack paddingY={ 4 } height={ '100vh' } gap={ 4 }>
         <AppBar></AppBar>
-      <Container maxWidth="3xl">
-        <Grid templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.2} * 4) / 5)), 1fr))' } gap={ 2 }>
-          {
-            Array.from({ length: 50 }, (_, index) => (
-              <Card.Root key={ index }>
-                <Image src={ exampleProductImage }></Image>
-                <Card.Body padding = { '2' }>
-                  <Card.Title>Name</Card.Title>
-                  <Text truncate>{ (1_000).toLocaleString() } 원</Text>
-                </Card.Body>
-                <IconButton
-                  position={ 'absolute' }
-                  right={ '2' }
-                  top={ '2' }
-                  rounded={ 'full' }
-                  size={ 'xs' }
-                >
-                  <LuX></LuX>
-                </IconButton>
-              </Card.Root>
-            ))
-          }
-        </Grid>
-      </Container>
-    </Stack>
-    <TabBar />
+        <Container maxWidth="5xl">
+          <Grid
+            templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.2} * 4) / 5)), 1fr))' }
+            gapX={ 4 }
+            gapY={ 8 }
+          >
+            {
+              Array.from({ length: 50 }, (_, index) => (
+                <Card.Root key={ index } borderWidth={0}>
+                  <Image src={ exampleProductImage }></Image>
+                  <Card.Body padding={ '2' }>
+                    <Card.Title>Name</Card.Title>
+                    <Text truncate>{ (1_000).toLocaleString() } 원</Text>
+                  </Card.Body>
+                  <IconButton
+                    position={ 'absolute' }
+                    right={ '2' }
+                    top={ '2' }
+                    rounded={ 'full' }
+                    size={ 'xs' }
+                  >
+                    <LuX></LuX>
+                  </IconButton>
+                </Card.Root>
+              ))
+            }
+          </Grid>
+        </Container>
+      </Stack>
+      <TabBar/>
     </>
   )
 }
