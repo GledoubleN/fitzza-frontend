@@ -1,119 +1,114 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Container, Field, Grid, GridItem, Heading, Input, Text, Box, Center } from "@chakra-ui/react";
-import { api } from "../api/axios.js";
-import { AppBar } from "../components/AppBar.jsx";
-import { TabBar } from "../components/TabBar.jsx";
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  Button,
+  Container,
+  Field,
+  Grid,
+  GridItem,
+  Heading,
+  Text,
+  Box,
+  Center,
+  Input,
+  InputGroup, Stack,
+} from '@chakra-ui/react'
+import { LuMail, LuLockKeyhole } from 'react-icons/lu'
+import { api } from '../api/axios.js'
+import { AppBar } from '../components/AppBar.jsx'
+import { Footer } from '../components/Footer.jsx'
 
 export const SignInPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const moveUrl = useNavigate();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const moveUrl = useNavigate()
 
   const changeHandler = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+    e.preventDefault()
+    setLoading(true)
+    setErrorMessage('')
     try {
-      await api.post("/auth/login/sample", { email, password });
-      console.log("로그인 성공, 메인페이지로 이동", {email, password});
-      moveUrl("/");
+      await api.post('/auth/login/sample', { email, password })
+      moveUrl('/')
     } catch (err) {
       if (err.response?.status === 401) {
-        setError("이메일 혹은 비밀번호가 틀렸습니다.");
-      } else if(window.confirm("로그인에 실패했습니다. 메인페이지로 넘어가기 (개발 중)")){
-        console.log("로그인 없이 넘어감(개발)", {email, password});
-        moveUrl("/");
+        setErrorMessage('이메일 혹은 비밀번호가 틀렸습니다.')
+      } else {
+        setErrorMessage('로그인에 실패했습니다.')
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
-      <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
-        <Container maxW="7xl" mx="auto" px={0}>
-          <AppBar />
-        </Container>
-      </Box>
+    <Grid
+      templateRows={ 'auto 1fr auto' }
+      minHeight="100vh"
+      gap={ 4 }
+      paddingY={ 4 }
+      bg="bg"
+    >
+      <AppBar/>
 
-      <Container maxW="3xl" mx="auto" px={5}>
-        <Center w="100%" minH="65vh">
-          <Box w="100%" maxW="lg">
-            <Box
-              variant="subtle"
-              borderWidth="thin"
-              borderColor="border.subtle"
-              bg="bg.panel"
-              borderRadius="2xl"
-              p={8}
-              boxShadow="md"
-            >
-              <Grid as="form" onSubmit={changeHandler} templateRows="auto repeat(3, auto) auto auto" gap={6} alignItems="center">
+      <Container maxWidth="md" display={ 'flex' } alignItems={ 'center' }>
+        <Stack
+          width={ '100%' }
+          as="form"
+          onSubmit={ changeHandler }
+          gap={ 4 }
+          alignItems="center"
+        >
+          <Heading size="lg">로그인</Heading>
 
-                <GridItem textAlign="center" w="100%" mb={2}>
-                  <Heading size="lg">로그인</Heading>
-                </GridItem>
+          <Field.Root required w="100%">
+            <InputGroup startElement={ <LuMail/> }>
+              <Input
+                type="email"
+                placeholder="이메일"
+                value={ email }
+                onChange={ (e) => setEmail(e.target.value) }
+                variant="outline"
+                size="lg"
+                textAlign="left"
+              />
+            </InputGroup>
+          </Field.Root>
 
-                <GridItem w="100%">
-                  <Field.Root required w="100%">
-                    <Field.Label>이메일</Field.Label>
-                    <Input
-                      type="email"
-                      placeholder="이메일"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      variant="outline"
-                      size="lg"
-                      borderRadius="xl"
-                    />
-                  </Field.Root>
-                </GridItem>
+          <Field.Root required w="100%">
+            <InputGroup startElement={ <LuLockKeyhole/> }>
+              <Input
+                type="password"
+                placeholder="비밀번호"
+                value={ password }
+                onChange={ (e) => setPassword(e.target.value) }
+                variant="outline"
+                size="lg"
+                textAlign="left"
+              />
+            </InputGroup>
+          </Field.Root>
 
-                <GridItem w="100%">
-                  <Field.Root required w="100%">
-                    <Field.Label>비밀번호</Field.Label>
-                    <Input
-                      type="password"
-                      placeholder="비밀번호"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      variant="outline"
-                      size="lg"
-                      borderRadius="xl"
-                    />
-                  </Field.Root>
-                </GridItem>
+          { errorMessage && (
+            // TODO
+            <Text color="red.500" textStyle="sm">{ errorMessage }</Text>
+          ) }
 
-                {error && (
-                  <GridItem textAlign="center">
-                    <Text color="red.500" textStyle="sm">{error}</Text>
-                  </GridItem>
-                )}
+          <Button
+            type="submit"
+            loading={ loading }
+            size="lg"
+            width="full"
+          >
+            로그인
+          </Button>
 
-                <GridItem w="100%" mt={2}>
-                  <Button
-                    type="submit"
-                    loading={loading}
-                    size="lg"
-                    width="full"
-                    borderRadius="xl">
-                    로그인
-                  </Button>
-                </GridItem>
-
-              </Grid>
-            </Box>
-          </Box>
-        </Center>
+        </Stack>
       </Container>
 
-      <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
-        <TabBar />
-      </Box>
-    </Box>
-  );
+      <Footer></Footer>
+    </Grid>
+  )
 }
