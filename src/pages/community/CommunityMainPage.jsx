@@ -149,6 +149,7 @@ export const CommunityMainPage = () => {
             size="xl"
             aria-label="글쓰기"
             pointerEvents="auto"
+            colorPalette="primary"
             onClick={writeHandler}
           >
             <LuPencil />
