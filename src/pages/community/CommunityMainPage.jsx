@@ -14,7 +14,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import {
-  LuChevronLeft,
   LuMessageCircle,
   LuPencil,
   LuSearch,
@@ -97,19 +96,9 @@ export const CommunityMainPage = () => {
       <Container maxWidth="3xl">
         <Stack direction="column" gap="4">
           {/* 커뮤니티 헤더 */}
-          <Flex align="center" justify="space-between">
-            <HStack gap="2">
-              <IconButton rounded="full" variant="ghost" size="sm" aria-label="뒤로">
-                <LuChevronLeft />
-              </IconButton>
-              <Text fontSize="lg" fontWeight="semibold">
-                커뮤니티
-              </Text>
-            </HStack>
-            <IconButton rounded="full" variant="ghost" aria-label="검색">
-              <LuSearch />
-            </IconButton>
-          </Flex>
+          <Text fontSize="lg" fontWeight="semibold">
+            커뮤니티
+          </Text>
 
           {/* 검색 입력 (선택) */}
           <InputGroup startElement={<LuSearch />}>
