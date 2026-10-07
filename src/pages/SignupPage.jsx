@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  Card,
   Button,
   Container,
   Input,
@@ -44,97 +43,91 @@ export default function SignupPage() {
     }
 
     setErrorMessage('');
-    console.log('회원가입 요청 데이터:', formData);
-    alert('회원가입 검증 완료! (콘솔창을 확인하세요)');
   };
 
   return (
-    <Grid templateRows={'auto 1fr'} minHeight="100vh" paddingY={4} bg="bg">
+    <Grid templateRows={'auto 1fr'} minHeight="100vh" paddingY={4}>
       <AppBar />
 
       <Container maxW="3xl" mx="auto" px={5}>
         <Center w="100%" minH="65vh">
           <Box w="100%" maxW="lg">
-            <Card.Root variant="subtle" borderWidth="thin" borderColor="border.subtle" bg="bg.panel" boxShadow="md">
-              <Card.Body p={8}>
-                <Grid as="form" onSubmit={handleSubmit} templateRows="auto repeat(3, auto) auto auto" gap={6} alignItems="center">
+            <Grid as="form" onSubmit={handleSubmit} templateRows="auto repeat(3, auto) auto auto" gap={6} alignItems="center">
 
-                  <GridItem textAlign="center" w="100%" mb={2}>
-                    <Heading size="lg">회원가입</Heading>
-                  </GridItem>
+              <GridItem textAlign="center" w="100%" mb={2}>
+                <Heading size="lg">회원가입</Heading>
+              </GridItem>
 
-                  <GridItem w="100%">
-                    <Field.Root required w="100%">
-                      <InputGroup startElement={<Box as={LuMail} boxSize={5} color="fg.muted" />}>
-                        <Input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          placeholder="이메일"
-                          variant="outline"
-                          size="lg"
-                          textAlign="left"
-                        />
-                      </InputGroup>
-                    </Field.Root>
-                  </GridItem>
-
-                  <GridItem w="100%">
-                    <Field.Root required w="100%">
-                      <InputGroup startElement={<Box as={LuUser} boxSize={5} color="fg.muted" />}>
-                        <Input
-                          type="text"
-                          name="nickname"
-                          value={formData.nickname}
-                          onChange={handleChange}
-                          placeholder="사용자명"
-                          variant="outline"
-                          size="lg"
-                          textAlign="left"
-                        />
-                      </InputGroup>
-                    </Field.Root>
-                  </GridItem>
-
-                  <GridItem w="100%">
-                    <Field.Root required w="100%">
-                      <InputGroup startElement={<Box as={LuLockKeyhole} boxSize={5} color="fg.muted" />}>
-                        <Input
-                          type="password"
-                          name="password"
-                          value={formData.password}
-                          onChange={handleChange}
-                          placeholder="비밀번호"
-                          variant="outline"
-                          size="lg"
-                          textAlign="left"
-                        />
-                      </InputGroup>
-                    </Field.Root>
-                  </GridItem>
-
-                  {errorMessage && (
-                    <GridItem textAlign="center">
-                      <Text color="red.500" textStyle="sm">
-                        {errorMessage}
-                      </Text>
-                    </GridItem>
-                  )}
-
-                  <GridItem w="100%" mt={2}>
-                    <Button
-                      type="submit"
+              <GridItem w="100%">
+                <Field.Root required w="100%">
+                  <InputGroup startElement={<Box as={LuMail} boxSize={5} color="fg.muted" />}>
+                    <Input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="이메일"
+                      variant="outline"
                       size="lg"
-                      width="full"
-                    >
-                      가입하기
-                    </Button>
-                  </GridItem>
+                      textAlign="left"
+                    />
+                  </InputGroup>
+                </Field.Root>
+              </GridItem>
 
-                </Grid>
-              </Card.Body>
-            </Card.Root>
+              <GridItem w="100%">
+                <Field.Root required w="100%">
+                  <InputGroup startElement={<Box as={LuUser} boxSize={5} color="fg.muted" />}>
+                    <Input
+                      type="text"
+                      name="nickname"
+                      value={formData.nickname}
+                      onChange={handleChange}
+                      placeholder="사용자명"
+                      variant="outline"
+                      size="lg"
+                      textAlign="left"
+                    />
+                  </InputGroup>
+                </Field.Root>
+              </GridItem>
+
+              <GridItem w="100%">
+                <Field.Root required w="100%">
+                  <InputGroup startElement={<Box as={LuLockKeyhole} boxSize={5} color="fg.muted" />}>
+                    <Input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="비밀번호"
+                      variant="outline"
+                      size="lg"
+                      textAlign="left"
+                    />
+                  </InputGroup>
+                </Field.Root>
+              </GridItem>
+
+              {errorMessage && (
+                <GridItem textAlign="center">
+                  <Text color="red.500" textStyle="sm">
+                    {errorMessage}
+                  </Text>
+                </GridItem>
+              )}
+
+              <GridItem w="100%" mt={2}>
+                <Button
+                  type="submit"
+                  size="lg"
+                  width="full"
+                >
+                  가입하기
+                </Button>
+              </GridItem>
+
+            </Grid>
           </Box>
         </Center>
       </Container>
