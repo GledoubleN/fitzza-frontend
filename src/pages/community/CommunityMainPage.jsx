@@ -146,7 +146,6 @@ export const CommunityMainPage = () => {
         <Container maxWidth="3xl" display="flex" justifyContent="flex-end">
           <IconButton
             rounded="full"
-            colorPalette="orange"
             size="xl"
             aria-label="글쓰기"
             pointerEvents="auto"

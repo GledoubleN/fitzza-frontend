@@ -42,7 +42,7 @@ export const CommunityArticleCommentItem = ({
           <Box boxSize="6" rounded="full" bg="bg.muted" flexShrink="0" />
           <Text>{author}</Text>
           {isAuthor && (
-            <Badge colorPalette="orange" size="sm">작성자</Badge>
+            <Badge size="sm">작성자</Badge>
           )}
           <Text color="fg.muted">·</Text>
           <Text color="fg.muted">{time}</Text>
@@ -85,7 +85,7 @@ export const CommunityArticleCommentItem = ({
               if (e.key === "Enter") submitReply();
             }}
           />
-          <Button size="sm" colorPalette="orange" flexShrink="0" onClick={submitReply}>
+          <Button size="sm" flexShrink="0" onClick={submitReply}>
             등록
           </Button>
         </HStack>

@@ -1,19 +1,17 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   Badge,
   Box,
   Button,
   Container,
-  Flex,
   HStack,
-  IconButton,
   Image,
   Input,
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { LuChevronLeft, LuMessageCircle, LuThumbsUp } from "react-icons/lu";
+import { LuMessageCircle, LuThumbsUp } from "react-icons/lu";
 import { AppBar } from "../../components/AppBar.jsx";
 import { ScrollToTopButton } from "../../components/ScrollToTopButton.jsx";
 import { CommunityArticleCommentList } from "./CommunityArticleCommentList.jsx";
@@ -24,7 +22,6 @@ import { COMMENTS } from "/src/data/comments.js";
 export const CommunityArticlePage = () => {
   const { id } = useParams();
   console.log(">>> Debug: CommunityArticlePage Mounted", id);
-  const moveUrl = useNavigate();
 
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -190,20 +187,9 @@ export const CommunityArticlePage = () => {
       <Container maxWidth="3xl">
         <Stack direction="column" gap="4">
           {/* 헤더 */}
-          <Flex align="center" gap="2">
-            <IconButton
-              rounded="full"
-              variant="ghost"
-              size="sm"
-              aria-label="뒤로"
-              onClick={() => moveUrl(-1)}
-            >
-              <LuChevronLeft />
-            </IconButton>
-            <Text fontSize="lg" fontWeight="semibold">
-              커뮤니티
-            </Text>
-          </Flex>
+          <Text fontSize="lg" fontWeight="semibold">
+            커뮤니티
+          </Text>
 
           {/* 글 본문 */}
           <Stack direction="column" gap="3">
@@ -279,7 +265,7 @@ export const CommunityArticlePage = () => {
                 if (e.key === "Enter") submitCommentHandler();
               }}
             />
-            <Button colorPalette="orange" flexShrink="0" onClick={submitCommentHandler}>
+            <Button flexShrink="0" onClick={submitCommentHandler}>
               등록
             </Button>
           </HStack>
