@@ -97,7 +97,7 @@ export const CommunityArticleCommentItem = ({
         <Text
           paddingLeft="8"
           fontSize="sm"
-          color="blue.500"
+          color="accent.emphasized"
           cursor="pointer"
           onClick={() => setExpanded((v) => !v)}
         >
