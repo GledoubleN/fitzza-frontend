@@ -13,6 +13,7 @@ import {
   NativeSelect,
   Separator,
   Stack,
+  Tabs,
   Text,
 } from '@chakra-ui/react'
 import { AppBar } from '../../components/AppBar.jsx'
@@ -29,6 +30,12 @@ const CATEGORIES = [
   { value: 'FASHION', label: '패션' },
   { value: 'COORDI_QUESTION', label: '코디 질문' },
   { value: 'DAILY', label: '일상' },
+]
+
+const MODES = [
+  { value: 'default', label: '기본' },
+  { value: 'versus', label: '비교' },
+  { value: 'vote', label: '투표' },
 ]
 
 const MIN_VOTE_OPTIONS = 2
@@ -168,11 +175,22 @@ export const CommunityWritePage = () => {
           <Text fontSize={ 'lg' } fontWeight={ 'bold' }>커뮤니티</Text>
         </Flex>
 
-        <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ '4' }>
-          <Button onClick={ () => {setMode('default')} }>기본</Button>
-          <Button onClick={ () => {setMode('versus')} }>비교</Button>
-          <Button onClick={ () => {setMode('vote')} }>투표</Button>
-        </Grid>
+        <Tabs.Root fitted variant={ 'plain' } value={ mode } onValueChange={ (e) => setMode(e.value) }>
+          <Tabs.List>
+            {
+              MODES.map((mode) => (
+                <Tabs.Trigger
+                  key={ mode.value }
+                  value={ mode.value }
+                  color={ 'fg.muted' }
+                  _selected={ { color: 'fg', fontWeight: 'bold' } }
+                >
+                  { mode.label }
+                </Tabs.Trigger>
+              ))
+            }
+          </Tabs.List>
+        </Tabs.Root>
 
         {
           mode !== 'vote' &&
