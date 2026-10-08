@@ -10,11 +10,12 @@ import {
   IconButton,
   Image,
   Input, InputGroup,
+  Separator,
   Stack,
   Text,
 } from '@chakra-ui/react'
 import { AppBar } from '../../components/AppBar.jsx'
-import { Control, RichTextEditor } from '/src/components/ui/rich-text-editor'
+import { RichTextEditor } from '/src/components/ui/rich-text-editor'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useState } from 'react'
@@ -159,10 +160,11 @@ export const CommunityWritePage = () => {
           getAdditionalInput()
         }
 
-        {
-          shared?.snapshot && mode !== 'vote' &&
-          <Card.Root>
-            <Card.Body gap={ '2' }>
+        <RichTextEditor.Root editor={ editor } height={ '400px' }>
+          {
+            // 공유할 코디는 본문 상자 안, 글 위에 보여준다. 투표에서는 선택지로 들어가므로 숨긴다.
+            shared?.snapshot && mode !== 'vote' &&
+            <Stack gap={ '2' } padding={ '5' } paddingBottom={ '0' }>
               <Text fontWeight={ 'bold' }>공유할 코디</Text>
               {
                 shared.snapshot.items.map((item) => (
@@ -175,18 +177,9 @@ export const CommunityWritePage = () => {
               <Text fontWeight={ 'bold' } alignSelf={ 'flex-end' }>
                 합계 { shared.snapshot.totalPrice.toLocaleString() }원
               </Text>
-            </Card.Body>
-          </Card.Root>
-        }
-
-        <RichTextEditor.Root editor={ editor } height={ '400px' }>
-          <RichTextEditor.Toolbar>
-            <RichTextEditor.ControlGroup>
-              <Control.Bold/>
-              <Control.Italic/>
-              <Control.Underline/>
-            </RichTextEditor.ControlGroup>
-          </RichTextEditor.Toolbar>
+              <Separator></Separator>
+            </Stack>
+          }
           <RichTextEditor.Content/>
         </RichTextEditor.Root>
 
