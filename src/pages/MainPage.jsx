@@ -38,8 +38,13 @@ import { useRef, useState } from 'react'
 export const MainPage = () => {
   const navigate = useNavigate()
 
-  const onSubmit = () => {
-    navigate('/prompt')
+  const [prompt, setPrompt] = useState('')
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    const query = prompt.trim()
+    if (!query) return
+    navigate('/ai', { state: { query } })
   }
 
   const [isLongPrompt, setIsLongPrompt] = useState(false)
@@ -59,15 +64,20 @@ export const MainPage = () => {
         >
           <Card.Body padding={ 2 }>
             <Stack height={ '100%' } gap={ 2 } position="relative">
-              <Grid templateColumns={ 'auto 1fr auto' } gap={ 2 }>
+              <Grid as={ 'form' } templateColumns={ 'auto 1fr auto' } gap={ 2 } onSubmit={ onSubmit }>
                 <IconButton
+                  type={ 'button' }
                   rounded={ 'full' }
                   onClick={ () => { setIsLongPrompt((isLongPrompt) => !isLongPrompt) } }
                 >
                   <LuSparkle/>
                 </IconButton>
-                <Input variant={ 'none' }></Input>
-                <IconButton rounded={ 'full' }>
+                <Input
+                  variant={ 'none' }
+                  value={ prompt }
+                  onChange={ (e) => setPrompt(e.target.value) }
+                ></Input>
+                <IconButton type={ 'submit' } rounded={ 'full' }>
                   <LuArrowUp/>
                 </IconButton>
               </Grid>
@@ -78,6 +88,8 @@ export const MainPage = () => {
                   variant={ 'none' }
                   padding={ 4 }
                   rows={ 3 }
+                  value={ prompt }
+                  onChange={ (e) => setPrompt(e.target.value) }
                 ></Textarea>
               }
             </Stack>
