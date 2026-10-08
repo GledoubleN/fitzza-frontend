@@ -35,7 +35,7 @@ import { IoLogoJavascript, IoLogoLinkedin, IoLogoTwitter, IoLogoVimeo } from 're
 import { Footer } from '../components/Footer.jsx'
 import { useEffect, useRef, useState } from 'react'
 
-// 스파클 버튼으로 펼쳤을 때의 줄 수이자 자동으로 늘어나는 최대 줄 수.
+// AI 버튼(LuSparkle)으로 펼쳤을 때의 줄 수이자 자동으로 늘어나는 최대 줄 수.
 const MAX_PROMPT_ROWS = 4
 
 export const MainPage = () => {
@@ -55,7 +55,7 @@ export const MainPage = () => {
 
   const promptRef = useRef(null)
 
-  // 내용이 다 보이는 가장 작은 줄 수를 찾는다. 넘치면 최대 줄 수에서 스크롤한다.
+  // 내용이 다 보이는 가장 작은 줄 수를 찾고, 설정한 값을 넘어가면 스크롤할 수 있도록 합니다.
   const fitPromptRows = () => {
     const textarea = promptRef.current
     const currentRows = textarea.rows
@@ -73,13 +73,13 @@ export const MainPage = () => {
     fitPromptRows()
   }
 
-  // 창 너비가 바뀌면 줄넘김이 달라지므로 다시 맞춘다.
+  // 창 너비가 바뀌면 줄넘김이 달라지므로 다시 맞춥니다.
   useEffect(() => {
     window.addEventListener('resize', fitPromptRows)
     return () => window.removeEventListener('resize', fitPromptRows)
   }, [])
 
-  // Enter는 전송, Shift+Enter는 줄바꿈. 한글 조합 중 Enter는 무시한다.
+  // Enter는 전송, Shift+Enter는 줄바꿈. 한글 입력시 전송이 두번 되거나, 마지막 글자가 한 번 더 붙는 것을 방지합니다.
   const onKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault()
