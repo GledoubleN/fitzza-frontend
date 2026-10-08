@@ -147,9 +147,6 @@ export const CommunityWritePage = () => {
         <AppBar></AppBar>
 
         <Flex align={ 'center' } gap={ '1' }>
-          <IconButton variant={ 'ghost' } rounded={ 'full' } aria-label={ '뒤로 가기' } onClick={ () => navigate(-1) }>
-            <LuChevronLeft></LuChevronLeft>
-          </IconButton>
           <Text fontSize={ 'lg' } fontWeight={ 'bold' }>커뮤니티</Text>
         </Flex>
 
