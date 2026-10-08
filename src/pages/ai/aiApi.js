@@ -24,14 +24,14 @@ export const postRecommendation = (query) =>
   withFallback(() => api.post('/recommendations', { query }), { requestId: 'sample', status: 'PENDING' })
 
 export const getRecommendation = (requestId) =>
-  withFallback(() => api.get(`/recommendations/${ requestId }`), sampleResult)
+  withFallback(() => api.get(`/recommendations/${ encodeURIComponent(requestId) }`), sampleResult)
 
 export const getRecommendationHistory = (page) =>
   withFallback(() => api.get('/recommendations', { params: { page, size: 20 } }), sampleHistory)
 
 // 말풍선 보조용이라 실패해도 샘플 전환을 묻지 않는다.
 export const getRecommendationMessages = async (requestId) =>
-  useSample ? sampleMessages : (await api.get(`/recommendations/${ requestId }/messages`)).data
+  useSample ? sampleMessages : (await api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`)).data
 
 export const getProductOptions = async (productId) =>
   (await withFallback(() => api.get(`/products/${ productId }`), sampleProduct)).options
