@@ -22,6 +22,7 @@ export const AiHistoryPage = () => {
   const [totalPages, setTotalPages] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
     if (!ensureLogin(navigate)) return
@@ -43,7 +44,7 @@ export const AiHistoryPage = () => {
       })
 
     return () => { cancelled = true }
-  }, [page])
+  }, [page, attempt])
 
   return (
     <Stack gap={ 4 } paddingY={ 4 } minHeight={ '100vh' }>
@@ -77,11 +78,15 @@ export const AiHistoryPage = () => {
           { loading && <Spinner size={ 'sm' } alignSelf={ 'center' }></Spinner> }
           { error && <Text color={ 'fg.error' }>{ error }</Text> }
           {
+            !loading && error &&
+            <Button variant={ 'outline' } onClick={ () => setAttempt(attempt + 1) }>다시 시도</Button>
+          }
+          {
             !loading && !error && items.length === 0 &&
             <Text color={ 'fg.muted' }>아직 추천받은 대화가 없어요.</Text>
           }
           {
-            !loading && page + 1 < totalPages &&
+            !loading && !error && page + 1 < totalPages &&
             <Button variant={ 'ghost' } onClick={ () => setPage(page + 1) }>더 보기</Button>
           }
         </Stack>
