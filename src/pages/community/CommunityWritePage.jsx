@@ -10,6 +10,7 @@ import {
   IconButton,
   Image,
   Input, InputGroup,
+  NativeSelect,
   Separator,
   Stack,
   Text,
@@ -19,9 +20,16 @@ import { RichTextEditor } from '/src/components/ui/rich-text-editor'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { LuCircle, LuPlus, LuTrash } from 'react-icons/lu'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { LuChevronLeft, LuCircle, LuPlus, LuTrash } from 'react-icons/lu'
 import exampleProductImage from '/src/assets/hero.png'
+
+// 게시글 분류. 값은 게시글 작성 API의 category를 따른다.
+const CATEGORIES = [
+  { value: 'FASHION', label: '패션' },
+  { value: 'COORDI_QUESTION', label: '코디 질문' },
+  { value: 'DAILY', label: '일상' },
+]
 
 const MIN_VOTE_OPTIONS = 2
 const MAX_VOTE_OPTIONS = 4
@@ -29,6 +37,9 @@ const MAX_VOTE_OPTIONS = 4
 export const CommunityWritePage = () => {
   const [editable, setEditable] = useState(true)
   const [mode, setMode] = useState('default')
+  const [category, setCategory] = useState('')
+  const [title, setTitle] = useState('')
+  const navigate = useNavigate()
   // AI 추천 화면에서 공유하기로 넘어온 코디. 게시글 작성 API 연동 시 sharedType, sharedId를 함께 보낸다.
   const shared = useLocation().state
 
@@ -150,6 +161,13 @@ export const CommunityWritePage = () => {
       <Stack paddingY={ '4' } gap={ '4' }>
         <AppBar></AppBar>
 
+        <Flex align={ 'center' } gap={ '1' }>
+          <IconButton variant={ 'ghost' } rounded={ 'full' } aria-label={ '뒤로 가기' } onClick={ () => navigate(-1) }>
+            <LuChevronLeft></LuChevronLeft>
+          </IconButton>
+          <Text fontSize={ 'lg' } fontWeight={ 'bold' }>커뮤니티</Text>
+        </Flex>
+
         <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ '4' }>
           <Button onClick={ () => {setMode('default')} }>기본</Button>
           <Button onClick={ () => {setMode('versus')} }>비교</Button>
@@ -157,8 +175,34 @@ export const CommunityWritePage = () => {
         </Grid>
 
         {
+          mode !== 'vote' &&
+          <NativeSelect.Root>
+            <NativeSelect.Field
+              placeholder={ '카테고리 선택' }
+              aria-label={ '카테고리' }
+              value={ category }
+              onChange={ (e) => setCategory(e.target.value) }
+            >
+              {
+                CATEGORIES.map((category) => (
+                  <option key={ category.value } value={ category.value }>{ category.label }</option>
+                ))
+              }
+            </NativeSelect.Field>
+            <NativeSelect.Indicator/>
+          </NativeSelect.Root>
+        }
+
+        {
           getAdditionalInput()
         }
+
+        <Input
+          placeholder={ '제목' }
+          aria-label={ '제목' }
+          value={ title }
+          onChange={ (e) => setTitle(e.target.value) }
+        ></Input>
 
         <RichTextEditor.Root editor={ editor } height={ '400px' }>
           {
