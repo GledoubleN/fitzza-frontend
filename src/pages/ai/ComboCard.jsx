@@ -9,12 +9,12 @@ export const ComboCard = ({ combo, combos, index }) => {
   const navigate = useNavigate()
   const [selected, setSelected] = useState({})
   const [saving, setSaving] = useState(false)
-  // 전체 담기가 일부만 성공했을 때 이미 담긴 옵션. 재시도 때 다시 담지 않는다.
+  // 전체 담기가 일부만 성공했을 때 이미 담긴 옵션. 재시도 때 다시 담지 않습니다.
   const [addedOptionIds, setAddedOptionIds] = useState([])
 
   const allSelected = combo.items.every((item) => selected[item.productId])
 
-  // 각 상품 카드에서 고른 옵션으로 한 번에 담는다.
+  // 전체담기, 각 상품 카드에서 고른 옵션으로 한 번에 담습니다.
   const addAllToCart = async () => {
     setSaving(true)
     const pending = combo.items
@@ -33,13 +33,14 @@ export const ComboCard = ({ combo, combos, index }) => {
   }
 
   const share = () => {
-    // snapshot: 작성 화면에 보여줄 코디 내용. 공유 초안 조회 API(/posts/share-draft)의 응답 형태를 따른다.
+    // 작성 화면에 보여줄 코디 내용. 공유 초안 조회 API(/posts/share-draft) 연동 시 대체됩니다.
     navigate('/communitywrite', {
       state: {
         sharedType: 'COMBO',
         sharedId: combo.comboId,
         snapshot: { items: combo.items, totalPrice: combo.totalPrice },
-        // 작성 화면에서 투표를 고르면 추천받은 코디들이 선택지로 들어간다. 투표 게시글 작성 API의 options 형태를 따른다.
+        // 작성 화면에서 투표를 고르면 추천받은 코디들이 선택지로 들어갑니다.
+        // 투표 게시글 작성 API의 options 형태
         voteOptions: combos.map((combo, index) => ({
           source: 'AI_RECOMMEND',
           itemType: 'COMBO',
