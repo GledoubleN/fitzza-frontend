@@ -1,14 +1,11 @@
 import {
   Button,
   Container, Flex,
-  HStack,
-  IconButton,
   Spinner,
   Stack,
   Text,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { LuChevronLeft, LuSearch } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../../components/AppBar.jsx'
 import { TabBar } from '../../components/TabBar.jsx'

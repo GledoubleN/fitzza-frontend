@@ -25,7 +25,7 @@ export const AiStylistPage = () => {
   const postedKey = useRef(null)
   const activeKey = useRef(null)
 
-  // 지금 보고 있는 화면의 위치. 요청 응답이 늦게 왔을 때 아직 같은 화면인지 확인하는 데 쓴다.
+  // 지금 보고 있는 화면의 위치. 요청 응답이 늦게 왔을 때 아직 같은 화면인지 확인하는 데 씁니다.
   useEffect(() => {
     activeKey.current = location.key
     return () => { activeKey.current = null }
@@ -43,7 +43,7 @@ export const AiStylistPage = () => {
     const key = location.key
     try {
       const data = await postRecommendation(text)
-      // 응답을 기다리는 사이 다른 화면으로 옮겼으면 끌고 오지 않는다.
+      // 응답을 기다리는 사이 다른 화면으로 옮겼으면 결과화면으로 강제로 이동시키지 않습니다.
       if (activeKey.current !== key) return
       navigate(`/ai/${ data.requestId }`, { replace: true, state: { query: text } })
     } catch (err) {
@@ -53,7 +53,8 @@ export const AiStylistPage = () => {
   }
 
   useEffect(() => {
-    // 질의도 결과도 없이 들어오면 보여줄 것이 없으므로 메인 화면으로 돌려보낸다.
+    // 질의도 결과도 없이 들어오면 보여줄 것이 없으므로 메인 화면으로 돌려보냅니다.
+    // 개발시에는 /ai/sample Route 사용 필요
     if (!requestId && !location.state?.query) {
       navigate('/', { replace: true })
       return
@@ -62,7 +63,7 @@ export const AiStylistPage = () => {
     if (!ensureLogin(navigate)) return
 
     if (!requestId) {
-      // 메인 화면에서 넘어온 질의는 한 번만 요청합니다.
+      // 질의의 중복 전송을 방지합니다.
       const text = location.state?.query
       if (postedKey.current !== location.key) {
         postedKey.current = location.key
