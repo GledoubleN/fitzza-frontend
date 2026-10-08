@@ -1,16 +1,10 @@
-import { Button, Card, Container, Flex, IconButton, Input, InputGroup, Spinner, Stack, Text } from '@chakra-ui/react'
+import { Button, Card, Container, Flex, IconButton, Spinner, Stack, Text } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
-import { LuArrowUp, LuMenu } from 'react-icons/lu'
+import { LuMenu } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AppBar } from '../../components/AppBar.jsx'
 import { Toaster } from '../../components/ui/toaster.jsx'
-import {
-  ensureLogin,
-  getRecommendation,
-  getRecommendationMessages,
-  MAX_QUERY_LENGTH,
-  postRecommendation,
-} from './aiApi.js'
+import { ensureLogin, getRecommendation, getRecommendationMessages, postRecommendation } from './aiApi.js'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
 
@@ -24,8 +18,7 @@ export const AiStylistPage = () => {
   const navigate = useNavigate()
 
   const [query, setQuery] = useState(location.state?.query ?? '')
-  const [input, setInput] = useState('')
-  const [status, setStatus] = useState(requestId || location.state?.query ? 'loading' : 'idle')
+  const [status, setStatus] = useState('loading')
   const [result, setResult] = useState(null)
   const [message, setMessage] = useState('')
   const [attempt, setAttempt] = useState(0)
@@ -52,7 +45,7 @@ export const AiStylistPage = () => {
       const data = await postRecommendation(text)
       // 응답을 기다리는 사이 다른 화면으로 옮겼으면 끌고 오지 않는다.
       if (activeKey.current !== key) return
-      navigate(`/ai/${ data.requestId }`, { replace: status !== 'done', state: { query: text } })
+      navigate(`/ai/${ data.requestId }`, { replace: true, state: { query: text } })
     } catch (err) {
       if (activeKey.current !== key) return
       fail(err.response?.status === 400 ? '추천받을 내용을 입력해주세요.' : '')
@@ -60,12 +53,18 @@ export const AiStylistPage = () => {
   }
 
   useEffect(() => {
+    // 질의도 결과도 없이 들어오면 보여줄 것이 없으므로 메인 화면으로 돌려보낸다.
+    if (!requestId && !location.state?.query) {
+      navigate('/', { replace: true })
+      return
+    }
+
     if (!ensureLogin(navigate)) return
 
     if (!requestId) {
       // 메인 화면에서 넘어온 질의는 한 번만 요청합니다.
       const text = location.state?.query
-      if (text && postedKey.current !== location.key) {
+      if (postedKey.current !== location.key) {
         postedKey.current = location.key
         request(text)
       }
@@ -110,14 +109,6 @@ export const AiStylistPage = () => {
     }
   }, [requestId, location.key, attempt])
 
-  const onSubmit = (e) => {
-    e.preventDefault()
-    const text = input.trim()
-    if (!text || status === 'loading') return
-    setInput('')
-    request(text)
-  }
-
   const retry = () => {
     if (query) request(query)
     else setAttempt((attempt) => attempt + 1)
@@ -144,11 +135,6 @@ export const AiStylistPage = () => {
             </IconButton>
             <Text color={ 'fg.muted' }>AI 스타일리스트</Text>
           </Flex>
-
-          {
-            status === 'idle' &&
-            <Text color={ 'fg.muted' }>원하는 스타일을 알려주시면 어울리는 코디를 찾아드려요.</Text>
-          }
 
           {
             query &&
@@ -232,34 +218,6 @@ export const AiStylistPage = () => {
             </>
           }
         </Stack>
-      </Container>
-
-      <Container maxWidth={ '3xl' } position={ 'sticky' } bottom={ 4 }>
-        <form onSubmit={ onSubmit }>
-          <InputGroup
-            endElement={
-              <IconButton
-                type={ 'submit' }
-                size={ 'xs' }
-                rounded={ 'full' }
-                aria-label={ '추천받기' }
-                disabled={ status === 'loading' }
-              >
-                <LuArrowUp></LuArrowUp>
-              </IconButton>
-            }
-          >
-            <Input
-              rounded={ 'full' }
-              bg={ 'bg.panel' }
-              placeholder={ query ? '조건을 바꿔서 다시 추천받기' : '무엇을 도와드릴까요' }
-              aria-label={ '추천 조건' }
-              maxLength={ MAX_QUERY_LENGTH }
-              value={ input }
-              onChange={ (e) => setInput(e.target.value) }
-            ></Input>
-          </InputGroup>
-        </form>
       </Container>
 
       <Toaster></Toaster>

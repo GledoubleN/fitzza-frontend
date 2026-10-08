@@ -19,7 +19,6 @@ const ROUTES = [
   { path: "/worldcup", label: "상품 월드컵" },
   { path: "/likes", label: "찜 목록" },
   { path: "/category", label: "카테고리" },
-  { path: "/ai", label: "AI 스타일리스트" },
   { path: "/ai/history", label: "AI 대화 내역" },
 ];
 
