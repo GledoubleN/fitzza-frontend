@@ -20,7 +20,7 @@ export const CartAddedDialog = ({ open, onClose, description }) => {
             <Dialog.Header>
               <Dialog.Title>상품을 장바구니에 담았어요</Dialog.Title>
             </Dialog.Header>
-            {/*<Dialog.Body>{ description }]</Dialog.Body>*/}
+            {/*<Dialog.Body>{ description }</Dialog.Body>*/}
             <Dialog.Footer>
               <Button variant={ 'outline' } flex={ 1 } onClick={ onClose }>계속 쇼핑</Button>
               <Button flex={ 1 } onClick={ () => navigate('/shopping-cart') }>장바구니 보기</Button>
