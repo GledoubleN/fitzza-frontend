@@ -99,11 +99,12 @@ export const ProductCard = ({ item, onOptionChange }) => {
       }
       <NativeSelect.Root size={ 'xs' } display={ optionsFailed ? 'none' : undefined }>
         <NativeSelect.Field
-          placeholder={ '색상' }
           aria-label={ `${ item.productName } 색상` }
           value={ color }
           onChange={ (e) => selectColor(e.target.value) }
         >
+          {/* 안내용 항목이라 목록에서 고를 수 없게 한다. */}
+          <option value={ '' } disabled hidden>색상</option>
           {
             colors.map((color) => (
               <option key={ color } value={ color }>{ color }</option>
@@ -114,11 +115,11 @@ export const ProductCard = ({ item, onOptionChange }) => {
       </NativeSelect.Root>
       <NativeSelect.Root size={ 'xs' } disabled={ !color } display={ optionsFailed ? 'none' : undefined }>
         <NativeSelect.Field
-          placeholder={ '사이즈' }
           aria-label={ `${ item.productName } 사이즈` }
           value={ optionId }
           onChange={ (e) => selectOption(e.target.value) }
         >
+          <option value={ '' } disabled hidden>사이즈</option>
           {
             options.filter((option) => option.color === color).map((option) => (
               <option key={ option.optionId } value={ option.optionId } disabled={ !option.available }>
