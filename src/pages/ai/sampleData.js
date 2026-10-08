@@ -1,11 +1,14 @@
 // 백엔드 미연결 시 사용하는 개발용 샘플. API 명세서의 응답 형태를 따른다.
-const item = (productId, productName, price, fitPercent, evidence) => ({
+// color, size: 추천 옵션. 상품 옵션과 일치하면 화면에서 바로 선택된다.
+const item = (productId, productName, price, fitPercent, evidence, color = '블랙', size = 'M') => ({
   productId,
   productName,
   price,
   imageUrl: null,
   fitPercent,
   evidence,
+  color,
+  size,
 })
 
 export const sampleResult = {
@@ -16,7 +19,7 @@ export const sampleResult = {
   items: [
     item(1, '코튼 셔츠', 39000, 92, '선호하는 레귤러 핏과 잘 맞아요'),
     item(2, '집업 가디건', 59000, 88, '간절기에 걸치기 좋은 두께예요'),
-    item(3, '코튼 재킷', 79000, 85, '셔츠와 톤이 어울려요'),
+    item(3, '코튼 재킷', 79000, 85, '셔츠와 톤이 어울려요', '네이비', 'L'),
   ],
   combos: [
     {
@@ -36,7 +39,7 @@ export const sampleResult = {
       comboId: 'sample-combo-2',
       items: [
         item(6, '니트 베스트', 49000, 89, '레이어드하기 좋은 기장이에요'),
-        item(7, '슬랙스', 59000, 93, '체형에 맞는 허리 실측이에요'),
+        item(7, '슬랙스', 59000, 93, '체형에 맞는 허리 실측이에요', '네이비', 'M'),
         item(8, '더비 슈즈', 90000, 90, '세미 캐주얼에 어울려요'),
       ],
       totalPrice: 198000,

@@ -13,21 +13,29 @@ export const ProductCard = ({ item, onOptionChange }) => {
   const [optionId, setOptionId] = useState('')
   const [saving, setSaving] = useState(false)
 
+  const selectOption = (value) => {
+    setOptionId(value)
+    onOptionChange?.(item.productId, value)
+  }
+
   // ponytail: 카드마다 상품 상세를 한 번씩 조회. 느려지면 옵션 일괄 조회 API로 교체.
   useEffect(() => {
     let cancelled = false
     getProductOptions(item.productId)
-      .then((options) => { if (!cancelled) setOptions(options) })
+      .then((options) => {
+        if (cancelled) return
+        setOptions(options)
+        // 추천 응답에 색상·사이즈가 있으면 바로 선택해 둔다.
+        if (options.some((option) => option.color === item.color)) setColor(item.color)
+        const recommended = options.find((option) =>
+          option.color === item.color && option.size === item.size && option.available)
+        if (recommended) selectOption(String(recommended.optionId))
+      })
       .catch(() => {})
     return () => { cancelled = true }
   }, [item.productId])
 
   const colors = [...new Set(options.map((option) => option.color))]
-
-  const selectOption = (value) => {
-    setOptionId(value)
-    onOptionChange?.(item.productId, value)
-  }
 
   // 색상을 바꾸면 사이즈를 다시 고르게 한다.
   const selectColor = (value) => {
