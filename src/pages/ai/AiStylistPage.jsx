@@ -125,10 +125,10 @@ export const AiStylistPage = () => {
 
   const items = result?.items ?? []
   const combos = result?.combos ?? []
-  const bubbleProps = { maxWidth: '80%', rounded: '2xl' }
+  const bubbleProps = { maxWidth: '4/5', rounded: '2xl' }
 
   return (
-    <Stack gap={ 4 } paddingY={ 4 } minHeight={ '100vh' }>
+    <Stack gap={ 4 } paddingY={ 4 } minHeight={ 'vh' }>
       <AppBar maxWidth={ '3xl' }></AppBar>
 
       <Container maxWidth={ '3xl' } flex={ 1 }>

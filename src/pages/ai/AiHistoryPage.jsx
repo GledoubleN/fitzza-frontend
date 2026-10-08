@@ -47,7 +47,7 @@ export const AiHistoryPage = () => {
   }, [page, attempt])
 
   return (
-    <Stack gap={ 4 } paddingY={ 4 } minHeight={ '100vh' }>
+    <Stack gap={ 4 } paddingY={ 4 } minHeight={ 'vh' }>
       <AppBar></AppBar>
 
       <Container maxWidth={ '3xl' } flex={ 1 }>
