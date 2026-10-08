@@ -9,20 +9,27 @@ export const ComboCard = ({ combo, index }) => {
   const navigate = useNavigate()
   const [selected, setSelected] = useState({})
   const [saving, setSaving] = useState(false)
+  // 전체 담기가 일부만 성공했을 때 이미 담긴 옵션. 재시도 때 다시 담지 않는다.
+  const [addedOptionIds, setAddedOptionIds] = useState([])
 
   const allSelected = combo.items.every((item) => selected[item.productId])
 
   // 각 상품 카드에서 고른 옵션으로 한 번에 담는다.
   const addAllToCart = async () => {
     setSaving(true)
-    try {
-      await Promise.all(combo.items.map((item) => addToCart(Number(selected[item.productId]))))
+    const pending = combo.items
+      .map((item) => selected[item.productId])
+      .filter((optionId) => !addedOptionIds.includes(optionId))
+    const results = await Promise.allSettled(pending.map((optionId) => addToCart(Number(optionId))))
+    const added = pending.filter((_, i) => results[i].status === 'fulfilled')
+    if (added.length === pending.length) {
+      setAddedOptionIds([])
       toaster.create({ type: 'success', title: '코디 전체를 장바구니에 담았어요' })
-    } catch {
-      toaster.create({ type: 'error', title: '장바구니에 담지 못했어요. 다시 시도해주세요.' })
-    } finally {
-      setSaving(false)
+    } else {
+      setAddedOptionIds([...addedOptionIds, ...added])
+      toaster.create({ type: 'error', title: '일부 상품을 담지 못했어요. 다시 누르면 남은 상품만 담아요.' })
     }
+    setSaving(false)
   }
 
   const share = () => {
