@@ -33,6 +33,7 @@ import { useNavigate } from 'react-router-dom'
 import { IoLogoFigma, IoLogoGitlab } from 'react-icons/io5'
 import { IoLogoJavascript, IoLogoLinkedin, IoLogoTwitter, IoLogoVimeo } from 'react-icons/io'
 import { Footer } from '../components/Footer.jsx'
+import { MAX_QUERY_LENGTH } from './ai/aiApi.js'
 import { useEffect, useRef, useState } from 'react'
 
 // AI 버튼(LuSparkle)으로 펼쳤을 때의 줄 수이자 자동으로 늘어나는 최대 줄 수.
@@ -114,6 +115,7 @@ export const MainPage = () => {
                   resize={ 'none' }
                   variant={ 'none' }
                   ref={ promptRef }
+                  maxLength={ MAX_QUERY_LENGTH }
                   rows={ isLongPrompt ? MAX_PROMPT_ROWS : promptRows }
                   value={ prompt }
                   onChange={ onChange }

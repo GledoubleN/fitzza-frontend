@@ -4,7 +4,13 @@ import { LuArrowUp, LuMenu } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AppBar } from '../../components/AppBar.jsx'
 import { Toaster } from '../../components/ui/toaster.jsx'
-import { ensureLogin, getRecommendation, getRecommendationMessages, postRecommendation } from './aiApi.js'
+import {
+  ensureLogin,
+  getRecommendation,
+  getRecommendationMessages,
+  MAX_QUERY_LENGTH,
+  postRecommendation,
+} from './aiApi.js'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
 
@@ -237,6 +243,7 @@ export const AiStylistPage = () => {
               bg={ 'bg.panel' }
               placeholder={ query ? '조건을 바꿔서 다시 추천받기' : '무엇을 도와드릴까요' }
               aria-label={ '추천 조건' }
+              maxLength={ MAX_QUERY_LENGTH }
               value={ input }
               onChange={ (e) => setInput(e.target.value) }
             ></Input>

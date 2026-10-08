@@ -1,10 +1,13 @@
 import { api } from '../../api/axios.js'
 import { sampleHistory, sampleMessages, sampleProduct, sampleResult } from './sampleData.js'
 
-// 한 번 샘플로 넘어가면 새로고침 전까지 다시 묻지 않는다.
+// 추천 질의 최대 글자 수 입니다. 약식으로 정해진 거라 실제 값은 확정이 필요해보입니다.
+export const MAX_QUERY_LENGTH = 500
+
+// 한 번 샘플로 넘어가면 새로고침 전까지 다시 로그인 여부를 묻지 않습니다.
 let useSample = false
 
-// 명세된 오류(400, 403)는 그대로 던지고, 그 외 통신 실패는 샘플 데이터로 넘어갈지 묻는다.
+// 명세된 오류(400, 403)는 그대로 던지고, 그 외 통신 실패는 샘플 데이터로 넘어갈지 물어봅니다.
 // To-Do-Next: 현재 api endPoint 미구성으로 둔 개발용 처리. 연동이 끝나면 지워야 함.
 const withFallback = async (request, sample) => {
   if (!useSample) {
@@ -29,7 +32,7 @@ export const getRecommendation = (requestId) =>
 export const getRecommendationHistory = (page) =>
   withFallback(() => api.get('/recommendations', { params: { page, size: 20 } }), sampleHistory)
 
-// 말풍선 보조용이라 실패해도 샘플 전환을 묻지 않는다.
+// 말풍선이라 실패해도 샘플 전환을 묻지 않습니다.
 export const getRecommendationMessages = async (requestId) =>
   useSample ? sampleMessages : (await api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`)).data
 
@@ -41,14 +44,14 @@ export const addToCart = (optionId, quantity = 1) =>
 
 let loginChecked = null
 
-// 추천 기록은 회원만 조회할 수 있어 로그인이 필요하다.
-// 로그인 연동 전까지는 확인 창으로 넘어갈 수 있게 둔다. (개발 중)
+// 원래는 비로그인 회원도 조회 가능하게 하려고 했으나, 현재 user_id가 NOT NULL로 정의 되어있어 무조건 요구하도록 했습니다. - 261008 Glenn
+// 로그인 연동 전까지는 확인 창으로 넘어갈 수 있게 둡니다. (개발 중)
 export const ensureLogin = (navigate) => {
   if (localStorage.getItem('userId')) return true
   if (loginChecked === null) {
     loginChecked = window.confirm('로그인이 필요합니다. 로그인 없이 넘어가기 (개발 중)')
     if (!loginChecked) {
-      // 같은 렌더에서 두 번 묻지 않도록 거절은 잠깐만 기억한다.
+      // 같은 렌더에서 두 번 묻지 않도록 합니다.
       setTimeout(() => { loginChecked = null })
       navigate('/signin')
     }
