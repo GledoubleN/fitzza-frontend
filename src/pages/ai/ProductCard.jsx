@@ -12,6 +12,8 @@ export const ProductCard = ({ item, onOptionChange }) => {
   const [color, setColor] = useState('')
   const [optionId, setOptionId] = useState('')
   const [saving, setSaving] = useState(false)
+  const [optionsFailed, setOptionsFailed] = useState(false)
+  const [attempt, setAttempt] = useState(0)
 
   const selectOption = (value) => {
     setOptionId(value)
@@ -31,9 +33,16 @@ export const ProductCard = ({ item, onOptionChange }) => {
           option.color === item.color && option.size === item.size && option.available)
         if (recommended) selectOption(String(recommended.optionId))
       })
-      .catch(() => {})
+      .catch(() => {
+        if (!cancelled) setOptionsFailed(true)
+      })
     return () => { cancelled = true }
-  }, [item.productId])
+  }, [item.productId, attempt])
+
+  const retryOptions = () => {
+    setOptionsFailed(false)
+    setAttempt(attempt + 1)
+  }
 
   const colors = [...new Set(options.map((option) => option.color))]
 
@@ -79,7 +88,14 @@ export const ProductCard = ({ item, onOptionChange }) => {
           }
         </Link>
       </Stack>
-      <NativeSelect.Root size={ 'xs' }>
+      {
+        optionsFailed &&
+        <>
+          <Text fontSize={ 'xs' } color={ 'fg.error' }>옵션을 불러오지 못했어요.</Text>
+          <Button size={ 'xs' } variant={ 'outline' } onClick={ retryOptions }>다시 시도</Button>
+        </>
+      }
+      <NativeSelect.Root size={ 'xs' } display={ optionsFailed ? 'none' : undefined }>
         <NativeSelect.Field
           placeholder={ '색상' }
           aria-label={ `${ item.productName } 색상` }
@@ -94,7 +110,7 @@ export const ProductCard = ({ item, onOptionChange }) => {
         </NativeSelect.Field>
         <NativeSelect.Indicator/>
       </NativeSelect.Root>
-      <NativeSelect.Root size={ 'xs' } disabled={ !color }>
+      <NativeSelect.Root size={ 'xs' } disabled={ !color } display={ optionsFailed ? 'none' : undefined }>
         <NativeSelect.Field
           placeholder={ '사이즈' }
           aria-label={ `${ item.productName } 사이즈` }
@@ -111,7 +127,14 @@ export const ProductCard = ({ item, onOptionChange }) => {
         </NativeSelect.Field>
         <NativeSelect.Indicator/>
       </NativeSelect.Root>
-      <Button size={ 'xs' } variant={ 'outline' } disabled={ !optionId } loading={ saving } onClick={ submit }>
+      <Button
+        size={ 'xs' }
+        variant={ 'outline' }
+        display={ optionsFailed ? 'none' : undefined }
+        disabled={ !optionId }
+        loading={ saving }
+        onClick={ submit }
+      >
         장바구니 담기
       </Button>
       <IconButton
