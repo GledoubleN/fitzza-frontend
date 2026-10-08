@@ -62,7 +62,7 @@ export const sampleHistory = {
 }
 
 export const sampleMessages = [
-  { messageId: 'sample-message-1', senderType: 'USER', content: '주말 데이트에 입을 코디 추천해줘', createdAt: '2026-10-08T10:00:00' },
+  { messageId: 'sample-message-1', senderType: 'USER', content: '샘플', createdAt: '2026-10-08T10:00:00' },
 ]
 
 export const sampleProduct = {

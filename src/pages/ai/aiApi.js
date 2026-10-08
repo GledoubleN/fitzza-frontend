@@ -35,9 +35,16 @@ export const getRecommendation = (requestId) =>
 export const getRecommendationHistory = (page) =>
   withFallback(() => api.get('/recommendations', { params: { page, size: 20 }, ...TIMEOUT }), sampleHistory)
 
-// 말풍선이라 실패해도 샘플 전환을 묻지 않습니다.
-export const getRecommendationMessages = async (requestId) =>
-  useSample ? sampleMessages : (await api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`, TIMEOUT)).data
+// 말풍선이라 실패해도 샘플 전환을 묻지 않고, 바로 샘플 말풍선을 보여줍니다.
+// To-Do-Next: 실패 시 샘플을 돌려주는 것은 개발용 처리. 연동이 끝나면 지워야 함.
+export const getRecommendationMessages = async (requestId) => {
+  if (useSample) return sampleMessages
+  try {
+    return (await api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`, TIMEOUT)).data
+  } catch {
+    return sampleMessages
+  }
+}
 
 export const getProductOptions = async (productId) =>
   (await withFallback(() => api.get(`/products/${ productId }`, TIMEOUT), sampleProduct)).options
