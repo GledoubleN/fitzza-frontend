@@ -4,6 +4,9 @@ import { sampleHistory, sampleMessages, sampleProduct, sampleResult } from './sa
 // 추천 질의 최대 글자 수 입니다. 약식으로 정해진 거라 실제 값은 확정이 필요해보입니다.
 export const MAX_QUERY_LENGTH = 500
 
+// 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
+const TIMEOUT = { timeout: 10000 }
+
 // 한 번 샘플로 넘어가면 새로고침 전까지 다시 로그인 여부를 묻지 않습니다.
 let useSample = false
 
@@ -24,23 +27,23 @@ const withFallback = async (request, sample) => {
 }
 
 export const postRecommendation = (query) =>
-  withFallback(() => api.post('/recommendations', { query }), { requestId: 'sample', status: 'PENDING' })
+  withFallback(() => api.post('/recommendations', { query }, TIMEOUT), { requestId: 'sample', status: 'PENDING' })
 
 export const getRecommendation = (requestId) =>
-  withFallback(() => api.get(`/recommendations/${ encodeURIComponent(requestId) }`), sampleResult)
+  withFallback(() => api.get(`/recommendations/${ encodeURIComponent(requestId) }`, TIMEOUT), sampleResult)
 
 export const getRecommendationHistory = (page) =>
-  withFallback(() => api.get('/recommendations', { params: { page, size: 20 } }), sampleHistory)
+  withFallback(() => api.get('/recommendations', { params: { page, size: 20 }, ...TIMEOUT }), sampleHistory)
 
 // 말풍선이라 실패해도 샘플 전환을 묻지 않습니다.
 export const getRecommendationMessages = async (requestId) =>
-  useSample ? sampleMessages : (await api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`)).data
+  useSample ? sampleMessages : (await api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`, TIMEOUT)).data
 
 export const getProductOptions = async (productId) =>
-  (await withFallback(() => api.get(`/products/${ productId }`), sampleProduct)).options
+  (await withFallback(() => api.get(`/products/${ productId }`, TIMEOUT), sampleProduct)).options
 
 export const addToCart = (optionId, quantity = 1) =>
-  withFallback(() => api.post('/carts', { optionId, quantity }), { cartId: 0, quantity })
+  withFallback(() => api.post('/carts', { optionId, quantity }, TIMEOUT), { cartId: 0, quantity })
 
 let loginChecked = null
 
