@@ -33,7 +33,10 @@ import { useNavigate } from 'react-router-dom'
 import { IoLogoFigma, IoLogoGitlab } from 'react-icons/io5'
 import { IoLogoJavascript, IoLogoLinkedin, IoLogoTwitter, IoLogoVimeo } from 'react-icons/io'
 import { Footer } from '../components/Footer.jsx'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+// 스파클 버튼으로 펼쳤을 때의 줄 수이자 자동으로 늘어나는 최대 줄 수.
+const MAX_PROMPT_ROWS = 4
 
 export const MainPage = () => {
   const navigate = useNavigate()
@@ -48,6 +51,33 @@ export const MainPage = () => {
   }
 
   const [isLongPrompt, setIsLongPrompt] = useState(false)
+  const [promptRows, setPromptRows] = useState(1)
+
+  const promptRef = useRef(null)
+
+  // 내용이 다 보이는 가장 작은 줄 수를 찾는다. 넘치면 최대 줄 수에서 스크롤한다.
+  const fitPromptRows = () => {
+    const textarea = promptRef.current
+    const currentRows = textarea.rows
+    let rows = 1
+    for (; rows < MAX_PROMPT_ROWS; rows++) {
+      textarea.rows = rows
+      if (textarea.scrollHeight <= textarea.clientHeight) break
+    }
+    textarea.rows = currentRows
+    setPromptRows(rows)
+  }
+
+  const onChange = (e) => {
+    setPrompt(e.target.value)
+    fitPromptRows()
+  }
+
+  // 창 너비가 바뀌면 줄넘김이 달라지므로 다시 맞춘다.
+  useEffect(() => {
+    window.addEventListener('resize', fitPromptRows)
+    return () => window.removeEventListener('resize', fitPromptRows)
+  }, [])
 
   // Enter는 전송, Shift+Enter는 줄바꿈. 한글 조합 중 Enter는 무시한다.
   const onKeyDown = (e) => {
@@ -83,9 +113,10 @@ export const MainPage = () => {
                 <Textarea
                   resize={ 'none' }
                   variant={ 'none' }
-                  rows={ isLongPrompt ? 4 : 1 }
+                  ref={ promptRef }
+                  rows={ isLongPrompt ? MAX_PROMPT_ROWS : promptRows }
                   value={ prompt }
-                  onChange={ (e) => setPrompt(e.target.value) }
+                  onChange={ onChange }
                   onKeyDown={ onKeyDown }
                 ></Textarea>
                 <IconButton type={ 'submit' } rounded={ 'full' }>
