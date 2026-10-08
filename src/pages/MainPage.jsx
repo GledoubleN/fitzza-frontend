@@ -49,6 +49,14 @@ export const MainPage = () => {
 
   const [isLongPrompt, setIsLongPrompt] = useState(false)
 
+  // Enter는 전송, Shift+Enter는 줄바꿈. 한글 조합 중 Enter는 무시한다.
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+      e.preventDefault()
+      e.currentTarget.form.requestSubmit()
+    }
+  }
+
   return (
     <Stack
       gap={ 4 }
@@ -72,26 +80,18 @@ export const MainPage = () => {
                 >
                   <LuSparkle/>
                 </IconButton>
-                <Input
+                <Textarea
+                  resize={ 'none' }
                   variant={ 'none' }
+                  rows={ isLongPrompt ? 4 : 1 }
                   value={ prompt }
                   onChange={ (e) => setPrompt(e.target.value) }
-                ></Input>
+                  onKeyDown={ onKeyDown }
+                ></Textarea>
                 <IconButton type={ 'submit' } rounded={ 'full' }>
                   <LuArrowUp/>
                 </IconButton>
               </Grid>
-              {
-                isLongPrompt &&
-                <Textarea
-                  resize={ 'none' }
-                  variant={ 'none' }
-                  padding={ 4 }
-                  rows={ 3 }
-                  value={ prompt }
-                  onChange={ (e) => setPrompt(e.target.value) }
-                ></Textarea>
-              }
             </Stack>
           </Card.Body>
         </Card.Root>
