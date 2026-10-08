@@ -52,7 +52,6 @@ export const AiStylistPage = () => {
       const data = await postRecommendation(text)
       // 응답을 기다리는 사이 다른 화면으로 옮겼으면 끌고 오지 않는다.
       if (activeKey.current !== key) return
-      // 결과가 없는 화면은 뒤로가기에 남기지 않는다.
       navigate(`/ai/${ data.requestId }`, { replace: status !== 'done', state: { query: text } })
     } catch (err) {
       if (activeKey.current !== key) return
@@ -64,7 +63,7 @@ export const AiStylistPage = () => {
     if (!ensureLogin(navigate)) return
 
     if (!requestId) {
-      // 메인 화면에서 넘어온 질의는 한 번만 요청한다.
+      // 메인 화면에서 넘어온 질의는 한 번만 요청합니다.
       const text = location.state?.query
       if (text && postedKey.current !== location.key) {
         postedKey.current = location.key

@@ -25,7 +25,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { LuChevronLeft, LuCircle, LuPlus, LuTrash } from 'react-icons/lu'
 import exampleProductImage from '/src/assets/hero.png'
 
-// 게시글 분류. 값은 게시글 작성 API의 category를 따른다.
+// 게시글 분류. 값은 게시글 작성 API의 category를 따릅니다.
 const CATEGORIES = [
   { value: 'FASHION', label: '패션' },
   { value: 'COORDI_QUESTION', label: '코디 질문' },
@@ -46,10 +46,10 @@ export const CommunityWritePage = () => {
   const [category, setCategory] = useState('')
   const [title, setTitle] = useState('')
   const navigate = useNavigate()
-  // AI 추천 화면에서 공유하기로 넘어온 코디. 게시글 작성 API 연동 시 sharedType, sharedId를 함께 보낸다.
+  // AI 추천 화면에서 공유하기로 넘어온 코디. 게시글 작성 API 연동 시 sharedType, sharedId를 함께 보냅니다.
   const shared = useLocation().state
 
-  // 투표 선택지. 공유로 넘어온 코디가 있으면 미리 채우고, 모자라면 빈 선택지로 최소 개수를 맞춘다.
+  // 투표 선택지. 공유로 넘어온 코디가 있으면 미리 채우고, 모자라면 빈 선택지로 최소 개수를 맞춰줍니다.
   const [voteOptions, setVoteOptions] = useState(() => {
     const options = (shared?.voteOptions ?? []).slice(0, MAX_VOTE_OPTIONS)
     while (options.length < MIN_VOTE_OPTIONS) options.push({ text: '' })
@@ -202,7 +202,7 @@ export const CommunityWritePage = () => {
 
         <RichTextEditor.Root editor={ editor } height={ '400px' }>
           {
-            // 공유할 코디는 본문 상자 안, 글 위에 보여준다. 투표에서는 선택지로 들어가므로 숨긴다.
+            // 공유할 코디 부분. 일단 본문 상자 안에 임의로 넣었습니다.
             shared?.snapshot && mode !== 'vote' &&
             <Stack gap={ '2' } padding={ '5' } paddingBottom={ '0' }>
               <Text fontWeight={ 'bold' }>공유할 코디</Text>
