@@ -34,7 +34,6 @@ const CATEGORIES = [
 
 const MODES = [
   { value: 'default', label: '기본' },
-  { value: 'versus', label: '비교' },
   { value: 'vote', label: '투표' },
 ]
 
@@ -74,27 +73,6 @@ export const CommunityWritePage = () => {
       case 'default':
         return (
           <></>
-        )
-
-      case 'versus':
-        return (
-          <Grid templateColumns={ '1fr auto 1fr' } gap={ 4 }>
-            <Card.Root>
-              <Card.Body>
-                <IconButton variant={ 'ghost' }>
-                  <LuPlus></LuPlus>
-                </IconButton>
-              </Card.Body>
-            </Card.Root>
-            <Text alignContent={ 'center' }>VS</Text>
-            <Card.Root>
-              <Card.Body>
-                <IconButton variant={ 'ghost' }>
-                  <LuPlus></LuPlus>
-                </IconButton>
-              </Card.Body>
-            </Card.Root>
-          </Grid>
         )
 
       case 'vote':
