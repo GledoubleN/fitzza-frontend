@@ -30,6 +30,13 @@ export const AiStylistPage = () => {
   const [message, setMessage] = useState('')
   const [attempt, setAttempt] = useState(0)
   const postedKey = useRef(null)
+  const activeKey = useRef(null)
+
+  // 지금 보고 있는 화면의 위치. 요청 응답이 늦게 왔을 때 아직 같은 화면인지 확인하는 데 쓴다.
+  useEffect(() => {
+    activeKey.current = location.key
+    return () => { activeKey.current = null }
+  }, [location.key])
 
   const fail = (text) => {
     setStatus('failed')
@@ -40,11 +47,15 @@ export const AiStylistPage = () => {
     setQuery(text)
     setResult(null)
     setStatus('loading')
+    const key = location.key
     try {
       const data = await postRecommendation(text)
+      // 응답을 기다리는 사이 다른 화면으로 옮겼으면 끌고 오지 않는다.
+      if (activeKey.current !== key) return
       // 결과가 없는 화면은 뒤로가기에 남기지 않는다.
       navigate(`/ai/${ data.requestId }`, { replace: status !== 'done', state: { query: text } })
     } catch (err) {
+      if (activeKey.current !== key) return
       fail(err.response?.status === 400 ? '추천받을 내용을 입력해주세요.' : '')
     }
   }
