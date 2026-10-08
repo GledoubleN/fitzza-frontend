@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { LuHeart } from 'react-icons/lu'
 import { Link } from 'react-router-dom'
 import exampleProductImage from '/src/assets/hero.png'
+import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { addToCart, getProductOptions } from './aiApi.js'
 
@@ -12,6 +13,7 @@ export const ProductCard = ({ item, onOptionChange }) => {
   const [color, setColor] = useState('')
   const [optionId, setOptionId] = useState('')
   const [saving, setSaving] = useState(false)
+  const [added, setAdded] = useState(false)
   const [optionsFailed, setOptionsFailed] = useState(false)
   const [attempt, setAttempt] = useState(0)
 
@@ -56,7 +58,7 @@ export const ProductCard = ({ item, onOptionChange }) => {
     setSaving(true)
     try {
       await addToCart(Number(optionId))
-      toaster.create({ type: 'success', title: `${ item.productName }을(를) 장바구니에 담았어요` })
+      setAdded(true)
     } catch {
       toaster.create({ type: 'error', title: '장바구니에 담지 못했어요. 다시 시도해주세요.' })
     } finally {
@@ -148,6 +150,11 @@ export const ProductCard = ({ item, onOptionChange }) => {
       >
         <LuHeart></LuHeart>
       </IconButton>
+      <CartAddedDialog
+        open={ added }
+        onClose={ () => setAdded(false) }
+        description={ item.productName }
+      ></CartAddedDialog>
     </Stack>
   )
 }
