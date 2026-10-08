@@ -1,6 +1,14 @@
-import { Button, Container, IconButton, Spinner, Stack, Text } from '@chakra-ui/react'
+import {
+  Button,
+  Container, Flex,
+  HStack,
+  IconButton,
+  Spinner,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { LuChevronLeft } from 'react-icons/lu'
+import { LuChevronLeft, LuSearch } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../../components/AppBar.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
@@ -39,26 +47,21 @@ export const AiHistoryPage = () => {
 
   return (
     <Stack gap={ 4 } paddingY={ 4 } minHeight={ '100vh' }>
-      <AppBar maxWidth={ '3xl' }></AppBar>
+      <AppBar></AppBar>
 
       <Container maxWidth={ '3xl' } flex={ 1 }>
         <Stack gap={ 4 }>
-          <IconButton
-            variant={ 'ghost' }
-            rounded={ 'full' }
-            alignSelf={ 'flex-start' }
-            aria-label={ '뒤로 가기' }
-            onClick={ () => navigate(-1) }
-          >
-            <LuChevronLeft></LuChevronLeft>
-          </IconButton>
+          <Flex align="center" justify="space-between">
+              <Text fontSize="lg" fontWeight="semibold">
+                대화 내역
+              </Text>
+          </Flex>
 
           {
             items.map((item) => (
               <Button
                 key={ item.requestId }
                 variant={ 'outline' }
-                rounded={ 'xl' }
                 height={ 'auto' }
                 paddingY={ 4 }
                 justifyContent={ 'flex-start' }

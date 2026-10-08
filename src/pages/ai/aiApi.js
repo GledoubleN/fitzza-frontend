@@ -5,7 +5,7 @@ import { sampleHistory, sampleMessages, sampleProduct, sampleResult } from './sa
 let useSample = false
 
 // 명세된 오류(400, 403)는 그대로 던지고, 그 외 통신 실패는 샘플 데이터로 넘어갈지 묻는다.
-// 현재 api endPoint 미구성으로 둔 개발용 처리. 연동이 끝나면 지워야 함.
+// To-Do-Next: 현재 api endPoint 미구성으로 둔 개발용 처리. 연동이 끝나면 지워야 함.
 const withFallback = async (request, sample) => {
   if (!useSample) {
     try {
