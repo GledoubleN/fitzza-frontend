@@ -225,6 +225,7 @@ export const AiStylistPage = () => {
                   <ComboCard
                     key={ combo.comboId }
                     combo={ combo }
+                    combos={ combos }
                     index={ index }
                   ></ComboCard>
                 ))

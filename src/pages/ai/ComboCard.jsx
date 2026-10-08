@@ -5,7 +5,7 @@ import { toaster } from '../../components/ui/toaster.jsx'
 import { addToCart } from './aiApi.js'
 import { ProductCard } from './ProductCard.jsx'
 
-export const ComboCard = ({ combo, index }) => {
+export const ComboCard = ({ combo, combos, index }) => {
   const navigate = useNavigate()
   const [selected, setSelected] = useState({})
   const [saving, setSaving] = useState(false)
@@ -39,6 +39,14 @@ export const ComboCard = ({ combo, index }) => {
         sharedType: 'COMBO',
         sharedId: combo.comboId,
         snapshot: { items: combo.items, totalPrice: combo.totalPrice },
+        // 작성 화면에서 투표를 고르면 추천받은 코디들이 선택지로 들어간다. 투표 게시글 작성 API의 options 형태를 따른다.
+        voteOptions: combos.map((combo, index) => ({
+          source: 'AI_RECOMMEND',
+          itemType: 'COMBO',
+          itemId: combo.comboId,
+          label: `코디 ${ index + 1 }`,
+          items: combo.items,
+        })),
       },
     })
   }
