@@ -33,7 +33,14 @@ export const ComboCard = ({ combo, index }) => {
   }
 
   const share = () => {
-    navigate('/communitywrite', { state: { sharedType: 'COMBO', sharedId: combo.comboId } })
+    // snapshot: 작성 화면에 보여줄 코디 내용. 공유 초안 조회 API(/posts/share-draft)의 응답 형태를 따른다.
+    navigate('/communitywrite', {
+      state: {
+        sharedType: 'COMBO',
+        sharedId: combo.comboId,
+        snapshot: { items: combo.items, totalPrice: combo.totalPrice },
+      },
+    })
   }
 
   return (

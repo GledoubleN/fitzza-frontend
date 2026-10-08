@@ -4,6 +4,7 @@ import {
   ButtonGroup,
   Card,
   Container,
+  Flex,
   Grid,
   Group,
   IconButton,
@@ -16,11 +17,14 @@ import { Control, RichTextEditor } from '/src/components/ui/rich-text-editor'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { LuCircle, LuPlus, LuTrash } from 'react-icons/lu'
 
 export const CommunityWritePage = () => {
   const [editable, setEditable] = useState(true)
   const [mode, setMode] = useState('default')
+  // AI 추천 화면에서 공유하기로 넘어온 코디. 게시글 작성 API 연동 시 sharedType, sharedId를 함께 보낸다.
+  const shared = useLocation().state
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -95,6 +99,26 @@ export const CommunityWritePage = () => {
 
         {
           getAdditionalInput()
+        }
+
+        {
+          shared?.snapshot &&
+          <Card.Root>
+            <Card.Body gap={ '2' }>
+              <Text fontWeight={ 'bold' }>공유할 코디</Text>
+              {
+                shared.snapshot.items.map((item) => (
+                  <Flex key={ item.productId } justify={ 'space-between' } gap={ '2' }>
+                    <Text>{ item.productName }</Text>
+                    <Text>{ item.price.toLocaleString() }원</Text>
+                  </Flex>
+                ))
+              }
+              <Text fontWeight={ 'bold' } alignSelf={ 'flex-end' }>
+                합계 { shared.snapshot.totalPrice.toLocaleString() }원
+              </Text>
+            </Card.Body>
+          </Card.Root>
         }
 
         <RichTextEditor.Root editor={ editor } height={ '400px' }>
