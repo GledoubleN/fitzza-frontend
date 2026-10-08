@@ -107,6 +107,8 @@ export const MainPage = () => {
                 <IconButton
                   type={ 'button' }
                   rounded={ 'full' }
+                  aria-label={ '입력창 펼치기' }
+                  aria-pressed={ isLongPrompt }
                   onClick={ () => { setIsLongPrompt((isLongPrompt) => !isLongPrompt) } }
                 >
                   <LuSparkle/>
@@ -115,13 +117,14 @@ export const MainPage = () => {
                   resize={ 'none' }
                   variant={ 'none' }
                   ref={ promptRef }
+                  aria-label={ 'AI에게 추천받을 내용' }
                   maxLength={ MAX_QUERY_LENGTH }
                   rows={ isLongPrompt ? MAX_PROMPT_ROWS : promptRows }
                   value={ prompt }
                   onChange={ onChange }
                   onKeyDown={ onKeyDown }
                 ></Textarea>
-                <IconButton type={ 'submit' } rounded={ 'full' }>
+                <IconButton type={ 'submit' } rounded={ 'full' } aria-label={ '추천받기' }>
                   <LuArrowUp/>
                 </IconButton>
               </Grid>
