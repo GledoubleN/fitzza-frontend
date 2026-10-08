@@ -5,7 +5,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AppBar } from '../../components/AppBar.jsx'
 import { Toaster } from '../../components/ui/toaster.jsx'
 import { ensureLogin, getRecommendation, getRecommendationMessages, postRecommendation } from './aiApi.js'
-import { CartOptionDrawer } from './CartOptionDrawer.jsx'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
 
@@ -24,7 +23,6 @@ export const AiStylistPage = () => {
   const [result, setResult] = useState(null)
   const [message, setMessage] = useState('')
   const [attempt, setAttempt] = useState(0)
-  const [cartCombo, setCartCombo] = useState(null)
   const postedKey = useRef(null)
 
   const fail = (text) => {
@@ -211,7 +209,6 @@ export const AiStylistPage = () => {
                     key={ combo.comboId }
                     combo={ combo }
                     index={ index }
-                    onAddToCart={ setCartCombo }
                   ></ComboCard>
                 ))
               }
@@ -247,7 +244,6 @@ export const AiStylistPage = () => {
         </form>
       </Container>
 
-      <CartOptionDrawer combo={ cartCombo } onClose={ () => setCartCombo(null) }></CartOptionDrawer>
       <Toaster></Toaster>
     </Stack>
   )
