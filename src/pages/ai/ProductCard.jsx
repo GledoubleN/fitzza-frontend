@@ -75,7 +75,6 @@ export const ProductCard = ({ item, onOptionChange }) => {
             alt={ item.productName }
             aspectRatio={ 1 }
             objectFit={ 'cover' }
-            rounded={ 'md' }
             bg={ 'bg.muted' }
           ></Image>
           <Text fontSize={ 'sm' } lineClamp={ 1 }>{ item.productName }</Text>
