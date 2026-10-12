@@ -14,7 +14,7 @@ import { ProductPage } from './pages/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import WorldCupPage from './pages/WorldCupPage.jsx'
 import { DevNavi } from './pages/ForDev/DevNavi.jsx'
-import { LikesPage } from './pages/LikesPage.jsx'
+import { WishlistPage } from './pages/WishlistPage.jsx'
 import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { ThemePreviewPage } from './pages/ThemePreviewPage.jsx'
@@ -38,7 +38,7 @@ function App() {
         <Route path="/profile" element={ <ProfilePage/> }/>
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
         <Route path="/dev" element={ <DevNavi/> }/>
-        <Route path="/likes" element={ <LikesPage/> }/>
+        <Route path="/likes" element={ <WishlistPage/> }/>
         <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orderdetail" element={<OrderDetail />} />
         <Route path="/theme-preview" element={<ThemePreviewPage />} />

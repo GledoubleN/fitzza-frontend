@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw/http'
 import users from '../data/users.json'
 import categories from '../data/categories.json'
 import products from '../data/products.json'
-import likes from '../data/likes.json'
+import likes from '../data/wishlist.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
 
