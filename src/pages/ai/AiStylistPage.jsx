@@ -1,6 +1,6 @@
 import { Button, Card, Container, Flex, IconButton, Spinner, Stack, Text } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
-import { LuMenu } from 'react-icons/lu'
+import { LuHistory } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AppBar } from '../../components/AppBar.jsx'
 import { Toaster } from '../../components/ui/toaster.jsx'
@@ -132,7 +132,7 @@ export const AiStylistPage = () => {
               aria-label={ '대화 내역' }
               onClick={ () => navigate('/ai/history') }
             >
-              <LuMenu></LuMenu>
+              <LuHistory></LuHistory>
             </IconButton>
             <Text color={ 'fg.muted' }>AI 스타일리스트</Text>
           </Flex>
