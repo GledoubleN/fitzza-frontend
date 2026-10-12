@@ -1,5 +1,4 @@
 import { api } from '../../api/axios.js'
-import { sampleHistory, sampleMessages, sampleProduct, sampleResult } from './sampleData.js'
 
 // 추천 질의 최대 글자 수 입니다. 약식으로 정해진 거라 실제 값은 확정이 필요해보입니다.
 export const MAX_QUERY_LENGTH = 500
@@ -7,52 +6,23 @@ export const MAX_QUERY_LENGTH = 500
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
 const TIMEOUT = { timeout: 10000 }
 
-// 한 번 샘플로 넘어가면 새로고침 전까지 샘플 전환 여부를 다시 묻지 않습니다.
-let useSample = false
+export const postRecommendation = async (query) =>
+  (await api.post('/recommendations', { query }, TIMEOUT)).data
 
-// 명세된 오류(400, 403)는 그대로 던지고, 그 외 통신 실패는 샘플 데이터로 넘어갈지 물어봅니다.
-// To-Do-Next: 현재 api endPoint 미구성으로 둔 개발용 처리. 연동이 끝나면 지워야 함.
-const withFallback = async (request, sample) => {
-  if (!useSample) {
-    try {
-      return (await request()).data
-    } catch (err) {
-      if ([400, 403].includes(err.response?.status)) throw err
-      if (!useSample && !window.confirm('서버 통신에 실패했습니다. 샘플 데이터로 넘어가기 (개발 중)')) throw err
-      console.log('AI 추천 통신 실패, 샘플 사용(개발용)', err)
-      useSample = true
-    }
-  }
-  return sample
-}
+export const getRecommendation = async (requestId) =>
+  (await api.get(`/recommendations/${ encodeURIComponent(requestId) }`, TIMEOUT)).data
 
-export const postRecommendation = (query) =>
-  withFallback(() => api.post('/recommendations', { query }, TIMEOUT), { requestId: 'sample', status: 'PENDING' })
+export const getRecommendationHistory = async (page) =>
+  (await api.get('/recommendations', { params: { page, size: 20 }, ...TIMEOUT })).data
 
-export const getRecommendation = (requestId) =>
-  withFallback(() => api.get(`/recommendations/${ encodeURIComponent(requestId) }`, TIMEOUT), sampleResult)
+export const getRecommendationMessages = async (requestId) =>
+  (await api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`, TIMEOUT)).data
 
-export const getRecommendationHistory = (page) =>
-  withFallback(() => api.get('/recommendations', { params: { page, size: 20 }, ...TIMEOUT }), sampleHistory)
-
-// 말풍선이라 실패해도 샘플 전환을 묻지 않고, 바로 샘플 말풍선을 보여줍니다.
-// To-Do-Next: 실패 시 샘플을 돌려주는 것은 개발용 처리. 연동이 끝나면 지워야 함.
-export const getRecommendationMessages = async (requestId) => {
-  if (useSample) return sampleMessages
-  try {
-    return (await api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`, TIMEOUT)).data
-  } catch {
-    return sampleMessages
-  }
-}
-
-// To-Do-Next: MSW의 상품 상세 응답에는 options가 없어 샘플 옵션으로 대신합니다. 응답에 options가 생기면 지워야 함.
 export const getProductOptions = async (productId) =>
-  (await withFallback(() => api.get(`/products/${ productId }`, TIMEOUT), sampleProduct)).options
-  ?? sampleProduct.options
+  (await api.get(`/products/${ productId }`, TIMEOUT)).data.options ?? []
 
-export const addToCart = (optionId, quantity = 1) =>
-  withFallback(() => api.post('/carts', { optionId, quantity }, TIMEOUT), { cartId: 0, quantity })
+export const addToCart = async (optionId, quantity = 1) =>
+  (await api.post('/carts', { optionId, quantity }, TIMEOUT)).data
 
 let loginChecked = null
 
