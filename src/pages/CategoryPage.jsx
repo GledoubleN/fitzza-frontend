@@ -1,29 +1,39 @@
-import { useState } from 'react'
-import {
-  Button,
-  Container,
-  Grid,
-  GridItem,
-  Heading,
-  Icon,
-  SimpleGrid,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { Box, Button, Container, Grid, GridItem, Heading, Icon, SimpleGrid, Stack, Text } from '@chakra-ui/react'
 import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import { categories } from '../data/categories.js'
+import { api } from '../api/axios.js'
+import { HttpStatusCode } from 'axios'
 
 export const CategoryPage = () => {
+  // TODO 2026-10-12
+  // 카테고리를 백엔드와 통신해서 받아오게 수정되어 작동하지 않습니다.
   const navigate = useNavigate()
   const [selected, setSelected] = useState(categories[0])
   const sections = selected.sections ?? [selected]
+  const [categories, setCategories] = useState([])
 
   // 임시용 코드, 추후 BE 계약 완료시 수정 필요, TO-DO-NEXT
   const search = (query) => navigate(
     `/search?${ new URLSearchParams({ q: query }) }`)
+
+  async function loadCategories () {
+    api.get('/categories', {})
+    .then((response) => {
+      if (response.status !== HttpStatusCode.Ok) {
+        return
+      }
+
+      setCategories(response.data)
+    })
+    .catch(error => console.log(error))
+  }
+
+  useEffect(() => {
+    loadCategories()
+  }, [])
 
   return (
     <>
