@@ -11,7 +11,7 @@ import { AppBar } from '../../components/AppBar.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { ensureLogin, getRecommendationHistory } from './aiApi.js'
 
-export const AiHistoryPage = () => {
+export const AIHistoryPage = () => {
   const navigate = useNavigate()
 
   const [items, setItems] = useState([])

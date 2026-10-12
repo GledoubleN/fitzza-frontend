@@ -18,7 +18,7 @@ import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { ThemePreviewPage } from './pages/ThemePreviewPage.jsx'
 import { AiStylistPage } from './pages/ai/AiStylistPage.jsx'
-import { AiHistoryPage } from './pages/ai/AiHistoryPage.jsx'
+import { AIHistoryPage } from './pages/ai/AIHistoryPage.jsx'
 
 function App() {
   return (
@@ -42,7 +42,7 @@ function App() {
         <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orderdetail" element={<OrderDetail />} />
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
-        <Route path="/ai/history" element={ <AiHistoryPage/> }/>
+        <Route path="/ai/history" element={ <AIHistoryPage/> }/>
         <Route path="/ai/:requestId?" element={ <AiStylistPage/> }/>
       </Routes>
     </BrowserRouter>
