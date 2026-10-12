@@ -68,7 +68,7 @@ export const ProductCard = ({ item, onOptionChange }) => {
   }
 
   return (
-    <Stack gap={ 2 } position={ 'relative' } { ...productCardWidth } flexShrink={ 0 }>
+    <Stack gap={ 2 } position={ 'relative' } { ...productCardWidth } flexShrink={ 0 } scrollSnapAlign={ 'start' }>
       <Stack gap={ 1 } flex={ 1 } asChild>
         <Link to={ `/products/${ item.productId }` }>
           <Image

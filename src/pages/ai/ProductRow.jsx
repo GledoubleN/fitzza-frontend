@@ -26,10 +26,16 @@ export const ProductRow = ({ children }) => {
     }
   }, [])
 
-  // 보이는 너비만큼 한 번에 넘깁니다. direction: 1은 다음, -1은 이전.
+  // 온전히 보이는 카드 수만큼만 넘겨서, 걸쳐 보이던 카드가 다음 화면의 첫 카드가 되게 합니다.
+  // direction: 1은 다음, -1은 이전.
   const scroll = (direction) => {
     const row = rowRef.current
-    row.scrollBy({ left: direction * row.clientWidth, behavior: 'smooth' })
+    const [first, second] = row.children
+    // 카드 한 장이 차지하는 폭(카드 + 간격)
+    const step = second ? second.offsetLeft - first.offsetLeft : row.clientWidth
+    const gap = second ? step - first.offsetWidth : 0
+    const count = Math.max(1, Math.floor((row.clientWidth + gap) / step))
+    row.scrollBy({ left: direction * count * step, behavior: 'smooth' })
   }
 
   const buttons = [
@@ -39,7 +45,14 @@ export const ProductRow = ({ children }) => {
 
   return (
     <Box position={ 'relative' }>
-      <Flex ref={ rowRef } gap={ 3 } paddingBottom={ 2 } overflowX={ 'auto' }>
+      {/* 손으로 넘겨도 카드가 잘린 채 멈추지 않도록 카드 시작 위치에 맞춰 멈춥니다. */}
+      <Flex
+        ref={ rowRef }
+        gap={ 3 }
+        paddingBottom={ 2 }
+        overflowX={ 'auto' }
+        scrollSnapType={ 'x proximity' }
+      >
         { children }
       </Flex>
       {
