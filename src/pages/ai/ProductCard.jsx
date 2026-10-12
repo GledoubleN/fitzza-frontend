@@ -6,6 +6,7 @@ import exampleProductImage from '/src/assets/hero.png'
 import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { addToCart, getProductOptions } from './aiApi.js'
+import { productCardWidth } from './productCardWidth.js'
 
 // onOptionChange: 코디 전체 담기를 위해 선택한 옵션을 ComboCard에 전달합니다.
 export const ProductCard = ({ item, onOptionChange }) => {
@@ -67,15 +68,7 @@ export const ProductCard = ({ item, onOptionChange }) => {
   }
 
   return (
-    // 줄 너비의 2/5를 차지해 다음 카드가 걸쳐 보이게 하되, 너무 작거나 커지지 않게 범위를 둡니다.
-    <Stack
-      gap={ 2 }
-      position={ 'relative' }
-      width={ '2/5' }
-      minWidth={ 32 }
-      maxWidth={ 44 }
-      flexShrink={ 0 }
-    >
+    <Stack gap={ 2 } position={ 'relative' } { ...productCardWidth } flexShrink={ 0 }>
       <Stack gap={ 1 } flex={ 1 } asChild>
         <Link to={ `/products/${ item.productId }` }>
           <Image

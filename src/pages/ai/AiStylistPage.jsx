@@ -7,7 +7,7 @@ import { Toaster } from '../../components/ui/toaster.jsx'
 import { ensureLogin, getRecommendation, getRecommendationMessages, postRecommendation } from './aiApi.js'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
-import { useOverflowing } from './useOverflowing.js'
+import { ProductRow } from './ProductRow.jsx'
 
 const POLL_INTERVAL = 2000
 const MAX_POLLS = 30
@@ -111,8 +111,6 @@ export const AiStylistPage = () => {
     }
   }, [requestId, location.key, attempt])
 
-  // 단품 줄이 실제로 넘칠 때만 "옆으로 넘겨보세요"를 보여줍니다.
-  const [itemsRowRef, itemsOverflowing] = useOverflowing(result)
 
   const retry = () => {
     if (query) request(query)
@@ -195,20 +193,14 @@ export const AiStylistPage = () => {
                 items.length > 0 &&
                 <Card.Root>
                   <Card.Body gap={ 3 }>
-                    <Flex justify={ 'space-between' } align={ 'center' } gap={ 2 }>
-                      <Text fontWeight={ 'bold' }>이런 상품은 어때요?</Text>
-                      {
-                        itemsOverflowing &&
-                        <Text fontSize={ 'xs' } color={ 'fg.muted' }>옆으로 넘겨보세요 ›</Text>
-                      }
-                    </Flex>
-                    <Flex ref={ itemsRowRef } gap={ 3 } paddingBottom={ 2 } overflowX={ 'auto' }>
+                    <Text fontWeight={ 'bold' }>이런 상품은 어때요?</Text>
+                    <ProductRow>
                       {
                         items.map((item) => (
                           <ProductCard key={ item.productId } item={ item }></ProductCard>
                         ))
                       }
-                    </Flex>
+                    </ProductRow>
                   </Card.Body>
                 </Card.Root>
               }
