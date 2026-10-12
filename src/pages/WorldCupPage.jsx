@@ -9,8 +9,10 @@ import {
   Center,
   Button,
   Container,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react';
-import { LuChevronLeft, LuHouse, LuRotateCcw, LuShare2 } from 'react-icons/lu';
+import { LuChevronLeft, LuRotateCcw, LuShare2 } from 'react-icons/lu';
 import { AppBar } from '../components/AppBar.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 
@@ -46,202 +48,160 @@ export default function WorldCupPage() {
     setWinnerProduct(null);
   };
 
-  const handleGoHome = () => {
-    console.log('홈으로 이동');
-  };
-
   if (isFinished && winnerProduct) {
     return (
-      <Box position="relative" minH="100vh" pb={28} bg="bg">
-        <Container maxW="container.xl" mx="auto" py={10} px={5}>
-          {/* 상단 앱바 */}
-          <Box mb={6}>
+      <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
+        <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
+          <Container maxW="7xl" mx="auto" px={0}>
             <AppBar />
-          </Box>
+          </Container>
+        </Box>
 
-          <Center w="100%">
-            <Box
-              w="100%"
-              maxW="md"
-              display="flex"
-              flexDirection="column"
-              p={4}
-              boxShadow="md"
-              borderRadius="2xl"
-              bg="bg.panel"
-              borderWidth="thin"
-              borderColor="border.subtle"
-              position="relative"
-            >
-              <Flex justify="space-between" align="center" mb={3}>
-                <HStack gap={1} w={20} justify="flex-start">
-                  <IconButton variant="ghost" aria-label="뒤로 가기" onClick={handleRestart}>
-                    <Box as={LuChevronLeft} boxSize={6} />
-                  </IconButton>
-                </HStack>
-
-                <Text textStyle="lg" fontWeight="bold" textAlign="center" flex="1">
+        <Container maxW="3xl" mx="auto" px={5}>
+          <Grid gap={6}>
+            <GridItem>
+              <Flex align="center" gap={2}>
+                <IconButton variant="ghost" aria-label="뒤로 가기" onClick={handleRestart}>
+                  <Box as={LuChevronLeft} boxSize={6} />
+                </IconButton>
+                <Text textStyle="lg" fontWeight="bold">
                   이상형 월드컵 결과
                 </Text>
-
-                <HStack gap={1} w={20} justify="flex-end">
-                  <IconButton variant="ghost" aria-label="홈으로" onClick={handleGoHome}>
-                    <Box as={LuHouse} boxSize={5} />
-                  </IconButton>
-                </HStack>
               </Flex>
+            </GridItem>
 
-              <Text textAlign="center" textStyle="md" fontWeight="bold" mb={4} color="purple.500">
+            <GridItem textAlign="center">
+              <Text textStyle="md" fontWeight="bold" color="purple.500">
                 🎉 당신의 최종 선택은? 🎉
               </Text>
+            </GridItem>
 
-              <Box
-                w="100%"
-                borderWidth="thin"
-                borderColor="border.subtle"
-                borderRadius="xl"
-                p={4}
-                boxShadow="sm"
-                mb={6}
-                textAlign="center"
-              >
-                <Box w="100%" h="60" borderRadius="lg" overflow="hidden" mb={4}>
-                  <Image
-                    src={winnerProduct.image}
-                    alt={winnerProduct.name}
-                    w="100%"
-                    h="100%"
-                    objectFit="cover"
-                  />
-                </Box>
-                <Text textStyle="lg" fontWeight="bold" mb={2}>
-                  {winnerProduct.name}
-                </Text>
+            <GridItem textAlign="center">
+              <Box w="100%" h={{ base: "sm", md: "md" }} borderRadius="2xl" overflow="hidden" mb={4} borderWidth="thin" borderColor="border.subtle">
+                <Image
+                  src={winnerProduct.image}
+                  alt={winnerProduct.name}
+                  w="100%"
+                  h="100%"
+                  objectFit="cover"
+                />
               </Box>
+              <Text textStyle="xl" fontWeight="bold">
+                {winnerProduct.name}
+              </Text>
+            </GridItem>
 
-              <Box borderWidth="thin" borderColor="border.subtle" borderRadius="xl" p={3} mb={6}>
-                <Text textStyle="xs" fontWeight="bold" mb={3} textAlign="center" color="fg.muted">
-                  우승 상품 스펙 요약
-                </Text>
-                <Box as="table" w="100%" style={{ borderCollapse: 'collapse' }}>
-                  <Box as="tbody">
-                    <Box as="tr">
-                      <Box as="th" fontWeight="medium" w="30%" textAlign="left" py={2} pl={2} textStyle="xs">색상</Box>
-                      <Box as="td" textAlign="right" textStyle="xs" fontWeight="medium" py={2} pr={2}>
-                        <HStack justify="flex-end" gap={1}>
-                          <Box boxSize={2.5} borderRadius="full" bg={winnerProduct.color.hex} borderWidth="thin" borderColor="border.subtle" />
-                          <Text>{winnerProduct.color.name}</Text>
-                        </HStack>
-                      </Box>
+            <GridItem borderWidth="thin" borderColor="border.subtle" borderRadius="2xl" p={5} bg="bg.panel">
+              <Text textStyle="sm" fontWeight="bold" mb={4} textAlign="center" color="fg.muted">
+                우승 상품 스펙 요약
+              </Text>
+              <Box as="table" w="100%" style={{ borderCollapse: 'collapse' }}>
+                <Box as="tbody">
+                  <Box as="tr">
+                    <Box as="th" fontWeight="medium" w="30%" textAlign="left" py={2.5} pl={2} textStyle="sm">색상</Box>
+                    <Box as="td" textAlign="right" textStyle="sm" fontWeight="medium" py={2.5} pr={2}>
+                      <HStack justify="flex-end" gap={1.5}>
+                        <Box boxSize={3} borderRadius="full" bg={winnerProduct.color.hex} borderWidth="thin" borderColor="border.subtle" />
+                        <Text>{winnerProduct.color.name}</Text>
+                      </HStack>
                     </Box>
-                    <Box as="tr">
-                      <Box as="th" fontWeight="medium" textAlign="left" py={2} pl={2} textStyle="xs">사이즈</Box>
-                      <Box as="td" textAlign="right" textStyle="xs" fontWeight="medium" py={2} pr={2}>{winnerProduct.size}</Box>
-                    </Box>
-                    <Box as="tr">
-                      <Box as="th" fontWeight="medium" textAlign="left" py={2} pl={2} textStyle="xs">소재</Box>
-                      <Box as="td" textAlign="right" textStyle="xs" fontWeight="medium" py={2} pr={2}>{winnerProduct.material}</Box>
-                    </Box>
-                    <Box as="tr">
-                      <Box as="th" fontWeight="medium" textAlign="left" py={2} pl={2} textStyle="xs">TPO</Box>
-                      <Box as="td" textAlign="right" textStyle="xs" fontWeight="medium" py={2} pr={2}>{winnerProduct.tpo}</Box>
-                    </Box>
+                  </Box>
+                  <Box as="tr">
+                    <Box as="th" fontWeight="medium" textAlign="left" py={2.5} pl={2} textStyle="sm">사이즈</Box>
+                    <Box as="td" textAlign="right" textStyle="sm" fontWeight="medium" py={2.5} pr={2}>{winnerProduct.size}</Box>
+                  </Box>
+                  <Box as="tr">
+                    <Box as="th" fontWeight="medium" textAlign="left" py={2.5} pl={2} textStyle="sm">소재</Box>
+                    <Box as="td" textAlign="right" textStyle="sm" fontWeight="medium" py={2.5} pr={2}>{winnerProduct.material}</Box>
+                  </Box>
+                  <Box as="tr">
+                    <Box as="th" fontWeight="medium" textAlign="left" py={2.5} pl={2} textStyle="sm">TPO</Box>
+                    <Box as="td" textAlign="right" textStyle="sm" fontWeight="medium" py={2.5} pr={2}>{winnerProduct.tpo}</Box>
                   </Box>
                 </Box>
               </Box>
+            </GridItem>
 
-              <HStack gap={3} mb={4}>
+            <GridItem>
+              <Grid templateColumns="1fr 1fr" gap={4}>
                 <Button
-                  flex="1"
+                  size="lg"
                   variant="outline"
                   borderRadius="xl"
                   onClick={handleRestart}
                 >
-                  <Box as={LuRotateCcw} boxSize={4} mr={1} />
+                  <Box as={LuRotateCcw} boxSize={4} mr={2} />
                   다시 하기
                 </Button>
                 <Button
-                  flex="1"
+                  size="lg"
                   bg="black"
                   color="white"
                   borderRadius="xl"
                   _hover={{ bg: 'gray.800' }}
                 >
-                  <Box as={LuShare2} boxSize={4} mr={1} />
+                  <Box as={LuShare2} boxSize={4} mr={2} />
                   결과 공유
                 </Button>
-              </HStack>
+              </Grid>
+            </GridItem>
 
-              <Box pb={2} textAlign="center">
-                <Text textStyle="2xs" color="fg.muted">
-                  상품 정보는 판매처 기준입니다
-                </Text>
-              </Box>
-            </Box>
-          </Center>
+            <GridItem textAlign="center" pt={2}>
+              <Text textStyle="xs" color="fg.muted">
+                상품 정보는 판매처 기준입니다
+              </Text>
+            </GridItem>
+          </Grid>
         </Container>
 
-        <TabBar />
+        <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
+          <TabBar />
+        </Box>
       </Box>
     );
   }
 
   return (
-    <Box position="relative" minH="100vh" pb={28} bg="bg">
-      <Container maxW="container.xl" mx="auto" py={10} px={5}>
-        <Box mb={6}>
+    <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
+      <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
+        <Container maxW="7xl" mx="auto" px={0}>
           <AppBar />
-        </Box>
+        </Container>
+      </Box>
 
-        <Center w="100%">
-          <Box
-            w="100%"
-            maxW="md"
-            display="flex"
-            flexDirection="column"
-            p={4}
-            boxShadow="md"
-            borderRadius="2xl"
-            bg="bg.panel"
-            borderWidth="thin"
-            borderColor="border.subtle"
-            position="relative"
-          >
-            <Flex justify="space-between" align="center" mb={3}>
-              <HStack gap={1} w={20} justify="flex-start">
-                <IconButton variant="ghost" aria-label="뒤로 가기" onClick={handleGoHome}>
-                  <Box as={LuChevronLeft} boxSize={6} />
-                </IconButton>
-              </HStack>
-
-              <Text textStyle="lg" fontWeight="bold" textAlign="center" flex="1">
+      <Container maxW="3xl" mx="auto" px={5}>
+        <Grid gap={6}>
+          <GridItem>
+            <Flex align="center" gap={2}>
+              <IconButton variant="ghost" aria-label="뒤로 가기" onClick={() => window.history.back()}>
+                <Box as={LuChevronLeft} boxSize={6} />
+              </IconButton>
+              <Text textStyle="lg" fontWeight="bold">
                 월드컵
               </Text>
-
-              <HStack gap={1} w={20} justify="flex-end">
-                <IconButton variant="ghost" aria-label="홈으로" onClick={handleGoHome}>
-                  <Box as={LuHouse} boxSize={5} />
-                </IconButton>
-              </HStack>
             </Flex>
+          </GridItem>
 
-            <Text textAlign="center" textStyle="sm" mb={4}>
+          <GridItem textAlign="center">
+            <Text textStyle="md" fontWeight="medium">
               마음에 드는 상품을 선택해 주세요
             </Text>
+          </GridItem>
 
-            <Flex justify="space-between" align="center" position="relative" mb={6}>
-              <Box
-                w="46%"
+          <GridItem>
+            <Grid templateColumns="1fr auto 1fr" gap={{ base: 3, md: 4 }} alignItems="center" position="relative">
+              <GridItem
                 borderWidth="thin"
                 borderColor="border.subtle"
-                borderRadius="xl"
-                p={3}
+                borderRadius="2xl"
+                p={{ base: 3, md: 4 }}
                 cursor="pointer"
-                boxShadow="sm"
-                _hover={{ transform: 'translateY(-2px)' }}
+                bg="bg.panel"
+                _hover={{ borderColor: 'fg.muted', transform: 'translateY(-2px)' }}
+                transition="all 0.2s"
                 onClick={() => handleSelect(leftProduct)}
               >
-                <Box w="100%" h="40" borderRadius="lg" overflow="hidden" mb={3}>
+                <Box w="100%" h={{ base: "40", md: "60" }} borderRadius="xl" overflow="hidden" mb={3}>
                   <Image
                     src={leftProduct.image}
                     alt={leftProduct.name}
@@ -250,41 +210,38 @@ export default function WorldCupPage() {
                     objectFit="cover"
                   />
                 </Box>
-                <Text textStyle="sm" fontWeight="bold" textAlign="center">
+                <Text textStyle={{ base: "xs", md: "md" }} fontWeight="bold" textAlign="center" truncate>
                   {leftProduct.name}
                 </Text>
-              </Box>
+              </GridItem>
 
-              <Center
-                position="absolute"
-                left="50%"
-                top="50%"
-                transform="translate(-50%, -50%)"
-                boxShadow="md"
-                borderRadius="full"
-                boxSize={9}
-                zIndex="10"
-                bg="bg.panel"
+              <GridItem zIndex="10">
+                <Center
+                  boxShadow="md"
+                  borderRadius="full"
+                  boxSize={{ base: 9, md: 12 }}
+                  bg="bg.panel"
+                  borderWidth="thin"
+                  borderColor="border.subtle"
+                >
+                  <Text textStyle={{ base: "xs", md: "sm" }} fontWeight="bold">
+                    VS
+                  </Text>
+                </Center>
+              </GridItem>
+
+              <GridItem
                 borderWidth="thin"
                 borderColor="border.subtle"
-              >
-                <Text textStyle="xs" fontWeight="bold">
-                  VS
-                </Text>
-              </Center>
-
-              <Box
-                w="46%"
-                borderWidth="thin"
-                borderColor="border.subtle"
-                borderRadius="xl"
-                p={3}
+                borderRadius="2xl"
+                p={{ base: 3, md: 4 }}
                 cursor="pointer"
-                boxShadow="sm"
-                _hover={{ transform: 'translateY(-2px)' }}
+                bg="bg.panel"
+                _hover={{ borderColor: 'fg.muted', transform: 'translateY(-2px)' }}
+                transition="all 0.2s"
                 onClick={() => handleSelect(rightProduct)}
               >
-                <Box w="100%" h="40" borderRadius="lg" overflow="hidden" mb={3}>
+                <Box w="100%" h={{ base: "40", md: "60" }} borderRadius="xl" overflow="hidden" mb={3}>
                   <Image
                     src={rightProduct.image}
                     alt={rightProduct.name}
@@ -293,62 +250,64 @@ export default function WorldCupPage() {
                     objectFit="cover"
                   />
                 </Box>
-                <Text textStyle="sm" fontWeight="bold" textAlign="center">
+                <Text textStyle={{ base: "xs", md: "md" }} fontWeight="bold" textAlign="center" truncate>
                   {rightProduct.name}
                 </Text>
-              </Box>
-            </Flex>
+              </GridItem>
+            </Grid>
+          </GridItem>
 
-            <Box borderWidth="thin" borderColor="border.subtle" borderRadius="xl" p={3} mb={6} overflowX="auto">
-              <Box as="table" w="100%" style={{ borderCollapse: 'collapse' }}>
-                <Box as="tbody">
-                  <Box as="tr">
-                    <Box as="td" w="37.5%" textAlign="left" textStyle="xs" fontWeight="medium" py={2} pl={2}>
-                      <HStack justify="flex-start" gap={1}>
-                        <Box boxSize={2.5} borderRadius="full" bg={leftProduct.color.hex} borderWidth="thin" borderColor="border.subtle" />
-                        <Text>{leftProduct.color.name}</Text>
-                      </HStack>
-                    </Box>
-                    <Box as="th" fontWeight="medium" w="25%" textAlign="center" py={2} textStyle="xs">색상</Box>
-                    <Box as="td" w="37.5%" textAlign="right" textStyle="xs" fontWeight="medium" py={2} pr={2}>
-                      <HStack justify="flex-end" gap={1}>
-                        <Text>{rightProduct.color.name}</Text>
-                        <Box boxSize={2.5} borderRadius="full" bg={rightProduct.color.hex} borderWidth="thin" borderColor="border.subtle" />
-                      </HStack>
-                    </Box>
+          <GridItem borderWidth="thin" borderColor="border.subtle" borderRadius="2xl" p={5} bg="bg.panel" overflowX="auto">
+            <Box as="table" w="100%" style={{ borderCollapse: 'collapse' }}>
+              <Box as="tbody">
+                <Box as="tr">
+                  <Box as="td" w="37.5%" textAlign="left" textStyle="sm" fontWeight="medium" py={3} pl={2}>
+                    <HStack justify="flex-start" gap={1.5}>
+                      <Box boxSize={3} borderRadius="full" bg={leftProduct.color.hex} borderWidth="thin" borderColor="border.subtle" />
+                      <Text>{leftProduct.color.name}</Text>
+                    </HStack>
                   </Box>
+                  <Box as="th" fontWeight="bold" w="25%" textAlign="center" py={3} textStyle="sm">색상</Box>
+                  <Box as="td" w="37.5%" textAlign="right" textStyle="sm" fontWeight="medium" py={3} pr={2}>
+                    <HStack justify="flex-end" gap={1.5}>
+                      <Text>{rightProduct.color.name}</Text>
+                      <Box boxSize={3} borderRadius="full" bg={rightProduct.color.hex} borderWidth="thin" borderColor="border.subtle" />
+                    </HStack>
+                  </Box>
+                </Box>
 
-                  <Box as="tr">
-                    <Box as="td" textAlign="left" textStyle="xs" fontWeight="medium" py={2} pl={2}>{leftProduct.size}</Box>
-                    <Box as="th" fontWeight="medium" textAlign="center" py={2} textStyle="xs">사이즈</Box>
-                    <Box as="td" textAlign="right" textStyle="xs" fontWeight="medium" py={2} pr={2}>{rightProduct.size}</Box>
-                  </Box>
+                <Box as="tr">
+                  <Box as="td" textAlign="left" textStyle="sm" fontWeight="medium" py={3} pl={2}>{leftProduct.size}</Box>
+                  <Box as="th" fontWeight="bold" textAlign="center" py={3} textStyle="sm">사이즈</Box>
+                  <Box as="td" textAlign="right" textStyle="sm" fontWeight="medium" py={3} pr={2}>{rightProduct.size}</Box>
+                </Box>
 
-                  <Box as="tr">
-                    <Box as="td" textAlign="left" textStyle="xs" fontWeight="medium" py={2} pl={2}>{leftProduct.material}</Box>
-                    <Box as="th" fontWeight="medium" textAlign="center" py={2} textStyle="xs">소재</Box>
-                    <Box as="td" textAlign="right" textStyle="xs" fontWeight="medium" py={2} pr={2}>{rightProduct.material}</Box>
-                  </Box>
+                <Box as="tr">
+                  <Box as="td" textAlign="left" textStyle="sm" fontWeight="medium" py={3} pl={2}>{leftProduct.material}</Box>
+                  <Box as="th" fontWeight="bold" textAlign="center" py={3} textStyle="sm">소재</Box>
+                  <Box as="td" textAlign="right" textStyle="sm" fontWeight="medium" py={3} pr={2}>{rightProduct.material}</Box>
+                </Box>
 
-                  <Box as="tr">
-                    <Box as="td" textAlign="left" textStyle="xs" fontWeight="medium" py={2} pl={2}>{leftProduct.tpo}</Box>
-                    <Box as="th" fontWeight="medium" textAlign="center" py={2} textStyle="xs">TPO</Box>
-                    <Box as="td" textAlign="right" textStyle="xs" fontWeight="medium" py={2} pr={2}>{rightProduct.tpo}</Box>
-                  </Box>
+                <Box as="tr">
+                  <Box as="td" textAlign="left" textStyle="sm" fontWeight="medium" py={3} pl={2}>{leftProduct.tpo}</Box>
+                  <Box as="th" fontWeight="bold" textAlign="center" py={3} textStyle="sm">TPO</Box>
+                  <Box as="td" textAlign="right" textStyle="sm" fontWeight="medium" py={3} pr={2}>{rightProduct.tpo}</Box>
                 </Box>
               </Box>
             </Box>
+          </GridItem>
 
-            <Box pb={2} textAlign="center">
-              <Text textStyle="2xs" color="fg.muted">
-                상품 정보는 판매처 기준입니다
-              </Text>
-            </Box>
-          </Box>
-        </Center>
+          <GridItem textAlign="center" pt={2}>
+            <Text textStyle="xs" color="fg.muted">
+              상품 정보는 판매처 기준입니다
+            </Text>
+          </GridItem>
+        </Grid>
       </Container>
 
-      <TabBar />
+      <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
+        <TabBar />
+      </Box>
     </Box>
   );
 }
