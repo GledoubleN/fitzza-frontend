@@ -123,7 +123,7 @@ export const AIStylistPage = () => {
 
   return (
     <Stack gap={ 4 } paddingY={ 4 } minHeight={ 'vh' }>
-      <AppBar maxWidth={ '3xl' }></AppBar>
+      <AppBar></AppBar>
 
       <Container maxWidth={ '3xl' } flex={ 1 }>
         <Stack gap={ 4 }>
