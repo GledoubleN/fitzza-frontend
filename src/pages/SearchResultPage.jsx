@@ -5,40 +5,49 @@ import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
 import exampleProductImage from '../assets/hero.png'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
 import { api } from '../api/axios.js'
-import { HttpStatusCode } from 'axios'
 
 export const SearchResultPage = () => {
   const navigate = useNavigate()
-  const [products, setProducts] = useState([])
-  const [page, setPage] = useState(1)
+  const [displayProducts, setDisplayProducts] = useState([])
+  const [page, setPage] = useState(0) // 백엔드 명세에 맞춰 페이지 번호 0부터 시작
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [hasMore, setHasMore] = useState(true)
 
   const PAGE_SIZE = 10
 
-  const fetchProducts = (targetPage = 1) => {
+  const fetchProducts = async (targetPage = 0) => {
     setIsLoading(true)
     setError(null)
-    setTimeout(() => {
-      try {
-        const endIndex = targetPage * PAGE_SIZE
-        const sliced = products.slice(0, endIndex)
-        setProducts(sliced)
-        setPage(targetPage)
-        setHasMore(endIndex < products.length)
-        setIsLoading(false)
-      } catch (err) {
-        setError('상품 목록을 불러오지 못했습니다.')
-        setIsLoading(false)
+    try {
+      const response = await api.get('/api/products', {
+        params: {
+          page: targetPage,
+          size: PAGE_SIZE,
+          sort: 'LATEST'
+        }
+      })
+
+      const { content, hasNext } = response.data
+
+      if (targetPage === 0) {
+        setDisplayProducts(content)
+      } else {
+        setDisplayProducts((prev) => [...prev, ...content])
       }
-    }, 500)
+
+      setPage(targetPage)
+      setHasMore(hasNext)
+      setIsLoading(false)
+    } catch (err) {
+      setError('상품 목록을 불러오지 못했습니다.')
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
-    fetchProducts(1)
+    fetchProducts(0)
   }, [])
 
   useEffect(() => {
@@ -83,9 +92,9 @@ export const SearchResultPage = () => {
           gap={4}
         >
           {
-            products.map((product, index) => {
+            displayProducts.map((product) => {
               return (
-                <GridItem key={index}>
+                <GridItem key={product.productId}>
                   <Card.Root
                     variant="subtle"
                     borderWidth="thin"
@@ -96,7 +105,7 @@ export const SearchResultPage = () => {
                     cursor="pointer"
                     position="relative"
                     _hover={{ borderColor: 'fg.muted' }}
-                    onClick={() => navigate('/products/1')}
+                    onClick={() => navigate(`/products/${product.productId}`)}
                   >
                     <Grid
                       templateRows="auto auto"
@@ -118,13 +127,14 @@ export const SearchResultPage = () => {
                         >
                           <Box as={LuHeart} boxSize={3.5} />
                         </IconButton>
-                        <Image src={exampleProductImage} w="100%" h="28" objectFit="cover" />
+                        <Image src={product.thumbnailUrl || exampleProductImage} w="100%" h="28" objectFit="cover" />
                       </GridItem>
 
                       <GridItem gridArea="content">
                         <Card.Body p={2.5} gap={1}>
-                          <Text textStyle="xs" fontWeight="semibold" truncate>{product.name}</Text>
-                          <Text textStyle="2xs" color="fg.muted">{product.price.toLocaleString()} 원</Text>
+                          <Text textStyle="xs" color="fg.muted" truncate>{product.brandName}</Text>
+                          <Text textStyle="xs" fontWeight="semibold" truncate>{product.productName}</Text>
+                          <Text textStyle="2xs" fontWeight="bold">{product.price?.toLocaleString()} 원</Text>
                         </Card.Body>
                       </GridItem>
                     </Grid>
