@@ -5,6 +5,10 @@ import products from '../data/products.json'
 import likes from '../data/likes.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
+import productOptions from '../data/productOptions.json'
+import recommendations from '../data/recommendations.json'
+import recommendationHistory from '../data/recommendationHistory.json'
+import recommendationMessages from '../data/recommendationMessages.json'
 
 export const handlers = [
   http.get(
@@ -54,7 +58,8 @@ export const handlers = [
         return new HttpResponse(null, { status: 404 })
       }
 
-      return HttpResponse.json(product)
+      // 상품 상세의 옵션(색상·사이즈). 목업에서는 모든 상품이 같은 옵션을 가집니다.
+      return HttpResponse.json({ ...product, options: productOptions })
     },
   ),
 
@@ -107,6 +112,66 @@ export const handlers = [
       }
 
       return HttpResponse.json(article)
+    },
+  ),
+
+  // AI 추천 요청. 실제로는 비동기 처리라 접수 번호만 돌려줍니다.
+  http.post(
+    'http://localhost:8000/api/v1/recommendations',
+    async ({ request }) => {
+      const { query } = await request.json()
+
+      if (!query?.trim()) {
+        return new HttpResponse(null, { status: 400 })
+      }
+
+      return HttpResponse.json(
+        { requestId: 'sample', status: 'PENDING' },
+        { status: 202 },
+      )
+    },
+  ),
+
+  // 내 추천 대화 목록
+  http.get(
+    'http://localhost:8000/api/v1/recommendations',
+    ({ request }) => {
+      const page = Number(new URL(request.url).searchParams.get('page') ?? 0)
+
+      return HttpResponse.json({
+        content: page === 0 ? recommendationHistory : [],
+        page,
+        totalPages: 1,
+      })
+    },
+  ),
+
+  // 추천 결과 조회. 목업에서는 어떤 requestId든 같은 결과를 돌려줍니다.
+  http.get(
+    'http://localhost:8000/api/v1/recommendations/:requestId',
+    () => {
+      return HttpResponse.json(recommendations)
+    },
+  ),
+
+  http.get(
+    'http://localhost:8000/api/v1/recommendations/:requestId/messages',
+    () => {
+      return HttpResponse.json(recommendationMessages)
+    },
+  ),
+
+  // 장바구니 담기
+  http.post(
+    'http://localhost:8000/api/v1/carts',
+    async ({ request }) => {
+      const { optionId, quantity } = await request.json()
+
+      if (!optionId || quantity < 1) {
+        return new HttpResponse(null, { status: 400 })
+      }
+
+      return HttpResponse.json({ cartId: optionId, quantity })
     },
   ),
 ]
