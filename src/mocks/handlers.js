@@ -10,6 +10,12 @@ import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendationHistory.json'
 import recommendationMessages from '../data/recommendationMessages.json'
 
+// [개발용] 추천 요청 후 결과가 나오기까지 걸리는 시간을 흉내 냅니다.
+// 요청한 뒤 이 시간 동안은 결과 조회가 '처리 중'을 돌려줘서, 화면의 로딩 말풍선과 반복 조회를 확인할 수 있습니다.
+// 실제 백엔드가 붙으면 이 값과 아래 recommendationRequestedAt은 필요 없습니다.
+const RECOMMENDATION_PROCESSING_MS = 3000
+const recommendationRequestedAt = new Map()
+
 export const handlers = [
   http.get(
     'http://localhost:8000/api/v1/uers/:id',
@@ -125,6 +131,9 @@ export const handlers = [
         return new HttpResponse(null, { status: 400 })
       }
 
+      // [개발용] 요청 시각을 기억해 두고, 결과 조회에서 처리 중 여부를 판단합니다.
+      recommendationRequestedAt.set('sample', Date.now())
+
       return HttpResponse.json(
         { requestId: 'sample', status: 'PENDING' },
         { status: 202 },
@@ -149,7 +158,15 @@ export const handlers = [
   // 추천 결과 조회. 목업에서는 어떤 requestId든 같은 결과를 돌려줍니다.
   http.get(
     'http://localhost:8000/api/v1/recommendations/:requestId',
-    () => {
+    ({ params }) => {
+      // [개발용] 방금 요청한 추천은 잠시 동안 처리 중으로 응답합니다.
+      // 요청한 적 없는 requestId(대화 내역, /ai/sample)는 이미 끝난 추천으로 보고 바로 결과를 돌려줍니다.
+      const requestedAt = recommendationRequestedAt.get(params.requestId)
+
+      if (requestedAt && Date.now() - requestedAt < RECOMMENDATION_PROCESSING_MS) {
+        return HttpResponse.json({ status: 'PROCESSING' })
+      }
+
       return HttpResponse.json(recommendations)
     },
   ),
