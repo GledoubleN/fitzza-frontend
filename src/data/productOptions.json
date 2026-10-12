@@ -1,0 +1,26 @@
+[
+  {
+    "optionId": 1,
+    "color": "블랙",
+    "size": "M",
+    "available": true
+  },
+  {
+    "optionId": 2,
+    "color": "블랙",
+    "size": "L",
+    "available": true
+  },
+  {
+    "optionId": 3,
+    "color": "네이비",
+    "size": "M",
+    "available": true
+  },
+  {
+    "optionId": 4,
+    "color": "네이비",
+    "size": "L",
+    "available": false
+  }
+]
