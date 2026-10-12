@@ -14,12 +14,30 @@ import {
 } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import { products } from '../data/products.js'
 import exampleProductImage from '/src/assets/react.svg'
-import { LuX } from 'react-icons/lu'
 import { Footer } from '../components/Footer.jsx'
+import { LuArrowLeft, LuBrackets, LuChevronLeft, LuChevronRight, LuX } from 'react-icons/lu'
+import { api } from '../api/axios.js'
+import { HttpStatusCode } from 'axios'
+import { useEffect, useState } from 'react'
 
 export const ShoppingCartPage = () => {
+  const [products, setProducts] = useState([])
+
+  async function loadShoppingCartProducts () {
+    api.get('/shopping-cart', {}).then(response => {
+      if (response.status !== HttpStatusCode.Ok) {
+        return
+      }
+
+      setProducts(response.data)
+    }).catch(console.error)
+  }
+
+  useEffect(() => {
+    loadShoppingCartProducts()
+  }, [])
+
   return (
     <Grid
       templateRows={ 'auto auto 1fr auto' }

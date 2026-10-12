@@ -1,46 +1,36 @@
 import {
-  Button,
   Container,
   Grid,
   IconButton,
   Stack,
   Card,
   Text,
-  GridItem,
   Image,
-  Carousel,
-  Box, Center, InputGroup, Input, Switch, Textarea, Marquee,
+  Box,
+  Input,
+  Textarea,
 } from '@chakra-ui/react'
 import {
   LuArrowUp,
-  LuBell,
-  LuBot,
-  LuBotOff, LuCamera,
-  LuChevronLeft,
-  LuChevronRight,
-  LuHeart, LuPlus,
-  LuSearch,
-  LuShoppingBag, LuSparkle,
+  LuHeart,
+  LuSparkle,
 } from 'react-icons/lu'
 import exampleProductImage from '/src/assets/hero.png'
-import exampleBannerImage from '/src/assets/vite.svg'
-import { products } from '/src/data/products.js'
-import { banners } from '/src/data/banners.js'
-import { HiCheck, HiX } from 'react-icons/hi'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { useNavigate } from 'react-router-dom'
-import { IoLogoFigma, IoLogoGitlab } from 'react-icons/io5'
-import { IoLogoJavascript, IoLogoLinkedin, IoLogoTwitter, IoLogoVimeo } from 'react-icons/io'
 import { Footer } from '../components/Footer.jsx'
 import { MAX_QUERY_LENGTH } from './ai/aiApi.js'
 import { useEffect, useRef, useState } from 'react'
+import { api } from '../api/axios.js'
+import { HttpStatusCode } from 'axios'
 
 // AI 버튼(LuSparkle)으로 펼쳤을 때의 줄 수이자 자동으로 늘어나는 최대 줄 수.
 const MAX_PROMPT_ROWS = 4
 
 export const MainPage = () => {
   const navigate = useNavigate()
+  const [products, setProducts] = useState([])
 
   const [prompt, setPrompt] = useState('')
 
@@ -50,6 +40,22 @@ export const MainPage = () => {
     if (!query) return
     navigate('/ai', { state: { query } })
   }
+
+  async function loadRecommendedProducts () {
+    api.get('/products/recommended', {})
+    .then((response) => {
+      if (response.status !== HttpStatusCode.Ok) {
+        return
+      }
+
+      setProducts(response.data)
+    })
+    .catch(error => console.log(error))
+  }
+
+  useEffect(() => {
+    loadRecommendedProducts()
+  }, [])
 
   const [isLongPrompt, setIsLongPrompt] = useState(false)
   const [promptRows, setPromptRows] = useState(1)
