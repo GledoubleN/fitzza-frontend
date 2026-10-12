@@ -10,17 +10,14 @@ import {
   Input,
   Stack,
   HStack,
-  IconButton,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { FiLogOut, FiLogIn } from 'react-icons/fi';
 import { AppBar } from '../components/AppBar.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [profileData, setProfileData] = useState({
     nickname: '테스트사용자',
     email: 'test@fitzza.com',
@@ -35,8 +32,6 @@ export default function ProfilePage() {
 
   useEffect(() => {
     fetchProfile();
-    const token = localStorage.getItem('accessToken');
-    setIsLoggedIn(!!token);
   }, []);
 
   const fetchProfile = async () => {
@@ -48,7 +43,6 @@ export default function ProfilePage() {
     } catch (err) {
       if (err.response?.status === 401) {
         localStorage.removeItem('accessToken');
-        setIsLoggedIn(false);
         navigate('/signin');
       }
     }
@@ -93,42 +87,11 @@ export default function ProfilePage() {
     }
   };
 
-  const handleAuthToggle = async () => {
-    if (isLoggedIn) {
-      try {
-        await api.post('/auth/logout');
-      } catch (err) {
-        console.warn('로그아웃 API 통신 실패, 로컬 토큰만 정리합니다.');
-      } finally {
-        localStorage.removeItem('accessToken');
-        setIsLoggedIn(false);
-        alert('로그아웃 되었습니다.');
-        navigate('/signin');
-      }
-    } else {
-      navigate('/signin');
-    }
-  };
-
   return (
     <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
-      {/* 상단바 영역 (오른쪽 정렬 및 일정한 간격 적용) */}
-      <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
-        <Container maxW="7xl" mx="auto" px={0}>
-          <Flex justify="space-between" align="center">
-            <AppBar />
-            <HStack gap={2}>
-              <IconButton
-                aria-label={isLoggedIn ? '로그아웃' : '로그인'}
-                variant="ghost"
-                rounded="full"
-                size="md"
-                onClick={handleAuthToggle}
-              >
-                {isLoggedIn ? <FiLogOut size={20} /> : <FiLogIn size={20} />}
-              </IconButton>
-            </HStack>
-          </Flex>
+      <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" py={4}>
+        <Container maxW="7xl" mx="auto" px={5}>
+          <AppBar />
         </Container>
       </Box>
 
@@ -138,7 +101,6 @@ export default function ProfilePage() {
           gap={6}
           alignItems="start"
         >
-          {/* 좌측 패널: 프로필부터 하단 메뉴까지 하나의 통합 박스 */}
           <Box
             borderWidth="thin"
             borderColor="border.subtle"
@@ -149,7 +111,6 @@ export default function ProfilePage() {
             flexDirection="column"
             gap={4}
           >
-            {/* 프로필 헤더 부분 */}
             <Flex direction="column" align="center" pt={1} pb={1}>
               <Box
                 boxSize={20}
@@ -173,7 +134,6 @@ export default function ProfilePage() {
               </Text>
             </Flex>
 
-            {/* 프로필 상세/수정 영역 */}
             {!isEditing ? (
               <Box w="100%">
                 <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted">
@@ -218,7 +178,6 @@ export default function ProfilePage() {
               </Box>
             )}
 
-            {/* 적립금 및 쿠폰 그리드 */}
             <Grid templateColumns="repeat(2, 1fr)" gap={3}>
               <Box p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted" textAlign="center">
                 <Text textStyle="xs" color="fg.muted" mb={1}>적립금</Text>
@@ -230,7 +189,6 @@ export default function ProfilePage() {
               </Box>
             </Grid>
 
-            {/* 하단 메뉴 그리드 (주문, 이벤트, 커뮤니티, 설정) */}
             <Grid templateColumns="repeat(4, 1fr)" gap={2}>
               {[
                 { label: '주문', icon: '📦' },
@@ -261,7 +219,6 @@ export default function ProfilePage() {
             </Grid>
           </Box>
 
-          {/* 우측 패널 (나의 스냅) */}
           <Box
             borderWidth="thin"
             borderColor="border.subtle"
