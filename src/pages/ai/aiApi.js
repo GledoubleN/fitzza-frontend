@@ -46,8 +46,10 @@ export const getRecommendationMessages = async (requestId) => {
   }
 }
 
+// To-Do-Next: MSW의 상품 상세 응답에는 options가 없어 샘플 옵션으로 대신합니다. 응답에 options가 생기면 지워야 함.
 export const getProductOptions = async (productId) =>
   (await withFallback(() => api.get(`/products/${ productId }`, TIMEOUT), sampleProduct)).options
+  ?? sampleProduct.options
 
 export const addToCart = (optionId, quantity = 1) =>
   withFallback(() => api.post('/carts', { optionId, quantity }, TIMEOUT), { cartId: 0, quantity })
