@@ -39,7 +39,7 @@ function App() {
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
         <Route path="/dev" element={ <DevNavi/> }/>
         <Route path="/likes" element={ <LikesPage/> }/>
-        <Route path="/category" element={ <CategoryPage/> }/>
+        <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orderdetail" element={<OrderDetail />} />
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
       </Routes>
