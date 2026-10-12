@@ -67,7 +67,11 @@ export const AiHistoryPage = () => {
                 whiteSpace={ 'normal' }
                 onClick={ () => navigate(`/ai/${ item.requestId }`, { state: { query: item.queryText } }) }
               >
+                <Text minWidth={ 0 }
+                      width={ 'full' }
+                      truncate >
                 { item.queryText }
+                </Text>
               </Button>
             ))
           }
