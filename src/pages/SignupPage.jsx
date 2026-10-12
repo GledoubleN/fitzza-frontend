@@ -7,10 +7,9 @@ import {
   Heading,
   Text,
   Field,
-  GridItem,
   Grid,
   Box,
-  Center
+  Stack,
 } from '@chakra-ui/react';
 import { LuMail, LuUser, LuLockKeyhole } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -80,91 +79,86 @@ export const SignupPage = () => {
   };
 
   return (
-    <Grid templateRows={'auto 1fr'} minHeight="100vh" paddingY={4}>
+    <Grid
+      templateRows={ 'auto 1fr' }
+      minHeight="100vh"
+      gap={ 4 }
+      paddingY={ 4 }
+      bg="bg"
+    >
       <AppBar />
 
-      <Container maxW="3xl" mx="auto" px={5}>
-        <Center w="100%" minH="65vh">
-          <Box w="100%" maxW="lg">
-            <Grid as="form" onSubmit={handleSubmit} templateRows="auto repeat(3, auto) auto auto" gap={6} alignItems="center">
+      <Container maxWidth="md" display={ 'flex' } alignItems={ 'center' }>
+        <Stack
+          width={ '100%' }
+          as="form"
+          onSubmit={ handleSubmit }
+          gap={ 4 }
+          alignItems="center"
+        >
+          <Heading size="lg">회원가입</Heading>
 
-              <GridItem textAlign="center" w="100%" mb={2}>
-                <Heading size="lg">회원가입</Heading>
-              </GridItem>
+          <Field.Root required w="100%">
+            <InputGroup startElement={ <Box as={LuMail} boxSize={5} color="fg.muted" /> }>
+              <Input
+                type="email"
+                name="email"
+                value={ formData.email }
+                onChange={ handleChange }
+                placeholder="이메일"
+                variant="outline"
+                size="lg"
+                textAlign="left"
+              />
+            </InputGroup>
+          </Field.Root>
 
-              <GridItem w="100%">
-                <Field.Root required w="100%">
-                  <InputGroup startElement={<Box as={LuMail} boxSize={5} color="fg.muted" />}>
-                    <Input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="이메일"
-                      variant="outline"
-                      size="lg"
-                      textAlign="left"
-                    />
-                  </InputGroup>
-                </Field.Root>
-              </GridItem>
+          <Field.Root required w="100%">
+            <InputGroup startElement={ <Box as={LuUser} boxSize={5} color="fg.muted" /> }>
+              <Input
+                type="text"
+                name="nickname"
+                value={ formData.nickname }
+                onChange={ handleChange }
+                placeholder="사용자명 (2~10자)"
+                variant="outline"
+                size="lg"
+                textAlign="left"
+              />
+            </InputGroup>
+          </Field.Root>
 
-              <GridItem w="100%">
-                <Field.Root required w="100%">
-                  <InputGroup startElement={<Box as={LuUser} boxSize={5} color="fg.muted" />}>
-                    <Input
-                      type="text"
-                      name="nickname"
-                      value={formData.nickname}
-                      onChange={handleChange}
-                      placeholder="사용자명 (2~10자)"
-                      variant="outline"
-                      size="lg"
-                      textAlign="left"
-                    />
-                  </InputGroup>
-                </Field.Root>
-              </GridItem>
+          <Field.Root required w="100%">
+            <InputGroup startElement={ <Box as={LuLockKeyhole} boxSize={5} color="fg.muted" /> }>
+              <Input
+                type="password"
+                name="password"
+                value={ formData.password }
+                onChange={ handleChange }
+                placeholder="비밀번호 (영문 소문자, 숫자 조합 8~24자)"
+                variant="outline"
+                size="lg"
+                textAlign="left"
+              />
+            </InputGroup>
+          </Field.Root>
 
-              <GridItem w="100%">
-                <Field.Root required w="100%">
-                  <InputGroup startElement={<Box as={LuLockKeyhole} boxSize={5} color="fg.muted" />}>
-                    <Input
-                      type="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="비밀번호 (영문 소문자, 숫자 조합 8~24자)"
-                      variant="outline"
-                      size="lg"
-                      textAlign="left"
-                    />
-                  </InputGroup>
-                </Field.Root>
-              </GridItem>
+          { errorMessage && (
+            <Text color="red.500" textStyle="sm">
+              { errorMessage }
+            </Text>
+          ) }
 
-              {errorMessage && (
-                <GridItem textAlign="center">
-                  <Text color="red.500" textStyle="sm">
-                    {errorMessage}
-                  </Text>
-                </GridItem>
-              )}
+          <Button
+            type="submit"
+            loading={ loading }
+            size="lg"
+            width="full"
+          >
+            가입하기
+          </Button>
 
-              <GridItem w="100%" mt={2}>
-                <Button
-                  type="submit"
-                  loading={loading}
-                  size="lg"
-                  width="full"
-                >
-                  가입하기
-                </Button>
-              </GridItem>
-
-            </Grid>
-          </Box>
-        </Center>
+        </Stack>
       </Container>
     </Grid>
   );
