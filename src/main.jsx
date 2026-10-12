@@ -20,6 +20,6 @@ enableMocking().then(() => {
       <Provider>
         <App/>
       </Provider>
-    </StrictMode>,
+    </StrictMode>
   )
 })
