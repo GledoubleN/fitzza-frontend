@@ -1,7 +1,7 @@
 import { Box, Flex, IconButton } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu'
-import { productCardWidth } from './productCardWidth.js'
+import { ProductSlot } from './ProductCard.jsx'
 
 // 상품 카드를 가로로 나열하고, 넘길 수 있는 방향에만 넘기기 버튼을 띄웁니다.
 export const ProductRow = ({ children }) => {
@@ -59,12 +59,11 @@ export const ProductRow = ({ children }) => {
         buttons.filter((button) => button.show).map((button) => (
           // 상품 사진과 같은 크기의 정사각형을 줄 위쪽 가장자리에 겹쳐 두고, 그 세로 가운데에 버튼을 놓습니다.
           // 카드 크기가 바뀌어도 버튼이 항상 사진 높이의 정중앙에 옵니다.
-          <Flex
+          <ProductSlot
             key={ button.label }
             position={ 'absolute' }
             top={ 0 }
             { ...button.side }
-            { ...productCardWidth }
             aspectRatio={ 1 }
             align={ 'center' }
             justify={ button.justify }
@@ -82,7 +81,7 @@ export const ProductRow = ({ children }) => {
             >
               { button.icon }
             </IconButton>
-          </Flex>
+          </ProductSlot>
         ))
       }
     </Box>

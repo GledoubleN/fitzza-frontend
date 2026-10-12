@@ -1,4 +1,4 @@
-import { Badge, Button, IconButton, Image, NativeSelect, Stack, Text } from '@chakra-ui/react'
+import { Badge, Button, Flex, IconButton, Image, NativeSelect, Stack, Text } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { LuHeart } from 'react-icons/lu'
 import { Link } from 'react-router-dom'
@@ -6,7 +6,12 @@ import exampleProductImage from '/src/assets/hero.png'
 import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { addToCart, getProductOptions } from './aiApi.js'
-import { productCardWidth } from './productCardWidth.js'
+
+// 상품 카드 한 칸의 크기. 줄 너비의 2/5를 차지해 다음 카드가 걸쳐 보이게 하되, 너무 작거나 커지지 않게 범위를 둡니다.
+// ProductCard가 이 칸을 쓰고, ProductRow의 넘기기 버튼도 사진 높이를 맞추는 데 같은 칸을 씁니다.
+export const ProductSlot = (props) => (
+  <Flex width={ '2/5' } minWidth={ 32 } maxWidth={ 44 } { ...props }></Flex>
+)
 
 // onOptionChange: 코디 전체 담기를 위해 선택한 옵션을 ComboCard에 전달합니다.
 export const ProductCard = ({ item, onOptionChange }) => {
@@ -68,7 +73,7 @@ export const ProductCard = ({ item, onOptionChange }) => {
   }
 
   return (
-    <Stack gap={ 2 } position={ 'relative' } { ...productCardWidth } flexShrink={ 0 } scrollSnapAlign={ 'start' }>
+    <ProductSlot direction={ 'column' } gap={ 2 } position={ 'relative' } flexShrink={ 0 } scrollSnapAlign={ 'start' }>
       <Stack gap={ 1 } flex={ 1 } asChild>
         <Link to={ `/products/${ item.productId }` }>
           <Image
@@ -156,6 +161,6 @@ export const ProductCard = ({ item, onOptionChange }) => {
         onClose={ () => setAdded(false) }
         description={ item.productName }
       ></CartAddedDialog>
-    </Stack>
+    </ProductSlot>
   )
 }
