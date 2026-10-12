@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { AppBar } from '../components/AppBar.jsx';
 import { api } from "../api/axios.js";
 
-export const SignupPage = () => {
+export const SignUpPage = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
