@@ -10,22 +10,53 @@ import {
   Input,
   Stack,
   HStack,
+  createListCollection,
+  Select,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { AppBar } from '../components/AppBar.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
 
+const bodyTypeCollection = createListCollection({
+  items: [
+    { label: '선택 안함 (건너뛰기)', value: '' },
+    { label: '마른편 (슬림)', value: '마른편' },
+    { label: '보통 (스탠다드)', value: '보통' },
+    { label: '근육질 (탄탄함)', value: '근육질' },
+    { label: '통통한편 (체격 있음)', value: '통통한편' },
+  ],
+});
+
+const preferredFitCollection = createListCollection({
+  items: [
+    { label: '선택 안함 (건너뛰기)', value: '' },
+    { label: '슬림 핏 (딱 붙는 스타일)', value: '슬림' },
+    { label: '레귤러 핏 (기본 스탠다드)', value: '레귤러' },
+    { label: '오버사이즈 핏 (여유 있는 스타일)', value: '오버사이즈' },
+  ],
+});
+
+const preferredStyleCollection = createListCollection({
+  items: [
+    { label: '선택 안함 (건너뛰기)', value: '' },
+    { label: '캐주얼 (데일리, 편안함)', value: '캐주얼' },
+    { label: '스트릿 (힙한 무드, 스트리트)', value: '스트릿' },
+    { label: '미니멀 (깔끔함, 모던)', value: '미니멀' },
+    { label: '포멀 / 비즈니스 (수트, 댄디)', value: '포멀' },
+  ],
+});
+
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
     nickname: '테스트사용자',
     email: 'test@fitzza.com',
-    height: '175',
-    weight: '68',
-    bodyType: '보통',
-    preferredFit: '레귤러',
-    style: '캐주얼',
+    height: '',
+    weight: '',
+    bodyType: '',
+    preferredFit: '',
+    style: '',
   });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
@@ -48,15 +79,22 @@ export default function ProfilePage() {
     }
   };
 
-  const handleChange = (e) => {
+  const handleNumberChange = (e) => {
     const { name, value } = e.target;
+    const numericValue = value.replace(/[^0-9]/g, '');
     setProfileData({
       ...profileData,
-      [name]: value,
+      [name]: numericValue,
     });
   };
 
-  const handleClearField = (fieldName) => {
+  const handleKeyDown = (e) => {
+    if (['-', '+', 'e', 'E', '.'].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleSkipField = (fieldName) => {
     setProfileData({
       ...profileData,
       [fieldName]: '',
@@ -66,16 +104,6 @@ export default function ProfilePage() {
   const handleSave = async (e) => {
     e.preventDefault();
     setMessage('');
-
-    if (profileData.height && (isNaN(profileData.height) || profileData.height < 100 || profileData.height > 250)) {
-      setMessage('키는 100cm에서 250cm 사이로 입력해주세요.');
-      return;
-    }
-
-    if (profileData.weight && (isNaN(profileData.weight) || profileData.weight < 30 || profileData.weight > 200)) {
-      setMessage('체중은 30kg에서 200kg 사이로 입력해주세요.');
-      return;
-    }
 
     try {
       await api.put('/profile', profileData);
@@ -137,39 +165,120 @@ export default function ProfilePage() {
             {!isEditing ? (
               <Box w="100%">
                 <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted">
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력'}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력'}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체형/핏</Text><Text textStyle="xs" fontWeight="600">{profileData.bodyType} / {profileData.preferredFit}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력 (건너뜀)'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력 (건너뜀)'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체형</Text><Text textStyle="xs" fontWeight="600">{profileData.bodyType || '미입력 (건너뜀)'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit || '미입력 (건너뜀)'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style || '미입력 (건너뜀)'}</Text></Flex>
                 </Stack>
                 <Button mt={3} width="full" variant="outline" size="sm" onClick={() => setIsEditing(true)}>
-                  프로필 및 실측 수정
+                  신체 정보 및 스타일 수정
                 </Button>
               </Box>
             ) : (
               <Box as="form" onSubmit={handleSave} w="100%">
-                <Stack gap={2}>
+                <Stack gap={3}>
                   <HStack>
-                    <Text textStyle="xs" w="24%">키(cm)</Text>
-                    <Input name="height" value={profileData.height} onChange={handleChange} placeholder="100~250" size="xs" />
-                    <Button size="xs" variant="ghost" onClick={() => handleClearField('height')}>삭제</Button>
+                    <Text textStyle="xs" w="28%" color="fg.muted">키(cm)</Text>
+                    <Input
+                      name="height"
+                      value={profileData.height}
+                      onChange={handleNumberChange}
+                      onKeyDown={handleKeyDown}
+                      placeholder="숫자 입력"
+                      size="xs"
+                      maxLength={3}
+                      autoComplete="off"
+                    />
+                    <Button size="xs" variant="ghost" colorPalette="gray" onClick={() => handleSkipField('height')}>건너뛰기</Button>
                   </HStack>
+
                   <HStack>
-                    <Text textStyle="xs" w="24%">체중(kg)</Text>
-                    <Input name="weight" value={profileData.weight} onChange={handleChange} placeholder="30~200" size="xs" />
-                    <Button size="xs" variant="ghost" onClick={() => handleClearField('weight')}>삭제</Button>
+                    <Text textStyle="xs" w="28%" color="fg.muted">체중(kg)</Text>
+                    <Input
+                      name="weight"
+                      value={profileData.weight}
+                      onChange={handleNumberChange}
+                      onKeyDown={handleKeyDown}
+                      placeholder="숫자 입력"
+                      size="xs"
+                      maxLength={3}
+                      autoComplete="off"
+                    />
+                    <Button size="xs" variant="ghost" colorPalette="gray" onClick={() => handleSkipField('weight')}>건너뛰기</Button>
                   </HStack>
-                  <HStack>
-                    <Text textStyle="xs" w="24%">체형</Text>
-                    <Input name="bodyType" value={profileData.bodyType} onChange={handleChange} placeholder="체형 입력" size="xs" />
-                    <Button size="xs" variant="ghost" onClick={() => handleClearField('bodyType')}>삭제</Button>
+
+                  <HStack position="relative" zIndex={3}>
+                    <Text textStyle="xs" w="28%" color="fg.muted">체형</Text>
+                    <Select.Root
+                      collection={bodyTypeCollection}
+                      size="xs"
+                      width="full"
+                      value={profileData.bodyType ? [profileData.bodyType] : ['']}
+                      onValueChange={(e) => setProfileData({ ...profileData, bodyType: e.value[0] || '' })}
+                    >
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="체형 선택" />
+                      </Select.Trigger>
+                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
+                        {bodyTypeCollection.items.map((item) => (
+                          <Select.Item key={item.value} item={item}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('bodyType')}>비우기</Button>
                   </HStack>
-                  <HStack>
-                    <Text textStyle="xs" w="24%">스타일</Text>
-                    <Input name="style" value={profileData.style} onChange={handleChange} placeholder="스타일 입력" size="xs" />
-                    <Button size="xs" variant="ghost" onClick={() => handleClearField('style')}>삭제</Button>
+
+                  <HStack position="relative" zIndex={2}>
+                    <Text textStyle="xs" w="28%" color="fg.muted">선호 핏</Text>
+                    <Select.Root
+                      collection={preferredFitCollection}
+                      size="xs"
+                      width="full"
+                      value={profileData.preferredFit ? [profileData.preferredFit] : ['']}
+                      onValueChange={(e) => setProfileData({ ...profileData, preferredFit: e.value[0] || '' })}
+                    >
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="선호 핏 선택" />
+                      </Select.Trigger>
+                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
+                        {preferredFitCollection.items.map((item) => (
+                          <Select.Item key={item.value} item={item}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('preferredFit')}>비우기</Button>
                   </HStack>
+
+                  <HStack position="relative" zIndex={1}>
+                    <Text textStyle="xs" w="28%" color="fg.muted">스타일</Text>
+                    <Select.Root
+                      collection={preferredStyleCollection}
+                      size="xs"
+                      width="full"
+                      value={profileData.style ? [profileData.style] : ['']}
+                      onValueChange={(e) => setProfileData({ ...profileData, style: e.value[0] || '' })}
+                    >
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="선호 스타일 선택" />
+                      </Select.Trigger>
+                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
+                        {preferredStyleCollection.items.map((item) => (
+                          <Select.Item key={item.value} item={item}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('style')}>비우기</Button>
+                  </HStack>
+
                   {message && <Text color="blue.500" textStyle="xs" textAlign="center">{message}</Text>}
+
                   <HStack mt={1}>
                     <Button type="submit" size="xs" flex="1">저장</Button>
                     <Button size="xs" variant="outline" flex="1" onClick={() => setIsEditing(false)}>취소</Button>
