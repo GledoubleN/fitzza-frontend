@@ -17,7 +17,7 @@ import { LikesPage } from './pages/LikesPage.jsx'
 import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { ThemePreviewPage } from './pages/ThemePreviewPage.jsx'
-import { AiStylistPage } from './pages/ai/AiStylistPage.jsx'
+import { AIStylistPage } from './pages/ai/AIStylistPage.jsx'
 import { AIHistoryPage } from './pages/ai/AIHistoryPage.jsx'
 
 function App() {
@@ -43,7 +43,7 @@ function App() {
         <Route path="/orderdetail" element={<OrderDetail />} />
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
         <Route path="/ai/history" element={ <AIHistoryPage/> }/>
-        <Route path="/ai/:requestId?" element={ <AiStylistPage/> }/>
+        <Route path="/ai/:requestId?" element={ <AIStylistPage/> }/>
       </Routes>
     </BrowserRouter>
   )

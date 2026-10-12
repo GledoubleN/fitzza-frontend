@@ -13,7 +13,7 @@ const POLL_INTERVAL = 2000
 const MAX_POLLS = 30
 const FAIL_MESSAGE = '추천을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'
 
-export const AiStylistPage = () => {
+export const AIStylistPage = () => {
   const { requestId } = useParams()
   const location = useLocation()
   const navigate = useNavigate()
