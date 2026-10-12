@@ -15,7 +15,7 @@ const pop = keyframes`
 // 순서: 카테고리, 커뮤니티, 홈, 찜, 프로필. 활성 시 strokeWidth로 볼드 강조.
 const items = [
   { to: "/category", label: "카테고리", icon: LuLayoutGrid },
-  { to: "/communitymain", label: "커뮤니티", icon: LuUsers },
+  { to: "/community/main", label: "커뮤니티", icon: LuUsers },
   { to: "/", label: "홈", icon: LuHouse, end: true },
   { to: "/likes", label: "찜", icon: LuHeart },
   { to: "/mypage", label: "프로필", icon: LuUser },

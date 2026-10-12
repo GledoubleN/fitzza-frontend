@@ -78,12 +78,12 @@ export const CommunityMainPage = () => {
 
   const articleHandler = (id) => {
     console.log('>>> debug articleHandler Clicked : ' + id)
-    moveUrl(`/communityarticles/${ id }`)
+    moveUrl(`/community/articles/${ id }`)
   }
 
   const writeHandler = () => {
     console.log('>>> debug writeHandler Clicked')
-    moveUrl(`/communitywrite`)
+    moveUrl(`/community/write`)
   }
 
   return (

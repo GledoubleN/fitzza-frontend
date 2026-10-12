@@ -82,7 +82,7 @@ export const handlers = [
   // TODO
   // 댓글 필터링을 CommunityArticlePage가 아니라 여기서 하도록 수정
   http.get(
-    'http://localhost:8000/api/v1/community/article/:id/comments',
+    'http://localhost:8000/api/v1/community/articles/:id/comments',
     () => {
       return HttpResponse.json(comments)
     },

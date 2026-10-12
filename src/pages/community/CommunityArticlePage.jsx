@@ -79,7 +79,7 @@ export const CommunityArticlePage = () => {
     }
 
     try {
-      const res = await api.post(`/communityarticle/${id}/comments`, {
+      const res = await api.post(`/community/articles/${id}/comments`, {
         content: trimmed,
         parentId,
       });

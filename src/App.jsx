@@ -30,9 +30,9 @@ function App() {
         <Route path="/search" element={ <SearchResultPage/> }/>
         <Route path="/products/:id" element={ <ProductPage/> }/>
         <Route path="/checkout" element={ <CheckoutPage/> }/>
-        <Route path="/communitymain" element={ <CommunityMainPage/> }/>
-        <Route path="/communityarticle/:id" element={ <CommunityArticlePage/> }/>
-        <Route path="/communitywrite" element={ <CommunityWritePage/> }/>
+        <Route path="/community/main" element={ <CommunityMainPage/> }/>
+        <Route path="/community/articles/:id" element={ <CommunityArticlePage/> }/>
+        <Route path="/community/write" element={ <CommunityWritePage/> }/>
         <Route path="/prompt" element={ <PromptPage/> }/>
         <Route path="/mypage" element={ <MyPage/> }/>
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
