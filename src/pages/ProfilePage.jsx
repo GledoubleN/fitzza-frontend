@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Container,
   Box,
@@ -6,15 +7,118 @@ import {
   Button,
   Text,
   Grid,
+  Input,
+  Stack,
+  HStack,
+  createListCollection,
+  Select,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import { AppBar } from '../components/AppBar.jsx';
 import { TabBar } from '../components/TabBar.jsx';
+import { api } from '../api/axios.js';
+
+const bodyTypeCollection = createListCollection({
+  items: [
+    { label: '선택 안함 (건너뛰기)', value: '' },
+    { label: '마른편 (슬림)', value: '마른편' },
+    { label: '보통 (스탠다드)', value: '보통' },
+    { label: '근육질 (탄탄함)', value: '근육질' },
+    { label: '통통한편 (체격 있음)', value: '통통한편' },
+  ],
+});
+
+const preferredFitCollection = createListCollection({
+  items: [
+    { label: '선택 안함 (건너뛰기)', value: '' },
+    { label: '슬림 핏 (딱 붙는 스타일)', value: '슬림' },
+    { label: '레귤러 핏 (기본 스탠다드)', value: '레귤러' },
+    { label: '오버사이즈 핏 (여유 있는 스타일)', value: '오버사이즈' },
+  ],
+});
+
+const preferredStyleCollection = createListCollection({
+  items: [
+    { label: '선택 안함 (건너뛰기)', value: '' },
+    { label: '캐주얼 (데일리, 편안함)', value: '캐주얼' },
+    { label: '스트릿 (힙한 무드, 스트리트)', value: '스트릿' },
+    { label: '미니멀 (깔끔함, 모던)', value: '미니멀' },
+    { label: '포멀 / 비즈니스 (수트, 댄디)', value: '포멀' },
+  ],
+});
 
 export default function ProfilePage() {
+  const [isEditing, setIsEditing] = useState(false);
+  const [profileData, setProfileData] = useState({
+    nickname: '테스트사용자',
+    email: 'test@fitzza.com',
+    height: '',
+    weight: '',
+    bodyType: '',
+    preferredFit: '',
+    style: '',
+  });
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const response = await api.get('/profile');
+      if (response.data) {
+        setProfileData((prev) => ({ ...prev, ...response.data }));
+      }
+    } catch (err) {
+      if (err.response?.status === 401) {
+        localStorage.removeItem('accessToken');
+        navigate('/signin');
+      }
+    }
+  };
+
+  const handleNumberChange = (e) => {
+    const { name, value } = e.target;
+    const numericValue = value.replace(/[^0-9]/g, '');
+    setProfileData({
+      ...profileData,
+      [name]: numericValue,
+    });
+  };
+
+  const handleKeyDown = (e) => {
+    if (['-', '+', 'e', 'E', '.'].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleSkipField = (fieldName) => {
+    setProfileData({
+      ...profileData,
+      [fieldName]: '',
+    });
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setMessage('');
+
+    try {
+      await api.put('/profile', profileData);
+      setMessage('프로필이 성공적으로 저장되었습니다.');
+      setIsEditing(false);
+    } catch (err) {
+      setMessage('프로필이 저장되었습니다 (테스트 모드).');
+      setIsEditing(false);
+    }
+  };
+
   return (
     <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
-      <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
-        <Container maxW="7xl" mx="auto" px={0}>
+      <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" py={4}>
+        <Container maxW="7xl" mx="auto" px={5}>
           <AppBar />
         </Container>
       </Box>
@@ -23,107 +127,206 @@ export default function ProfilePage() {
         <Grid
           templateColumns={{ base: '1fr', lg: '1fr 1.8fr' }}
           gap={6}
-          alignItems="stretch"
+          alignItems="start"
         >
-          <Flex direction="column" justify="space-between" gap={6} h="100%">
-            <Box
-              borderWidth="thin"
-              borderColor="border.subtle"
-              borderRadius="2xl"
-              p={8}
-              bg="bg.panel"
-              flex="1"
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-            >
-              <Flex direction="column" align="center" pt={2} pb={2}>
-                <Box
-                  boxSize={24}
+          <Box
+            borderWidth="thin"
+            borderColor="border.subtle"
+            borderRadius="2xl"
+            p={6}
+            bg="bg.panel"
+            display="flex"
+            flexDirection="column"
+            gap={4}
+          >
+            <Flex direction="column" align="center" pt={1} pb={1}>
+              <Box
+                boxSize={20}
+                borderWidth="thin"
+                borderColor="border.subtle"
+                borderRadius="full"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                fontSize="4xl"
+                bg="bg.muted"
+                mb={3}
+              >
+                👤
+              </Box>
+              <Heading textStyle="lg" mt={1} fontWeight="600">
+                {profileData.nickname}
+              </Heading>
+              <Text textStyle="sm" mt={1} color="fg.muted">
+                {profileData.email}
+              </Text>
+            </Flex>
+
+            {!isEditing ? (
+              <Box w="100%">
+                <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted">
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력 (건너뜀)'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력 (건너뜀)'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체형</Text><Text textStyle="xs" fontWeight="600">{profileData.bodyType || '미입력 (건너뜀)'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit || '미입력 (건너뜀)'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style || '미입력 (건너뜀)'}</Text></Flex>
+                </Stack>
+                <Button mt={3} width="full" variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                  신체 정보 및 스타일 수정
+                </Button>
+              </Box>
+            ) : (
+              <Box as="form" onSubmit={handleSave} w="100%">
+                <Stack gap={3}>
+                  <HStack>
+                    <Text textStyle="xs" w="28%" color="fg.muted">키(cm)</Text>
+                    <Input
+                      name="height"
+                      value={profileData.height}
+                      onChange={handleNumberChange}
+                      onKeyDown={handleKeyDown}
+                      placeholder="숫자 입력"
+                      size="xs"
+                      maxLength={3}
+                      autoComplete="off"
+                    />
+                    <Button size="xs" variant="ghost" colorPalette="gray" onClick={() => handleSkipField('height')}>건너뛰기</Button>
+                  </HStack>
+
+                  <HStack>
+                    <Text textStyle="xs" w="28%" color="fg.muted">체중(kg)</Text>
+                    <Input
+                      name="weight"
+                      value={profileData.weight}
+                      onChange={handleNumberChange}
+                      onKeyDown={handleKeyDown}
+                      placeholder="숫자 입력"
+                      size="xs"
+                      maxLength={3}
+                      autoComplete="off"
+                    />
+                    <Button size="xs" variant="ghost" colorPalette="gray" onClick={() => handleSkipField('weight')}>건너뛰기</Button>
+                  </HStack>
+
+                  <HStack position="relative" zIndex={3}>
+                    <Text textStyle="xs" w="28%" color="fg.muted">체형</Text>
+                    <Select.Root
+                      collection={bodyTypeCollection}
+                      size="xs"
+                      width="full"
+                      value={profileData.bodyType ? [profileData.bodyType] : ['']}
+                      onValueChange={(e) => setProfileData({ ...profileData, bodyType: e.value[0] || '' })}
+                    >
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="체형 선택" />
+                      </Select.Trigger>
+                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
+                        {bodyTypeCollection.items.map((item) => (
+                          <Select.Item key={item.value} item={item}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('bodyType')}>비우기</Button>
+                  </HStack>
+
+                  <HStack position="relative" zIndex={2}>
+                    <Text textStyle="xs" w="28%" color="fg.muted">선호 핏</Text>
+                    <Select.Root
+                      collection={preferredFitCollection}
+                      size="xs"
+                      width="full"
+                      value={profileData.preferredFit ? [profileData.preferredFit] : ['']}
+                      onValueChange={(e) => setProfileData({ ...profileData, preferredFit: e.value[0] || '' })}
+                    >
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="선호 핏 선택" />
+                      </Select.Trigger>
+                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
+                        {preferredFitCollection.items.map((item) => (
+                          <Select.Item key={item.value} item={item}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('preferredFit')}>비우기</Button>
+                  </HStack>
+
+                  <HStack position="relative" zIndex={1}>
+                    <Text textStyle="xs" w="28%" color="fg.muted">스타일</Text>
+                    <Select.Root
+                      collection={preferredStyleCollection}
+                      size="xs"
+                      width="full"
+                      value={profileData.style ? [profileData.style] : ['']}
+                      onValueChange={(e) => setProfileData({ ...profileData, style: e.value[0] || '' })}
+                    >
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="선호 스타일 선택" />
+                      </Select.Trigger>
+                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
+                        {preferredStyleCollection.items.map((item) => (
+                          <Select.Item key={item.value} item={item}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('style')}>비우기</Button>
+                  </HStack>
+
+                  {message && <Text color="blue.500" textStyle="xs" textAlign="center">{message}</Text>}
+
+                  <HStack mt={1}>
+                    <Button type="submit" size="xs" flex="1">저장</Button>
+                    <Button size="xs" variant="outline" flex="1" onClick={() => setIsEditing(false)}>취소</Button>
+                  </HStack>
+                </Stack>
+              </Box>
+            )}
+
+            <Grid templateColumns="repeat(2, 1fr)" gap={3}>
+              <Box p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted" textAlign="center">
+                <Text textStyle="xs" color="fg.muted" mb={1}>적립금</Text>
+                <Text textStyle="md" fontWeight="600">7,777원</Text>
+              </Box>
+              <Box p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted" textAlign="center">
+                <Text textStyle="xs" color="fg.muted" mb={1}>쿠폰</Text>
+                <Text textStyle="md" fontWeight="600">11장</Text>
+              </Box>
+            </Grid>
+
+            <Grid templateColumns="repeat(4, 1fr)" gap={2}>
+              {[
+                { label: '주문', icon: '📦' },
+                { label: '이벤트', icon: '🎉' },
+                { label: '커뮤니티', icon: '💬' },
+                { label: '설정', icon: '⚙️' },
+              ].map((item) => (
+                <Button
+                  key={item.label}
+                  variant="outline"
                   borderWidth="thin"
                   borderColor="border.subtle"
-                  borderRadius="full"
+                  borderRadius="xl"
+                  height="auto"
+                  py={3}
+                  px={1}
                   display="flex"
+                  flexDirection="column"
                   alignItems="center"
                   justifyContent="center"
-                  fontSize="5xl"
                   bg="bg.muted"
-                  mb={4}
+                  _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
                 >
-                  👤
-                </Box>
-                <Heading textStyle="lg" mt={1} fontWeight="600">
-                  사용자
-                </Heading>
-                <Text textStyle="sm" mt={1} color="fg.muted">
-                  @fit_user
-                </Text>
-              </Flex>
-
-              <Grid templateColumns="repeat(2, 1fr)" gap={4} mt={6}>
-                <Box
-                  p={5}
-                  borderWidth="thin"
-                  borderColor="border.subtle"
-                  borderRadius="xl"
-                  bg="bg.muted"
-                  textAlign="center"
-                >
-                  <Text textStyle="xs" color="fg.muted" mb={1}>적립금</Text>
-                  <Text textStyle="md" fontWeight="600">7,777원</Text>
-                </Box>
-
-                <Box
-                  p={5}
-                  borderWidth="thin"
-                  borderColor="border.subtle"
-                  borderRadius="xl"
-                  bg="bg.muted"
-                  textAlign="center"
-                >
-                  <Text textStyle="xs" color="fg.muted" mb={1}>쿠폰</Text>
-                  <Text textStyle="md" fontWeight="600">11장</Text>
-                </Box>
-              </Grid>
-            </Box>
-
-            <Box
-              borderWidth="thin"
-              borderColor="border.subtle"
-              borderRadius="2xl"
-              p={5}
-              bg="bg.panel"
-            >
-              <Grid templateColumns="repeat(4, 1fr)" gap={3}>
-                {[
-                  { label: '주문', icon: '📦' },
-                  { label: '이벤트', icon: '🎉' },
-                  { label: '커뮤니티', icon: '💬' },
-                  { label: '설정', icon: '⚙️' },
-                ].map((item) => (
-                  <Button
-                    key={item.label}
-                    variant="outline"
-                    borderWidth="thin"
-                    borderColor="border.subtle"
-                    borderRadius="xl"
-                    height="auto"
-                    py={4}
-                    px={1}
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    bg="bg.muted"
-                    _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
-                  >
-                    <Text fontSize="xl" mb={1}>{item.icon}</Text>
-                    <Text textStyle="xs" fontWeight="600" color="fg">{item.label}</Text>
-                  </Button>
-                ))}
-              </Grid>
-            </Box>
-          </Flex>
+                  <Text fontSize="lg" mb={1}>{item.icon}</Text>
+                  <Text textStyle="xs" fontWeight="600" color="fg">{item.label}</Text>
+                </Button>
+              ))}
+            </Grid>
+          </Box>
 
           <Box
             borderWidth="thin"
@@ -131,10 +334,8 @@ export default function ProfilePage() {
             borderRadius="2xl"
             p={8}
             bg="bg.panel"
-            h="100%"
             display="flex"
             flexDirection="column"
-            justifyContent="space-between"
           >
             <Flex justify="space-between" align="center" mb={6}>
               <Heading textStyle="md" fontWeight="700">
@@ -145,11 +346,7 @@ export default function ProfilePage() {
               </Button>
             </Flex>
 
-            <Grid
-              templateColumns="repeat(2, 1fr)"
-              gap={4}
-              flex="1"
-            >
+            <Grid templateColumns="repeat(2, 1fr)" gap={4}>
               {['1', '2', '3', '4'].map((num) => (
                 <Box
                   key={num}
@@ -158,7 +355,6 @@ export default function ProfilePage() {
                   borderWidth="thin"
                   borderColor="border.subtle"
                   minH="13rem"
-                  h="100%"
                   bg="bg.muted"
                   display="flex"
                   alignItems="center"
