@@ -8,6 +8,8 @@ import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
 
 export const CategoryPage = () => {
+  // TODO 2026-10-12
+  // 카테고리를 백엔드와 통신해서 받아오게 수정되어 작동하지 않습니다.
   const navigate = useNavigate()
   const [selected, setSelected] = useState(categories[0])
   const sections = selected.sections ?? [selected]
