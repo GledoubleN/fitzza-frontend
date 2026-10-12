@@ -1,13 +1,56 @@
-import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text, Box } from '@chakra-ui/react'
+import { useState, useEffect } from 'react'
+import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text, Box, Button, Spinner } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
-import { products } from '../data/products.js'
+import { products as allProducts } from '../data/products.js'
 import exampleProductImage from '../assets/hero.png'
 import { useNavigate } from 'react-router-dom'
 
 export const SearchResultPage = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const [displayProducts, setDisplayProducts] = useState([])
+  const [page, setPage] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [hasMore, setHasMore] = useState(true)
+
+  const PAGE_SIZE = 10
+
+  const fetchProducts = (targetPage = 1) => {
+    setIsLoading(true)
+    setError(null)
+    setTimeout(() => {
+      try {
+        const endIndex = targetPage * PAGE_SIZE
+        const sliced = allProducts.slice(0, endIndex)
+        setDisplayProducts(sliced)
+        setPage(targetPage)
+        setHasMore(endIndex < allProducts.length)
+        setIsLoading(false)
+      } catch (err) {
+        setError('상품 목록을 불러오지 못했습니다.')
+        setIsLoading(false)
+      }
+    }, 500)
+  }
+
+  useEffect(() => {
+    fetchProducts(1)
+  }, [])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200) {
+        if (!isLoading && hasMore) {
+          fetchProducts(page + 1)
+        }
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [isLoading, hasMore, page])
 
   return (
     <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
@@ -38,7 +81,7 @@ export const SearchResultPage = () => {
           gap={4}
         >
           {
-            products.map((product, index) => {
+            displayProducts.map((product, index) => {
               return (
                 <GridItem key={index}>
                   <Card.Root
@@ -89,6 +132,19 @@ export const SearchResultPage = () => {
             })
           }
         </Grid>
+
+        {error && (
+          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" py={10} gap={3}>
+            <Text color="fg.muted" textStyle="sm">{error}</Text>
+            <Button size="xs" variant="outline" onClick={() => fetchProducts(page)}>다시 시도</Button>
+          </Box>
+        )}
+
+        {isLoading && (
+          <Box display="flex" justifyContent="center" alignItems="center" py={8}>
+            <Spinner size="sm" />
+          </Box>
+        )}
       </Container>
 
       <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
