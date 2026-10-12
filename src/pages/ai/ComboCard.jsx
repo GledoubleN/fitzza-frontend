@@ -55,7 +55,7 @@ export const ComboCard = ({ combo, combos, index }) => {
   }
 
   return (
-    <Card.Root rounded={ '2xl' }>
+    <Card.Root>
       <Card.Body gap={ 3 }>
         <Flex justify={ 'space-between' } align={ 'center' } gap={ 2 }>
           <Text fontWeight={ 'bold' }>코디 { index + 1 }</Text>

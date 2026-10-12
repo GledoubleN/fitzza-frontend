@@ -117,7 +117,7 @@ export const AiStylistPage = () => {
 
   const items = result?.items ?? []
   const combos = result?.combos ?? []
-  const bubbleProps = { maxWidth: '4/5', rounded: '2xl' }
+  const bubbleProps = { maxWidth: '4/5' }
 
   return (
     <Stack gap={ 4 } paddingY={ 4 } minHeight={ 'vh' }>
@@ -189,7 +189,7 @@ export const AiStylistPage = () => {
 
               {
                 items.length > 0 &&
-                <Card.Root rounded={ '2xl' }>
+                <Card.Root>
                   <Card.Body gap={ 3 }>
                     <Flex justify={ 'space-between' } align={ 'center' } gap={ 2 }>
                       <Text fontWeight={ 'bold' }>이런 상품은 어때요?</Text>
