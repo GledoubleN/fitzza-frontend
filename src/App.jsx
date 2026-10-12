@@ -2,7 +2,7 @@ import { MainPage } from "./pages/MainPage.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ShoppingCartPage } from "./pages/ShoppingCartPage.jsx";
 import { SignInPage } from "./pages/SignInPage.jsx";
-import SignupPage from "./pages/SignupPage.jsx";
+import { SignupPage } from "./pages/SignupPage";
 import { TryOnPage } from './pages/TryOnPage.jsx'
 import { SearchResultPage } from './pages/SearchResultPage.jsx'
 import { CheckoutPage } from './pages/CheckoutPage.jsx'

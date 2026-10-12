@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { AppBar } from '../components/AppBar.jsx';
 import { api } from "../api/axios.js";
 
-export default function SignupPage() {
+export const SignupPage = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -168,4 +168,4 @@ export default function SignupPage() {
       </Container>
     </Grid>
   );
-}
+};
