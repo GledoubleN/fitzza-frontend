@@ -3,13 +3,15 @@ import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, 
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
-import { products as allProducts } from '../data/products.js'
 import exampleProductImage from '../assets/hero.png'
 import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { api } from '../api/axios.js'
+import { HttpStatusCode } from 'axios'
 
 export const SearchResultPage = () => {
   const navigate = useNavigate()
-  const [displayProducts, setDisplayProducts] = useState([])
+  const [products, setProducts] = useState([])
   const [page, setPage] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -23,10 +25,10 @@ export const SearchResultPage = () => {
     setTimeout(() => {
       try {
         const endIndex = targetPage * PAGE_SIZE
-        const sliced = allProducts.slice(0, endIndex)
-        setDisplayProducts(sliced)
+        const sliced = products.slice(0, endIndex)
+        setProducts(sliced)
         setPage(targetPage)
-        setHasMore(endIndex < allProducts.length)
+        setHasMore(endIndex < products.length)
         setIsLoading(false)
       } catch (err) {
         setError('상품 목록을 불러오지 못했습니다.')
@@ -81,7 +83,7 @@ export const SearchResultPage = () => {
           gap={4}
         >
           {
-            displayProducts.map((product, index) => {
+            products.map((product, index) => {
               return (
                 <GridItem key={index}>
                   <Card.Root

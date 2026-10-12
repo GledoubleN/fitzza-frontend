@@ -13,10 +13,14 @@ import {
   Select, createListCollection, Portal,
 } from '@chakra-ui/react'
 import { LuChevronLeft, LuMinus, LuPlus } from 'react-icons/lu'
-import { products } from '../data/products.js'
 import exampleProductImage from '/src/assets/react.svg'
+import { useEffect, useState } from 'react'
+import { api } from '../api/axios.js'
+import { HttpStatusCode } from 'axios'
 
 export const CheckoutPage = () => {
+  const [products, setProducts] = useState([])
+
   const frameworks = createListCollection({
     items: [
       { label: 'React.js', value: 'react' },
@@ -25,6 +29,23 @@ export const CheckoutPage = () => {
       { label: 'Svelte', value: 'svelte' },
     ],
   })
+
+  // TODO
+  function loadCheckoutProducts () {
+    api.get('/checkout', {})
+    .then((response) => {
+      if (response.status !== HttpStatusCode.Ok) {
+        return
+      }
+
+      setProducts(response.data)
+    })
+    .catch(error => console.log(error))
+  }
+
+  useEffect(() => {
+    loadCheckoutProducts()
+  }, [])
 
   return (
     <Container maxWidth={ 'xl' } paddingY={ '4' }>

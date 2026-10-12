@@ -15,7 +15,7 @@ import { LuX } from 'react-icons/lu'
 
 // 기존에 패딩 없이 했을 경우, 5자리숫자부터 표기가 안되어 Padding을 2로 임의 지정했습니다.
 // 현재 6자리숫자(십만단위)까지 문제없이 표기 되며, fontSize를 지정해서 sm으로 만들경우 8자리까지 표현 가능합니다.
-export const LikesPage = () => {
+export const WishlistPage = () => {
   return (
     <>
       <Stack paddingY={ 4 } height={ '100vh' } gap={ 4 }>

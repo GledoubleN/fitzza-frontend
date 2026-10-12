@@ -1,1 +1,0 @@
-export const banners = Array.from({ length: 5 })
