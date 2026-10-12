@@ -21,7 +21,7 @@ export const SearchResultPage = () => {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await api.get('/api/products', {
+      const response = await api.get('/products', {
         params: {
           page: targetPage,
           size: PAGE_SIZE,
@@ -29,7 +29,9 @@ export const SearchResultPage = () => {
         }
       })
 
-      const { content, hasNext } = response.data
+      // TODO 임시로 수정
+      const content = response.data
+      const hasNext = false
 
       if (targetPage === 0) {
         setDisplayProducts(content)
@@ -92,7 +94,7 @@ export const SearchResultPage = () => {
           gap={4}
         >
           {
-            displayProducts.map((product) => {
+            displayProducts?.map((product) => {
               return (
                 <GridItem key={product.productId}>
                   <Card.Root
