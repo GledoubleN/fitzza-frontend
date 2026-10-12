@@ -7,6 +7,7 @@ import { Toaster } from '../../components/ui/toaster.jsx'
 import { ensureLogin, getRecommendation, getRecommendationMessages, postRecommendation } from './aiApi.js'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
+import { useOverflowing } from './useOverflowing.js'
 
 const POLL_INTERVAL = 2000
 const MAX_POLLS = 30
@@ -110,19 +111,8 @@ export const AiStylistPage = () => {
     }
   }, [requestId, location.key, attempt])
 
-  const itemsRowRef = useRef(null)
-  const [itemsOverflowing, setItemsOverflowing] = useState(false)
-
-  // 단품 줄이 실제로 넘칠 때만 "옆으로 넘겨보세요"를 보여주기 위해 줄 크기를 지켜봅니다.
-  useEffect(() => {
-    const row = itemsRowRef.current
-    if (!row) return
-    const check = () => setItemsOverflowing(row.scrollWidth > row.clientWidth)
-    check()
-    const observer = new ResizeObserver(check)
-    observer.observe(row)
-    return () => observer.disconnect()
-  }, [result])
+  // 단품 줄이 실제로 넘칠 때만 "옆으로 넘겨보세요"를 보여줍니다.
+  const [itemsRowRef, itemsOverflowing] = useOverflowing(result)
 
   const retry = () => {
     if (query) request(query)

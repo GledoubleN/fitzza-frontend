@@ -5,6 +5,7 @@ import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { addToCart } from './aiApi.js'
 import { ProductCard } from './ProductCard.jsx'
+import { useOverflowing } from './useOverflowing.js'
 
 export const ComboCard = ({ combo, combos, index }) => {
   const navigate = useNavigate()
@@ -13,6 +14,8 @@ export const ComboCard = ({ combo, combos, index }) => {
   const [added, setAdded] = useState(false)
   // 전체 담기가 일부만 성공했을 때 이미 담긴 옵션. 재시도 때 다시 담지 않습니다.
   const [addedOptionIds, setAddedOptionIds] = useState([])
+  // 상품 줄이 실제로 넘칠 때만 "옆으로 넘겨보세요"를 보여줍니다.
+  const [rowRef, overflowing] = useOverflowing(combo.items)
 
   const allSelected = combo.items.every((item) => selected[item.productId])
 
@@ -69,7 +72,11 @@ export const ComboCard = ({ combo, combos, index }) => {
           combo.budgetExceeded &&
           <Text fontSize={ 'sm' } color={ 'fg.error' }>예산을 초과한 조합이에요</Text>
         }
-        <Flex gap={ 3 } paddingBottom={ 2 } overflowX={ 'auto' }>
+        {
+          overflowing &&
+          <Text fontSize={ 'xs' } color={ 'fg.muted' } alignSelf={ 'flex-end' }>옆으로 넘겨보세요 ›</Text>
+        }
+        <Flex ref={ rowRef } gap={ 3 } paddingBottom={ 2 } overflowX={ 'auto' }>
           {
             combo.items.map((item) => (
               <ProductCard
