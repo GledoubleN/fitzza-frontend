@@ -9,7 +9,6 @@ import { CheckoutPage } from './pages/CheckoutPage.jsx'
 import {CommunityMainPage} from "./pages/community/CommunityMainPage.jsx";
 import {CommunityWritePage} from "./pages/community/CommunityWritePage.jsx";
 import {CommunityArticlePage} from "./pages/community/CommunityArticlePage.jsx";
-import { PromptPage } from './pages/PromptPage.jsx'
 import { ProductPage } from './pages/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import WorldCupPage from './pages/WorldCupPage.jsx'
@@ -36,7 +35,6 @@ function App() {
         <Route path="/community/main" element={ <CommunityMainPage/> }/>
         <Route path="/community/articles/:id" element={ <CommunityArticlePage/> }/>
         <Route path="/community/write" element={ <CommunityWritePage/> }/>
-        <Route path="/prompt" element={ <PromptPage/> }/>
         <Route path="/profile" element={ <ProfilePage/> }/>
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
         <Route path="/dev" element={ <DevNavi/> }/>
