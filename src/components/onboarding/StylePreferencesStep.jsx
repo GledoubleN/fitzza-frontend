@@ -1,4 +1,6 @@
 import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
+import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
+import { OnboardingSaveConfirmation } from './OnboardingSaveConfirmation.jsx'
 
 const bodyTypeOptions = [
   { label: '마른편 (슬림)', value: '마른편' },
@@ -20,9 +22,23 @@ const styleOptions = [
   { label: '포멀 / 비즈니스', value: '포멀' },
 ]
 
-export function StylePreferencesStep ({ formData, onFieldChange }) {
+export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMessage, onPrev, onSave, isLoading, isSaved, onConfirm }) {
   return (
-    <>
+    <OnboardingStepLayout
+      step={ 3 }
+      onSkip={ onSkip }
+      errorMessage={ errorMessage }
+      actions={ (
+        <Grid templateColumns="minmax(0, 1fr) minmax(0, 3fr)" gap={ 4 }>
+          <Button colorPalette="primary" variant="outline" size="md" onClick={ onPrev }>
+            이전
+          </Button>
+          <Button colorPalette="primary" size="md" loading={ isLoading } loadingText="저장 중..." onClick={ onSave }>
+            저장하기
+          </Button>
+        </Grid>
+      ) }
+    >
       <Box mb={ 8 }>
         <Heading size="lg" fontWeight="bold" mb={ 4 }>체형과 선호하는 스타일을
           골라주세요</Heading>
@@ -87,6 +103,7 @@ export function StylePreferencesStep ({ formData, onFieldChange }) {
           </Grid>
         </VStack>
       </VStack>
-    </>
+      { isSaved && <OnboardingSaveConfirmation onConfirm={ onConfirm } /> }
+    </OnboardingStepLayout>
   )
 }

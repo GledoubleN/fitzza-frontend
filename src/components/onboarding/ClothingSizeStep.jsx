@@ -1,4 +1,5 @@
 import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
+import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
 
 const topSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL']
 const bottomSizes = [
@@ -14,9 +15,21 @@ const bottomSizes = [
   '36',
   '38']
 
-export function ClothingSizeStep ({ formData, onFieldChange }) {
+export function ClothingSizeStep ({ formData, onFieldChange, onSkip, errorMessage, onPrev, onNext }) {
   return (
-    <>
+    <OnboardingStepLayout
+      step={ 2 }
+      onSkip={ onSkip }
+      errorMessage={ errorMessage }
+      actions={ (
+        <Grid templateColumns="minmax(0, 1fr) minmax(0, 3fr)" gap={ 4 }>
+          <Button colorPalette="primary" variant="outline" size="md" onClick={ onPrev }>
+            이전
+          </Button>
+          <Button colorPalette="primary" size="md" onClick={ onNext }>다음</Button>
+        </Grid>
+      ) }
+    >
       <Box mb={ 8 }>
         <Heading size="lg" fontWeight="bold" mb={ 4 }>평소 자주 입는
           사이즈는?</Heading>
@@ -63,6 +76,6 @@ export function ClothingSizeStep ({ formData, onFieldChange }) {
           </VStack>
         </VStack>
       </VStack>
-    </>
+    </OnboardingStepLayout>
   )
 }

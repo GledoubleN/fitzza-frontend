@@ -1,6 +1,7 @@
-import { Box, Heading, Text, Input, VStack, HStack } from '@chakra-ui/react'
+import { Box, Button, Grid, Heading, Text, Input, VStack, HStack } from '@chakra-ui/react'
+import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
 
-export function BodyMeasurementsStep ({ formData, onFieldChange }) {
+export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMessage, onNext }) {
   const handleNumberChange = (e) => {
     const { name, value } = e.target
     onFieldChange(name, value.replace(/[^0-9]/g, ''))
@@ -13,7 +14,16 @@ export function BodyMeasurementsStep ({ formData, onFieldChange }) {
   }
 
   return (
-    <>
+    <OnboardingStepLayout
+      step={ 1 }
+      onSkip={ onSkip }
+      errorMessage={ errorMessage }
+      actions={ (
+        <Grid templateColumns="1fr" gap={ 4 }>
+          <Button colorPalette="primary" size="md" onClick={ onNext }>다음</Button>
+        </Grid>
+      ) }
+    >
       <Box mb={ 8 }>
         <Heading size="lg" fontWeight="bold" mb={ 4 }>키와 몸무게를
           알려주세요</Heading>
@@ -81,6 +91,6 @@ export function BodyMeasurementsStep ({ formData, onFieldChange }) {
           </Text>
         </VStack>
       </VStack>
-    </>
+    </OnboardingStepLayout>
   )
 }

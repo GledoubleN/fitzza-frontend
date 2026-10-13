@@ -1,0 +1,39 @@
+import { Box, Button, Container, Flex, Progress, Text } from '@chakra-ui/react'
+
+export function OnboardingStepLayout ({ step, onSkip, errorMessage, actions, children }) {
+  return (
+    <Container
+      maxW={ { base: 'md', md: 'lg' } }
+      py={ 12 }
+      bg="bg"
+      minH="100vh"
+      display="flex"
+      flexDirection="column"
+      justifyContent="space-between"
+      position="relative"
+    >
+      <Box>
+        <Flex justifyContent="space-between" alignItems="center" mb={ 4 }>
+          <Text fontSize="sm" fontWeight="bold" color="fg.subtle">
+            STEP { step } / 3
+          </Text>
+          <Button colorPalette="primary" variant="ghost" size="md" onClick={ onSkip }>
+            건너뛰기
+          </Button>
+        </Flex>
+        <Progress.Root value={ (step / 3) * 100 } size="xs" mb={ 8 }>
+          <Progress.Track bg="bg.muted">
+            <Progress.Range bg="bg.inverted" />
+          </Progress.Track>
+        </Progress.Root>
+        { children }
+        { errorMessage && (
+          <Text color="fg.error" fontSize="sm" mt={ 4 } textAlign="center">
+            { errorMessage }
+          </Text>
+        ) }
+      </Box>
+      { actions }
+    </Container>
+  )
+}

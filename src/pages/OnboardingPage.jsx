@@ -1,13 +1,4 @@
 import { useState } from 'react'
-import {
-  Box,
-  Button,
-  Heading,
-  Text,
-  Grid,
-  Flex,
-  Progress,
-} from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { BodyMeasurementsStep } from '../components/onboarding/BodyMeasurementsStep.jsx'
@@ -88,137 +79,41 @@ export default function OnboardingPage () {
     navigate('/')
   }
 
-  const progressValue = (step / 3) * 100
+  const sharedProps = {
+    formData,
+    onFieldChange: handleFieldChange,
+    onSkip: handleSkip,
+    errorMessage,
+  }
 
-  return (
-    <Box
-      maxW={ { base: 'md', md: 'lg' } }
-      mx="auto"
-      px={ { base: 4, md: 8 } }
-      py={ 12 }
-      bg="white"
-      minH="100vh"
-      display="flex"
-      flexDirection="column"
-      justifyContent="space-between"
-      position="relative"
-    >
-      { isSaved && (
-        <Box
-          position="fixed"
-          top={ 0 }
-          left={ 0 }
-          right={ 0 }
-          bottom={ 0 }
-          bg="blackAlpha.600"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          zIndex={ 9999 }
-          px={ 4 }
-        >
-          <Box
-            bg="white"
-            p={ 8 }
-            w="100%"
-            maxW="sm"
-            boxShadow="xl"
-            textAlign="center"
-          >
-            <Heading size="md" mb={ 4 }>저장 완료</Heading>
-            <Text fontSize="sm" color="gray.600" mb={ 8 }>
-              프로필과 신체 정보가 성공적으로 반영되었습니다!
-            </Text>
-            <Button
-              colorPalette="primary"
-              w="100%"
-              size="md"
-              onClick={ handleConfirm }
-            >
-              확인
-            </Button>
-          </Box>
-        </Box>
-      ) }
-
-      <Box>
-        <Flex justifyContent="space-between" alignItems="center" mb={ 4 }>
-          <Text fontSize="sm" fontWeight="bold" color="gray.400">
-            STEP { step } / 3
-          </Text>
-          <Button variant="ghost" size="md"
-                  onClick={ handleSkip }>
-            건너뛰기
-          </Button>
-        </Flex>
-
-        <Progress.Root value={ progressValue } size="xs" colorPalette="gray"
-                       mb={ 8 }>
-          <Progress.Track bg="gray.100">
-            <Progress.Range bg="gray.900"/>
-          </Progress.Track>
-        </Progress.Root>
-
-        { step === 1 && (
-          <BodyMeasurementsStep formData={ formData }
-                                onFieldChange={ handleFieldChange }/>
-        ) }
-
-        { step === 2 && (
-          <ClothingSizeStep formData={ formData }
-                            onFieldChange={ handleFieldChange }/>
-        ) }
-
-        { step === 3 && (
-          <StylePreferencesStep formData={ formData }
-                                onFieldChange={ handleFieldChange }/>
-        ) }
-
-        { errorMessage && (
-          <Text color="red.500" fontSize="sm" mt={ 4 } textAlign="center">
-            { errorMessage }
-          </Text>
-        ) }
-      </Box>
-
-      <Grid
-        templateColumns={ step > 1 ? 'minmax(0, 1fr) minmax(0, 3fr)' : '1fr' }
-        gap={ 4 }
-      >
-        { step > 1 && (
-          <Button
-            colorPalette="primary"
-            variant="outline"
-            size="md"
-            fontSize="md"
-            onClick={ handlePrev }
-          >
-            이전
-          </Button>
-        ) }
-
-        { step < 3 ? (
-          <Button
-            colorPalette="primary"
-            size="md"
-            fontSize="md"
-            onClick={ handleNext }
-          >
-            다음
-          </Button>
-        ) : (
-          <Button
-            colorPalette="primary"
-            size="md"
-            fontSize="md"
-            isLoading={ isLoading }
-            loadingText="저장 중..."
-            onClick={ handleSave }
-          >
-            저장하기
-          </Button>
-        ) }
-      </Grid>
-    </Box>
-  )
+  switch (step) {
+    case 1:
+      return (
+        <BodyMeasurementsStep
+          { ...sharedProps }
+          onNext={ handleNext }
+        />
+      )
+    case 2:
+      return (
+        <ClothingSizeStep
+          { ...sharedProps }
+          onPrev={ handlePrev }
+          onNext={ handleNext }
+        />
+      )
+    case 3:
+      return (
+        <StylePreferencesStep
+          { ...sharedProps }
+          onPrev={ handlePrev }
+          onSave={ handleSave }
+          isLoading={ isLoading }
+          isSaved={ isSaved }
+          onConfirm={ handleConfirm }
+        />
+      )
+    default:
+      return null
+  }
 }
