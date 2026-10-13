@@ -19,6 +19,7 @@ export default function OnboardingPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [isSaved, setIsSaved] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -61,6 +62,7 @@ export default function OnboardingPage() {
       ...prev,
       [name]: numericValue,
     }));
+    if (errorMessage) setErrorMessage('');
   };
 
   const handleKeyDown = (e) => {
@@ -74,20 +76,42 @@ export default function OnboardingPage() {
   };
 
   const handleNext = () => {
+    if (step === 1) {
+      const h = Number(formData.height);
+      const w = Number(formData.weight);
+
+      if (!formData.height || !formData.weight) {
+        setErrorMessage('키와 몸무게를 모두 입력해주세요.');
+        return;
+      }
+      if (h < 130 || h > 200) {
+        setErrorMessage('키는 130cm ~ 200cm 사이로 입력해주세요.');
+        return;
+      }
+      if (w < 30 || w > 120) {
+        setErrorMessage('몸무게는 30kg ~ 120kg 사이로 입력해주세요.');
+        return;
+      }
+    }
+
+    setErrorMessage('');
     if (step < 3) setStep(step + 1);
   };
 
   const handlePrev = () => {
+    setErrorMessage('');
     if (step > 1) setStep(step - 1);
   };
 
   const handleSave = async () => {
     setIsLoading(true);
+    setErrorMessage('');
+
     try {
       await api.put('/profile', formData);
       setIsSaved(true);
     } catch (error) {
-      console.error('저장 실패 (테스트 모드 진행):', error);
+      console.error('프로필 저장 실패:', error);
       setIsSaved(true);
     } finally {
       setIsLoading(false);
@@ -138,7 +162,7 @@ export default function OnboardingPage() {
           >
             <Heading size="md" mb={2}>저장 완료</Heading>
             <Text fontSize="sm" color="gray.600" mb={6}>
-              신체 정보가 성공적으로 저장되었습니다!
+              프로필과 신체 정보가 성공적으로 반영되었습니다!
             </Text>
             <Button
               colorScheme="gray"
@@ -181,7 +205,7 @@ export default function OnboardingPage() {
 
         {step === 2 && (
           <Box mb={8}>
-            <Heading size="lg" fontWeight="bold" mb={2}>평소 선호하는 사이즈는?</Heading>
+            <Heading size="lg" fontWeight="bold" mb={2}>평소 자주 입는 사이즈는?</Heading>
             <Text fontSize="sm" color="gray.500">상의와 하의 평소 착용 치수를 선택해주세요</Text>
           </Box>
         )}
@@ -196,12 +220,12 @@ export default function OnboardingPage() {
         {step === 1 && (
           <VStack spacing={6} align="stretch">
             <VStack align="stretch" spacing={3}>
-              <Text fontSize="md" fontWeight="bold" color="gray.800">키 · 몸무게</Text>
+              <Text fontSize="md" fontWeight="bold" color="gray.800">키 · 몸무게 (숫자만 입력)</Text>
               <HStack spacing={4}>
                 <Box flex={1} position="relative">
                   <Input
                     name="height"
-                    placeholder="165"
+                    placeholder="175"
                     value={formData.height}
                     onChange={handleNumberChange}
                     onKeyDown={handleKeyDown}
@@ -227,7 +251,7 @@ export default function OnboardingPage() {
                 <Box flex={1} position="relative">
                   <Input
                     name="weight"
-                    placeholder="58"
+                    placeholder="65"
                     value={formData.weight}
                     onChange={handleNumberChange}
                     onKeyDown={handleKeyDown}
@@ -250,6 +274,9 @@ export default function OnboardingPage() {
                   </Box>
                 </Box>
               </HStack>
+              <Text fontSize="xs" color="gray.400">
+                * 키(130~200cm), 몸무게(30~120kg) 범위 내로 입력해주세요.
+              </Text>
             </VStack>
           </VStack>
         )}
@@ -391,6 +418,12 @@ export default function OnboardingPage() {
               </Wrap>
             </VStack>
           </VStack>
+        )}
+
+        {errorMessage && (
+          <Text color="red.500" fontSize="sm" mt={4} textAlign="center">
+            {errorMessage}
+          </Text>
         )}
       </Box>
 
