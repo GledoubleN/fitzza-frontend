@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Box, Container, Grid, GridItem, IconButton, Popover, Portal, Separator, Stack, Text } from '@chakra-ui/react'
 import { LuBell, LuShoppingBag, LuLogIn, LuLogOut } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
+import { api } from '../api/axios.js'
 
 export const AppBar = ({ maxWidth = '7xl' }) => {
   const navigate = useNavigate()
@@ -14,6 +15,7 @@ export const AppBar = ({ maxWidth = '7xl' }) => {
 
   const handleAuthAction = () => {
     if (isLoggedIn) {
+      api.post('/auth/logout').catch(() => {})
       localStorage.removeItem("accessToken")
       setIsLoggedIn(false)
       alert("로그아웃되었습니다.")
