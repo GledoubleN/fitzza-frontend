@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Heading, Text, Input, VStack, HStack } from '@chakra-ui/react'
+import { Box, Button, Grid, Heading, Text, Input, InputGroup, VStack, HStack } from '@chakra-ui/react'
 import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
 
 export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMessage, onNext }) {
@@ -35,7 +35,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
             키 · 몸무게 (숫자만 입력)
           </Heading>
           <HStack gap={ 4 }>
-            <Box flex={ 1 } position="relative">
+            <InputGroup flex={ 1 } endAddon="cm" endAddonProps={ { color: 'fg.subtle' } }>
               <Input
                 name="height"
                 placeholder="175"
@@ -44,23 +44,11 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
                 onKeyDown={ handleKeyDown }
                 maxLength={ 3 }
                 autoComplete="off"
-                pr={ 16 }
-                py={ 8 }
+                size="md"
               />
-              <Box
-                position="absolute"
-                right={ 4 }
-                top="50%"
-                transform="translateY(-50%)"
-                fontSize="md"
-                color="fg.subtle"
-                pointerEvents="none"
-              >
-                cm
-              </Box>
-            </Box>
+            </InputGroup>
 
-            <Box flex={ 1 } position="relative">
+            <InputGroup flex={ 1 } endAddon="kg" endAddonProps={ { color: 'fg.subtle' } }>
               <Input
                 name="weight"
                 placeholder="65"
@@ -69,22 +57,9 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
                 onKeyDown={ handleKeyDown }
                 maxLength={ 3 }
                 autoComplete="off"
-                pr={ 16 }
                 size="md"
-                py={ 8 }
               />
-              <Box
-                position="absolute"
-                right={ 4 }
-                top="50%"
-                transform="translateY(-50%)"
-                fontSize="md"
-                color="fg.subtle"
-                pointerEvents="none"
-              >
-                kg
-              </Box>
-            </Box>
+            </InputGroup>
           </HStack>
           <Text fontSize="xs" color="fg.subtle">
             * 키(130~200cm), 몸무게(30~120kg) 범위 내로 입력해주세요.
