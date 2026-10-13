@@ -6,9 +6,9 @@ import { SignUpPage } from "./pages/SignUpPage.jsx";
 import { TryOnPage } from './pages/TryOnPage.jsx'
 import { SearchResultPage } from './pages/SearchResultPage.jsx'
 import { CheckoutPage } from './pages/CheckoutPage.jsx'
-import {CommunityMainPage} from "./pages/community/CommunityMainPage.jsx";
-import {CommunityWritePage} from "./pages/community/CommunityWritePage.jsx";
-import {CommunityArticlePage} from "./pages/community/CommunityArticlePage.jsx";
+import { CommunityMainPage } from "./pages/community/CommunityMainPage.jsx";
+import { CommunityWritePage } from "./pages/community/CommunityWritePage.jsx";
+import { CommunityArticlePage } from "./pages/community/CommunityArticlePage.jsx";
 import { PromptPage } from './pages/PromptPage.jsx'
 import { ProductPage } from './pages/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
@@ -18,6 +18,7 @@ import { WishlistPage } from './pages/WishlistPage.jsx'
 import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { ThemePreviewPage } from './pages/ThemePreviewPage.jsx'
+import OnboardingPage from './pages/OnboardingPage.jsx';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orderdetail" element={<OrderDetail />} />
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
+        <Route path="/onboarding" element={<OnboardingPage />} />
       </Routes>
     </BrowserRouter>
   )
