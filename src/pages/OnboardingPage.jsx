@@ -4,7 +4,7 @@ import {
   Button,
   Heading,
   Text,
-  HStack,
+  Grid,
   Flex,
   Progress,
 } from '@chakra-ui/react'
@@ -181,13 +181,15 @@ export default function OnboardingPage () {
         ) }
       </Box>
 
-      <HStack gap={ 4 }>
+      <Grid
+        templateColumns={ step > 1 ? 'minmax(0, 1fr) minmax(0, 3fr)' : '1fr' }
+        gap={ 4 }
+      >
         { step > 1 && (
           <Button
             colorPalette="primary"
             variant="outline"
             size="md"
-            w="35%"
             fontSize="md"
             onClick={ handlePrev }
           >
@@ -198,7 +200,6 @@ export default function OnboardingPage () {
         { step < 3 ? (
           <Button
             colorPalette="primary"
-            flex={ 1 }
             size="md"
             fontSize="md"
             onClick={ handleNext }
@@ -208,7 +209,6 @@ export default function OnboardingPage () {
         ) : (
           <Button
             colorPalette="primary"
-            flex={ 1 }
             size="md"
             fontSize="md"
             isLoading={ isLoading }
@@ -218,7 +218,7 @@ export default function OnboardingPage () {
             저장하기
           </Button>
         ) }
-      </HStack>
+      </Grid>
     </Box>
   )
 }
