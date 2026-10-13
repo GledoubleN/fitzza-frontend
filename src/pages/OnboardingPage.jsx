@@ -130,13 +130,9 @@ export default function OnboardingPage () {
               프로필과 신체 정보가 성공적으로 반영되었습니다!
             </Text>
             <Button
-              colorScheme="gray"
-              bg="gray.900"
-              color="white"
+              colorPalette="primary"
               w="100%"
-              size="lg"
-              py={ 8 }
-              _hover={ { bg: 'gray.800' } }
+              size="md"
               onClick={ handleConfirm }
             >
               확인
@@ -150,7 +146,7 @@ export default function OnboardingPage () {
           <Text fontSize="sm" fontWeight="bold" color="gray.400">
             STEP { step } / 3
           </Text>
-          <Button variant="ghost" size="sm" color="gray.500"
+          <Button colorPalette="primary" variant="ghost" size="md"
                   onClick={ handleSkip }>
             건너뛰기
           </Button>
@@ -164,15 +160,18 @@ export default function OnboardingPage () {
         </Progress.Root>
 
         { step === 1 && (
-          <BodyMeasurementsStep formData={ formData } onFieldChange={ handleFieldChange } />
+          <BodyMeasurementsStep formData={ formData }
+                                onFieldChange={ handleFieldChange }/>
         ) }
 
         { step === 2 && (
-          <ClothingSizeStep formData={ formData } onFieldChange={ handleFieldChange } />
+          <ClothingSizeStep formData={ formData }
+                            onFieldChange={ handleFieldChange }/>
         ) }
 
         { step === 3 && (
-          <StylePreferencesStep formData={ formData } onFieldChange={ handleFieldChange } />
+          <StylePreferencesStep formData={ formData }
+                                onFieldChange={ handleFieldChange }/>
         ) }
 
         { errorMessage && (
@@ -182,57 +181,44 @@ export default function OnboardingPage () {
         ) }
       </Box>
 
-      <Box pt={ 12 } pb={ 8 } w="100%">
-        <HStack gap={ 4 }>
-          { step > 1 && (
-            <Button
-              variant="outline"
-              size="lg"
-              py={ 8 }
-              w="35%"
-              fontSize="md"
-              borderColor="gray.300"
-              color="gray.700"
-              _hover={ { bg: 'gray.50' } }
-              onClick={ handlePrev }
-            >
-              이전
-            </Button>
-          ) }
+      <HStack gap={ 4 }>
+        { step > 1 && (
+          <Button
+            colorPalette="primary"
+            variant="outline"
+            size="md"
+            w="35%"
+            fontSize="md"
+            onClick={ handlePrev }
+          >
+            이전
+          </Button>
+        ) }
 
-          { step < 3 ? (
-            <Button
-              colorScheme="gray"
-              bg="gray.900"
-              color="white"
-              flex={ 1 }
-              size="lg"
-              py={ 8 }
-              fontSize="md"
-              _hover={ { bg: 'gray.800' } }
-              onClick={ handleNext }
-            >
-              다음
-            </Button>
-          ) : (
-            <Button
-              colorScheme="gray"
-              bg="gray.900"
-              color="white"
-              flex={ 1 }
-              size="lg"
-              py={ 8 }
-              fontSize="md"
-              _hover={ { bg: 'gray.800' } }
-              isLoading={ isLoading }
-              loadingText="저장 중..."
-              onClick={ handleSave }
-            >
-              저장하기
-            </Button>
-          ) }
-        </HStack>
-      </Box>
+        { step < 3 ? (
+          <Button
+            colorPalette="primary"
+            flex={ 1 }
+            size="md"
+            fontSize="md"
+            onClick={ handleNext }
+          >
+            다음
+          </Button>
+        ) : (
+          <Button
+            colorPalette="primary"
+            flex={ 1 }
+            size="md"
+            fontSize="md"
+            isLoading={ isLoading }
+            loadingText="저장 중..."
+            onClick={ handleSave }
+          >
+            저장하기
+          </Button>
+        ) }
+      </HStack>
     </Box>
   )
 }

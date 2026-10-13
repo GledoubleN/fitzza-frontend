@@ -37,14 +37,9 @@ export function StylePreferencesStep ({ formData, onFieldChange }) {
               return (
                 <WrapItem key={ item.value }>
                   <Button
+                    colorPalette="primary"
                     size="md"
-                    px={ 4 }
-                    py={ 4 }
                     variant={ isSelected ? 'solid' : 'outline' }
-                    bg={ isSelected ? 'bg.inverted' : 'bg' }
-                    color={ isSelected ? 'fg.inverted' : 'fg' }
-                    borderColor={ isSelected ? 'bg.inverted' : 'border' }
-                    _hover={ { bg: isSelected ? 'bg.inverted' : 'bg.subtle' } }
                     onClick={ () => onFieldChange('bodyType', item.value) }
                   >
                     { item.label }
@@ -62,15 +57,11 @@ export function StylePreferencesStep ({ formData, onFieldChange }) {
               const isSelected = formData.preferredFit === item.value
               return (
                 <Button
+                  colorPalette="primary"
                   key={ item.value }
                   flex={ 1 }
                   size="md"
-                  py={ 4 }
                   variant={ isSelected ? 'solid' : 'outline' }
-                  bg={ isSelected ? 'bg.inverted' : 'bg' }
-                  color={ isSelected ? 'fg.inverted' : 'fg' }
-                  borderColor={ isSelected ? 'bg.inverted' : 'border' }
-                  _hover={ { bg: isSelected ? 'bg.inverted' : 'bg.subtle' } }
                   onClick={ () => onFieldChange('preferredFit', item.value) }
                 >
                   { item.label }
@@ -89,14 +80,9 @@ export function StylePreferencesStep ({ formData, onFieldChange }) {
               return (
                 <WrapItem key={ item.value }>
                   <Button
+                    colorPalette="primary"
                     size="md"
-                    px={ 4 }
-                    py={ 4 }
                     variant={ isSelected ? 'solid' : 'outline' }
-                    bg={ isSelected ? 'bg.inverted' : 'bg' }
-                    color={ isSelected ? 'fg.inverted' : 'fg' }
-                    borderColor={ isSelected ? 'bg.inverted' : 'border' }
-                    _hover={ { bg: isSelected ? 'bg.inverted' : 'bg.subtle' } }
                     onClick={ () => onFieldChange('style', item.value) }
                   >
                     { item.label }

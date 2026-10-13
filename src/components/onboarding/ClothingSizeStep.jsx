@@ -32,14 +32,9 @@ export function ClothingSizeStep ({ formData, onFieldChange }) {
                 return (
                   <WrapItem key={ size }>
                     <Button
+                      colorPalette="primary"
                       size="md"
-                      px={ 4 }
-                      py={ 4 }
                       variant={ isSelected ? 'solid' : 'outline' }
-                      bg={ isSelected ? 'bg.inverted' : 'bg' }
-                      color={ isSelected ? 'fg.inverted' : 'fg' }
-                      borderColor={ isSelected ? 'bg.inverted' : 'border' }
-                      _hover={ { bg: isSelected ? 'bg.inverted' : 'bg.subtle' } }
                       onClick={ () => onFieldChange('topSize', size) }
                     >
                       { size }
@@ -58,14 +53,9 @@ export function ClothingSizeStep ({ formData, onFieldChange }) {
                 return (
                   <WrapItem key={ size }>
                     <Button
+                      colorPalette="primary"
                       size="md"
-                      px={ 4 }
-                      py={ 4 }
                       variant={ isSelected ? 'solid' : 'outline' }
-                      bg={ isSelected ? 'bg.inverted' : 'bg' }
-                      color={ isSelected ? 'fg.inverted' : 'fg' }
-                      borderColor={ isSelected ? 'bg.inverted' : 'border' }
-                      _hover={ { bg: isSelected ? 'bg.inverted' : 'bg.subtle' } }
                       onClick={ () => onFieldChange('weightSize', size) }
                     >
                       { size }
