@@ -77,7 +77,7 @@ export const AIStylistPage = () => {
     let timer
     const poll = async (tries) => {
       try {
-        const { data } = await api.get(`/recommendations/${ requestId }`, TIMEOUT)
+        const { data } = await api.get(`/recommendations/${ encodeURIComponent(requestId) }`, TIMEOUT)
         if (cancelled) return
         if (data.status === 'DONE') {
           setResult(data)
@@ -97,7 +97,7 @@ export const AIStylistPage = () => {
     const text = location.state?.query
     setQuery(text ?? '')
     if (!text) {
-      api.get(`/recommendations/${ requestId }/messages`, TIMEOUT)
+      api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`, TIMEOUT)
         .then(({ data: messages }) => {
           if (!cancelled) setQuery(messages.find((m) => m.senderType === 'USER')?.content ?? '')
         })
