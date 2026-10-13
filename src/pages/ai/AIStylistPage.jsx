@@ -144,7 +144,7 @@ export const AIStylistPage = () => {
     else setAttempt((attempt) => attempt + 1)
   }
 
-  // 이 화면에서 입어본 가상 피팅들. { id, label, productIds, status, imageUrl, message, retryable }
+  // 이 화면에서 입어본 가상 피팅들. { id, label, items, status, fittingId, imageUrl, message, retryable }
   const [fittings, setFittings] = useState([])
   const photoInput = useRef(null)
   // 한 번 올린 전신 사진은 이 화면에 있는 동안 다음 입어보기에도 씁니다.
@@ -177,9 +177,12 @@ export const AIStylistPage = () => {
         photoId.current = data.photoId
       }
       // 결과는 이 요청의 응답에 바로 담겨 옵니다. (조회·폴링 없음)
-      const { data } = await api.post('/fittings', { photoId: photoId.current, productIds: fitting.productIds }, FITTING_TIMEOUT)
+      const { data } = await api.post('/fittings', {
+        photoId: photoId.current,
+        productIds: fitting.items.map((item) => item.productId),
+      }, FITTING_TIMEOUT)
       if (data.status === 'COMPLETED' && data.resultImageUrl) {
-        update({ status: 'done', imageUrl: data.resultImageUrl })
+        update({ status: 'done', fittingId: data.fittingId, imageUrl: data.resultImageUrl })
       } else {
         update({ status: 'failed', message: data.failReason, retryable: data.retryable !== false })
       }
@@ -201,7 +204,7 @@ export const AIStylistPage = () => {
     }
   }
 
-  const tryOn = (label, productIds) => startFitting({ id: crypto.randomUUID(), label, productIds })
+  const tryOn = (label, items) => startFitting({ id: crypto.randomUUID(), label, items })
 
   const selectPhoto = (e) => {
     const file = e.target.files[0]
@@ -213,6 +216,21 @@ export const AIStylistPage = () => {
   const changePhoto = (fitting) => {
     photoId.current = null
     startFitting(fitting)
+  }
+
+  const shareFitting = (fitting) => {
+    // 작성 화면에 보여줄 피팅 결과. 공유 초안 조회 API(/posts/share-draft) 연동 시 대체됩니다.
+    navigate('/community/write', {
+      state: {
+        sharedType: 'FITTING',
+        sharedId: fitting.fittingId,
+        snapshot: {
+          imageUrl: fitting.imageUrl,
+          items: fitting.items,
+          totalPrice: fitting.items.reduce((sum, item) => sum + item.price, 0),
+        },
+      },
+    })
   }
 
   const items = result?.items ?? []
@@ -301,7 +319,7 @@ export const AIStylistPage = () => {
                             key={ item.productId }
                             item={ item }
                             tryingOn={ tryingOn }
-                            onTryOn={ () => tryOn(item.productName, [item.productId]) }
+                            onTryOn={ () => tryOn(item.productName, [item]) }
                           ></ProductCard>
                         ))
                       }
@@ -318,7 +336,7 @@ export const AIStylistPage = () => {
                     combos={ combos }
                     index={ index }
                     tryingOn={ tryingOn }
-                    onTryOn={ () => tryOn(`코디 ${ index + 1 }`, combo.items.map((item) => item.productId)) }
+                    onTryOn={ () => tryOn(`코디 ${ index + 1 }`, combo.items) }
                   ></ComboCard>
                 ))
               }
@@ -354,14 +372,12 @@ export const AIStylistPage = () => {
                         <>
                           <Image src={ fitting.imageUrl } alt={ `${ fitting.label } 가상 피팅 결과` } bg={ 'bg.muted' }></Image>
                           <Text fontSize={ 'sm' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
-                          <Button
-                            variant={ 'outline' }
-                            alignSelf={ 'flex-start' }
-                            disabled={ tryingOn }
-                            onClick={ () => changePhoto(fitting) }
-                          >
-                            다른 사진으로 입어보기
-                          </Button>
+                          <Flex gap={ 2 } wrap={ 'wrap' }>
+                            <Button variant={ 'outline' } disabled={ tryingOn } onClick={ () => changePhoto(fitting) }>
+                              다른 사진으로 입어보기
+                            </Button>
+                            <Button variant={ 'outline' } onClick={ () => shareFitting(fitting) }>공유하기</Button>
+                          </Flex>
                         </>
                       }
                     </Card.Body>
