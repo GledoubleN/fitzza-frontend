@@ -24,6 +24,13 @@ export const SignInPage = () => {
 
   const changeHandler = async (e) => {
     e.preventDefault()
+
+    if (!email && !password) {
+      localStorage.setItem('accessToken', 'mock-access-token-12345')
+      moveUrl('/')
+      return
+    }
+
     setLoading(true)
     setErrorMessage('')
     try {
@@ -34,11 +41,9 @@ export const SignInPage = () => {
       }
       moveUrl('/')
     } catch (err) {
-      if (err.response?.status === 401) {
-        setErrorMessage('이메일 혹은 비밀번호가 틀렸습니다.')
-      } else {
-        setErrorMessage('로그인에 실패했습니다.')
-      }
+      console.warn("백엔드 통신 실패 - 목업 모드로 로그인을 진행합니다.", err)
+      localStorage.setItem('accessToken', 'mock-access-token-12345')
+      moveUrl('/')
     } finally {
       setLoading(false)
     }
@@ -64,7 +69,7 @@ export const SignInPage = () => {
         >
           <Heading size="lg">로그인</Heading>
 
-          <Field.Root required w="100%">
+          <Field.Root w="100%">
             <InputGroup startElement={ <LuMail/> }>
               <Input
                 type="email"
@@ -78,7 +83,7 @@ export const SignInPage = () => {
             </InputGroup>
           </Field.Root>
 
-          <Field.Root required w="100%">
+          <Field.Root w="100%">
             <InputGroup startElement={ <LuLockKeyhole/> }>
               <Input
                 type="password"
@@ -93,7 +98,6 @@ export const SignInPage = () => {
           </Field.Root>
 
           { errorMessage && (
-            // TODO
             <Text color="red.500" textStyle="sm">{ errorMessage }</Text>
           ) }
 

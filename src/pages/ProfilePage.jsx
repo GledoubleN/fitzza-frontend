@@ -75,6 +75,8 @@ export default function ProfilePage() {
       if (err.response?.status === 401) {
         localStorage.removeItem('accessToken');
         navigate('/signin');
+      } else {
+        console.warn("백엔드 통신 실패 - 기본 프로필 정보를 표시합니다.", err);
       }
     }
   };
