@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Text, VStack, HStack, Wrap, WrapItem } from '@chakra-ui/react'
+import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
 
 const bodyTypeOptions = [
   { label: '마른편 (슬림)', value: '마른편' },
@@ -31,35 +31,31 @@ export function StylePreferencesStep ({ formData, onFieldChange }) {
       <VStack gap={ 8 } align="stretch">
         <VStack align="stretch" gap={ 4 }>
           <Text fontSize="md" fontWeight="bold" color="fg">체형</Text>
-          <Wrap gap={ 4 }>
+          <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 4 }>
             { bodyTypeOptions.map((item) => {
               const isSelected = formData.bodyType === item.value
               return (
-                <WrapItem key={ item.value }>
-                  <Button
-                    colorPalette="primary"
-                    size="md"
-                    variant={ isSelected ? 'solid' : 'outline' }
-                    onClick={ () => onFieldChange('bodyType', item.value) }
-                  >
-                    { item.label }
-                  </Button>
-                </WrapItem>
+                <Button
+                  key={ item.value }
+                  size="md"
+                  variant={ isSelected ? 'solid' : 'outline' }
+                  onClick={ () => onFieldChange('bodyType', item.value) }
+                >
+                  { item.label }
+                </Button>
               )
             }) }
-          </Wrap>
+          </Grid>
         </VStack>
 
         <VStack align="stretch" gap={ 4 }>
           <Text fontSize="md" fontWeight="bold" color="fg">선호 핏</Text>
-          <HStack gap={ 4 }>
+          <Grid templateColumns={ { base: '1fr', sm: 'repeat(3, minmax(0, 1fr))' } } gap={ 4 }>
             { fitOptions.map((item) => {
               const isSelected = formData.preferredFit === item.value
               return (
                 <Button
-                  colorPalette="primary"
                   key={ item.value }
-                  flex={ 1 }
                   size="md"
                   variant={ isSelected ? 'solid' : 'outline' }
                   onClick={ () => onFieldChange('preferredFit', item.value) }
@@ -68,29 +64,27 @@ export function StylePreferencesStep ({ formData, onFieldChange }) {
                 </Button>
               )
             }) }
-          </HStack>
+          </Grid>
         </VStack>
 
         <VStack align="stretch" gap={ 4 }>
           <Text fontSize="md" fontWeight="bold" color="fg">선호
             스타일</Text>
-          <Wrap gap={ 4 }>
+          <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 4 }>
             { styleOptions.map((item) => {
               const isSelected = formData.style === item.value
               return (
-                <WrapItem key={ item.value }>
-                  <Button
-                    colorPalette="primary"
-                    size="md"
-                    variant={ isSelected ? 'solid' : 'outline' }
-                    onClick={ () => onFieldChange('style', item.value) }
-                  >
-                    { item.label }
-                  </Button>
-                </WrapItem>
+                <Button
+                  key={ item.value }
+                  size="md"
+                  variant={ isSelected ? 'solid' : 'outline' }
+                  onClick={ () => onFieldChange('style', item.value) }
+                >
+                  { item.label }
+                </Button>
               )
             }) }
-          </Wrap>
+          </Grid>
         </VStack>
       </VStack>
     </>

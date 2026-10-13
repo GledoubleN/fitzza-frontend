@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react'
+import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
 
 const topSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL']
 const bottomSizes = [
@@ -26,44 +26,40 @@ export function ClothingSizeStep ({ formData, onFieldChange }) {
         <VStack align="stretch" gap={ 4 }>
           <VStack align="stretch" gap={ 4 }>
             <Text fontSize="sm" color="fg.muted">상의</Text>
-            <Wrap gap={ 4 }>
+            <Grid templateColumns={ { base: 'repeat(3, minmax(0, 1fr))', sm: 'repeat(4, minmax(0, 1fr))' } } gap={ 4 }>
               { topSizes.map((size) => {
                 const isSelected = formData.topSize === size
                 return (
-                  <WrapItem key={ size }>
-                    <Button
-                      colorPalette="primary"
-                      size="md"
-                      variant={ isSelected ? 'solid' : 'outline' }
-                      onClick={ () => onFieldChange('topSize', size) }
-                    >
-                      { size }
-                    </Button>
-                  </WrapItem>
+                  <Button
+                    key={ size }
+                    size="md"
+                    variant={ isSelected ? 'solid' : 'outline' }
+                    onClick={ () => onFieldChange('topSize', size) }
+                  >
+                    { size }
+                  </Button>
                 )
               }) }
-            </Wrap>
+            </Grid>
           </VStack>
 
           <VStack align="stretch" gap={ 4 } pt={ 4 }>
             <Text fontSize="sm" color="fg.muted">하의</Text>
-            <Wrap gap={ 4 }>
+            <Grid templateColumns={ { base: 'repeat(3, minmax(0, 1fr))', sm: 'repeat(4, minmax(0, 1fr))' } } gap={ 4 }>
               { bottomSizes.map((size) => {
                 const isSelected = formData.weightSize === size
                 return (
-                  <WrapItem key={ size }>
-                    <Button
-                      colorPalette="primary"
-                      size="md"
-                      variant={ isSelected ? 'solid' : 'outline' }
-                      onClick={ () => onFieldChange('weightSize', size) }
-                    >
-                      { size }
-                    </Button>
-                  </WrapItem>
+                  <Button
+                    key={ size }
+                    size="md"
+                    variant={ isSelected ? 'solid' : 'outline' }
+                    onClick={ () => onFieldChange('weightSize', size) }
+                  >
+                    { size }
+                  </Button>
                 )
               }) }
-            </Wrap>
+            </Grid>
           </VStack>
         </VStack>
       </VStack>
