@@ -17,7 +17,8 @@ export const ProductSlot = (props) => (
 )
 
 // onOptionChange: 코디 전체 담기를 위해 선택한 옵션을 ComboCard에 전달합니다.
-export const ProductCard = ({ item, onOptionChange }) => {
+// onTryOn: 있으면 이 상품으로 가상 피팅을 시작하는 버튼을 보여줍니다. tryingOn: 다른 가상 피팅이 진행 중인지.
+export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
   const [options, setOptions] = useState([])
   const [color, setColor] = useState('')
   const [optionId, setOptionId] = useState('')
@@ -149,6 +150,10 @@ export const ProductCard = ({ item, onOptionChange }) => {
       >
         장바구니 담기
       </Button>
+      {
+        onTryOn &&
+        <Button size={ 'xs' } variant={ 'outline' } disabled={ tryingOn } onClick={ onTryOn }>바로 입어보기</Button>
+      }
       <IconButton
         position={ 'absolute' }
         top={ 0 }

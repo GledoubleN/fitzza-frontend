@@ -1,4 +1,4 @@
-import { Button, Card, Container, Flex, IconButton, Spinner, Stack, Text } from '@chakra-ui/react'
+import { Box, Button, Card, Container, Flex, IconButton, Image, Input, Spinner, Stack, Text } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { LuClock } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -16,6 +16,8 @@ const TIMEOUT = { timeout: 10000 }
 const RECOMMEND_TIMEOUT = { timeout: 60000 }
 // 응답을 기다리던 중 새로고침된 추천 요청을 알아보기 위한 표시입니다. (sessionStorage 키)
 const PENDING_KEY = 'ai-recommendation-pending'
+// 가상 피팅은 결과 이미지가 응답에 담겨 올 때까지 기다리므로 더 길게 잡습니다. 생성 시간이 정해지면 맞춰야 하는 임시 값입니다.
+const FITTING_TIMEOUT = { timeout: 120000 }
 
 export const AIStylistPage = () => {
   const { requestId } = useParams()
@@ -142,6 +144,77 @@ export const AIStylistPage = () => {
     else setAttempt((attempt) => attempt + 1)
   }
 
+  // 이 화면에서 입어본 가상 피팅들. { id, label, productIds, status, imageUrl, message, retryable }
+  const [fittings, setFittings] = useState([])
+  const photoInput = useRef(null)
+  // 한 번 올린 전신 사진은 이 화면에 있는 동안 다음 입어보기에도 씁니다.
+  const photoId = useRef(null)
+  // 사진을 고르는 동안 기다리는 입어보기
+  const waitingFitting = useRef(null)
+  const fittingsEnd = useRef(null)
+  const tryingOn = fittings.some((fitting) => fitting.status === 'loading')
+
+  // 입어보기를 누르거나 결과가 오면 그 말풍선이 보이게 내립니다.
+  useEffect(() => {
+    if (fittings.length) fittingsEnd.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+  }, [fittings])
+
+  // file: 새로 고른 전신 사진. 없으면 앞서 올린 사진으로 입어봅니다.
+  const runFitting = async (fitting, file) => {
+    const update = (patch) => setFittings((fittings) => [
+      ...fittings.filter((other) => other.id !== fitting.id),
+      { ...fitting, ...patch },
+    ])
+    update({ status: 'loading' })
+    try {
+      if (file) {
+        const body = new FormData()
+        body.append('file', file)
+        const { data } = await api.post('/fittings/photos', body, {
+          ...FITTING_TIMEOUT,
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        photoId.current = data.photoId
+      }
+      // 결과는 이 요청의 응답에 바로 담겨 옵니다. (조회·폴링 없음)
+      const { data } = await api.post('/fittings', { photoId: photoId.current, productIds: fitting.productIds }, FITTING_TIMEOUT)
+      if (data.status === 'COMPLETED' && data.resultImageUrl) {
+        update({ status: 'done', imageUrl: data.resultImageUrl })
+      } else {
+        update({ status: 'failed', message: data.failReason, retryable: data.retryable !== false })
+      }
+    } catch (err) {
+      update({
+        status: 'failed',
+        message: err.response?.status === 400 ? '사진이나 상품을 확인한 뒤 다시 시도해주세요.' : '',
+        retryable: true,
+      })
+    }
+  }
+
+  const startFitting = (fitting) => {
+    if (photoId.current) {
+      runFitting(fitting)
+    } else {
+      waitingFitting.current = fitting
+      photoInput.current.click()
+    }
+  }
+
+  const tryOn = (label, productIds) => startFitting({ id: crypto.randomUUID(), label, productIds })
+
+  const selectPhoto = (e) => {
+    const file = e.target.files[0]
+    // 같은 사진을 다시 골라도 반응하도록 비워둡니다.
+    e.target.value = ''
+    if (file) runFitting(waitingFitting.current, file)
+  }
+
+  const changePhoto = (fitting) => {
+    photoId.current = null
+    startFitting(fitting)
+  }
+
   const items = result?.items ?? []
   const combos = result?.combos ?? []
   const bubbleProps = { maxWidth: '4/5' }
@@ -224,7 +297,12 @@ export const AIStylistPage = () => {
                     <ProductRow>
                       {
                         items.map((item) => (
-                          <ProductCard key={ item.productId } item={ item }></ProductCard>
+                          <ProductCard
+                            key={ item.productId }
+                            item={ item }
+                            tryingOn={ tryingOn }
+                            onTryOn={ () => tryOn(item.productName, [item.productId]) }
+                          ></ProductCard>
                         ))
                       }
                     </ProductRow>
@@ -239,9 +317,66 @@ export const AIStylistPage = () => {
                     combo={ combo }
                     combos={ combos }
                     index={ index }
+                    tryingOn={ tryingOn }
+                    onTryOn={ () => tryOn(`코디 ${ index + 1 }`, combo.items.map((item) => item.productId)) }
                   ></ComboCard>
                 ))
               }
+
+              {
+                fittings.map((fitting) => (
+                  <Card.Root key={ fitting.id } { ...bubbleProps } alignSelf={ 'flex-start' }>
+                    <Card.Body gap={ 3 }>
+                      <Text fontWeight={ 'bold' }>{ fitting.label } 가상 피팅</Text>
+                      {
+                        fitting.status === 'loading' &&
+                        <Flex align={ 'center' } gap={ 3 }>
+                          <Spinner size={ 'sm' }></Spinner>
+                          <Text>고객님 사진에 입혀보고 있어요</Text>
+                        </Flex>
+                      }
+                      {
+                        fitting.status === 'failed' &&
+                        <>
+                          <Text color={ 'fg.error' }>
+                            { fitting.message || '가상 피팅을 만들지 못했어요. 잠시 후 다시 시도해주세요.' }
+                          </Text>
+                          {
+                            fitting.retryable &&
+                            <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ () => startFitting(fitting) }>
+                              다시 시도
+                            </Button>
+                          }
+                        </>
+                      }
+                      {
+                        fitting.status === 'done' &&
+                        <>
+                          <Image src={ fitting.imageUrl } alt={ `${ fitting.label } 가상 피팅 결과` } bg={ 'bg.muted' }></Image>
+                          <Text fontSize={ 'sm' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
+                          <Button
+                            variant={ 'outline' }
+                            alignSelf={ 'flex-start' }
+                            disabled={ tryingOn }
+                            onClick={ () => changePhoto(fitting) }
+                          >
+                            다른 사진으로 입어보기
+                          </Button>
+                        </>
+                      }
+                    </Card.Body>
+                  </Card.Root>
+                ))
+              }
+              <Box ref={ fittingsEnd }></Box>
+              <Input
+                ref={ photoInput }
+                type={ 'file' }
+                accept={ 'image/*' }
+                display={ 'none' }
+                aria-label={ '전신 사진 선택' }
+                onChange={ selectPhoto }
+              ></Input>
             </>
           }
         </Stack>

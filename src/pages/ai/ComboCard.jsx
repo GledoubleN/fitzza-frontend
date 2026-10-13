@@ -10,7 +10,8 @@ import { ProductRow } from './ProductRow.jsx'
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
 const TIMEOUT = { timeout: 10000 }
 
-export const ComboCard = ({ combo, combos, index }) => {
+// onTryOn: 이 코디의 상품들로 가상 피팅을 시작합니다. tryingOn: 다른 가상 피팅이 진행 중인지.
+export const ComboCard = ({ combo, combos, index, onTryOn, tryingOn }) => {
   const navigate = useNavigate()
   const [selected, setSelected] = useState({})
   const [saving, setSaving] = useState(false)
@@ -86,6 +87,7 @@ export const ComboCard = ({ combo, combos, index }) => {
           }
         </ProductRow>
         <Grid templateColumns={ '1fr 1fr' } gap={ 2 }>
+          <Button variant={ 'outline' } gridColumn={ 'span 2' } disabled={ tryingOn } onClick={ onTryOn }>바로 입어보기</Button>
           <Button variant={ 'outline' } onClick={ share }>공유하기</Button>
           <Button disabled={ !allSelected } loading={ saving } onClick={ addAllToCart }>전체 장바구니 담기</Button>
         </Grid>
