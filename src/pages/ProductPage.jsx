@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import {
+  Button,
   Card,
   Container,
   Flex,
   Grid,
   GridItem,
   Heading,
+  Icon,
   IconButton,
   Image,
   Spinner,
@@ -14,7 +16,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { LuHeart } from 'react-icons/lu'
+import { LuChevronRight, LuHeart } from 'react-icons/lu'
 import { api } from '../api/axios.js'
 import { AppBar } from '../components/AppBar.jsx'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
@@ -136,6 +138,15 @@ export const ProductPage = () => {
                 </Text>
               </Stack>
               <ProductOptionSelector product={ product }/>
+              <Button variant={ 'outline' } size={ 'lg' } justifyContent={ 'space-between' } onClick={ () => navigate('/try-on') }>
+                <Flex align={ 'center' } gap={ 2 }>
+                  <Text textStyle={'sm'}>이 옷, 내 몸엔 어떤 핏일까?</Text>
+                </Flex>
+                <Flex align={ 'center' } gap={ 1 } color={ 'fg.muted' }>
+                  <Text textStyle={ 'sm' }  fontWeight={'bold'} >바로입기</Text>
+                  <Icon size={ 'sm' }><LuChevronRight/></Icon>
+                </Flex>
+              </Button>
             </Stack>
           </GridItem>
 

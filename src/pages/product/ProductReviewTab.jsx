@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Button, Flex, Icon, Image, RatingGroup, Separator, Spinner, Stack, Text } from '@chakra-ui/react'
-import { LuChevronRight, LuShirt } from 'react-icons/lu'
-import { useNavigate } from 'react-router-dom'
+import { Button, Flex, Image, RatingGroup, Separator, Spinner, Stack, Text } from '@chakra-ui/react'
 import { api } from '../../api/axios.js'
 
 const PAGE_SIZE = 10
 
 export const ProductReviewTab = ({ productId }) => {
-  const navigate = useNavigate()
   const [reviews, setReviews] = useState([])
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -39,17 +36,6 @@ export const ProductReviewTab = ({ productId }) => {
 
   return (
     <Stack gap={ 4 } paddingY={ 4 }>
-      <Button variant={ 'outline' } size={ 'lg' } justifyContent={ 'space-between' } onClick={ () => navigate('/try-on') }>
-        <Flex align={ 'center' } gap={ 2 }>
-          <LuShirt/>
-          <Text fontWeight={ 'bold' }>이 옷, 내 몸엔 어떤 핏일까?</Text>
-        </Flex>
-        <Flex align={ 'center' } gap={ 1 } color={ 'fg.muted' }>
-          <Text textStyle={ 'sm' }>바로입기</Text>
-          <Icon size={ 'sm' }><LuChevronRight/></Icon>
-        </Flex>
-      </Button>
-
       <Stack gap={ 4 } separator={ <Separator/> }>
         { reviews.map((review) => (
           <Stack key={ review.reviewId } gap={ 3 }>
