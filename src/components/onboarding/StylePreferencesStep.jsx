@@ -30,7 +30,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
       errorMessage={ errorMessage }
       actions={ (
         <Grid templateColumns="minmax(0, 1fr) minmax(0, 3fr)" gap={ 4 }>
-          <Button colorPalette="primary" variant="outline" size="md" onClick={ onPrev }>
+          <Button variant="outline" size="md" onClick={ onPrev }>
             이전
           </Button>
           <Button colorPalette="primary" size="md" loading={ isLoading } loadingText="저장 중..." onClick={ onSave }>
