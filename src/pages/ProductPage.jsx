@@ -131,7 +131,9 @@ export const ProductPage = () => {
                     <LuHeart fill={ isWished ? 'currentColor' : 'none' }/>
                   </IconButton>
                 </Flex>
-                <Text textStyle={ 'xl' } fontWeight={ 'bold' }>{ product.price.toLocaleString() }원</Text>
+                <Text textStyle={ 'xl' } fontWeight={ 'bold' }>
+                  { product.price != null ? `${ product.price.toLocaleString() }원` : '정보가 없습니다.' }
+                </Text>
               </Stack>
               <ProductOptionSelector product={ product }/>
             </Stack>
@@ -157,7 +159,7 @@ export const ProductPage = () => {
                 </Tabs.List>
                 <Tabs.Content value={ 'information' }>
                   <Stack gap={ 4 } paddingY={ 4 }>
-                    <Text whiteSpace={ 'pre-wrap' }>{ product.description }</Text>
+                    <Text whiteSpace={ 'pre-wrap' }>{ product.description || '정보가 없습니다.' }</Text>
                     { product.images?.map((image) => (
                       <Image key={ image } width={ '100%' } src={ image } alt={ product.productName }></Image>
                     )) }

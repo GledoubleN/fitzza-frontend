@@ -26,7 +26,7 @@ export const ProductSizeTab = ({ product }) => {
     { label: '핏', value: product.fitType },
     { label: '색상', value: unique(options.map((option) => option.color)).join(', ') },
     { label: '사이즈', value: unique(options.map((option) => option.size)).join(', ') },
-  ].filter((detail) => detail.value)
+  ]
 
   return (
     <Stack gap={ 6 } paddingY={ 4 }>
@@ -36,7 +36,7 @@ export const ProductSizeTab = ({ product }) => {
       </Stack>
 
       { sizes.length === 0 ? (
-        <Text color={ 'fg.muted' }>실측 정보가 없어요.</Text>
+        <Text color={ 'fg.muted' }>정보가 없습니다.</Text>
       ) : (
         <Stack gap={ 3 }>
           <Text textStyle={ 'xs' } color={ 'fg.muted' } textAlign={ 'end' }>단면(cm)</Text>
@@ -77,7 +77,7 @@ export const ProductSizeTab = ({ product }) => {
         { details.map((detail) => (
           <DataList.Item key={ detail.label } paddingTop={ 4 } borderTop={ 'sm' } borderColor={ 'border' }>
             <DataList.ItemLabel>{ detail.label }</DataList.ItemLabel>
-            <DataList.ItemValue fontWeight={ 'bold' }>{ detail.value }</DataList.ItemValue>
+            <DataList.ItemValue fontWeight={ 'bold' }>{ detail.value || '정보가 없습니다.' }</DataList.ItemValue>
           </DataList.Item>
         )) }
       </DataList.Root>
