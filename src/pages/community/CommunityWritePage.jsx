@@ -46,7 +46,7 @@ export const CommunityWritePage = () => {
   const [category, setCategory] = useState('')
   const [title, setTitle] = useState('')
   const navigate = useNavigate()
-  // AI 추천 화면에서 공유하기로 넘어온 코디. 게시글 작성 API 연동 시 sharedType, sharedId를 함께 보냅니다.
+  // AI 추천 화면에서 공유하기로 넘어온 코디 또는 가상 피팅 결과. 게시글 작성 API 연동 시 sharedType, sharedId를 함께 보냅니다.
   const shared = useLocation().state
 
   // 투표 선택지. 공유로 넘어온 코디가 있으면 미리 채우고, 모자라면 빈 선택지로 최소 개수를 맞춰줍니다.
@@ -202,7 +202,11 @@ export const CommunityWritePage = () => {
             // 공유할 코디 부분. 일단 본문 상자 안에 임의로 넣었습니다.
             shared?.snapshot && mode !== 'vote' &&
             <Stack gap={ '2' } padding={ '5' } paddingBottom={ '0' }>
-              <Text fontWeight={ 'bold' }>공유할 코디</Text>
+              <Text fontWeight={ 'bold' }>{ shared.sharedType === 'FITTING' ? '공유할 가상 피팅' : '공유할 코디' }</Text>
+              {
+                shared.snapshot.imageUrl &&
+                <Image src={ shared.snapshot.imageUrl } alt={ '공유할 가상 피팅 결과' } maxWidth={ 'xs' } bg={ 'bg.muted' }></Image>
+              }
               {
                 shared.snapshot.items.map((item) => (
                   <Flex key={ item.productId } justify={ 'space-between' } gap={ '2' }>
