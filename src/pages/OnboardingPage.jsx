@@ -1,19 +1,18 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   Box,
   Button,
   Heading,
   Text,
-  Input,
-  VStack,
   HStack,
   Flex,
-  Wrap,
-  WrapItem,
   Progress,
 } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
+import { BodyMeasurementsStep } from '../components/onboarding/BodyMeasurementsStep.jsx'
+import { ClothingSizeStep } from '../components/onboarding/ClothingSizeStep.jsx'
+import { StylePreferencesStep } from '../components/onboarding/StylePreferencesStep.jsx'
 
 export default function OnboardingPage () {
   const navigate = useNavigate()
@@ -32,54 +31,9 @@ export default function OnboardingPage () {
     weightSize: '27',
   })
 
-  const topSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL']
-  const bottomSizes = [
-    '24',
-    '25',
-    '26',
-    '27',
-    '28',
-    '29',
-    '30',
-    '32',
-    '34',
-    '36',
-    '38']
-
-  const bodyTypeOptions = [
-    { label: '마른편 (슬림)', value: '마른편' },
-    { label: '보통 (스탠다드)', value: '보통' },
-    { label: '근육질 (탄탄함)', value: '근육질' },
-    { label: '통통한편 (체격 있음)', value: '통통한편' },
-  ]
-
-  const fitOptions = [
-    { label: '슬림 핏', value: '슬림' },
-    { label: '레귤러 핏', value: '레귤러' },
-    { label: '오버사이즈', value: '오버사이즈' },
-  ]
-
-  const styleOptions = [
-    { label: '캐주얼', value: '캐주얼' },
-    { label: '스트릿', value: '스트릿' },
-    { label: '미니멀', value: '미니멀' },
-    { label: '포멀 / 비즈니스', value: '포멀' },
-  ]
-
-  const handleNumberChange = (e) => {
-    const { name, value } = e.target
-    const numericValue = value.replace(/[^0-9]/g, '')
-    setFormData((prev) => ({
-      ...prev,
-      [name]: numericValue,
-    }))
+  const handleFieldChange = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }))
     if (errorMessage) setErrorMessage('')
-  }
-
-  const handleKeyDown = (e) => {
-    if (['-', '+', 'e', 'E', '.'].includes(e.key)) {
-      e.preventDefault()
-    }
   }
 
   const handleSkip = () => {
@@ -210,237 +164,15 @@ export default function OnboardingPage () {
         </Progress.Root>
 
         { step === 1 && (
-          <Box mb={ 8 }>
-            <Heading size="lg" fontWeight="bold" mb={ 2 }>키와 몸무게를
-              알려주세요</Heading>
-            <Text fontSize="sm" color="gray.500">정확한 AI 사이즈 추천과 비교에 사용돼요</Text>
-          </Box>
+          <BodyMeasurementsStep formData={ formData } onFieldChange={ handleFieldChange } />
         ) }
 
         { step === 2 && (
-          <Box mb={ 8 }>
-            <Heading size="lg" fontWeight="bold" mb={ 2 }>평소 자주 입는
-              사이즈는?</Heading>
-            <Text fontSize="sm" color="gray.500">상의와 하의 평소 착용 치수를 선택해주세요</Text>
-          </Box>
+          <ClothingSizeStep formData={ formData } onFieldChange={ handleFieldChange } />
         ) }
 
         { step === 3 && (
-          <Box mb={ 8 }>
-            <Heading size="lg" fontWeight="bold" mb={ 2 }>체형과 선호하는 스타일을
-              골라주세요</Heading>
-            <Text fontSize="sm" color="gray.500">고객님께 딱 맞는 핏과 스타일을 추천해드려요</Text>
-          </Box>
-        ) }
-
-        { step === 1 && (
-          <VStack spacing={ 6 } align="stretch">
-            <VStack align="stretch" spacing={ 3 }>
-              <Text fontSize="md" fontWeight="bold" color="gray.800">키 · 몸무게
-                (숫자만 입력)</Text>
-              <HStack spacing={ 4 }>
-                <Box flex={ 1 } position="relative">
-                  <Input
-                    name="height"
-                    placeholder="175"
-                    value={ formData.height }
-                    onChange={ handleNumberChange }
-                    onKeyDown={ handleKeyDown }
-                    maxLength={ 3 }
-                    autoComplete="off"
-                    pr="3.5rem"
-                    size="lg"
-                    py={ 6 }
-                  />
-                  <Box
-                    position="absolute"
-                    right="16px"
-                    top="50%"
-                    transform="translateY(-50%)"
-                    fontSize="md"
-                    color="gray.400"
-                    pointerEvents="none"
-                  >
-                    cm
-                  </Box>
-                </Box>
-
-                <Box flex={ 1 } position="relative">
-                  <Input
-                    name="weight"
-                    placeholder="65"
-                    value={ formData.weight }
-                    onChange={ handleNumberChange }
-                    onKeyDown={ handleKeyDown }
-                    maxLength={ 3 }
-                    autoComplete="off"
-                    pr="3.5rem"
-                    size="lg"
-                    py={ 6 }
-                  />
-                  <Box
-                    position="absolute"
-                    right="16px"
-                    top="50%"
-                    transform="translateY(-50%)"
-                    fontSize="md"
-                    color="gray.400"
-                    pointerEvents="none"
-                  >
-                    kg
-                  </Box>
-                </Box>
-              </HStack>
-              <Text fontSize="xs" color="gray.400">
-                * 키(130~200cm), 몸무게(30~120kg) 범위 내로 입력해주세요.
-              </Text>
-            </VStack>
-          </VStack>
-        ) }
-
-        { step === 2 && (
-          <VStack spacing={ 6 } align="stretch">
-            <VStack align="stretch" spacing={ 4 }>
-              <VStack align="stretch" spacing={ 2.5 }>
-                <Text fontSize="sm" color="gray.500">상의</Text>
-                <Wrap spacing={ 2.5 }>
-                  { topSizes.map((size) => {
-                    const isSelected = formData.topSize === size
-                    return (
-                      <WrapItem key={ size }>
-                        <Button
-                          size="md"
-                          px={ 5 }
-                          py={ 5 }
-                          variant={ isSelected ? 'solid' : 'outline' }
-                          bg={ isSelected ? 'gray.900' : 'transparent' }
-                          color={ isSelected ? 'white' : 'gray.700' }
-                          borderColor={ isSelected ? 'gray.900' : 'gray.200' }
-                          _hover={ { bg: isSelected ? 'gray.800' : 'gray.50' } }
-                          onClick={ () => setFormData(
-                            (prev) => ({ ...prev, topSize: size })) }
-                        >
-                          { size }
-                        </Button>
-                      </WrapItem>
-                    )
-                  }) }
-                </Wrap>
-              </VStack>
-
-              <VStack align="stretch" spacing={ 2.5 } pt={ 2 }>
-                <Text fontSize="sm" color="gray.500">하의</Text>
-                <Wrap spacing={ 2.5 }>
-                  { bottomSizes.map((size) => {
-                    const isSelected = formData.weightSize === size
-                    return (
-                      <WrapItem key={ size }>
-                        <Button
-                          size="md"
-                          px={ 5 }
-                          py={ 5 }
-                          variant={ isSelected ? 'solid' : 'outline' }
-                          bg={ isSelected ? 'gray.900' : 'transparent' }
-                          color={ isSelected ? 'white' : 'gray.700' }
-                          borderColor={ isSelected ? 'gray.900' : 'gray.200' }
-                          _hover={ { bg: isSelected ? 'gray.800' : 'gray.50' } }
-                          onClick={ () => setFormData(
-                            (prev) => ({ ...prev, weightSize: size })) }
-                        >
-                          { size }
-                        </Button>
-                      </WrapItem>
-                    )
-                  }) }
-                </Wrap>
-              </VStack>
-            </VStack>
-          </VStack>
-        ) }
-
-        { step === 3 && (
-          <VStack spacing={ 6 } align="stretch">
-            <VStack align="stretch" spacing={ 2.5 }>
-              <Text fontSize="md" fontWeight="bold" color="gray.800">체형</Text>
-              <Wrap spacing={ 2.5 }>
-                { bodyTypeOptions.map((item) => {
-                  const isSelected = formData.bodyType === item.value
-                  return (
-                    <WrapItem key={ item.value }>
-                      <Button
-                        size="md"
-                        px={ 5 }
-                        py={ 5 }
-                        variant={ isSelected ? 'solid' : 'outline' }
-                        bg={ isSelected ? 'gray.900' : 'transparent' }
-                        color={ isSelected ? 'white' : 'gray.700' }
-                        borderColor={ isSelected ? 'gray.900' : 'gray.200' }
-                        _hover={ { bg: isSelected ? 'gray.800' : 'gray.50' } }
-                        onClick={ () => setFormData(
-                          (prev) => ({ ...prev, bodyType: item.value })) }
-                      >
-                        { item.label }
-                      </Button>
-                    </WrapItem>
-                  )
-                }) }
-              </Wrap>
-            </VStack>
-
-            <VStack align="stretch" spacing={ 2.5 }>
-              <Text fontSize="md" fontWeight="bold" color="gray.800">선호 핏</Text>
-              <HStack spacing={ 3 }>
-                { fitOptions.map((item) => {
-                  const isSelected = formData.preferredFit === item.value
-                  return (
-                    <Button
-                      key={ item.value }
-                      flex={ 1 }
-                      size="md"
-                      py={ 5 }
-                      variant={ isSelected ? 'solid' : 'outline' }
-                      bg={ isSelected ? 'gray.900' : 'transparent' }
-                      color={ isSelected ? 'white' : 'gray.700' }
-                      borderColor={ isSelected ? 'gray.900' : 'gray.200' }
-                      _hover={ { bg: isSelected ? 'gray.800' : 'gray.50' } }
-                      onClick={ () => setFormData(
-                        (prev) => ({ ...prev, preferredFit: item.value })) }
-                    >
-                      { item.label }
-                    </Button>
-                  )
-                }) }
-              </HStack>
-            </VStack>
-
-            <VStack align="stretch" spacing={ 2.5 }>
-              <Text fontSize="md" fontWeight="bold" color="gray.800">선호
-                스타일</Text>
-              <Wrap spacing={ 2.5 }>
-                { styleOptions.map((item) => {
-                  const isSelected = formData.style === item.value
-                  return (
-                    <WrapItem key={ item.value }>
-                      <Button
-                        size="md"
-                        px={ 5 }
-                        py={ 5 }
-                        variant={ isSelected ? 'solid' : 'outline' }
-                        bg={ isSelected ? 'gray.900' : 'transparent' }
-                        color={ isSelected ? 'white' : 'gray.700' }
-                        borderColor={ isSelected ? 'gray.900' : 'gray.200' }
-                        _hover={ { bg: isSelected ? 'gray.800' : 'gray.50' } }
-                        onClick={ () => setFormData(
-                          (prev) => ({ ...prev, style: item.value })) }
-                      >
-                        { item.label }
-                      </Button>
-                    </WrapItem>
-                  )
-                }) }
-              </Wrap>
-            </VStack>
-          </VStack>
+          <StylePreferencesStep formData={ formData } onFieldChange={ handleFieldChange } />
         ) }
 
         { errorMessage && (
