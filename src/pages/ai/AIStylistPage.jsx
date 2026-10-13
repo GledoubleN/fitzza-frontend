@@ -2,9 +2,9 @@ import { Button, Card, Container, Flex, IconButton, Spinner, Stack, Text } from 
 import { useEffect, useRef, useState } from 'react'
 import { LuClock } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { api } from '../../api/axios.js'
 import { AppBar } from '../../components/AppBar.jsx'
 import { Toaster } from '../../components/ui/toaster.jsx'
-import { getRecommendation, getRecommendationMessages, postRecommendation } from './aiApi.js'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
@@ -12,6 +12,8 @@ import { ProductRow } from './ProductRow.jsx'
 const POLL_INTERVAL = 2000
 const MAX_POLLS = 30
 const FAIL_MESSAGE = '추천을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'
+// 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
+const TIMEOUT = { timeout: 10000 }
 
 export const AIStylistPage = () => {
   const { requestId } = useParams()
@@ -43,7 +45,7 @@ export const AIStylistPage = () => {
     setStatus('loading')
     const key = location.key
     try {
-      const data = await postRecommendation(text)
+      const { data } = await api.post('/recommendations', { query: text }, TIMEOUT)
       // 응답을 기다리는 사이 다른 화면으로 옮겼으면 결과화면으로 강제로 이동시키지 않습니다.
       if (activeKey.current !== key) return
       navigate(`/ai/${ data.requestId }`, { replace: true, state: { query: text } })
@@ -75,7 +77,7 @@ export const AIStylistPage = () => {
     let timer
     const poll = async (tries) => {
       try {
-        const data = await getRecommendation(requestId)
+        const { data } = await api.get(`/recommendations/${ requestId }`, TIMEOUT)
         if (cancelled) return
         if (data.status === 'DONE') {
           setResult(data)
@@ -95,8 +97,8 @@ export const AIStylistPage = () => {
     const text = location.state?.query
     setQuery(text ?? '')
     if (!text) {
-      getRecommendationMessages(requestId)
-        .then((messages) => {
+      api.get(`/recommendations/${ requestId }/messages`, TIMEOUT)
+        .then(({ data: messages }) => {
           if (!cancelled) setQuery(messages.find((m) => m.senderType === 'USER')?.content ?? '')
         })
         .catch(() => {})

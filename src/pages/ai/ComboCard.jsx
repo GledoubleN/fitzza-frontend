@@ -1,11 +1,14 @@
 import { Button, Card, Flex, Grid, Text } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { api } from '../../api/axios.js'
 import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
-import { addToCart } from './aiApi.js'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
+
+// 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
+const TIMEOUT = { timeout: 10000 }
 
 export const ComboCard = ({ combo, combos, index }) => {
   const navigate = useNavigate()
@@ -23,7 +26,8 @@ export const ComboCard = ({ combo, combos, index }) => {
     const pending = combo.items
       .map((item) => selected[item.productId])
       .filter((optionId) => !addedOptionIds.includes(optionId))
-    const results = await Promise.allSettled(pending.map((optionId) => addToCart(Number(optionId))))
+    const results = await Promise.allSettled(pending.map((optionId) =>
+      api.post('/carts', { optionId: Number(optionId), quantity: 1 }, TIMEOUT)))
     const added = pending.filter((_, i) => results[i].status === 'fulfilled')
     if (added.length === pending.length) {
       setAddedOptionIds([])

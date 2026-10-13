@@ -7,9 +7,12 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { api } from '../../api/axios.js'
 import { AppBar } from '../../components/AppBar.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
-import { getRecommendationHistory } from './aiApi.js'
+
+// 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
+const TIMEOUT = { timeout: 10000 }
 
 export const AIHistoryPage = () => {
   const navigate = useNavigate()
@@ -25,8 +28,8 @@ export const AIHistoryPage = () => {
     let cancelled = false
     setLoading(true)
     setError('')
-    getRecommendationHistory(page)
-      .then((data) => {
+    api.get('/recommendations', { params: { page, size: 20 }, ...TIMEOUT })
+      .then(({ data }) => {
         if (cancelled) return
         setItems((items) => page === 0 ? data.content : [...items, ...data.content])
         setTotalPages(data.totalPages)

@@ -20,13 +20,15 @@ import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { useNavigate } from 'react-router-dom'
 import { Footer } from '../components/Footer.jsx'
-import { MAX_QUERY_LENGTH } from './ai/aiApi.js'
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
 
 // AI 버튼(LuSparkle)으로 펼쳤을 때의 줄 수이자 자동으로 늘어나는 최대 줄 수.
 const MAX_PROMPT_ROWS = 4
+
+// 추천 질의 최대 글자 수 입니다. 약식으로 정해진 거라 실제 값은 확정이 필요해보입니다.
+const MAX_QUERY_LENGTH = 500
 
 export const MainPage = () => {
   const navigate = useNavigate()

@@ -3,9 +3,12 @@ import { useEffect, useState } from 'react'
 import { LuHeart } from 'react-icons/lu'
 import { Link } from 'react-router-dom'
 import exampleProductImage from '/src/assets/hero.png'
+import { api } from '../../api/axios.js'
 import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
-import { addToCart, getProductOptions } from './aiApi.js'
+
+// 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
+const TIMEOUT = { timeout: 10000 }
 
 // 상품 카드 한 칸의 크기. 줄 너비의 2/5를 차지해 다음 카드가 걸쳐 보이게 하되, 너무 작거나 커지지 않게 범위를 둡니다.
 // ProductCard가 이 칸을 쓰고, ProductRow의 넘기기 버튼도 사진 높이를 맞추는 데 같은 칸을 씁니다.
@@ -31,9 +34,10 @@ export const ProductCard = ({ item, onOptionChange }) => {
   // 카드마다 상품 상세를 한 번씩 조회. 느려지면 옵션 일괄 조회 API로 교체.
   useEffect(() => {
     let cancelled = false
-    getProductOptions(item.productId)
-      .then((options) => {
+    api.get(`/products/${ item.productId }`, TIMEOUT)
+      .then(({ data }) => {
         if (cancelled) return
+        const options = data.options ?? []
         setOptions(options)
         // 추천 응답에 색상·사이즈가 있으면 바로 선택해둡니다.
         if (options.some((option) => option.color === item.color)) setColor(item.color)
@@ -63,7 +67,7 @@ export const ProductCard = ({ item, onOptionChange }) => {
   const submit = async () => {
     setSaving(true)
     try {
-      await addToCart(Number(optionId))
+      await api.post('/carts', { optionId: Number(optionId), quantity: 1 }, TIMEOUT)
       setAdded(true)
     } catch {
       toaster.create({ type: 'error', title: '장바구니에 담지 못했어요. 다시 시도해주세요.' })
