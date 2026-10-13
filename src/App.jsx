@@ -2,7 +2,7 @@ import { MainPage } from "./pages/MainPage.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ShoppingCartPage } from "./pages/ShoppingCartPage.jsx";
 import { SignInPage } from "./pages/SignInPage.jsx";
-import SignupPage from "./pages/SignupPage.jsx";
+import { SignUpPage } from "./pages/SignUpPage.jsx";
 import { TryOnPage } from './pages/TryOnPage.jsx'
 import { SearchResultPage } from './pages/SearchResultPage.jsx'
 import { CheckoutPage } from './pages/CheckoutPage.jsx'
@@ -13,7 +13,7 @@ import { ProductPage } from './pages/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import WorldCupPage from './pages/WorldCupPage.jsx'
 import { DevNavi } from './pages/ForDev/DevNavi.jsx'
-import { LikesPage } from './pages/LikesPage.jsx'
+import { WishlistPage } from './pages/WishlistPage.jsx'
 import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { ThemePreviewPage } from './pages/ThemePreviewPage.jsx'
@@ -27,7 +27,7 @@ function App() {
         <Route path="/" element={ <MainPage/> }/>
         <Route path="/shopping-cart" element={ <ShoppingCartPage/> }/>
         <Route path="/signin" element={ <SignInPage/> }/>
-        <Route path="/signup" element={ <SignupPage/> }/>
+        <Route path="/signup" element={ <SignUpPage/> }/>
         <Route path="/try-on" element={ <TryOnPage/> }/>
         <Route path="/search" element={ <SearchResultPage/> }/>
         <Route path="/products/:id" element={ <ProductPage/> }/>
@@ -38,7 +38,7 @@ function App() {
         <Route path="/profile" element={ <ProfilePage/> }/>
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
         <Route path="/dev" element={ <DevNavi/> }/>
-        <Route path="/likes" element={ <LikesPage/> }/>
+        <Route path="/likes" element={ <WishlistPage/> }/>
         <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orderdetail" element={<OrderDetail />} />
         <Route path="/theme-preview" element={<ThemePreviewPage />} />

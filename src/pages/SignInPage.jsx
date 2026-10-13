@@ -5,18 +5,15 @@ import {
   Container,
   Field,
   Grid,
-  GridItem,
   Heading,
   Text,
-  Box,
-  Center,
   Input,
-  InputGroup, Stack,
+  InputGroup,
+  Stack,
 } from '@chakra-ui/react'
 import { LuMail, LuLockKeyhole } from 'react-icons/lu'
 import { api } from '../api/axios.js'
 import { AppBar } from '../components/AppBar.jsx'
-import { Footer } from '../components/Footer.jsx'
 
 export const SignInPage = () => {
   const [email, setEmail] = useState('')
@@ -30,7 +27,11 @@ export const SignInPage = () => {
     setLoading(true)
     setErrorMessage('')
     try {
-      await api.post('/auth/login/sample', { email, password })
+      const response = await api.post('/auth/login/sample', { email, password })
+      const token = response.data?.accessToken || response.data?.token
+      if (token) {
+        localStorage.setItem('accessToken', token)
+      }
       moveUrl('/')
     } catch (err) {
       if (err.response?.status === 401) {
@@ -45,7 +46,7 @@ export const SignInPage = () => {
 
   return (
     <Grid
-      templateRows={ 'auto 1fr auto' }
+      templateRows={ 'auto 1fr' }
       minHeight="100vh"
       gap={ 4 }
       paddingY={ 4 }
@@ -107,8 +108,6 @@ export const SignInPage = () => {
 
         </Stack>
       </Container>
-
-      <Footer></Footer>
     </Grid>
   )
 }
