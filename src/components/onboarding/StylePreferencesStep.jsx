@@ -40,13 +40,14 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
       ) }
     >
       <Box mb={ 8 }>
-        <Heading size="lg" fontWeight="bold" mb={ 4 }>체형과 선호하는 스타일을
-          골라주세요</Heading>
-        <Text fontSize="sm" color="fg.muted">고객님께 딱 맞는 핏과 스타일을 추천해드려요</Text>
+        <Heading mb={ 4 }>
+          체형과 선호하는 스타일을 골라주세요
+        </Heading>
+        <Text>고객님께 딱 맞는 핏과 스타일을 추천해드려요</Text>
       </Box>
       <VStack gap={ 8 } align="stretch">
         <VStack align="stretch" gap={ 4 }>
-          <Text fontSize="md" fontWeight="bold" color="fg">체형</Text>
+          <Heading fontSize="md">체형</Heading>
           <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 4 }>
             { bodyTypeOptions.map((item) => {
               const isSelected = formData.bodyType === item.value
@@ -65,7 +66,9 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
         </VStack>
 
         <VStack align="stretch" gap={ 4 }>
-          <Text fontSize="md" fontWeight="bold" color="fg">선호 핏</Text>
+          <Heading fontSize="md">
+            선호 핏
+          </Heading>
           <Grid templateColumns={ { base: '1fr', sm: 'repeat(3, minmax(0, 1fr))' } } gap={ 4 }>
             { fitOptions.map((item) => {
               const isSelected = formData.preferredFit === item.value
@@ -84,8 +87,9 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
         </VStack>
 
         <VStack align="stretch" gap={ 4 }>
-          <Text fontSize="md" fontWeight="bold" color="fg">선호
-            스타일</Text>
+          <Heading fontSize="md">
+            선호 스타일
+          </Heading>
           <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 4 }>
             { styleOptions.map((item) => {
               const isSelected = formData.style === item.value
