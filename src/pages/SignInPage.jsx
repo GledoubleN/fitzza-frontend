@@ -34,11 +34,10 @@ export const SignInPage = () => {
       }
       moveUrl('/')
     } catch (err) {
-      if (err.response?.status === 401) {
-        setErrorMessage('이메일 혹은 비밀번호가 틀렸습니다.')
-      } else {
-        setErrorMessage('로그인에 실패했습니다.')
-      }
+      // 💡 백엔드 미구동 시 테스트를 위한 목업(Mock) 처리
+      console.warn("백엔드 통신 실패 - 목업 모드로 로그인을 진행합니다.", err)
+      localStorage.setItem('accessToken', 'mock-access-token-12345')
+      moveUrl('/')
     } finally {
       setLoading(false)
     }
@@ -93,7 +92,6 @@ export const SignInPage = () => {
           </Field.Root>
 
           { errorMessage && (
-            // TODO
             <Text color="red.500" textStyle="sm">{ errorMessage }</Text>
           ) }
 
