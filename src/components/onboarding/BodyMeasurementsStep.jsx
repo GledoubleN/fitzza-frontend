@@ -44,7 +44,6 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
                 maxLength={ 3 }
                 autoComplete="off"
                 pr={ 16 }
-                size="lg"
                 py={ 8 }
               />
               <Box
@@ -70,7 +69,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
                 maxLength={ 3 }
                 autoComplete="off"
                 pr={ 16 }
-                size="lg"
+                size="md"
                 py={ 8 }
               />
               <Box
