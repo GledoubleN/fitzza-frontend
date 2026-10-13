@@ -219,7 +219,7 @@ export const AIStylistPage = () => {
   }
 
   const shareFitting = (fitting) => {
-    // 작성 화면에 보여줄 피팅 결과. 공유 초안 조회 API(/posts/share-draft) 연동 시 대체됩니다.
+    // 작성 화면에 보여줄 피팅 결과.
     navigate('/community/write', {
       state: {
         sharedType: 'FITTING',

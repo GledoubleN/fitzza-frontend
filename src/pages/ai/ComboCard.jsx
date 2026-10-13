@@ -41,7 +41,7 @@ export const ComboCard = ({ combo, combos, index, onTryOn, tryingOn }) => {
   }
 
   const share = () => {
-    // 작성 화면에 보여줄 코디 내용. 공유 초안 조회 API(/posts/share-draft) 연동 시 대체됩니다.
+    // 작성 화면에 보여줄 코디 내용.
     navigate('/community/write', {
       state: {
         sharedType: 'COMBO',
