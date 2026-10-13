@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Flex, IconButton, NativeSelect, Stack, Text } from '@chakra-ui/react'
+import { Button, Flex, IconButton, Portal, Select, Stack, Text, createListCollection } from '@chakra-ui/react'
 import { LuMinus, LuPlus, LuX } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
@@ -7,6 +7,32 @@ import { toaster } from '../../components/ui/toaster.jsx'
 
 // 옵션 구조는 명세에 열려 있어 { optionId, color, size, available }로 가정한다.
 const getOptionLabel = (option) => [option.color, option.size].filter(Boolean).join(' / ')
+
+const OptionSelect = ({ label, collection, ...props }) => (
+  <Select.Root collection={ collection } width={ '100%' } { ...props }>
+    <Select.HiddenSelect/>
+    <Select.Control>
+      <Select.Trigger aria-label={ label }>
+        <Select.ValueText placeholder={ label }/>
+      </Select.Trigger>
+      <Select.IndicatorGroup>
+        <Select.Indicator/>
+      </Select.IndicatorGroup>
+    </Select.Control>
+    <Portal>
+      <Select.Positioner>
+        <Select.Content>
+          { collection.items.map((item) => (
+            <Select.Item item={ item } key={ item.value }>
+              { item.label }
+              <Select.ItemIndicator/>
+            </Select.Item>
+          )) }
+        </Select.Content>
+      </Select.Positioner>
+    </Portal>
+  </Select.Root>
+)
 
 export const ProductOptionSelector = ({ product }) => {
   const navigate = useNavigate()
@@ -20,6 +46,16 @@ export const ProductOptionSelector = ({ product }) => {
   const sizeOptions = colors.length > 0
     ? options.filter((option) => option.color === color)
     : options
+  const colorCollection = createListCollection({
+    items: colors.map((item) => ({ label: item, value: item })),
+  })
+  const sizeCollection = createListCollection({
+    items: sizeOptions.map((option) => ({
+      label: option.available === false ? `${ option.size } (품절)` : option.size,
+      value: String(option.optionId),
+      disabled: option.available === false,
+    })),
+  })
   const selectedOptions = options.filter((option) => quantities[option.optionId])
   const totalQuantity = selectedOptions.reduce((sum, option) => sum + quantities[option.optionId], 0)
 
@@ -63,40 +99,21 @@ export const ProductOptionSelector = ({ product }) => {
   return (
     <Stack gap={ 4 }>
       { colors.length > 0 && (
-        <NativeSelect.Root>
-          <NativeSelect.Field
-            aria-label={ '색상' }
-            value={ color }
-            onChange={ (event) => setColor(event.target.value) }
-          >
-            <option value={ '' } disabled hidden>색상</option>
-            { colors.map((item) => (
-              <option key={ item } value={ item }>{ item }</option>
-            )) }
-          </NativeSelect.Field>
-          <NativeSelect.Indicator/>
-        </NativeSelect.Root>
+        <OptionSelect
+          label={ '색상' }
+          collection={ colorCollection }
+          value={ color ? [color] : [] }
+          onValueChange={ (event) => setColor(event.value[0] ?? '') }
+        />
       ) }
-      <NativeSelect.Root disabled={ sizeOptions.length === 0 }>
-        {/* 고를 때마다 선택 목록에 추가하고 값은 비워 둔다. */ }
-        <NativeSelect.Field
-          aria-label={ '사이즈' }
-          value={ '' }
-          onChange={ (event) => setQuantity(event.target.value, quantities[event.target.value] ?? 1) }
-        >
-          <option value={ '' } disabled hidden>사이즈</option>
-          { sizeOptions.map((option) => (
-            <option
-              key={ option.optionId }
-              value={ option.optionId }
-              disabled={ option.available === false }
-            >
-              { option.size }{ option.available === false && ' (품절)' }
-            </option>
-          )) }
-        </NativeSelect.Field>
-        <NativeSelect.Indicator/>
-      </NativeSelect.Root>
+      {/* 고를 때마다 선택 목록에 추가하고 값은 비워 둔다. */ }
+      <OptionSelect
+        label={ '사이즈' }
+        collection={ sizeCollection }
+        disabled={ sizeOptions.length === 0 }
+        value={ [] }
+        onValueChange={ (event) => event.value[0] && setQuantity(event.value[0], quantities[event.value[0]] ?? 1) }
+      />
 
       { selectedOptions.map((option) => (
         <Stack key={ option.optionId } bg={ 'bg.muted' } rounded={ 'l2' } padding={ 4 } gap={ 3 }>
