@@ -17,7 +17,7 @@ export function OnboardingSaveConfirmation ({ onConfirm }) {
         <Text fontSize="sm" color="fg.muted" mb={ 8 }>
           프로필과 신체 정보가 성공적으로 반영되었습니다!
         </Text>
-        <Button colorPalette="primary" w="full" size="md" onClick={ onConfirm }>
+        <Button w="full" size="md" onClick={ onConfirm }>
           확인
         </Button>
       </Box>
