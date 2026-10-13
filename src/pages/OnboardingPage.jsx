@@ -146,7 +146,7 @@ export default function OnboardingPage () {
           <Text fontSize="sm" fontWeight="bold" color="gray.400">
             STEP { step } / 3
           </Text>
-          <Button colorPalette="primary" variant="ghost" size="md"
+          <Button variant="ghost" size="md"
                   onClick={ handleSkip }>
             건너뛰기
           </Button>
