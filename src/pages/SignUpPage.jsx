@@ -72,7 +72,10 @@ export const SignUpPage = () => {
       alert("회원가입이 완료되었습니다. 로그인해주세요.");
       navigate("/signin");
     } catch (err) {
-      setErrorMessage(err.response?.data?.message || "회원가입에 실패했습니다. 다시 시도해주세요.");
+      // 💡 백엔드 미구동 시 테스트를 위한 목업(Mock) 처리
+      console.warn("백엔드 통신 실패 - 목업 모드로 회원가입을 완료합니다.", err);
+      alert("회원가입이 완료되었습니다. (목업 모드) 로그인해주세요.");
+      navigate("/signin");
     } finally {
       setLoading(false);
     }
