@@ -10,6 +10,7 @@ import productOptions from '../data/productOptions.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendationHistory.json'
 import recommendationMessages from '../data/recommendationMessages.json'
+import fittingResultImage from '../assets/hero.png'
 
 // [개발용] 추천 요청의 응답이 오기까지 걸리는 시간을 흉내 냅니다.
 // 추천 결과는 요청(POST)의 응답에 담겨 오므로, 이 시간 동안 화면의 로딩 말풍선을 확인할 수 있습니다.
@@ -164,6 +165,39 @@ export const handlers = [
     'http://localhost:8000/api/v1/recommendations/:requestId/messages',
     () => {
       return HttpResponse.json(recommendationMessages)
+    },
+  ),
+
+  // 가상 피팅용 전신 사진 업로드. 목업에서는 사진을 저장하지 않습니다.
+  http.post(
+    'http://localhost:8000/api/v1/fittings/photos',
+    () => {
+      return HttpResponse.json({ photoId: 'sample-photo', photoUrl: fittingResultImage }, { status: 201 })
+    },
+  ),
+
+  // 가상 피팅. 생성이 끝나면 결과를 응답에 담아 돌려줍니다. 목업에서는 어떤 요청이든 같은 이미지를 돌려줍니다.
+  http.post(
+    'http://localhost:8000/api/v1/fittings',
+    async ({ request }) => {
+      const { photoId, productIds } = await request.json()
+
+      if (!photoId || !productIds?.length) {
+        return new HttpResponse(null, { status: 400 })
+      }
+
+      // [개발용] 이미지 생성에 걸리는 시간만큼 응답을 늦춥니다.
+      await delay(RECOMMENDATION_PROCESSING_MS)
+
+      return HttpResponse.json({
+        fittingId: 'sample-fitting',
+        status: 'COMPLETED',
+        resultImageUrl: fittingResultImage,
+        failReason: null,
+        retryable: false,
+        products: products.filter((product) => productIds.includes(product.id)),
+        createdAt: new Date().toISOString(),
+      })
     },
   ),
 
