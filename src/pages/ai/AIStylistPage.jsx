@@ -34,9 +34,13 @@ export const AIStylistPage = () => {
     return () => { activeKey.current = null }
   }, [location.key])
 
-  const fail = (text) => {
+  // failedByServer: 조회는 됐지만 서버가 추천 실패(FAILED)를 돌려준 경우. 재시도 방식이 달라집니다.
+  const [failedByServer, setFailedByServer] = useState(false)
+
+  const fail = (text, byServer = false) => {
     setStatus('failed')
     setMessage(text || FAIL_MESSAGE)
+    setFailedByServer(byServer)
   }
 
   const request = async (text) => {
@@ -82,7 +86,9 @@ export const AIStylistPage = () => {
         if (data.status === 'DONE') {
           setResult(data)
           setStatus('done')
-        } else if (data.status === 'FAILED' || tries >= MAX_POLLS) {
+        } else if (data.status === 'FAILED') {
+          fail(data.message, true)
+        } else if (tries >= MAX_POLLS) {
           fail(data.message)
         } else {
           timer = setTimeout(() => poll(tries + 1), POLL_INTERVAL)
@@ -112,8 +118,12 @@ export const AIStylistPage = () => {
   }, [requestId, location.key, attempt])
 
 
+  // 추천 요청 자체가 실패했거나 서버가 추천 실패를 돌려준 경우에만 새로 요청합니다.
+  // 결과 조회가 실패한 경우(네트워크, 타임아웃, 시간 초과)에는 같은 추천을 다시 조회해서 추천이 중복으로 생기지 않게 합니다.
+  const requestsAgain = !requestId || (failedByServer && !!query)
+
   const retry = () => {
-    if (query) request(query)
+    if (requestsAgain) request(query)
     else setAttempt((attempt) => attempt + 1)
   }
 
@@ -163,7 +173,9 @@ export const AIStylistPage = () => {
             <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
               <Card.Body gap={ 3 }>
                 <Text color={ 'fg.error' }>{ message }</Text>
-                <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ retry }>다시 시도</Button>
+                <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ retry }>
+                  { requestId && requestsAgain ? '다시 추천받기' : '다시 시도' }
+                </Button>
               </Card.Body>
             </Card.Root>
           }
