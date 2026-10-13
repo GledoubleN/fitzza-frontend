@@ -24,6 +24,13 @@ export const SignInPage = () => {
 
   const changeHandler = async (e) => {
     e.preventDefault()
+
+    if (!email && !password) {
+      localStorage.setItem('accessToken', 'mock-access-token-12345')
+      moveUrl('/')
+      return
+    }
+
     setLoading(true)
     setErrorMessage('')
     try {
@@ -34,7 +41,6 @@ export const SignInPage = () => {
       }
       moveUrl('/')
     } catch (err) {
-      // 💡 백엔드 미구동 시 테스트를 위한 목업(Mock) 처리
       console.warn("백엔드 통신 실패 - 목업 모드로 로그인을 진행합니다.", err)
       localStorage.setItem('accessToken', 'mock-access-token-12345')
       moveUrl('/')
@@ -63,7 +69,7 @@ export const SignInPage = () => {
         >
           <Heading size="lg">로그인</Heading>
 
-          <Field.Root required w="100%">
+          <Field.Root w="100%">
             <InputGroup startElement={ <LuMail/> }>
               <Input
                 type="email"
@@ -77,7 +83,7 @@ export const SignInPage = () => {
             </InputGroup>
           </Field.Root>
 
-          <Field.Root required w="100%">
+          <Field.Root w="100%">
             <InputGroup startElement={ <LuLockKeyhole/> }>
               <Input
                 type="password"
