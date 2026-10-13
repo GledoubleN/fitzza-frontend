@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   Button,
+  Box,
   Card,
   Container,
   Flex,
@@ -16,9 +17,10 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { LuChevronRight, LuHeart } from 'react-icons/lu'
+import { LuArrowUp, LuChevronRight, LuHeart } from 'react-icons/lu'
 import { api } from '../api/axios.js'
 import { AppBar } from '../components/AppBar.jsx'
+import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
 import { ProductOptionSelector } from './product/ProductOptionSelector.jsx'
 import { ProductReviewTab } from './product/ProductReviewTab.jsx'
@@ -44,6 +46,13 @@ export const ProductPage = () => {
   const [product, setProduct] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isWished, setIsWished] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 300)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     let ignore = false
@@ -186,11 +195,35 @@ export const ProductPage = () => {
                   <Text paddingY={ 4 } color={ 'fg.muted' }>상품 문의는 준비 중이에요.</Text>
                 </Tabs.Content>
               </Tabs.Root>
+
+              {/* 넓은 화면에서는 맨 위로 버튼을 상세 정보 열 안쪽 아래에 붙인다. */ }
+              { isScrolled && (
+                <Flex
+                  display={ { base: 'none', md: 'flex' } }
+                  position={ 'sticky' }
+                  bottom={ 8 }
+                  height={ 0 }
+                  justify={ 'flex-end' }
+                  align={ 'flex-end' }
+                >
+                  <IconButton
+                    rounded={ 'full' }
+                    aria-label={ '맨 위로' }
+                    onClick={ () => window.scrollTo({ top: 0, behavior: 'smooth' }) }
+                  >
+                    <LuArrowUp/>
+                  </IconButton>
+                </Flex>
+              ) }
             </Stack>
           </GridItem>
         </Grid>
       </Container>
 
+      {/* 이 화면에는 하단 탭 바가 없어 기본값보다 아래에 둔다. */ }
+      <Box display={ { md: 'none' } }>
+        <ScrollToTopButton bottom={ '8' }/>
+      </Box>
       <Toaster/>
     </Stack>
   )
