@@ -17,7 +17,7 @@ export function OnboardingStepLayout ({ step, onSkip, errorMessage, actions, chi
           <Text fontSize="sm" fontWeight="bold" color="fg.subtle">
             STEP { step } / 3
           </Text>
-          <Button colorPalette="primary" variant="ghost" size="md" onClick={ onSkip }>
+          <Button variant="ghost" size="md" onClick={ onSkip }>
             건너뛰기
           </Button>
         </Flex>
