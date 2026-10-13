@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../../components/AppBar.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
-import { ensureLogin, getRecommendationHistory } from './aiApi.js'
+import { getRecommendationHistory } from './aiApi.js'
 
 export const AIHistoryPage = () => {
   const navigate = useNavigate()
@@ -22,8 +22,6 @@ export const AIHistoryPage = () => {
   const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
-    if (!ensureLogin(navigate)) return
-
     let cancelled = false
     setLoading(true)
     setError('')

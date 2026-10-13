@@ -4,7 +4,7 @@ import { LuClock } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AppBar } from '../../components/AppBar.jsx'
 import { Toaster } from '../../components/ui/toaster.jsx'
-import { ensureLogin, getRecommendation, getRecommendationMessages, postRecommendation } from './aiApi.js'
+import { getRecommendation, getRecommendationMessages, postRecommendation } from './aiApi.js'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
@@ -60,8 +60,6 @@ export const AIStylistPage = () => {
       navigate('/', { replace: true })
       return
     }
-
-    if (!ensureLogin(navigate)) return
 
     if (!requestId) {
       // 질의의 중복 전송을 방지합니다.

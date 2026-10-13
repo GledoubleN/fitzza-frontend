@@ -23,20 +23,3 @@ export const getProductOptions = async (productId) =>
 
 export const addToCart = async (optionId, quantity = 1) =>
   (await api.post('/carts', { optionId, quantity }, TIMEOUT)).data
-
-let loginChecked = null
-
-// 원래는 비로그인 회원도 조회 가능하게 하려고 했으나, 현재 user_id가 NOT NULL로 정의 되어있어 무조건 요구하도록 했습니다. - 261008 Glenn
-// 로그인 연동 전까지는 확인 창으로 넘어갈 수 있게 둡니다. (개발 중)
-export const ensureLogin = (navigate) => {
-  if (localStorage.getItem('userId')) return true
-  if (loginChecked === null) {
-    loginChecked = window.confirm('로그인이 필요합니다. 로그인 없이 넘어가기 (개발 중)')
-    if (!loginChecked) {
-      // 같은 렌더에서 두 번 묻지 않도록 합니다.
-      setTimeout(() => { loginChecked = null })
-      navigate('/signin')
-    }
-  }
-  return loginChecked
-}
