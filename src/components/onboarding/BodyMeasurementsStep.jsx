@@ -15,12 +15,12 @@ export function BodyMeasurementsStep ({ formData, onFieldChange }) {
   return (
     <>
       <Box mb={ 8 }>
-        <Heading size="lg" fontWeight="bold" mb={ 2 }>키와 몸무게를
+        <Heading size="lg" fontWeight="bold" mb={ 4 }>키와 몸무게를
           알려주세요</Heading>
         <Text fontSize="sm" color="fg.muted">정확한 AI 사이즈 추천과 비교에 사용돼요</Text>
       </Box>
-      <VStack gap={ 6 } align="stretch">
-        <VStack align="stretch" gap={ 3 }>
+      <VStack gap={ 8 } align="stretch">
+        <VStack align="stretch" gap={ 4 }>
           <Text fontSize="md" fontWeight="bold" color="fg">키 · 몸무게
             (숫자만 입력)</Text>
           <HStack gap={ 4 }>
@@ -33,9 +33,9 @@ export function BodyMeasurementsStep ({ formData, onFieldChange }) {
                 onKeyDown={ handleKeyDown }
                 maxLength={ 3 }
                 autoComplete="off"
-                pr={ 14 }
+                pr={ 16 }
                 size="lg"
-                py={ 6 }
+                py={ 8 }
               />
               <Box
                 position="absolute"
@@ -59,9 +59,9 @@ export function BodyMeasurementsStep ({ formData, onFieldChange }) {
                 onKeyDown={ handleKeyDown }
                 maxLength={ 3 }
                 autoComplete="off"
-                pr={ 14 }
+                pr={ 16 }
                 size="lg"
-                py={ 6 }
+                py={ 8 }
               />
               <Box
                 position="absolute"

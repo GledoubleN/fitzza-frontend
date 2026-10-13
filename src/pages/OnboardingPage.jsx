@@ -94,8 +94,8 @@ export default function OnboardingPage () {
     <Box
       maxW={ { base: 'md', md: 'lg' } }
       mx="auto"
-      px={ { base: 5, md: 8 } }
-      py={ 10 }
+      px={ { base: 4, md: 8 } }
+      py={ 12 }
       bg="white"
       minH="100vh"
       display="flex"
@@ -119,14 +119,14 @@ export default function OnboardingPage () {
         >
           <Box
             bg="white"
-            p={ 6 }
+            p={ 8 }
             w="100%"
             maxW="sm"
             boxShadow="xl"
             textAlign="center"
           >
-            <Heading size="md" mb={ 2 }>저장 완료</Heading>
-            <Text fontSize="sm" color="gray.600" mb={ 6 }>
+            <Heading size="md" mb={ 4 }>저장 완료</Heading>
+            <Text fontSize="sm" color="gray.600" mb={ 8 }>
               프로필과 신체 정보가 성공적으로 반영되었습니다!
             </Text>
             <Button
@@ -135,7 +135,7 @@ export default function OnboardingPage () {
               color="white"
               w="100%"
               size="lg"
-              py={ 6 }
+              py={ 8 }
               _hover={ { bg: 'gray.800' } }
               onClick={ handleConfirm }
             >
@@ -183,12 +183,12 @@ export default function OnboardingPage () {
       </Box>
 
       <Box pt={ 12 } pb={ 8 } w="100%">
-        <HStack spacing={ 3 }>
+        <HStack gap={ 4 }>
           { step > 1 && (
             <Button
               variant="outline"
               size="lg"
-              py={ 7 }
+              py={ 8 }
               w="35%"
               fontSize="md"
               borderColor="gray.300"
@@ -207,7 +207,7 @@ export default function OnboardingPage () {
               color="white"
               flex={ 1 }
               size="lg"
-              py={ 7 }
+              py={ 8 }
               fontSize="md"
               _hover={ { bg: 'gray.800' } }
               onClick={ handleNext }
@@ -221,7 +221,7 @@ export default function OnboardingPage () {
               color="white"
               flex={ 1 }
               size="lg"
-              py={ 7 }
+              py={ 8 }
               fontSize="md"
               _hover={ { bg: 'gray.800' } }
               isLoading={ isLoading }

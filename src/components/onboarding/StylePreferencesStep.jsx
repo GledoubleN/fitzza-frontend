@@ -24,22 +24,22 @@ export function StylePreferencesStep ({ formData, onFieldChange }) {
   return (
     <>
       <Box mb={ 8 }>
-        <Heading size="lg" fontWeight="bold" mb={ 2 }>체형과 선호하는 스타일을
+        <Heading size="lg" fontWeight="bold" mb={ 4 }>체형과 선호하는 스타일을
           골라주세요</Heading>
         <Text fontSize="sm" color="fg.muted">고객님께 딱 맞는 핏과 스타일을 추천해드려요</Text>
       </Box>
-      <VStack gap={ 6 } align="stretch">
-        <VStack align="stretch" gap={ 2.5 }>
+      <VStack gap={ 8 } align="stretch">
+        <VStack align="stretch" gap={ 4 }>
           <Text fontSize="md" fontWeight="bold" color="fg">체형</Text>
-          <Wrap gap={ 2.5 }>
+          <Wrap gap={ 4 }>
             { bodyTypeOptions.map((item) => {
               const isSelected = formData.bodyType === item.value
               return (
                 <WrapItem key={ item.value }>
                   <Button
                     size="md"
-                    px={ 5 }
-                    py={ 5 }
+                    px={ 4 }
+                    py={ 4 }
                     variant={ isSelected ? 'solid' : 'outline' }
                     bg={ isSelected ? 'bg.inverted' : 'bg' }
                     color={ isSelected ? 'fg.inverted' : 'fg' }
@@ -55,9 +55,9 @@ export function StylePreferencesStep ({ formData, onFieldChange }) {
           </Wrap>
         </VStack>
 
-        <VStack align="stretch" gap={ 2.5 }>
+        <VStack align="stretch" gap={ 4 }>
           <Text fontSize="md" fontWeight="bold" color="fg">선호 핏</Text>
-          <HStack gap={ 3 }>
+          <HStack gap={ 4 }>
             { fitOptions.map((item) => {
               const isSelected = formData.preferredFit === item.value
               return (
@@ -65,7 +65,7 @@ export function StylePreferencesStep ({ formData, onFieldChange }) {
                   key={ item.value }
                   flex={ 1 }
                   size="md"
-                  py={ 5 }
+                  py={ 4 }
                   variant={ isSelected ? 'solid' : 'outline' }
                   bg={ isSelected ? 'bg.inverted' : 'bg' }
                   color={ isSelected ? 'fg.inverted' : 'fg' }
@@ -80,18 +80,18 @@ export function StylePreferencesStep ({ formData, onFieldChange }) {
           </HStack>
         </VStack>
 
-        <VStack align="stretch" gap={ 2.5 }>
+        <VStack align="stretch" gap={ 4 }>
           <Text fontSize="md" fontWeight="bold" color="fg">선호
             스타일</Text>
-          <Wrap gap={ 2.5 }>
+          <Wrap gap={ 4 }>
             { styleOptions.map((item) => {
               const isSelected = formData.style === item.value
               return (
                 <WrapItem key={ item.value }>
                   <Button
                     size="md"
-                    px={ 5 }
-                    py={ 5 }
+                    px={ 4 }
+                    py={ 4 }
                     variant={ isSelected ? 'solid' : 'outline' }
                     bg={ isSelected ? 'bg.inverted' : 'bg' }
                     color={ isSelected ? 'fg.inverted' : 'fg' }
