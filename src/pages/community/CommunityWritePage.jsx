@@ -197,7 +197,7 @@ export const CommunityWritePage = () => {
           onChange={ (e) => setTitle(e.target.value) }
         ></Input>
 
-        <RichTextEditor.Root editor={ editor } height={ 'sm' }>
+        <RichTextEditor.Root editor={ editor } minHeight={ 'sm' }>
           {
             // 공유할 코디 부분. 일단 본문 상자 안에 임의로 넣었습니다.
             shared?.snapshot && mode !== 'vote' &&
