@@ -18,3 +18,4 @@
 * Chakra UI의 Semantic Token을 사용한다.
 * HEX 코드나 색깔 이름을 사용하지 않는다.
 * px, rem 등의 단위를 사용하지 않는다.
+* Semantic Token을 사용해서 간격을 정의할 때는 4의 배수를 사용한다.

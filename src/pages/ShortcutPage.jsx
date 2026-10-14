@@ -23,7 +23,7 @@ const ROUTES = [
   { path: "/ai/history", label: "AI 대화 내역" },
 ];
 
-export const DevNavi = () => {
+export const ShortcutPage = () => {
   const moveUrl = useNavigate();
 
   return (
