@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ShoppingCartPage } from "./pages/ShoppingCartPage.jsx";
 import { SignInPage } from "./pages/SignInPage.jsx";
 import { SignUpPage } from "./pages/SignUpPage.jsx";
-import { TryOnPage } from './pages/TryOnPage.jsx'
+import { VtonPage } from './pages/VtonPage.jsx'
 import { SearchResultPage } from './pages/SearchResultPage.jsx'
 import { CheckoutPage } from './pages/CheckoutPage.jsx'
 import { CommunityMainPage } from "./pages/community/CommunityMainPage.jsx";
@@ -28,7 +28,7 @@ function App() {
         <Route path="/shopping-cart" element={ <ShoppingCartPage/> }/>
         <Route path="/signin" element={ <SignInPage/> }/>
         <Route path="/signup" element={ <SignUpPage/> }/>
-        <Route path="/try-on" element={ <TryOnPage/> }/>
+        <Route path="/vton" element={ <VtonPage/> }/>
         <Route path="/search" element={ <SearchResultPage/> }/>
         <Route path="/products/:id" element={ <ProductPage/> }/>
         <Route path="/checkout" element={ <CheckoutPage/> }/>

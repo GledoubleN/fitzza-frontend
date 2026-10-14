@@ -163,7 +163,7 @@ export const ProductPage = () => {
                   <Tabs.Trigger value={ 'information' }>정보</Tabs.Trigger>
                   <Tabs.Trigger value={ 'size' }>사이즈</Tabs.Trigger>
                   <Tabs.Trigger value={ 'review' }>후기</Tabs.Trigger>
-                  <Tabs.Trigger value={ 'try-on' }>입어보기</Tabs.Trigger>
+                  <Tabs.Trigger value={ 'vton' }>입어보기</Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content value={ 'information' }>
                   <Stack gap={ 4 } paddingY={ 4 }>
@@ -179,7 +179,7 @@ export const ProductPage = () => {
                 <Tabs.Content value={ 'review' }>
                   <ProductReviewTab productId={ product.productId }/>
                 </Tabs.Content>
-                <Tabs.Content value={ 'try-on' }>
+                <Tabs.Content value={ 'vton' }>
                   <ProductTryOnTab product={ product }/>
                 </Tabs.Content>
               </Tabs.Root>
