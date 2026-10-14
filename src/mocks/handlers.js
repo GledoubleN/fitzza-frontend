@@ -6,6 +6,26 @@ import likes from '../data/wishlist.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
 
+// TODO API 필요: 가상 피팅 결과 조회·최신 피팅 조회 API가 명세에 없어 목에서만 저장한다.
+// 새로고침하면 비워진다.
+const fittings = []
+const FITTING_DURATION = 3000
+
+// 요청 후 일정 시간이 지나면 완료된 것으로 응답한다.
+const toFittingResponse = (fitting) => {
+  if (!fitting) {
+    return new HttpResponse(null, { status: 404 })
+  }
+
+  const isDone = Date.now() - fitting.createdAt >= FITTING_DURATION
+
+  return HttpResponse.json({
+    fittingId: fitting.fittingId,
+    status: isDone ? 'DONE' : 'PROCESSING',
+    resultImageUrl: isDone ? '/src/assets/hero.png' : null,
+  })
+}
+
 export const handlers = [
   http.get(
     'http://localhost:8000/api/v1/uers/:id',
@@ -140,6 +160,43 @@ export const handlers = [
   http.delete(
     'http://localhost:8000/api/v1/wishlists',
     () => new HttpResponse(null, { status: 204 }),
+  ),
+
+  // TODO API 필요: photoId(프로필 전신 사진 ID)는 명세의 /users/me 응답에 없는 가정 필드다.
+  http.get(
+    'http://localhost:8000/api/v1/users/me',
+    () => HttpResponse.json({ email: 'user@fitzza.com', nickname: '핏짜', photoId: 1 }),
+  ),
+
+  http.post(
+    'http://localhost:8000/api/v1/vton',
+    async ({ request }) => {
+      const { productIds, color, size } = await request.json()
+      const fitting = {
+        fittingId: fittings.length + 1,
+        productId: productIds[0],
+        color,
+        size,
+        createdAt: Date.now(),
+      }
+      fittings.push(fitting)
+
+      return HttpResponse.json({ fittingId: fitting.fittingId, status: 'PENDING' }, { status: 202 })
+    },
+  ),
+
+  http.get(
+    'http://localhost:8000/api/v1/vton/latest',
+    ({ request }) => toFittingResponse(fittings.findLast(
+      fitting => fitting.productId === Number(new URL(request.url).searchParams.get('productId')),
+    )),
+  ),
+
+  http.get(
+    'http://localhost:8000/api/v1/vton/:fittingId',
+    ({ params }) => toFittingResponse(fittings.find(
+      fitting => fitting.fittingId === Number(params.fittingId),
+    )),
   ),
 
   http.get(
