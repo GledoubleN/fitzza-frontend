@@ -145,7 +145,7 @@ export const SearchResultPage = () => {
                           size="xs"
                           zIndex={2}
                         >
-                          <Box as={LuHeart} boxSize={3.5} />
+                          <LuHeart/>
                         </IconButton>
                         <Image src={product.thumbnailUrl || exampleProductImage} w="100%" h="28" objectFit="cover" />
                       </GridItem>
