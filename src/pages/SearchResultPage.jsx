@@ -4,11 +4,14 @@ import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
 import exampleProductImage from '../assets/hero.png'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
 
 export const SearchResultPage = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const categoryCode = searchParams.get('category')
+
   const [displayProducts, setDisplayProducts] = useState([])
   const [page, setPage] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
@@ -18,17 +21,20 @@ export const SearchResultPage = () => {
   const PAGE_SIZE = 10
 
   const fetchProducts = async (targetPage = 0) => {
-    if (isLoading) return
+    if (isLoading) return { content: [], hasNext: false }
     setIsLoading(true)
     setError(null)
     try {
-      const response = await api.get('/products', {
-        params: {
-          page: targetPage,
-          size: PAGE_SIZE,
-          sort: 'LATEST'
-        }
-      })
+      const params = {
+        page: targetPage,
+        size: PAGE_SIZE,
+        sort: 'LATEST'
+      }
+      if (categoryCode) {
+        params.category = categoryCode
+      }
+
+      const response = await api.get('/products', { params })
 
       const { content = [], hasNext = false } = response.data || {}
 
@@ -51,6 +57,7 @@ export const SearchResultPage = () => {
 
   useEffect(() => {
     const initLoad = async () => {
+      setDisplayProducts([])
       const result = await fetchProducts(0)
 
       let currentPage = 0
@@ -65,7 +72,7 @@ export const SearchResultPage = () => {
     }
 
     initLoad()
-  }, [])
+  }, [categoryCode])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,7 +85,7 @@ export const SearchResultPage = () => {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isLoading, hasMore, page])
+  }, [isLoading, hasMore, page, categoryCode])
 
   return (
     <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
@@ -96,6 +103,7 @@ export const SearchResultPage = () => {
             borderWidth="thin"
             borderColor="border.subtle"
             py={5}
+            defaultValue={categoryCode ? `카테고리 코드: ${categoryCode}` : ''}
           />
         </InputGroup>
       </Container>
