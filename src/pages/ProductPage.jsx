@@ -106,17 +106,15 @@ export const ProductPage = () => {
       <Container maxWidth={ '5xl' } flex={ '1' }>
         <Grid templateColumns={ { base: '1fr', md: '2fr 1fr' } } gap={ 4 }>
           <GridItem minWidth={ 0 }>
-            <Container maxWidth={ 'xl' } paddingX={ 0 }>
-              <Image
-                width={ '100%' }
-                aspectRatio={ 'square' }
-                objectFit={ 'contain' }
-                rounded={ 'l3' }
-                bg={ 'bg.muted' }
-                src={ product.thumbnailUrl ?? product.images?.[0] }
-                alt={ product.productName }
-              ></Image>
-            </Container>
+            <Image
+              width={ '100%' }
+              aspectRatio={ 'square' }
+              objectFit={ 'contain' }
+              rounded={ 'l3' }
+              bg={ 'bg.muted' }
+              src={ product.thumbnailUrl ?? product.images?.[0] }
+              alt={ product.productName }
+            ></Image>
           </GridItem>
 
           <GridItem
