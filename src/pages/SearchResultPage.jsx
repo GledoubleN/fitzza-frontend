@@ -141,7 +141,7 @@ export const SearchResultPage = () => {
         >
           {
             displayProducts?.map((product, index) => {
-              const uniqueKey = product.productId ?? product.id ?? index
+              const uniqueKey = product.productId ?? index
               return (
                 <GridItem key={ uniqueKey }>
                   <Box
@@ -149,7 +149,7 @@ export const SearchResultPage = () => {
                     cursor="pointer"
                     position="relative"
                     onClick={ () => navigate(
-                      `/products/${ product.productId ?? product.id }`) }
+                      `/products/${ product.productId }`) }
                   >
                     <Grid
                       templateRows="auto auto"
@@ -187,14 +187,14 @@ export const SearchResultPage = () => {
                             color="fg.muted"
                             truncate
                           >
-                            { product.brandName || product.brand }
+                            { product.brandName }
                           </Text>
                           <Text
                             textStyle="xs"
                             fontWeight="semibold"
                             truncate
                           >
-                            { product.productName || product.name }
+                            { product.productName }
                           </Text>
                           <Text
                             textStyle="2xs"
