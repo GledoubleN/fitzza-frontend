@@ -24,14 +24,14 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
         </Grid>
       ) }
     >
-      <Box mb={ 6 }>
-        <Heading mb={ 1 }>신체 정보를 알려주세요</Heading>
+      <Box mb={ 8 }>
+        <Heading mb={ 4 }>신체 정보를 알려주세요</Heading>
         <Text fontSize="sm" color="fg.muted">정확한 AI 사이즈 추천과 비교에 사용돼요</Text>
       </Box>
 
-      <VStack gap={ 5 } align="stretch">
+      <VStack gap={ 4 } align="stretch">
 
-        <VStack align="stretch" gap={ 1.5 }>
+        <VStack align="stretch">
           <Heading fontSize="sm" color="fg.subtle">키</Heading>
           <InputGroup endAddon="cm" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
@@ -47,7 +47,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
           </InputGroup>
         </VStack>
 
-        <VStack align="stretch" gap={ 1.5 }>
+        <VStack align="stretch">
           <Heading fontSize="sm" color="fg.subtle">몸무게</Heading>
           <InputGroup endAddon="kg" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
@@ -63,7 +63,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
           </InputGroup>
         </VStack>
 
-        <VStack align="stretch" gap={ 1.5 }>
+        <VStack align="stretch">
           <Heading fontSize="sm" color="fg.subtle">발사이즈</Heading>
           <InputGroup endAddon="mm" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
@@ -79,7 +79,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
           </InputGroup>
         </VStack>
 
-        <Text fontSize="xs" color="fg.subtle" pt={ 1 }>
+        <Text fontSize="xs" color="fg.subtle" pt={ 4 }>
           키(130~200cm), 몸무게(30~120kg), 발사이즈(210~320mm) 범위 내로 입력해주세요.
         </Text>
       </VStack>
