@@ -17,6 +17,7 @@ import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
+import { ProductItem } from '../components/ProductItem.jsx'
 
 export const SearchResultPage = () => {
   const navigate = useNavigate()
@@ -117,7 +118,7 @@ export const SearchResultPage = () => {
         </InputGroup>
       </Container>
 
-      <Container maxW="7xl">
+      <Container maxWidth="7xl">
         <Grid
           templateColumns={ {
             base: 'repeat(3, 1fr)',
@@ -129,68 +130,7 @@ export const SearchResultPage = () => {
             displayProducts?.map((product, index) => {
               const uniqueKey = product.productId ?? index
               return (
-                <GridItem
-                  key={ uniqueKey }
-                  overflow="hidden"
-                  cursor="pointer"
-                  position="relative"
-                  onClick={ () => navigate(
-                    `/products/${ product.productId }`) }
-                >
-                  <Grid
-                    templateRows="auto auto"
-                    templateAreas={ `"image" "content"` }
-                    gap={ 4 }
-                  >
-                    <GridItem gridArea="image" position="relative">
-                      <IconButton
-                        position="absolute"
-                        top={ 0 }
-                        right={ 0 }
-                        aria-label="찜하기"
-                        rounded="full"
-                        variant="ghost"
-                        size="md"
-                        zIndex={ 2 }
-                        onClick={ (event) => event.stopPropagation() }
-                      >
-                        <LuHeart/>
-                      </IconButton>
-                      <Image
-                        src={ product.thumbnailUrl }
-                        width="100%"
-                        objectFit="contain"
-                      />
-                    </GridItem>
-
-                    <Stack
-                      gridArea="content"
-                      display="flex"
-                      flexDirection="column"
-                      minWidth={ 0 }
-                    >
-                      <Text
-                        textStyle="xs"
-                        color="fg.muted"
-                        truncate
-                      >
-                        { product.brandName }
-                      </Text>
-                      <Heading
-                        size={ { base: 'sm', md: 'lg' } }
-                        truncate
-                      >
-                        { product.productName }
-                      </Heading>
-                      <Text
-                        textStyle={ { base: 'xs', md: 'sm' } }
-                        fontWeight="bold"
-                      >
-                        { product.price?.toLocaleString() } 원
-                      </Text>
-                    </Stack>
-                  </Grid>
-                </GridItem>
+                <ProductItem product={ product }></ProductItem>
               )
             })
           }

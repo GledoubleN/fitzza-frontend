@@ -23,6 +23,7 @@ import { Footer } from '../components/Footer.jsx'
 import { useEffect, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
+import { ProductItem } from '../components/ProductItem.jsx'
 
 export const MainPage = () => {
   const navigate = useNavigate()
@@ -95,27 +96,7 @@ export const MainPage = () => {
         <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ 4 }>
           {
             products.map((product, index) => (
-              <Stack gap={ 4 }>
-                <Box position={ 'relative' }>
-                  <Image
-                    src={ exampleProductImage }
-                    onClick={ () => {navigate('products/1')} }
-                  ></Image>
-                  <IconButton
-                    position={ 'absolute' }
-                    top={ 0 }
-                    right={ 0 }
-                    variant={ 'ghost' }
-                    rounded={ 'full' }
-                  >
-                    <LuHeart></LuHeart>
-                  </IconButton>
-                </Box>
-                <Stack gap={ 0 }>
-                  <Text>{ product.brand }</Text>
-                  <Text>{ product.price.toLocaleString() }원</Text>
-                </Stack>
-              </Stack>
+              <ProductItem key={ index } product={ product }></ProductItem>
             ))
           }
         </Grid>
