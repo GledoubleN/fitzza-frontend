@@ -10,7 +10,7 @@ import {
   Text,
   Box,
   Button,
-  Spinner,
+  Spinner, Stack,
 } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
@@ -101,21 +101,8 @@ export const SearchResultPage = () => {
   }, [isLoading, hasMore, page, categoryCode])
 
   return (
-    <Box position="relative" minH="100vh" pt={ 24 } pb={ 28 } bg="bg">
-      <Box
-        position="fixed"
-        top={ 0 }
-        left={ 0 }
-        right={ 0 }
-        zIndex={ 10 }
-        bg="bg"
-        px={ 5 }
-        py={ 4 }
-      >
-        <Container maxW="7xl" mx="auto" px={ 0 }>
-          <AppBar/>
-        </Container>
-      </Box>
+    <Stack gap={ 4 } position="relative" minH="100vh" paddingY={ 4 } bg="bg">
+      <AppBar/>
 
       <Container maxW="3xl" mx="auto" px={ 5 } mb={ 6 }>
         <InputGroup startElement={ <Box as={ LuSearch } boxSize={ 5 }
@@ -234,6 +221,6 @@ export const SearchResultPage = () => {
            bg="bg">
         <TabBar/>
       </Box>
-    </Box>
+    </Stack>
   )
 }
