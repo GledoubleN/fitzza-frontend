@@ -39,16 +39,17 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
         </Grid>
       ) }
     >
-      <Box mb={ 8 }>
-        <Heading mb={ 4 }>
+      <Box mb={ 4 }>
+        <Heading mb={ 1 }>
           체형과 선호하는 스타일을 골라주세요
         </Heading>
-        <Text>고객님께 딱 맞는 핏과 스타일을 추천해드려요</Text>
+        <Text fontSize="sm" color="fg.muted">고객님께 딱 맞는 핏과 스타일을 추천해드려요</Text>
       </Box>
-      <VStack gap={ 8 } align="stretch">
-        <VStack align="stretch" gap={ 4 }>
+
+      <VStack gap={ 6 } align="stretch">
+        <VStack align="stretch" gap={ 3 }>
           <Heading fontSize="md">체형</Heading>
-          <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 4 }>
+          <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 3 }>
             { bodyTypeOptions.map((item) => {
               const isSelected = formData.bodyType === item.value
               return (
@@ -65,11 +66,11 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
           </Grid>
         </VStack>
 
-        <VStack align="stretch" gap={ 4 }>
+        <VStack align="stretch" gap={ 3 }>
           <Heading fontSize="md">
             선호 핏
           </Heading>
-          <Grid templateColumns={ { base: '1fr', sm: 'repeat(3, minmax(0, 1fr))' } } gap={ 4 }>
+          <Grid templateColumns={ { base: '1fr', sm: 'repeat(3, minmax(0, 1fr))' } } gap={ 3 }>
             { fitOptions.map((item) => {
               const isSelected = formData.preferredFit === item.value
               return (
@@ -86,11 +87,11 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
           </Grid>
         </VStack>
 
-        <VStack align="stretch" gap={ 4 }>
+        <VStack align="stretch" gap={ 3 }>
           <Heading fontSize="md">
             선호 스타일
           </Heading>
-          <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 4 }>
+          <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 3 }>
             { styleOptions.map((item) => {
               const isSelected = formData.style === item.value
               return (
