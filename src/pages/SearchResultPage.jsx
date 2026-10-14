@@ -177,13 +177,13 @@ export const SearchResultPage = () => {
                         { product.brandName }
                       </Text>
                       <Heading
-                        size={ 'lg' }
+                        size={ { base: 'sm', md: 'lg' } }
                         truncate
                       >
                         { product.productName }
                       </Heading>
                       <Text
-                        textStyle="sm"
+                        textStyle={ { base: 'xs', md: 'sm' } }
                         fontWeight="bold"
                       >
                         { product.price?.toLocaleString() } 원
