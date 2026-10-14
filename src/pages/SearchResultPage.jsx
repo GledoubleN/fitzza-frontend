@@ -15,7 +15,6 @@ import {
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
-import exampleProductImage from '../assets/hero.png'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
 
@@ -165,8 +164,10 @@ export const SearchResultPage = () => {
                           <LuHeart/>
                         </IconButton>
                         <Image
-                          src={ product.thumbnailUrl || exampleProductImage }
-                          w="100%" h="28" objectFit="cover"/>
+                          src={ product.thumbnailUrl }
+                          width="100%"
+                          objectFit="contain"
+                        />
                       </GridItem>
 
                       <GridItem gridArea="content">
