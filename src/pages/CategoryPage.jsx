@@ -5,34 +5,25 @@ import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { api } from '../api/axios.js'
-import { HttpStatusCode } from 'axios'
 
 export const CategoryPage = () => {
-  // TODO 2026-10-12
-  // 카테고리를 백엔드와 통신해서 받아오게 수정되어 작동하지 않습니다.
   const navigate = useNavigate()
-  const [selected, setSelected] = useState(categories[0])
-  const sections = selected.sections ?? [selected]
   const [categories, setCategories] = useState([])
+  const [selectedCode, setSelectedCode] = useState(null)
+  const selected = categories.find((category) => category.code === selectedCode)
+    ?? categories[0]
+  // 중분류에 소분류가 있으면 중분류별로 묶고, 없으면 중분류를 바로 나열합니다.
+  const sections = selected?.children.some((child) => child.children.length)
+    ? selected.children
+    : selected ? [selected] : []
 
-  // 임시용 코드, 추후 BE 계약 완료시 수정 필요, TO-DO-NEXT
-  const search = (query) => navigate(
-    `/search?${ new URLSearchParams({ q: query }) }`)
-
-  async function loadCategories () {
-    api.get('/categories', {})
-    .then((response) => {
-      if (response.status !== HttpStatusCode.Ok) {
-        return
-      }
-
-      setCategories(response.data)
-    })
-    .catch(error => console.log(error))
-  }
+  const search = (code) => navigate(
+    `/search?${ new URLSearchParams({ category: code }) }`)
 
   useEffect(() => {
-    loadCategories()
+    api.get('/categories')
+    .then((response) => setCategories(response.data))
+    .catch((error) => console.log(error))
   }, [])
 
   return (
@@ -56,12 +47,12 @@ export const CategoryPage = () => {
                   {
                     categories.map((category) => (
                       <Button
-                        key={ category.name }
-                        variant={ selected.name === category.name
+                        key={ category.code }
+                        variant={ selected?.code === category.code
                           ? 'subtle'
                           : 'ghost' }
                         justifyContent={ 'flex-start' }
-                        onClick={ () => setSelected(category) }
+                        onClick={ () => setSelectedCode(category.code) }
                       >
                         { category.name }
                       </Button>
@@ -72,12 +63,12 @@ export const CategoryPage = () => {
               <GridItem overflowY={ 'auto' }>
                 <Stack gap={ '4' }>
                   { sections.map((section) => (
-                    <Stack key={ section.name } gap={ 4 }>
+                    <Stack key={ section.code } gap={ '4' }>
                       <Button
                         variant={ 'ghost' }
                         width={ 'full' }
                         justifyContent={ 'space-between' }
-                        onClick={ () => search(section.name) }
+                        onClick={ () => search(section.code) }
                       >
                         <Heading size={ 'md' }>{ section.name }</Heading>
                         <Icon><LuChevronRight></LuChevronRight></Icon>
@@ -91,15 +82,14 @@ export const CategoryPage = () => {
                         gap={ '4' }
                       >
                         {
-                          section.items.map((item) => (
+                          section.children.map((item) => (
                             <Button
-                              key={ item }
+                              key={ item.code }
                               variant={ 'ghost' }
                               justifyContent={ 'space-between' }
-                              onClick={ () => search(
-                                `${ section.name } ${ item }`) }
+                              onClick={ () => search(item.code) }
                             >
-                              <Text truncate>{ item }</Text>
+                              <Text truncate>{ item.name }</Text>
                               <Icon><LuChevronRight></LuChevronRight></Icon>
                             </Button>
                           ))
