@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text, Box, Button, Spinner, Flex, NativeSelect } from '@chakra-ui/react'
+import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text, Box, Button, Spinner } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
@@ -9,11 +9,8 @@ import { api } from '../api/axios.js'
 
 export const SearchResultPage = () => {
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
-
+  const [searchParams] = useSearchParams()
   const categoryCode = searchParams.get('category')
-  // 💡 URL 쿼리스트링에서 정렬 조건을 읽어와서 페이지 이동/새로고침 시에도 조건 유지
-  const currentSort = searchParams.get('sort') || ''
 
   const [displayProducts, setDisplayProducts] = useState([])
   const [page, setPage] = useState(0)
@@ -23,16 +20,15 @@ export const SearchResultPage = () => {
 
   const PAGE_SIZE = 10
 
-  const fetchProducts = async (targetPage = 0, sortKey = currentSort) => {
+  const fetchProducts = async (targetPage = 0) => {
+    if (isLoading) return { content: [], hasNext: false }
     setIsLoading(true)
     setError(null)
     try {
       const params = {
         page: targetPage,
         size: PAGE_SIZE,
-      }
-      if (sortKey) {
-        params.sort = sortKey
+        sort: 'LATEST'
       }
       if (categoryCode) {
         params.category = categoryCode
@@ -59,61 +55,37 @@ export const SearchResultPage = () => {
     }
   }
 
-  // categoryCode나 URL의 sort가 바뀔 때 초기 데이터 로드 및 스크롤바 확보
   useEffect(() => {
-    let isMounted = true
-
     const initLoad = async () => {
       setDisplayProducts([])
-      const result = await fetchProducts(0, currentSort)
-      if (!isMounted) return
+      const result = await fetchProducts(0)
 
       let currentPage = 0
       let currentHasNext = result.hasNext
 
       while (currentHasNext && document.documentElement.scrollHeight <= window.innerHeight) {
         currentPage += 1
-        const nextResult = await fetchProducts(currentPage, currentSort)
-        if (!isMounted) return
+        const nextResult = await fetchProducts(currentPage)
         currentHasNext = nextResult.hasNext
         if (nextResult.content.length === 0) break
       }
     }
 
     initLoad()
+  }, [categoryCode])
 
-    return () => {
-      isMounted = false
-    }
-  }, [categoryCode, currentSort])
-
-  // 무한 스크롤 이벤트 리스너
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200) {
         if (!isLoading && hasMore) {
-          fetchProducts(page + 1, currentSort)
+          fetchProducts(page + 1)
         }
       }
     }
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isLoading, hasMore, page, categoryCode, currentSort])
-
-  // 💡 정렬 조건 변경 시 URL 쿼리스트링을 업데이트하여 상태와 페이지 이동 시 유지를 보장
-  const handleSortChange = (e) => {
-    const newSort = e.target.value
-    const newParams = new URLSearchParams(searchParams)
-
-    if (newSort) {
-      newParams.set('sort', newSort)
-    } else {
-      newParams.delete('sort')
-    }
-
-    setSearchParams(newParams)
-  }
+  }, [isLoading, hasMore, page, categoryCode])
 
   return (
     <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
@@ -123,7 +95,7 @@ export const SearchResultPage = () => {
         </Container>
       </Box>
 
-      <Container maxW="3xl" mx="auto" px={5} mb={4}>
+      <Container maxW="3xl" mx="auto" px={5} mb={6}>
         <InputGroup startElement={<Box as={LuSearch} boxSize={5} color="fg.muted" />}>
           <Input
             placeholder="검색어를 입력해주세요"
@@ -134,24 +106,6 @@ export const SearchResultPage = () => {
             defaultValue={categoryCode ? `카테고리 코드: ${categoryCode}` : ''}
           />
         </InputGroup>
-      </Container>
-
-      {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */}
-      <Container maxW="7xl" mx="auto" px={5} mb={4}>
-        <Flex justify="flex-end">
-          <NativeSelect.Root size="sm" width="130px">
-            <NativeSelect.Field
-              value={currentSort}
-              onChange={handleSortChange}
-            >
-              <option value="">정렬</option>
-              <option value="NAME">글자순</option>
-              <option value="PRICE_ASC">낮은 가격순</option>
-              <option value="PRICE_DESC">높은 가격순</option>
-            </NativeSelect.Field>
-            <NativeSelect.Indicator />
-          </NativeSelect.Root>
-        </Flex>
       </Container>
 
       <Container maxW="7xl" mx="auto" px={5}>
@@ -220,7 +174,7 @@ export const SearchResultPage = () => {
         {error && (
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" py={10} gap={3}>
             <Text color="fg.muted" textStyle="sm">{error}</Text>
-            <Button size="xs" variant="outline" onClick={() => fetchProducts(page, currentSort)}>다시 시도</Button>
+            <Button size="xs" variant="outline" onClick={() => fetchProducts(page)}>다시 시도</Button>
           </Box>
         )}
 

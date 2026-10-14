@@ -1,5 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Container, Grid, GridItem, Heading, Icon, SimpleGrid, Stack, Text, Button } from '@chakra-ui/react'
+import {
+  Container,
+  Grid,
+  GridItem,
+  Heading,
+  Icon,
+  SimpleGrid,
+  Stack,
+  Text,
+  Button,
+} from '@chakra-ui/react'
 import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../components/AppBar.jsx'
@@ -15,10 +25,17 @@ export const CategoryPage = () => {
   async function loadCategories () {
     try {
       const response = await api.get('/categories')
-      if (response.status === HttpStatusCode.Ok && response.data?.length > 0) {
-        setCategories(response.data)
-        setSelected(response.data[0])
+      if (response.status !== HttpStatusCode.Ok) {
+        return
       }
+
+      if (response.data?.length === 0) {
+        return
+      }
+
+      setCategories(response.data)
+      setSelected(response.data[0])
+
     } catch (error) {
       console.log('카테고리 불러오기 실패:', error)
     }
@@ -31,71 +48,71 @@ export const CategoryPage = () => {
   const childrenItems = selected ? (selected.children ?? []) : []
 
   const searchByCategory = (categoryCode) => {
-    navigate(`/search?${new URLSearchParams({ category: categoryCode })}`)
+    navigate(`/search?${ new URLSearchParams({ category: categoryCode }) }`)
   }
 
   return (
-    <>
-      <Stack
-        paddingY={ '4' }
-        height={ '100vh' }
-        gap={ '4' }
-      >
-        <AppBar></AppBar>
-        <Container maxWidth={ '3xl' } flex={ '1' } minHeight={ '0' }>
-          <Stack height={ 'full' } gap={ '4' }>
-            <Heading size={ 'xl' }>카테고리</Heading>
-            <Grid
-              templateColumns={ '1fr 4fr' }
-              gap={ '4' }
-              minHeight={ '0' }
-            >
-              <GridItem overflowY={ 'auto' }>
-                <Stack gap={ '4' }>
+    <Stack
+      paddingY={ '4' }
+      height={ '100vh' }
+      gap={ '4' }
+    >
+      <AppBar></AppBar>
+
+      <Container maxWidth={ '3xl' } flex={ '1' } minHeight={ '0' }>
+        <Stack height={ 'full' } gap={ '4' }>
+          <Heading size={ 'xl' }>카테고리</Heading>
+          <Grid
+            templateColumns={ '1fr 4fr' }
+            gap={ '4' }
+            minHeight={ '0' }
+          >
+            <GridItem overflowY={ 'auto' }>
+              <Stack gap={ '4' }>
+                {
+                  categories.map((category) => (
+                    <Button
+                      key={ category.code }
+                      variant={ selected?.code === category.code
+                        ? 'subtle'
+                        : 'ghost' }
+                      justifyContent={ 'flex-start' }
+                      onClick={ () => setSelected(category) }
+                    >
+                      { category.name }
+                    </Button>
+                  ))
+                }
+              </Stack>
+            </GridItem>
+
+            <GridItem overflowY={ 'auto' }>
+              <Stack gap={ '4' }>
+                <SimpleGrid
+                  templateColumns={ '1fr 1fr' }
+                  gap={ '3' }
+                >
                   {
-                    categories.map((category) => (
+                    childrenItems.map((child) => (
                       <Button
-                        key={ category.code }
-                        variant={ selected?.code === category.code
-                          ? 'subtle'
-                          : 'ghost' }
-                        justifyContent={ 'flex-start' }
-                        onClick={ () => setSelected(category) }
+                        key={ child.code }
+                        variant={ 'ghost' }
+                        justifyContent={ 'space-between' }
+                        onClick={ () => searchByCategory(child.code) }
                       >
-                        { category.name }
+                        <Text truncate>{ child.name }</Text>
+                        <Icon><LuChevronRight/></Icon>
                       </Button>
                     ))
                   }
-                </Stack>
-              </GridItem>
+                </SimpleGrid>
+              </Stack>
+            </GridItem>
+          </Grid>
+        </Stack>
+      </Container>
 
-              <GridItem overflowY={ 'auto' }>
-                <Stack gap={ '4' }>
-                  <SimpleGrid
-                    templateColumns={ '1fr 1fr' }
-                    gap={ '3' }
-                  >
-                    {
-                      childrenItems.map((child) => (
-                        <Button
-                          key={ child.code }
-                          variant={ 'ghost' }
-                          justifyContent={ 'space-between' }
-                          onClick={ () => searchByCategory(child.code) }
-                        >
-                          <Text truncate>{ child.name }</Text>
-                          <Icon><LuChevronRight /></Icon>
-                        </Button>
-                      ))
-                    }
-                  </SimpleGrid>
-                </Stack>
-              </GridItem>
-            </Grid>
-          </Stack>
-        </Container>
-      </Stack>
       <TabBar/>
-    </>
+    </Stack>
   )
 }
