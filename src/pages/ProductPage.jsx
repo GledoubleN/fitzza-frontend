@@ -1,194 +1,218 @@
+import { useEffect, useState } from 'react'
 import {
-  Container,
-  Stack,
-  Card,
-  Image,
-  Button,
-  Tabs,
   Box,
-  Heading,
-  Text,
+  Card,
+  Container,
   Flex,
   Grid,
   GridItem,
-  useTabs, IconButton,
-  Avatar,
-  Select, createListCollection, Portal,
+  Heading,
+  IconButton,
+  Image,
+  Spinner,
+  Stack,
+  Tabs,
+  Text,
 } from '@chakra-ui/react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { LuArrowUp, LuHeart } from 'react-icons/lu'
+import { api } from '../api/axios.js'
 import { AppBar } from '../components/AppBar.jsx'
-import exampleProductImage from '/src/assets/hero.png'
-import { useParams } from 'react-router-dom'
-import { LuHeart } from 'react-icons/lu'
-import { TabBar } from '../components/TabBar.jsx'
+import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
+import { Toaster, toaster } from '../components/ui/toaster.jsx'
+import { ProductOptionSelector } from './product/ProductOptionSelector.jsx'
+import { ProductReviewTab } from './product/ProductReviewTab.jsx'
+import { ProductSizeTab } from './product/ProductSizeTab.jsx'
+import { ProductTryOnTab } from './product/ProductTryOnTab.jsx'
+
+function getEstimatedArrivalDate () {
+  const date = new Date()
+  const ESTIMATED_SHIPPING = 3
+  date.setDate(date.getDate() + ESTIMATED_SHIPPING)
+
+  return (
+    date.toLocaleDateString('ko-KR', {
+      month: '2-digit',
+      day: '2-digit',
+      weekday: 'short',
+    }).replace(/\. \(/, ' (')
+  )
+}
 
 export const ProductPage = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
+  const [product, setProduct] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isWished, setIsWished] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
-  const tabs = useTabs({
-    defaultValue: 'information',
-  })
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 300)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
-  const colors = createListCollection({
-    items: [
-      { label: '블랙', value: 'black' },
-      { label: '그레이', value: 'gray' },
-      { label: '네이비', value: 'navy' },
-    ],
-  })
+  useEffect(() => {
+    let ignore = false
+    api.get(`/products/${ id }`)
+      .then((response) => {
+        if (ignore) return
+        setProduct(response.data)
+        setIsWished(!!response.data.wished)
+      })
+      .catch(() => !ignore && setProduct(null))
+      .finally(() => !ignore && setIsLoading(false))
 
-  const sizes = createListCollection({
-    items: [
-      { label: 'S', value: 'small' },
-      { label: 'M', value: 'medium' },
-      { label: 'L', value: 'large' },
-      { label: 'XL', value: 'extra-large' },
-    ],
-  })
+    return () => { ignore = true }
+  }, [id])
 
-  const getProductSelector = () => {
+  const toggleWish = async () => {
+    if (!localStorage.getItem('accessToken')) {
+      navigate('/signin')
+      return
+    }
+
+    const next = !isWished
+    setIsWished(next)
+    try {
+      if (next) {
+        await api.post('/wishlists', { itemId: product.productId })
+      } else {
+        await api.delete('/wishlists', { params: { itemId: product.productId } })
+      }
+    } catch {
+      setIsWished(!next)
+      toaster.create({ type: 'error', title: '찜을 변경하지 못했어요.' })
+    }
+  }
+
+  if (isLoading || !product) {
     return (
-      <Stack gap={ 4 }>
-        <Grid templateColumns={ 'auto 1fr' } gap={ 4 }>
-          <Avatar.Root size={ 'xs' }></Avatar.Root>
-          <Text alignContent={ 'center' }>고스트리퍼블릭</Text>
-        </Grid>
-        <Stack direction={ 'row' }>
-          <Heading size={ { base: 'md', md: 'xl' } } alignContent={ 'center' }>
-            헨리넥 세미크롭 맨투맨 3Color GMT-165
-          </Heading>
-          <IconButton variant={ 'ghost' } rounded={ 'full' }>
-            <LuHeart></LuHeart>
-          </IconButton>
-        </Stack>
-        <Select.Root collection={ colors } width="100%">
-          <Select.HiddenSelect/>
-          <Select.Control>
-            <Select.Trigger>
-              <Select.ValueText placeholder="컬러"/>
-            </Select.Trigger>
-            <Select.IndicatorGroup>
-              <Select.Indicator/>
-            </Select.IndicatorGroup>
-          </Select.Control>
-          <Portal>
-            <Select.Positioner>
-              <Select.Content>
-                {
-                  colors.items.map((color) => (
-                    <Select.Item item={ color } key={ color.value }>
-                      { color.label }
-                      <Select.ItemIndicator/>
-                    </Select.Item>
-                  ))
-                }
-              </Select.Content>
-            </Select.Positioner>
-          </Portal>
-        </Select.Root>
-        <Select.Root collection={ sizes } width="100%">
-          <Select.HiddenSelect/>
-          <Select.Control>
-            <Select.Trigger>
-              <Select.ValueText placeholder="사이즈"/>
-            </Select.Trigger>
-            <Select.IndicatorGroup>
-              <Select.Indicator/>
-            </Select.IndicatorGroup>
-          </Select.Control>
-          <Portal>
-            <Select.Positioner>
-              <Select.Content>
-                {
-                  sizes.items.map((size) => (
-                    <Select.Item item={ size } key={ size.value }>
-                      { size.label }
-                      <Select.ItemIndicator/>
-                    </Select.Item>
-                  ))
-                }
-              </Select.Content>
-            </Select.Positioner>
-          </Portal>
-        </Select.Root>
-        <Button width={ '100%' }>장바구니</Button>
+      <Stack height={ '100%' } paddingY={ 4 } gap={ 4 }>
+        <AppBar></AppBar>
+        <Container maxWidth={ '5xl' } paddingY={ 20 } centerContent>
+          { isLoading ? <Spinner/> : <Text color={ 'fg.muted' }>상품을 찾을 수 없어요.</Text> }
+        </Container>
       </Stack>
     )
   }
 
-  function getEstimatedArrivalDate () {
-    const date = new Date()
-    const ESTIMATED_SHIPPING = 3
-    date.setDate(date.getDate() + ESTIMATED_SHIPPING)
-
-    return (
-      date.toLocaleDateString('ko-KR', {
-        month: '2-digit',
-        day: '2-digit',
-        weekday: 'short',
-      }).replace(/\. \(/, ' (')
-    );
-  }
-
   return (
-    <Stack height={ '100%' } direction={ 'column' } paddingY={ '4' } gap={ '4' }>
+    <Stack minHeight={ '100%' } direction={ 'column' } paddingY={ 4 } gap={ 4 }>
       <AppBar></AppBar>
 
-      <Container maxWidth={ '7xl' }>
-        <Grid templateColumns={ { base: '1fr', sm: '2fr 1fr' } } gap={ 4 }>
-          <Stack gap={ 4 }>
-            <Container maxWidth={ 'xl' }>
-              <Image width={ '100%' } src={ exampleProductImage }></Image>
-            </Container>
-
-            <Box display={ { sm: 'none' } }>
-              { getProductSelector() }
-            </Box>
-
-            <Card.Root>
-              <Card.Body>
-                <Stack>
-                  <Text fontSize={ 'sm' }>{ getEstimatedArrivalDate() } 도착 예정 · 도착 확률 99%</Text>
-                  <Text fontSize={ 'sm' }>결제 3일 이내 발송 예정 · 우체국택배</Text>
-                </Stack>
-              </Card.Body>
-            </Card.Root>
-
-            <Tabs.RootProvider value={ tabs }>
-              <Tabs.List>
-                <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'information' }>정보</Tabs.Trigger>
-                <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'size' }>사이즈</Tabs.Trigger>
-                <Tabs.Trigger flex="1" justifyContent={ 'center' } value={ 'review' }>후기</Tabs.Trigger>
-              </Tabs.List>
-              <Tabs.Content value="information">
-                <Box width={ '100%' } height={ '100vh' }>
-                  상품정보입니다.
-                </Box>
-              </Tabs.Content>
-              <Tabs.Content value="size">
-                <Box width={ '100%' } height={ '100vh' }>
-                  사이즈입니다.
-                </Box>
-              </Tabs.Content>
-              <Tabs.Content value="review">
-                <Stack width={ '100%' } height={ '100vh' }>
-                  후기입니다.
-                </Stack>
-              </Tabs.Content>
-            </Tabs.RootProvider>
-          </Stack>
+      <Container maxWidth={ '5xl' } flex={ '1' }>
+        <Grid templateColumns={ { base: '1fr', md: '2fr 1fr' } } gap={ 4 }>
+          <GridItem minWidth={ 0 }>
+            <Image
+              width={ '100%' }
+              aspectRatio={ 'square' }
+              objectFit={ 'contain' }
+              rounded={ 'l3' }
+              bg={ 'bg.muted' }
+              src={ product.thumbnailUrl ?? product.images?.[0] }
+              alt={ product.productName }
+            ></Image>
+          </GridItem>
 
           <GridItem
-            display={ { base: 'none', sm: 'block' } }
-            position={ 'sticky' }
+            gridColumn={ { md: 2 } }
+            gridRow={ { md: '1 / span 2' } }
+            position={ { md: 'sticky' } }
             top={ 4 }
             alignSelf="start"
           >
-            { getProductSelector() }
+            <Stack gap={ 4 }>
+              <Stack gap={ 2 }>
+                <Text textStyle={ 'sm' } color={ 'fg.muted' }>{ product.brandName }</Text>
+                <Flex justify={ 'space-between' } align={ 'start' } gap={ 2 }>
+                  <Heading size={ { base: 'md', md: 'xl' } }>{ product.productName }</Heading>
+                  <IconButton
+                    variant={ 'ghost' }
+                    rounded={ 'full' }
+                    aria-label={ '찜' }
+                    aria-pressed={ isWished }
+                    color={ isWished ? 'primary.solid' : undefined }
+                    onClick={ toggleWish }
+                  >
+                    <LuHeart fill={ isWished ? 'currentColor' : 'none' }/>
+                  </IconButton>
+                </Flex>
+                <Text textStyle={ 'xl' } fontWeight={ 'bold' }>
+                  { product.price != null ? `${ product.price.toLocaleString() }원` : '정보가 없습니다.' }
+                </Text>
+              </Stack>
+              <ProductOptionSelector product={ product }/>
+            </Stack>
+          </GridItem>
+
+          <GridItem minWidth={ 0 } gridColumn={ { md: 1 } }>
+            <Stack gap={ 4 }>
+              <Card.Root>
+                <Card.Body>
+                  <Stack>
+                    <Text fontSize={ 'sm' }>{ getEstimatedArrivalDate() } 도착 예정 · 도착 확률 99%</Text>
+                    <Text fontSize={ 'sm' }>결제 3일 이내 발송 예정 · 우체국택배</Text>
+                  </Stack>
+                </Card.Body>
+              </Card.Root>
+
+              <Tabs.Root defaultValue={ 'information' } fitted lazyMount>
+                <Tabs.List>
+                  <Tabs.Trigger value={ 'information' }>정보</Tabs.Trigger>
+                  <Tabs.Trigger value={ 'size' }>사이즈</Tabs.Trigger>
+                  <Tabs.Trigger value={ 'review' }>후기</Tabs.Trigger>
+                  <Tabs.Trigger value={ 'try-on' }>입어보기</Tabs.Trigger>
+                </Tabs.List>
+                <Tabs.Content value={ 'information' }>
+                  <Stack gap={ 4 } paddingY={ 4 }>
+                    <Text whiteSpace={ 'pre-wrap' }>{ product.description || '정보가 없습니다.' }</Text>
+                    { product.images?.map((image) => (
+                      <Image key={ image } width={ '100%' } src={ image } alt={ product.productName }></Image>
+                    )) }
+                  </Stack>
+                </Tabs.Content>
+                <Tabs.Content value={ 'size' }>
+                  <ProductSizeTab product={ product }/>
+                </Tabs.Content>
+                <Tabs.Content value={ 'review' }>
+                  <ProductReviewTab productId={ product.productId }/>
+                </Tabs.Content>
+                <Tabs.Content value={ 'try-on' }>
+                  <ProductTryOnTab product={ product }/>
+                </Tabs.Content>
+              </Tabs.Root>
+
+              {/* 넓은 화면에서는 맨 위로 버튼을 상세 정보 열 안쪽 아래에 붙인다. */ }
+              { isScrolled && (
+                <Flex
+                  display={ { base: 'none', md: 'flex' } }
+                  position={ 'sticky' }
+                  bottom={ 8 }
+                  height={ 0 }
+                  justify={ 'flex-end' }
+                  align={ 'flex-end' }
+                >
+                  <IconButton
+                    rounded={ 'full' }
+                    aria-label={ '맨 위로' }
+                    onClick={ () => window.scrollTo({ top: 0, behavior: 'smooth' }) }
+                  >
+                    <LuArrowUp/>
+                  </IconButton>
+                </Flex>
+              ) }
+            </Stack>
           </GridItem>
         </Grid>
       </Container>
 
-      <TabBar></TabBar>
+      {/* 이 화면에는 하단 탭 바가 없어 기본값보다 아래에 둔다. */ }
+      <Box display={ { md: 'none' } }>
+        <ScrollToTopButton bottom={ '8' }/>
+      </Box>
+      <Toaster/>
     </Stack>
   )
 }
