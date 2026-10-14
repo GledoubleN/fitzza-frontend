@@ -8,7 +8,7 @@ import { toaster } from '../../components/ui/toaster.jsx'
 // 옵션 구조는 명세에 열려 있어 { optionId, color, size, available }로 가정한다.
 const getOptionLabel = (option) => [option.color, option.size].filter(Boolean).join(' / ')
 
-const OptionSelect = ({ label, collection, ...props }) => (
+export const OptionSelect = ({ label, collection, ...props }) => (
   <Select.Root collection={ collection } width={ '100%' } { ...props }>
     <Select.HiddenSelect/>
     <Select.Control>

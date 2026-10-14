@@ -23,6 +23,7 @@ import { AppBar } from '../components/AppBar.jsx'
 import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
 import { ProductOptionSelector } from './product/ProductOptionSelector.jsx'
+import { ProductTryOnTab } from './product/ProductTryOnTab.jsx'
 import { ProductReviewTab } from './product/ProductReviewTab.jsx'
 import { ProductSizeTab } from './product/ProductSizeTab.jsx'
 
@@ -162,6 +163,7 @@ export const ProductPage = () => {
               <Card.Root>
                 <Card.Body>
                   <Stack>
+                  <Tabs.Trigger value={ 'try-on' }>입어보기</Tabs.Trigger>
                     <Text fontSize={ 'sm' }>{ getEstimatedArrivalDate() } 도착 예정 · 도착 확률 99%</Text>
                     <Text fontSize={ 'sm' }>결제 3일 이내 발송 예정 · 우체국택배</Text>
                   </Stack>
@@ -177,6 +179,9 @@ export const ProductPage = () => {
                 <Tabs.Content value={ 'information' }>
                   <Stack gap={ 4 } paddingY={ 4 }>
                     <Text whiteSpace={ 'pre-wrap' }>{ product.description || '정보가 없습니다.' }</Text>
+                <Tabs.Content value={ 'try-on' }>
+                  <ProductTryOnTab product={ product }/>
+                </Tabs.Content>
                     { product.images?.map((image) => (
                       <Image key={ image } width={ '100%' } src={ image } alt={ product.productName }></Image>
                     )) }
