@@ -41,7 +41,7 @@ export const SignInPage = () => {
       }
       moveUrl('/')
     } catch (err) {
-      console.warn("백엔드 통신 실패 - 목업 모드로 로그인을 진행합니다.", err)
+      console.warn("백엔드 통신 실패\n목업 모드로 로그인을 진행합니다.", err)
       localStorage.setItem('accessToken', 'mock-access-token-12345')
       moveUrl('/')
     } finally {
@@ -108,6 +108,16 @@ export const SignInPage = () => {
             width="full"
           >
             로그인
+          </Button>
+
+          <Button
+            variant="plain"
+            size="sm"
+            width="full"
+            onClick={() => moveUrl('/signup')} // 회원가입 라우트 경로에 맞게 수정하세요
+            color="fg.muted"
+          >
+            계정이 없으신가요?
           </Button>
 
         </Stack>

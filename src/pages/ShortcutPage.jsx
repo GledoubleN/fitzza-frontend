@@ -7,7 +7,7 @@ const ROUTES = [
   { path: "/shopping-cart", label: "장바구니" },
   { path: "/signin", label: "로그인" },
   { path: "/signup", label: "회원가입" },
-  { path: "/try-on", label: "가상피팅" },
+  { path: "/vton", label: "가상피팅" },
   { path: "/search", label: "검색 결과" },
   { path: "/products/1", label: "상품 상세 (id:1)" },
   { path: "/checkout", label: "결제" },
