@@ -21,7 +21,7 @@ const ROUTES = [
   { path: "/category", label: "카테고리" },
 ];
 
-export const DevNavi = () => {
+export const ShortcutPage = () => {
   const moveUrl = useNavigate();
 
   return (
