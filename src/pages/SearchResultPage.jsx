@@ -165,6 +165,7 @@ export const SearchResultPage = () => {
                           variant="ghost"
                           size="md"
                           zIndex={ 2 }
+                          onClick={ (event) => event.stopPropagation() }
                         >
                           <LuHeart/>
                         </IconButton>
