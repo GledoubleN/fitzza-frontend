@@ -15,10 +15,17 @@ export const CategoryPage = () => {
   async function loadCategories () {
     try {
       const response = await api.get('/categories')
-      if (response.status === HttpStatusCode.Ok && response.data?.length > 0) {
-        setCategories(response.data)
-        setSelected(response.data[0])
+      if (response.status !== HttpStatusCode.Ok) {
+        return
       }
+
+      if (response.data?.length === 0) {
+        return
+      }
+
+      setCategories(response.data)
+      setSelected(response.data[0])
+
     } catch (error) {
       console.log('카테고리 불러오기 실패:', error)
     }
