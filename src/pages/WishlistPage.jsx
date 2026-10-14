@@ -11,7 +11,7 @@ import {
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import exampleProductImage from '/src/assets/hero.png'
-import { LuX } from 'react-icons/lu'
+import { LuHeart, LuX } from 'react-icons/lu'
 
 // 기존에 패딩 없이 했을 경우, 5자리숫자부터 표기가 안되어 Padding을 2로 임의 지정했습니다.
 // 현재 6자리숫자(십만단위)까지 문제없이 표기 되며, fontSize를 지정해서 sm으로 만들경우 8자리까지 표현 가능합니다.
@@ -35,13 +35,14 @@ export const WishlistPage = () => {
                     <Text truncate>{ (1_000).toLocaleString() } 원</Text>
                   </Card.Body>
                   <IconButton
+                    variant={'ghost'}
                     position={ 'absolute' }
-                    right={ '2' }
-                    top={ '2' }
+                    right={ 0 }
+                    top={ 0 }
                     rounded={ 'full' }
-                    size={ 'xs' }
+                    size={ 'md' }
                   >
-                    <LuX></LuX>
+                    <LuHeart></LuHeart>
                   </IconButton>
                 </Card.Root>
               ))
