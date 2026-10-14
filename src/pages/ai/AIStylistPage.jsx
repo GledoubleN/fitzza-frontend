@@ -1,4 +1,18 @@
-import { Box, Button, Card, Container, Flex, IconButton, Image, Input, Spinner, Stack, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Card,
+  CloseButton,
+  Container,
+  Dialog,
+  Flex,
+  IconButton,
+  Image,
+  Portal,
+  Spinner,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { LuClock } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -146,11 +160,7 @@ export const AIStylistPage = () => {
 
   // 이 화면에서 입어본 가상 피팅들. { id, label, items, status, fittingId, imageUrl, message, retryable }
   const [fittings, setFittings] = useState([])
-  const photoInput = useRef(null)
-  // 한 번 올린 전신 사진은 이 화면에 있는 동안 다음 입어보기에도 씁니다.
-  const photoId = useRef(null)
-  // 사진을 고르는 동안 기다리는 입어보기
-  const waitingFitting = useRef(null)
+  const [isPhotoDialogOpen, setIsPhotoDialogOpen] = useState(false)
   const fittingsEnd = useRef(null)
   const tryingOn = fittings.some((fitting) => fitting.status === 'loading')
 
@@ -159,26 +169,25 @@ export const AIStylistPage = () => {
     if (fittings.length) fittingsEnd.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }, [fittings])
 
-  // file: 새로 고른 전신 사진. 없으면 앞서 올린 사진으로 입어봅니다.
-  const runFitting = async (fitting, file) => {
+  // 프로필에 올려둔 전신 사진으로 바로 입어봅니다. 사진이 없으면 프로필로 안내합니다.
+  const runFitting = async (fitting) => {
     const update = (patch) => setFittings((fittings) => [
       ...fittings.filter((other) => other.id !== fitting.id),
       { ...fitting, ...patch },
     ])
     update({ status: 'loading' })
     try {
-      if (file) {
-        const body = new FormData()
-        body.append('file', file)
-        const { data } = await api.post('/fittings/photos', body, {
-          ...FITTING_TIMEOUT,
-          headers: { 'Content-Type': 'multipart/form-data' },
-        })
-        photoId.current = data.photoId
+      // TODO API 필요: 프로필 전신 사진 ID(photoId)는 명세의 /users/me 응답에 없는 가정 필드입니다.
+      const { data: me } = await api.get('/users/me', TIMEOUT)
+      if (!me.photoId) {
+        setFittings((fittings) => fittings.filter((other) => other.id !== fitting.id))
+        setIsPhotoDialogOpen(true)
+        return
       }
+
       // 결과는 이 요청의 응답에 바로 담겨 옵니다. (조회·폴링 없음)
       const { data } = await api.post('/fittings', {
-        photoId: photoId.current,
+        photoId: me.photoId,
         productIds: fitting.items.map((item) => item.productId),
       }, FITTING_TIMEOUT)
       if (data.status === 'COMPLETED' && data.resultImageUrl) {
@@ -195,28 +204,7 @@ export const AIStylistPage = () => {
     }
   }
 
-  const startFitting = (fitting) => {
-    if (photoId.current) {
-      runFitting(fitting)
-    } else {
-      waitingFitting.current = fitting
-      photoInput.current.click()
-    }
-  }
-
-  const tryOn = (label, items) => startFitting({ id: crypto.randomUUID(), label, items })
-
-  const selectPhoto = (e) => {
-    const file = e.target.files[0]
-    // 같은 사진을 다시 골라도 반응하도록 비워둡니다.
-    e.target.value = ''
-    if (file) runFitting(waitingFitting.current, file)
-  }
-
-  const changePhoto = (fitting) => {
-    photoId.current = null
-    startFitting(fitting)
-  }
+  const tryOn = (label, items) => runFitting({ id: crypto.randomUUID(), label, items })
 
   const shareFitting = (fitting) => {
     // 작성 화면에 보여줄 피팅 결과.
@@ -361,7 +349,7 @@ export const AIStylistPage = () => {
                           </Text>
                           {
                             fitting.retryable &&
-                            <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ () => startFitting(fitting) }>
+                            <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ () => runFitting(fitting) }>
                               다시 시도
                             </Button>
                           }
@@ -372,12 +360,9 @@ export const AIStylistPage = () => {
                         <>
                           <Image src={ fitting.imageUrl } alt={ `${ fitting.label } 가상 피팅 결과` } bg={ 'bg.muted' }></Image>
                           <Text fontSize={ 'sm' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
-                          <Flex gap={ 2 } wrap={ 'wrap' }>
-                            <Button variant={ 'outline' } disabled={ tryingOn } onClick={ () => changePhoto(fitting) }>
-                              다른 사진으로 입어보기
-                            </Button>
-                            <Button variant={ 'outline' } onClick={ () => shareFitting(fitting) }>공유하기</Button>
-                          </Flex>
+                          <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ () => shareFitting(fitting) }>
+                            공유하기
+                          </Button>
                         </>
                       }
                     </Card.Body>
@@ -385,19 +370,39 @@ export const AIStylistPage = () => {
                 ))
               }
               <Box ref={ fittingsEnd }></Box>
-              <Input
-                ref={ photoInput }
-                type={ 'file' }
-                accept={ 'image/*' }
-                display={ 'none' }
-                aria-label={ '전신 사진 선택' }
-                onChange={ selectPhoto }
-              ></Input>
             </>
           }
         </Stack>
       </Container>
 
+      <Dialog.Root
+        open={ isPhotoDialogOpen }
+        onOpenChange={ (event) => setIsPhotoDialogOpen(event.open) }
+        placement={ 'center' }
+      >
+        <Portal>
+          <Dialog.Backdrop/>
+          <Dialog.Positioner>
+            <Dialog.Content marginX={ 4 }>
+              <Dialog.Header>
+                <Dialog.Title>사용자님의 사진이 필요합니다.</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Text color={ 'fg.muted' }>가상 피팅을 하려면 프로필에 전신 사진을 올려 주세요.</Text>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Dialog.ActionTrigger asChild>
+                  <Button variant={ 'outline' }>취소</Button>
+                </Dialog.ActionTrigger>
+                <Button onClick={ () => navigate('/profile') }>프로필로 이동</Button>
+              </Dialog.Footer>
+              <Dialog.CloseTrigger asChild>
+                <CloseButton size={ 'sm' }/>
+              </Dialog.CloseTrigger>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
       <Toaster></Toaster>
     </Stack>
   )

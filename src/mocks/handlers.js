@@ -168,12 +168,10 @@ export const handlers = [
     },
   ),
 
-  // 가상 피팅용 전신 사진 업로드. 목업에서는 사진을 저장하지 않습니다.
-  http.post(
-    'http://localhost:8000/api/v1/fittings/photos',
-    () => {
-      return HttpResponse.json({ photoId: 'sample-photo', photoUrl: fittingResultImage }, { status: 201 })
-    },
+  // TODO API 필요: photoId(프로필 전신 사진 ID)는 명세의 /users/me 응답에 없는 가정 필드입니다.
+  http.get(
+    'http://localhost:8000/api/v1/users/me',
+    () => HttpResponse.json({ email: 'user@fitzza.com', nickname: '핏짜', photoId: 'sample-photo' }),
   ),
 
   // 가상 피팅. 생성이 끝나면 결과를 응답에 담아 돌려줍니다. 목업에서는 어떤 요청이든 같은 이미지를 돌려줍니다.
