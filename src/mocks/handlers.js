@@ -89,20 +89,31 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/products/:id/reviews',
-    ({ params, request }) => {
-      const page = Number(new URL(request.url).searchParams.get('page') ?? 0)
-      const size = Number(new URL(request.url).searchParams.get('size') ?? 10)
+    'http://localhost:8000/api/v1/reviews',
+    ({ request }) => {
+      const query = new URL(request.url).searchParams
+      const page = Number(query.get('page') ?? 0)
+      const size = Number(query.get('size') ?? 10)
+      const sort = query.get('sort')
       const TOTAL = 13
+      const contents = {
+        5: '이름 그대로 널널한 박시핏이 너무 예뻐요. 두께도 적당해서 지금 입기 좋아요.',
+        4: '그냥저냥 입을 만하네요.',
+        3: '별로입니다. 사지 마세요.',
+      }
       const content = Array.from({ length: TOTAL }, (_, index) => ({
         reviewId: index + 1,
-        productId: Number(params.id),
+        productId: Number(query.get('productId')),
         userId: index + 1,
-        rating: 5 - (index % 3) * 0.5,
-        content: '이름 그대로 널널한 박시핏이 너무 예뻐요. 두께도 적당해서 지금 입기 좋아요.',
+        rating: 5 - (index % 3),
+        content: contents[5 - (index % 3)],
         imageUrl: index % 2 === 0 ? '/src/assets/hero.png' : null,
         createdAt: new Date(2026, 8, 30 - index).toISOString(),
-      })).slice(page * size, (page + 1) * size)
+      }))
+        .sort((a, b) => (
+          sort === 'RATING_DESC' ? b.rating - a.rating : sort === 'RATING_ASC' ? a.rating - b.rating : 0
+        ))
+        .slice(page * size, (page + 1) * size)
 
       return HttpResponse.json({ content, page, totalPages: Math.ceil(TOTAL / size) })
     },
