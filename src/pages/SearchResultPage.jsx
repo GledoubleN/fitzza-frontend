@@ -145,8 +145,8 @@ export const SearchResultPage = () => {
                     <GridItem gridArea="image" position="relative">
                       <IconButton
                         position="absolute"
-                        top={ 2 }
-                        right={ 2 }
+                        top={ 0 }
+                        right={ 0 }
                         aria-label="찜하기"
                         rounded="full"
                         variant="ghost"
@@ -167,6 +167,7 @@ export const SearchResultPage = () => {
                       gridArea="content"
                       display="flex"
                       flexDirection="column"
+                      minWidth={ 0 }
                     >
                       <Text
                         textStyle="xs"
@@ -176,13 +177,13 @@ export const SearchResultPage = () => {
                         { product.brandName }
                       </Text>
                       <Heading
-                        size={ 'md' }
+                        size={ 'lg' }
                         truncate
                       >
                         { product.productName }
                       </Heading>
                       <Text
-                        textStyle="xs"
+                        textStyle="sm"
                         fontWeight="bold"
                       >
                         { product.price?.toLocaleString() } 원
