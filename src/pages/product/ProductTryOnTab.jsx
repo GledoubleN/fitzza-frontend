@@ -130,13 +130,6 @@ export const ProductTryOnTab = ({ product }) => {
           } }
         />
       ) }
-      <OptionSelect
-        label={ '사이즈 (선택)' }
-        collection={ toCollection(sizes) }
-        disabled={ sizes.length === 0 }
-        value={ size ? [size] : [] }
-        onValueChange={ (event) => setSize(event.value[0] ?? '') }
-      />
       <Button
         size={ 'lg' }
         disabled={ (colors.length > 0 && !color) || isInProgress }
