@@ -159,7 +159,7 @@ export const SearchResultPage = () => {
                           aria-label="찜하기"
                           rounded="full"
                           variant="ghost"
-                          size="xs"
+                          size="md"
                           zIndex={ 2 }
                         >
                           <LuHeart/>
