@@ -148,7 +148,7 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
             src={ item.imageUrl || exampleProductImage }
             alt={ item.productName }
             aspectRatio={ 1 }
-            objectFit={ 'cover' }
+            objectFit={ 'contain' }
             bg={ 'bg.muted' }
           ></Image>
           <Text fontSize={ 'sm' } lineClamp={ 1 }>{ item.productName }</Text>
