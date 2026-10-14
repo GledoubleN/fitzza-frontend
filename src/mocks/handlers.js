@@ -31,8 +31,28 @@ export const handlers = [
 
   http.get(
     'http://localhost:8000/api/v1/products',
-    () => {
-      return HttpResponse.json(products)
+    ({ request }) => {
+      // 🧪 [조회 실패 테스트용 주석]
+      // return new HttpResponse(null, { status: 500 })
+
+      const url = new URL(request.url)
+      const page = Number(url.searchParams.get('page') || 0)
+      const size = Number(url.searchParams.get('size') || 10)
+
+      const start = page * size
+      const end = start + size
+      const paginatedContent = products.slice(start, end)
+      const hasNext = end < products.length
+
+      return HttpResponse.json({
+        content: paginatedContent,
+        page: page,
+        size: size,
+        totalElements: products.length,
+        totalPages: Math.ceil(products.length / size),
+        hasNext: hasNext,
+        sort: url.searchParams.get('sort') || 'LATEST'
+      })
     },
   ),
 
@@ -79,8 +99,6 @@ export const handlers = [
     },
   ),
 
-  // TODO
-  // 댓글 필터링을 CommunityArticlePage가 아니라 여기서 하도록 수정
   http.get(
     'http://localhost:8000/api/v1/community/articles/:id/comments',
     () => {
