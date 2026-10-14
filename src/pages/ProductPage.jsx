@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import {
-  Button,
   Box,
   Card,
   Container,
@@ -8,7 +7,6 @@ import {
   Grid,
   GridItem,
   Heading,
-  Icon,
   IconButton,
   Image,
   Spinner,
@@ -17,15 +15,15 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { LuArrowUp, LuChevronRight, LuHeart } from 'react-icons/lu'
+import { LuArrowUp, LuHeart } from 'react-icons/lu'
 import { api } from '../api/axios.js'
 import { AppBar } from '../components/AppBar.jsx'
 import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
 import { ProductOptionSelector } from './product/ProductOptionSelector.jsx'
-import { ProductTryOnTab } from './product/ProductTryOnTab.jsx'
 import { ProductReviewTab } from './product/ProductReviewTab.jsx'
 import { ProductSizeTab } from './product/ProductSizeTab.jsx'
+import { ProductTryOnTab } from './product/ProductTryOnTab.jsx'
 
 function getEstimatedArrivalDate () {
   const date = new Date()
@@ -146,15 +144,6 @@ export const ProductPage = () => {
                 </Text>
               </Stack>
               <ProductOptionSelector product={ product }/>
-              <Button variant={ 'outline' } size={ 'lg' } justifyContent={ 'space-between' } onClick={ () => navigate('/try-on') }>
-                <Flex align={ 'center' } gap={ 2 }>
-                  <Text textStyle={'sm'}>이 옷, 내 몸엔 어떤 핏일까?</Text>
-                </Flex>
-                <Flex align={ 'center' } gap={ 1 } color={ 'fg.muted' }>
-                  <Text textStyle={ 'sm' }  fontWeight={'bold'} >바로입기</Text>
-                  <Icon size={ 'sm' }><LuChevronRight/></Icon>
-                </Flex>
-              </Button>
             </Stack>
           </GridItem>
 
@@ -163,7 +152,6 @@ export const ProductPage = () => {
               <Card.Root>
                 <Card.Body>
                   <Stack>
-                  <Tabs.Trigger value={ 'try-on' }>입어보기</Tabs.Trigger>
                     <Text fontSize={ 'sm' }>{ getEstimatedArrivalDate() } 도착 예정 · 도착 확률 99%</Text>
                     <Text fontSize={ 'sm' }>결제 3일 이내 발송 예정 · 우체국택배</Text>
                   </Stack>
@@ -175,13 +163,11 @@ export const ProductPage = () => {
                   <Tabs.Trigger value={ 'information' }>정보</Tabs.Trigger>
                   <Tabs.Trigger value={ 'size' }>사이즈</Tabs.Trigger>
                   <Tabs.Trigger value={ 'review' }>후기</Tabs.Trigger>
+                  <Tabs.Trigger value={ 'try-on' }>입어보기</Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content value={ 'information' }>
                   <Stack gap={ 4 } paddingY={ 4 }>
                     <Text whiteSpace={ 'pre-wrap' }>{ product.description || '정보가 없습니다.' }</Text>
-                <Tabs.Content value={ 'try-on' }>
-                  <ProductTryOnTab product={ product }/>
-                </Tabs.Content>
                     { product.images?.map((image) => (
                       <Image key={ image } width={ '100%' } src={ image } alt={ product.productName }></Image>
                     )) }
@@ -192,6 +178,9 @@ export const ProductPage = () => {
                 </Tabs.Content>
                 <Tabs.Content value={ 'review' }>
                   <ProductReviewTab productId={ product.productId }/>
+                </Tabs.Content>
+                <Tabs.Content value={ 'try-on' }>
+                  <ProductTryOnTab product={ product }/>
                 </Tabs.Content>
               </Tabs.Root>
 
