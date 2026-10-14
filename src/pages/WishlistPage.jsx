@@ -17,40 +17,38 @@ import { LuHeart, LuX } from 'react-icons/lu'
 // 현재 6자리숫자(십만단위)까지 문제없이 표기 되며, fontSize를 지정해서 sm으로 만들경우 8자리까지 표현 가능합니다.
 export const WishlistPage = () => {
   return (
-    <>
-      <Stack paddingY={ 4 } height={ '100vh' } gap={ 4 }>
-        <AppBar></AppBar>
-        <Container maxWidth="5xl">
-          <Grid
-            templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.2} * 4) / 5)), 1fr))' }
-            gapX={ 4 }
-            gapY={ 8 }
-          >
-            {
-              Array.from({ length: 50 }, (_, index) => (
-                <Card.Root key={ index } borderWidth={0}>
-                  <Image src={ exampleProductImage }></Image>
-                  <Card.Body padding={ '2' }>
-                    <Card.Title>Name</Card.Title>
-                    <Text truncate>{ (1_000).toLocaleString() } 원</Text>
-                  </Card.Body>
-                  <IconButton
-                    variant={'ghost'}
-                    position={ 'absolute' }
-                    right={ 0 }
-                    top={ 0 }
-                    rounded={ 'full' }
-                    size={ 'md' }
-                  >
-                    <LuHeart></LuHeart>
-                  </IconButton>
-                </Card.Root>
-              ))
-            }
-          </Grid>
-        </Container>
-      </Stack>
+    <Stack paddingY={ 4 } height={ '100vh' } gap={ 4 }>
+      <AppBar></AppBar>
+      <Container maxWidth="5xl">
+        <Grid
+          templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.2} * 4) / 5)), 1fr))' }
+          gapX={ 4 }
+          gapY={ 8 }
+        >
+          {
+            Array.from({ length: 50 }, (_, index) => (
+              <Card.Root key={ index } borderWidth={ 0 }>
+                <Image src={ exampleProductImage }></Image>
+                <Card.Body padding={ '2' }>
+                  <Card.Title>Name</Card.Title>
+                  <Text truncate>{ (1_000).toLocaleString() } 원</Text>
+                </Card.Body>
+                <IconButton
+                  variant={ 'ghost' }
+                  position={ 'absolute' }
+                  right={ 0 }
+                  top={ 0 }
+                  rounded={ 'full' }
+                  size={ 'md' }
+                >
+                  <LuHeart></LuHeart>
+                </IconButton>
+              </Card.Root>
+            ))
+          }
+        </Grid>
+      </Container>
       <TabBar/>
-    </>
+    </Stack>
   )
 }
