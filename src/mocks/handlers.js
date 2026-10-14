@@ -6,10 +6,10 @@ import products from '../data/products.json'
 import likes from '../data/wishlist.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
-import productOptions from '../data/productOptions.json'
+import productOptions from '../data/product-options.json'
 import recommendations from '../data/recommendations.json'
-import recommendationHistory from '../data/recommendationHistory.json'
-import recommendationMessages from '../data/recommendationMessages.json'
+import recommendationHistory from '../data/recommendation-history.json'
+import recommendationMessages from '../data/recommendation-messages.json'
 import fittingResultImage from '../assets/hero.png'
 
 // [개발용] 추천 요청의 응답이 오기까지 걸리는 시간을 흉내 냅니다.
