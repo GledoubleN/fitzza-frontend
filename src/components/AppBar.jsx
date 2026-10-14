@@ -63,8 +63,12 @@ export const AppBar = ({ maxWidth = '7xl' }) => {
               </Portal>
             </Popover.Root>
 
-            <IconButton { ...buttonProps } onClick={ () => { navigate('/shopping-cart') } } title="장바구니">
-              <LuShoppingBag />
+            <IconButton
+              { ...buttonProps }
+              onClick={ () => { navigate('/shopping-cart') } }
+              title="장바구니"
+            >
+              <LuShoppingBag/>
             </IconButton>
 
             <IconButton
