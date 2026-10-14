@@ -102,8 +102,16 @@ export const SearchResultPage = () => {
 
   return (
     <Box position="relative" minH="100vh" pt={ 24 } pb={ 28 } bg="bg">
-      <Box position="fixed" top={ 0 } left={ 0 } right={ 0 } zIndex={ 10 }
-           bg="bg" px={ 5 } py={ 4 }>
+      <Box
+        position="fixed"
+        top={ 0 }
+        left={ 0 }
+        right={ 0 }
+        zIndex={ 10 }
+        bg="bg"
+        px={ 5 }
+        py={ 4 }
+      >
         <Container maxW="7xl" mx="auto" px={ 0 }>
           <AppBar/>
         </Container>
@@ -145,10 +153,7 @@ export const SearchResultPage = () => {
                   >
                     <Grid
                       templateRows="auto auto"
-                      templateAreas={ `
-                        "image"
-                        "content"
-                      ` }
+                      templateAreas={ `"image" "content"` }
                     >
                       <GridItem gridArea="image" position="relative">
                         <IconButton
@@ -171,16 +176,32 @@ export const SearchResultPage = () => {
                       </GridItem>
 
                       <GridItem gridArea="content">
-                        <Box p={ 2.5 } display="flex" flexDirection="column"
-                             gap={ 1 }>
-                          <Text textStyle="xs" color="fg.muted"
-                                truncate>{ product.brandName ||
-                            product.brand }</Text>
-                          <Text textStyle="xs" fontWeight="semibold"
-                                truncate>{ product.productName ||
-                            product.name }</Text>
-                          <Text textStyle="2xs"
-                                fontWeight="bold">{ product.price?.toLocaleString() } 원</Text>
+                        <Box
+                          p={ 2.5 }
+                          display="flex"
+                          flexDirection="column"
+                          gap={ 1 }
+                        >
+                          <Text
+                            textStyle="xs"
+                            color="fg.muted"
+                            truncate
+                          >
+                            { product.brandName || product.brand }
+                          </Text>
+                          <Text
+                            textStyle="xs"
+                            fontWeight="semibold"
+                            truncate
+                          >
+                            { product.productName || product.name }
+                          </Text>
+                          <Text
+                            textStyle="2xs"
+                            fontWeight="bold"
+                          >
+                            { product.price?.toLocaleString() } 원
+                          </Text>
                         </Box>
                       </GridItem>
                     </Grid>

@@ -3,180 +3,210 @@
     "id": 1,
     "name": "Classic Monogram T-Shirt",
     "brand": "Celine",
-    "price": 750000
+    "price": 750000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 2,
     "name": "Straight Leg Denim Pants",
     "brand": "Loewe",
-    "price": 1250000
+    "price": 1250000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 3,
     "name": "Embroidered Logo Hoodie",
     "brand": "Balenciaga",
-    "price": 1450000
+    "price": 1450000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 4,
     "name": "B32 Sneaker in Mesh",
     "brand": "Dior",
-    "price": 1850000
+    "price": 1850000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 5,
     "name": "Denim Trucker Jacket",
     "brand": "Saint Laurent",
-    "price": 2300000
+    "price": 2300000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 6,
     "name": "Crewneck Sweatshirt",
     "brand": "Prada",
-    "price": 1350000
+    "price": 1350000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 7,
     "name": "Tailored Wool Slacks",
     "brand": "Tom Ford",
-    "price": 1680000
+    "price": 1680000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 8,
     "name": "Technical Windbreaker",
     "brand": "Moncler",
-    "price": 1950000
+    "price": 1950000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 9,
     "name": "Slim Fit Polo Shirt",
     "brand": "Burberry",
-    "price": 590000
+    "price": 590000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 10,
     "name": "Cotton Chino Trousers",
     "brand": "Brunello Cucinelli",
-    "price": 1100000
+    "price": 1100000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 11,
     "name": "Canvas Baseball Cap",
     "brand": "Gucci",
-    "price": 620000
+    "price": 620000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 12,
     "name": "Silk Poplin Shirt",
     "brand": "Valentino",
-    "price": 980000
+    "price": 980000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 13,
     "name": "Re-Nylon Puffer Jacket",
     "brand": "Prada",
-    "price": 3400000
+    "price": 3400000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 14,
     "name": "Jersey Track Pants",
     "brand": "Palm Angels",
-    "price": 680000
+    "price": 680000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 15,
     "name": "Oversized Flannel Shirt",
     "brand": "Off-White",
-    "price": 890000
+    "price": 890000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 16,
     "name": "Maia Down Puffer Coat",
     "brand": "Moncler",
-    "price": 2950000
+    "price": 2950000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 17,
     "name": "Merino Wool Cardigan",
     "brand": "Jacquemus",
-    "price": 820000
+    "price": 820000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 18,
     "name": "Pleated Wool Trousers",
     "brand": "Lemaire",
-    "price": 920000
+    "price": 920000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 19,
     "name": "Wool Knit Beanie",
     "brand": "Acne Studios",
-    "price": 240000
+    "price": 240000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 20,
     "name": "Low-Top Sneakers",
     "brand": "Maison Margiela",
-    "price": 850000
+    "price": 850000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 21,
     "name": "Ribbed Tank Top",
     "brand": "Rick Owens",
-    "price": 430000
+    "price": 430000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 22,
     "name": "Drawstring Shorts",
     "brand": "Fendi",
-    "price": 950000
+    "price": 950000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 23,
     "name": "Waterproof Anorak",
     "brand": "Stone Island",
-    "price": 1280000
+    "price": 1280000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 24,
     "name": "Wool Blazer",
     "brand": "Saint Laurent",
-    "price": 3800000
+    "price": 3800000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 25,
     "name": "Cotton Fleece Joggers",
     "brand": "Givenchy",
-    "price": 980000
+    "price": 980000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 26,
     "name": "Nylon Bucket Hat",
     "brand": "Prada",
-    "price": 720000
+    "price": 720000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 27,
     "name": "Cashmere Knit Vest",
     "brand": "Brunello Cucinelli",
-    "price": 1850000
+    "price": 1850000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 28,
     "name": "Leather Loafers",
     "brand": "Tod's",
-    "price": 1150000
+    "price": 1150000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 29,
     "name": "Striped Track Jacket",
     "brand": "Wales Bonner",
-    "price": 760000
+    "price": 760000,
+    "thumbnailUrl": "/product-image.png"
   },
   {
     "id": 30,
     "name": "Utility Cargo Overalls",
     "brand": "Kiko Kostadinov",
-    "price": 1420000
+    "price": 1420000,
+    "thumbnailUrl": "/product-image.png"
   }
 ]
