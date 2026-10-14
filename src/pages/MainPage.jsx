@@ -33,15 +33,13 @@ export const MainPage = () => {
   }
 
   async function loadRecommendedProducts () {
-    api.get('/products/recommended', {})
-    .then((response) => {
+    api.get('/products/recommended', {}).then((response) => {
       if (response.status !== HttpStatusCode.Ok) {
         return
       }
 
       setProducts(response.data)
-    })
-    .catch(error => console.log(error))
+    }).catch(error => console.log(error))
   }
 
   useEffect(() => {
@@ -68,7 +66,9 @@ export const MainPage = () => {
               <Grid templateColumns={ 'auto 1fr auto' } gap={ 2 }>
                 <IconButton
                   rounded={ 'full' }
-                  onClick={ () => { setIsLongPrompt((isLongPrompt) => !isLongPrompt) } }
+                  onClick={ () => {
+                    setIsLongPrompt((isLongPrompt) => !isLongPrompt)
+                  } }
                 >
                   <LuSparkle/>
                 </IconButton>
@@ -97,10 +97,13 @@ export const MainPage = () => {
             products.map((product, index) => (
               <Stack gap={ 4 }>
                 <Box position={ 'relative' }>
-                  <Image src={ exampleProductImage } onClick={ () => {navigate('products/1')} }></Image>
+                  <Image
+                    src={ exampleProductImage }
+                    onClick={ () => {navigate('products/1')} }
+                  ></Image>
                   <IconButton
                     position={ 'absolute' }
-                    bottom={ 0 }
+                    top={ 0 }
                     right={ 0 }
                     variant={ 'ghost' }
                     rounded={ 'full' }
