@@ -33,17 +33,19 @@ export const SignInPage = () => {
 
     setLoading(true)
     setErrorMessage('')
+
     try {
-      const response = await api.post('/auth/login/sample', { email, password })
-      const token = response.data?.accessToken || response.data?.token
-      if (token) {
-        localStorage.setItem('accessToken', token)
-      }
+      const response = await api.post('/auth/signin', { email, password })
+      const token = response.data?.accessToken
+
+      localStorage.setItem('accessToken', token)
       moveUrl('/')
+
     } catch (err) {
       console.warn("백엔드 통신 실패\n목업 모드로 로그인을 진행합니다.", err)
       localStorage.setItem('accessToken', 'mock-access-token-12345')
       moveUrl('/')
+
     } finally {
       setLoading(false)
     }
