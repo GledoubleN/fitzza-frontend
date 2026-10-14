@@ -110,7 +110,7 @@ export const ProductPage = () => {
               <Image
                 width={ '100%' }
                 aspectRatio={ 'square' }
-                objectFit={ 'cover' }
+                objectFit={ 'contain' }
                 rounded={ 'l3' }
                 bg={ 'bg.muted' }
                 src={ product.thumbnailUrl ?? product.images?.[0] }
