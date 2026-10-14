@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text, Box, Button, Spinner } from '@chakra-ui/react'
+import { Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text, Box, Button, Spinner } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
@@ -121,16 +121,10 @@ export const SearchResultPage = () => {
               const uniqueKey = product.productId ?? product.id ?? index
               return (
                 <GridItem key={uniqueKey}>
-                  <Card.Root
-                    variant="subtle"
-                    borderWidth="thin"
-                    borderColor="border.subtle"
-                    bg="bg.panel"
-                    borderRadius="2xl"
+                  <Box
                     overflow="hidden"
                     cursor="pointer"
                     position="relative"
-                    _hover={{ borderColor: 'fg.muted' }}
                     onClick={() => navigate(`/products/${product.productId ?? product.id}`)}
                   >
                     <Grid
@@ -157,14 +151,14 @@ export const SearchResultPage = () => {
                       </GridItem>
 
                       <GridItem gridArea="content">
-                        <Card.Body p={2.5} gap={1}>
+                        <Box p={2.5} display="flex" flexDirection="column" gap={1}>
                           <Text textStyle="xs" color="fg.muted" truncate>{product.brandName || product.brand}</Text>
                           <Text textStyle="xs" fontWeight="semibold" truncate>{product.productName || product.name}</Text>
                           <Text textStyle="2xs" fontWeight="bold">{product.price?.toLocaleString()} 원</Text>
-                        </Card.Body>
+                        </Box>
                       </GridItem>
                     </Grid>
-                  </Card.Root>
+                  </Box>
                 </GridItem>
               )
             })
