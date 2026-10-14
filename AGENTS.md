@@ -18,4 +18,9 @@
 * Chakra UI의 Semantic Token을 사용한다.
 * HEX 코드나 색깔 이름을 사용하지 않는다.
 * px, rem 등의 단위를 사용하지 않는다.
-* Semantic Token을 사용해서 간격을 정의할 때는 4의 배수를 사용한다.
+* Semantic Token을 사용해서 margin, padding, gap 등을 정의할 때는 4의 배수를 사용한다.
+
+## PR 검토
+
+* PR을 검토할 때 이 문서의 스타일링 규칙을 기준으로 검토한다.
+* 규칙을 위반한 코드가 있으면 해당 위치와 수정 방향을 설명한다.
