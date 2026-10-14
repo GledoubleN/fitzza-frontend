@@ -170,7 +170,8 @@ export const AIStylistPage = () => {
   }, [fittings])
 
   // 프로필에 올려둔 전신 사진으로 바로 입어봅니다. 사진이 없으면 프로필로 안내합니다.
-  const runFitting = async (fitting) => {
+  // isWithoutPhoto: 프로필 사진이 없는 경우를 개발 중에 확인하기 위한 값
+  const runFitting = async (fitting, isWithoutPhoto = false) => {
     const update = (patch) => setFittings((fittings) => [
       ...fittings.filter((other) => other.id !== fitting.id),
       { ...fitting, ...patch },
@@ -179,7 +180,7 @@ export const AIStylistPage = () => {
     try {
       // TODO API 필요: 프로필 전신 사진 ID(photoId)는 명세의 /users/me 응답에 없는 가정 필드입니다.
       const { data: me } = await api.get('/users/me', TIMEOUT)
-      if (!me.photoId) {
+      if (isWithoutPhoto || !me.photoId) {
         setFittings((fittings) => fittings.filter((other) => other.id !== fitting.id))
         setIsPhotoDialogOpen(true)
         return
@@ -369,6 +370,16 @@ export const AIStylistPage = () => {
                   </Card.Root>
                 ))
               }
+              { import.meta.env.DEV && (
+                <Button
+                  variant={ 'outline' }
+                  alignSelf={ 'flex-start' }
+                  disabled={ tryingOn }
+                  onClick={ () => runFitting({ id: crypto.randomUUID(), label: '개발용', items: [] }, true) }
+                >
+                  사진 없이 입은 경우 (개발용)
+                </Button>
+              ) }
               <Box ref={ fittingsEnd }></Box>
             </>
           }
