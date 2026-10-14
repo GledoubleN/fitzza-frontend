@@ -15,9 +15,9 @@ import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { OptionSelect } from './ProductOptionSelector.jsx'
 
-// TODO API 필요: 아래는 명세에 없거나 확정되지 않아 가정한 계약이며, 지금은 목으로만 동작한다.
+// TODO API 필요: 아래는 명세에 없거나 확정되지 않아 가정한 계약이며, 지금은 목업으로만 동작합니다
 // - GET /users/me 의 photoId: 프로필에 올린 전신 사진 ID (명세에 필드 없음)
-// - POST /vton: 명세는 { photoId, productIds } 초안(FIX 안됨). 색상·사이즈(color, size)는 가정해서 추가로 보낸다.
+// - POST /vton: 명세는 { photoId, productIds } 초안(FIX 안됨). 색상·사이즈(color, size)는 가정
 // - GET /vton/{fittingId}: 피팅 결과 조회 (명세에 없음, 추후 추가 예정)
 // - GET /vton/latest?productId=: 이 상품에서 만든 내 최신 피팅 조회 (명세에 없음)
 const FINISHED = ['DONE', 'FAILED']
