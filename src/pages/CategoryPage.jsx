@@ -15,7 +15,6 @@ import { useNavigate } from 'react-router-dom'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { api } from '../api/axios.js'
-import { HttpStatusCode } from 'axios'
 
 export const CategoryPage = () => {
   const navigate = useNavigate()
@@ -42,7 +41,9 @@ export const CategoryPage = () => {
   }
 
   useEffect(() => {
-    loadCategories()
+    api.get('/categories')
+    .then((response) => setCategories(response.data))
+    .catch((error) => console.log(error))
   }, [])
 
   const childrenItems = selected ? (selected.children ?? []) : []
