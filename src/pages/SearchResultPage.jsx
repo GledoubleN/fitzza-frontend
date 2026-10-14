@@ -10,7 +10,7 @@ import {
   Text,
   Box,
   Button,
-  Spinner, Stack,
+  Spinner, Stack, Heading, Center,
 } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
@@ -35,6 +35,7 @@ export const SearchResultPage = () => {
     if (isLoading) return { content: [], hasNext: false }
     setIsLoading(true)
     setError(null)
+
     try {
       const params = {
         page: targetPage,
@@ -59,6 +60,7 @@ export const SearchResultPage = () => {
       setHasMore(hasNext)
       setIsLoading(false)
       return { content, hasNext }
+
     } catch (err) {
       setError('상품 목록을 불러오지 못했습니다.')
       setIsLoading(false)
@@ -101,24 +103,21 @@ export const SearchResultPage = () => {
   }, [isLoading, hasMore, page, categoryCode])
 
   return (
-    <Stack gap={ 4 } position="relative" minH="100vh" paddingY={ 4 } bg="bg">
+    <Stack gap={ 4 } position="relative" minH="100vh" paddingY={ 4 }>
       <AppBar/>
 
-      <Container maxW="3xl" mx="auto" px={ 5 } mb={ 6 }>
-        <InputGroup startElement={ <Box as={ LuSearch } boxSize={ 5 }
-                                        color="fg.muted"/> }>
+      <Container maxW="3xl">
+        <InputGroup
+          startElement={ <LuSearch/> }
+        >
           <Input
             placeholder="검색어를 입력해주세요"
-            borderRadius="xl"
-            borderWidth="thin"
-            borderColor="border.subtle"
-            py={ 5 }
             defaultValue={ categoryCode ? `카테고리 코드: ${ categoryCode }` : '' }
           />
         </InputGroup>
       </Container>
 
-      <Container maxW="7xl" mx="auto" px={ 5 }>
+      <Container maxW="7xl">
         <Grid
           templateColumns={ {
             base: 'repeat(3, 1fr)',
@@ -130,70 +129,66 @@ export const SearchResultPage = () => {
             displayProducts?.map((product, index) => {
               const uniqueKey = product.productId ?? index
               return (
-                <GridItem key={ uniqueKey }>
-                  <Box
-                    overflow="hidden"
-                    cursor="pointer"
-                    position="relative"
-                    onClick={ () => navigate(
-                      `/products/${ product.productId }`) }
+                <GridItem
+                  key={ uniqueKey }
+                  overflow="hidden"
+                  cursor="pointer"
+                  position="relative"
+                  onClick={ () => navigate(
+                    `/products/${ product.productId }`) }
+                >
+                  <Grid
+                    templateRows="auto auto"
+                    templateAreas={ `"image" "content"` }
+                    gap={ 4 }
                   >
-                    <Grid
-                      templateRows="auto auto"
-                      templateAreas={ `"image" "content"` }
-                    >
-                      <GridItem gridArea="image" position="relative">
-                        <IconButton
-                          position="absolute"
-                          top={ 2 }
-                          right={ 2 }
-                          aria-label="찜하기"
-                          rounded="full"
-                          variant="ghost"
-                          size="md"
-                          zIndex={ 2 }
-                          onClick={ (event) => event.stopPropagation() }
-                        >
-                          <LuHeart/>
-                        </IconButton>
-                        <Image
-                          src={ product.thumbnailUrl }
-                          width="100%"
-                          objectFit="contain"
-                        />
-                      </GridItem>
+                    <GridItem gridArea="image" position="relative">
+                      <IconButton
+                        position="absolute"
+                        top={ 2 }
+                        right={ 2 }
+                        aria-label="찜하기"
+                        rounded="full"
+                        variant="ghost"
+                        size="md"
+                        zIndex={ 2 }
+                        onClick={ (event) => event.stopPropagation() }
+                      >
+                        <LuHeart/>
+                      </IconButton>
+                      <Image
+                        src={ product.thumbnailUrl }
+                        width="100%"
+                        objectFit="contain"
+                      />
+                    </GridItem>
 
-                      <GridItem gridArea="content">
-                        <Box
-                          p={ 2.5 }
-                          display="flex"
-                          flexDirection="column"
-                          gap={ 1 }
-                        >
-                          <Text
-                            textStyle="xs"
-                            color="fg.muted"
-                            truncate
-                          >
-                            { product.brandName }
-                          </Text>
-                          <Text
-                            textStyle="xs"
-                            fontWeight="semibold"
-                            truncate
-                          >
-                            { product.productName }
-                          </Text>
-                          <Text
-                            textStyle="2xs"
-                            fontWeight="bold"
-                          >
-                            { product.price?.toLocaleString() } 원
-                          </Text>
-                        </Box>
-                      </GridItem>
-                    </Grid>
-                  </Box>
+                    <Stack
+                      gridArea="content"
+                      display="flex"
+                      flexDirection="column"
+                    >
+                      <Text
+                        textStyle="xs"
+                        color="fg.muted"
+                        truncate
+                      >
+                        { product.brandName }
+                      </Text>
+                      <Heading
+                        size={ 'md' }
+                        truncate
+                      >
+                        { product.productName }
+                      </Heading>
+                      <Text
+                        textStyle="xs"
+                        fontWeight="bold"
+                      >
+                        { product.price?.toLocaleString() } 원
+                      </Text>
+                    </Stack>
+                  </Grid>
                 </GridItem>
               )
             })
@@ -201,26 +196,30 @@ export const SearchResultPage = () => {
         </Grid>
 
         { error && (
-          <Box display="flex" flexDirection="column" alignItems="center"
-               justifyContent="center" py={ 10 } gap={ 3 }>
+          <Center
+            align="center"
+            justify="center"
+            py={ 12 }
+          >
             <Text color="fg.muted" textStyle="sm">{ error }</Text>
-            <Button size="xs" variant="outline"
-                    onClick={ () => fetchProducts(page) }>다시 시도</Button>
-          </Box>
+            <Button
+              size="md"
+              variant="outline"
+              onClick={ () => fetchProducts(page) }
+            >
+              다시 시도
+            </Button>
+          </Center>
         ) }
 
         { isLoading && (
-          <Box display="flex" justifyContent="center" alignItems="center"
-               py={ 8 }>
-            <Spinner size="sm"/>
-          </Box>
+          <Center py={ 12 }>
+            <Spinner size="md"/>
+          </Center>
         ) }
       </Container>
 
-      <Box position="fixed" bottom={ 0 } left={ 0 } right={ 0 } zIndex={ 10 }
-           bg="bg">
-        <TabBar/>
-      </Box>
+      <TabBar/>
     </Stack>
   )
 }
