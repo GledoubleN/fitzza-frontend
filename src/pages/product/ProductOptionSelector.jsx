@@ -4,6 +4,7 @@ import { LuMinus, LuPlus, LuX } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
+import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 
 // 옵션 구조는 명세에 열려 있어 { optionId, color, size, available }로 가정한다.
 const getOptionLabel = (option) => [option.color, option.size].filter(Boolean).join(' / ')
@@ -64,6 +65,7 @@ export const ProductOptionSelector = ({ product }) => {
   // { [optionId]: 수량 }
   const [quantities, setQuantities] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isAddedDialogOpen, setIsAddedDialogOpen] = useState(false)
 
   const options = product.options ?? []
   const colors = [...new Set(options.map((option) => option.color).filter(Boolean))]
@@ -117,7 +119,7 @@ export const ProductOptionSelector = ({ product }) => {
       return
     }
 
-    toaster.create({ type: 'success', title: '장바구니에 담았어요.' })
+    setIsAddedDialogOpen(true)
   }
 
   return (
@@ -184,6 +186,8 @@ export const ProductOptionSelector = ({ product }) => {
           { colors.length > 0 && !color ? '색상을 먼저 선택해 주세요.' : '사이즈를 선택해 주세요.' }
         </Text>
       ) }
+
+      <CartAddedDialog open={ isAddedDialogOpen } onClose={ () => setIsAddedDialogOpen(false) }/>
     </Stack>
   )
 }
