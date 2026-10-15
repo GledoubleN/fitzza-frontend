@@ -72,7 +72,15 @@ export const SignUpPage = () => {
       alert("회원가입이 완료되었습니다. 로그인해주세요.");
       navigate("/signin");
     } catch (err) {
-      // 💡 백엔드 미구동 시 테스트를 위한 목업(Mock) 처리
+      // 💡 1. 409 Conflict 에러(이메일 또는 닉네임 중복) 처리
+      if (err.response?.status === 409) {
+        // 백엔드에서 반환하는 메시지(예: 이메일 중복 또는 닉네임 중복)를 추출하여 표시
+        const message = err.response.data?.message || '이미 사용 중인 이메일 또는 닉네임입니다.';
+        setErrorMessage(message);
+        return; // 👈 여기서 return하므로 아래의 목업 및 페이지 이동 로직이 실행되지 않고 현재 페이지에 머묾
+      }
+
+      // 💡 2. 409가 아닌 진짜 백엔드 미구동 등 통신 실패 시에만 기존 목업 처리 실행
       console.warn("백엔드 통신 실패 - 목업 모드로 회원가입을 완료합니다.", err);
       alert("회원가입이 완료되었습니다. (목업 모드) 로그인해주세요.");
       navigate("/signin");
