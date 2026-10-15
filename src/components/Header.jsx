@@ -13,13 +13,19 @@ export const Header = ({ maxWidth = '7xl' }) => {
     setIsLoggedIn(!!token)
   }, [])
 
-  const handleAuthAction = () => {
+  const handleSignOutButtonClick = () => {
     if (isLoggedIn) {
-      api.post('/auth/logout').catch(() => {})
+      api.post('/auth/signout', {
+        refreshToken: ""
+      }).catch((error) => {
+        console.log(error)
+      })
+
       localStorage.removeItem("accessToken")
       setIsLoggedIn(false)
       alert("로그아웃되었습니다.")
       navigate("/signin")
+
     } else {
       navigate("/signin")
     }
@@ -73,7 +79,7 @@ export const Header = ({ maxWidth = '7xl' }) => {
 
             <IconButton
               { ...buttonProps }
-              onClick={handleAuthAction}
+              onClick={handleSignOutButtonClick}
               title={isLoggedIn ? "로그아웃" : "로그인"}
             >
               {isLoggedIn ? <LuLogOut /> : <LuLogIn />}
