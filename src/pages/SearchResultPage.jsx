@@ -155,7 +155,10 @@ export const SearchResultPage = () => {
       </Container>
 
       <Container maxW="5xl">
-        <Flex justify="flex-end">
+        <Grid
+          templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
+          gap={ 4 }
+        >
           <Select.Root
             collection={ sortCollection }
             width="40"
@@ -184,7 +187,7 @@ export const SearchResultPage = () => {
               </Select.Positioner>
             </Portal>
           </Select.Root>
-        </Flex>
+        </Grid>
       </Container>
 
       {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */ }
