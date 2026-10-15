@@ -41,8 +41,7 @@ export const WishlistPage = () => {
         {/* gap={ 4 } 이기 때문에 spacing.4를 사용해야 한다. */ }
         <Grid
           templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
-          gapX={ 4 }
-          gapY={ 8 }
+          gap={ 4 }
         >
           {
             products.map((product, index) => (

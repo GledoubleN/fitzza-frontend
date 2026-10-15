@@ -190,17 +190,14 @@ export const SearchResultPage = () => {
 
       <Container maxW="7xl" mx="auto" px={ 5 }>
         <Grid
-          templateColumns={ {
-            base: 'repeat(3, 1fr)',
-            lg: 'repeat(5, 1fr)',
-          } }
+          templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
           gap={ 4 }
         >
           {
             displayProducts?.map((product, index) => {
               const uniqueKey = product.productId ?? index
               return (
-                <ProductItem product={ product }></ProductItem>
+                <ProductItem key={ uniqueKey } product={ product }></ProductItem>
               )
             })
           }
