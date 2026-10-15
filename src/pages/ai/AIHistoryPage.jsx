@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
-import { AppBar } from '../../components/AppBar.jsx'
+import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
@@ -46,7 +46,7 @@ export const AIHistoryPage = () => {
 
   return (
     <Stack gap={ 4 } paddingY={ 4 } minHeight={ 'vh' }>
-      <AppBar></AppBar>
+      <Header></Header>
 
       <Container maxWidth={ '3xl' } flex={ 1 }>
         <Stack gap={ 4 }>

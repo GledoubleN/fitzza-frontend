@@ -8,7 +8,7 @@ import {
   Text,
   IconButton,
 } from '@chakra-ui/react'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { ProductItem } from '../components/ProductItem.jsx'
 import { useEffect, useState } from 'react'
@@ -36,7 +36,7 @@ export const WishlistPage = () => {
 
   return (
     <Stack paddingY={ 4 } height={ '100vh' } gap={ 4 }>
-      <AppBar></AppBar>
+      <Header></Header>
       <Container maxWidth="5xl">
         {/* gap={ 4 } 이기 때문에 spacing.4를 사용해야 한다. */ }
         <Grid

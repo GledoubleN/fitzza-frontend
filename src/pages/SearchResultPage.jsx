@@ -12,7 +12,7 @@ import {
   Button,
   Spinner, Stack, Heading, Center,
 } from '@chakra-ui/react'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -105,7 +105,7 @@ export const SearchResultPage = () => {
 
   return (
     <Stack gap={ 4 } position="relative" minH="100vh" paddingY={ 4 }>
-      <AppBar/>
+      <Header/>
 
       <Container maxW="3xl">
         <InputGroup

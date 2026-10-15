@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { LuMail, LuUser, LuLockKeyhole } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
-import { AppBar } from '../components/AppBar.jsx';
+import { Header } from '../components/Header.jsx';
 import { api } from "../api/axios.js";
 
 export const SignUpPage = () => {
@@ -89,7 +89,7 @@ export const SignUpPage = () => {
       paddingY={ 4 }
       bg="bg"
     >
-      <AppBar />
+      <Header />
 
       <Container maxWidth="md" display={ 'flex' } alignItems={ 'center' }>
         <Stack

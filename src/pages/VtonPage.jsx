@@ -11,7 +11,7 @@ import {
   Card,
   Separator, Heading,
 } from '@chakra-ui/react'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 import exampleResultImage from '/src/assets/hero.png'
 import examplePersonImage from '/src/assets/react.svg'
 import exampleClothesImage from '/src/assets/vite.svg'
@@ -90,7 +90,7 @@ export const VtonPage = () => {
       height={ '100vh' }
       gap={ 4 }
     >
-      <AppBar></AppBar>
+      <Header></Header>
 
       <Container maxWidth={ '7xl' }>
         <Heading>입어보기</Heading>

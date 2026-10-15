@@ -13,7 +13,7 @@ import {
   GridItem,
 } from '@chakra-ui/react';
 import { LuChevronLeft, LuRotateCcw, LuShare2 } from 'react-icons/lu';
-import { AppBar } from '../components/AppBar.jsx';
+import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 
 export default function WorldCupPage() {
@@ -53,7 +53,7 @@ export default function WorldCupPage() {
       <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
         <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
           <Container maxW="7xl" mx="auto" px={0}>
-            <AppBar />
+            <Header />
           </Container>
         </Box>
 
@@ -165,7 +165,7 @@ export default function WorldCupPage() {
     <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
       <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
         <Container maxW="7xl" mx="auto" px={0}>
-          <AppBar />
+          <Header />
         </Container>
       </Box>
 
