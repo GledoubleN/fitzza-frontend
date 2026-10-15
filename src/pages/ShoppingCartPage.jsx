@@ -45,8 +45,12 @@ export const ShoppingCartPage = () => {
     .then((response) => {
       setItems(response.data)
       setIsLoadFailed(false)
+      return true
     })
-    .catch(() => setIsLoadFailed(true))
+    .catch(() => {
+      setIsLoadFailed(true)
+      return false
+    })
 
   useEffect(() => {
     if (!localStorage.getItem('accessToken')) {
@@ -64,7 +68,9 @@ export const ShoppingCartPage = () => {
     } catch (error) {
       toaster.create({ type: 'error', title: error.response?.data?.message ?? failureTitle })
     }
-    await loadCart()
+    if (!await loadCart()) {
+      toaster.create({ type: 'error', title: '장바구니를 다시 불러오지 못했어요. 새로고침 후 주문해 주세요.' })
+    }
     setIsUpdating(false)
   }
 
@@ -256,17 +262,27 @@ export const ShoppingCartPage = () => {
             <Stack gap={ 4 } position={ 'sticky' } top={ 4 } bottom={ 0 } paddingTop={ { base: 4, lg: 0 } } paddingBottom={ 4 } bg={ 'bg' }>
               <Card.Root>
                 <Card.Body>
-                  <Flex justify={ 'space-between' } align={ 'center' }>
-                    <Text color={ 'fg.muted' }>총 주문 금액</Text>
-                    <Text textStyle={ 'xl' } fontWeight={ 'bold' }>{ formatPrice(totalPrice) }</Text>
-                  </Flex>
+                  <Stack gap={ 4 }>
+                    <Flex justify={ 'space-between' } align={ 'center' }>
+                      <Text color={ 'fg.muted' }>총 주문 금액</Text>
+                      <Text textStyle={ 'xl' } fontWeight={ 'bold' }>{ formatPrice(totalPrice) }</Text>
+                    </Flex>
+                    { isLoadFailed && (
+                      <Flex justify={ 'space-between' } align={ 'center' } gap={ 4 }>
+                        <Text textStyle={ 'sm' } color={ 'fg.error' }>최신 장바구니를 불러오지 못했어요.</Text>
+                        <Button variant={ 'outline' } size={ 'sm' } disabled={ isUpdating } onClick={ loadCart }>
+                          다시 불러오기
+                        </Button>
+                      </Flex>
+                    ) }
+                  </Stack>
                 </Card.Body>
               </Card.Root>
 
               <Button
                 size={ 'lg' }
                 width={ 'full' }
-                disabled={ selectedItems.length === 0 || isUpdating }
+                disabled={ selectedItems.length === 0 || isUpdating || isLoadFailed }
                 onClick={ () => navigate('/checkout', { state: { cartIds: selectedItems.map((item) => item.cartId) } }) }
               >
                 주문하기 { selectedItems.length }
