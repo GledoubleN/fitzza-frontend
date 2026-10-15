@@ -201,7 +201,7 @@ export const ShoppingCartPage = () => {
                                 <Text fontWeight={ 'semibold' } truncate>
                                   { item.productName ?? '판매가 종료된 상품이에요.' }
                                 </Text>
-                                { item.color && (
+                                { (item.color || item.size) && (
                                   <Text textStyle={ 'sm' } color={ 'fg.muted' }>
                                     { [item.color, item.size].filter(Boolean).join(' / ') }
                                   </Text>
