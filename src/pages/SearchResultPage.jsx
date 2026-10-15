@@ -93,7 +93,8 @@ export const SearchResultPage = () => {
       let currentPage = 0
       let currentHasNext = result.hasNext
 
-      while (currentHasNext && document.documentElement.scrollHeight <= window.innerHeight) {
+      while (currentHasNext && document.documentElement.scrollHeight <=
+      window.innerHeight) {
         currentPage += 1
         const nextResult = await fetchProducts(currentPage, currentSort)
         if (!isMounted) return
@@ -112,7 +113,8 @@ export const SearchResultPage = () => {
   // 무한 스크롤 이벤트 리스너
   useEffect(() => {
     const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200) {
+      if (window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 200) {
         if (!isLoading && hasMore) {
           fetchProducts(page + 1, currentSort)
         }
@@ -152,33 +154,33 @@ export const SearchResultPage = () => {
         </InputGroup>
       </Container>
 
-      {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */}
+      {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */ }
       <Container maxWidth="7xl" mx="auto">
         <Flex justify="flex-end">
           <Select.Root
-            collection={sortCollection}
+            collection={ sortCollection }
             width="40"
-            value={[currentSort]}
-            onValueChange={handleSortChange}
+            value={ [currentSort] }
+            onValueChange={ handleSortChange }
           >
-            <Select.HiddenSelect />
+            <Select.HiddenSelect/>
             <Select.Control>
               <Select.Trigger aria-label="상품 정렬">
-                <Select.ValueText placeholder="정렬" />
+                <Select.ValueText placeholder="정렬"/>
               </Select.Trigger>
               <Select.IndicatorGroup>
-                <Select.Indicator />
+                <Select.Indicator/>
               </Select.IndicatorGroup>
             </Select.Control>
             <Portal>
               <Select.Positioner>
                 <Select.Content>
-                  {sortCollection.items.map((item) => (
-                    <Select.Item key={item.value} item={item}>
-                      <Select.ItemText>{item.label}</Select.ItemText>
-                      <Select.ItemIndicator />
+                  { sortCollection.items.map((item) => (
+                    <Select.Item key={ item.value } item={ item }>
+                      <Select.ItemText>{ item.label }</Select.ItemText>
+                      <Select.ItemIndicator/>
                     </Select.Item>
-                  ))}
+                  )) }
                 </Select.Content>
               </Select.Positioner>
             </Portal>
@@ -186,7 +188,7 @@ export const SearchResultPage = () => {
         </Flex>
       </Container>
 
-      <Container maxW="7xl" mx="auto" px={5}>
+      <Container maxW="7xl" mx="auto" px={ 5 }>
         <Grid
           templateColumns={ {
             base: 'repeat(3, 1fr)',
