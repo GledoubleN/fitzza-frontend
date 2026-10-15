@@ -6,6 +6,7 @@ import products from '../data/products.json'
 import likes from '../data/wishlist.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
+import carts from '../data/carts.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendation-history.json'
 import recommendationMessages from '../data/recommendation-messages.json'
@@ -60,14 +61,6 @@ const findOption = (optionId) => {
 
   return option && { product, option }
 }
-
-const carts = [
-  { cartId: 1, optionId: 100, quantity: 1 },
-  { cartId: 2, optionId: 211, quantity: 2 },
-  { cartId: 3, optionId: 312, quantity: 1 },
-  { cartId: 4, optionId: 600, quantity: 1 },
-  { cartId: 5, optionId: 1311, quantity: 1 },
-]
 
 const toCartItem = (cart) => {
   const { product, option } = findOption(cart.optionId)
