@@ -1,11 +1,20 @@
 import { useState, useEffect } from 'react'
-import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text, Box, Button, Spinner, Flex, NativeSelect } from '@chakra-ui/react'
+import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text, Box, Button, Spinner, Flex, Select, createListCollection, Portal } from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
 import exampleProductImage from '../assets/hero.png'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
+
+const sortCollection = createListCollection({
+  items: [
+    { label: '정렬', value: '' },
+    { label: '글자순', value: 'NAME' },
+    { label: '낮은 가격순', value: 'PRICE_ASC' },
+    { label: '높은 가격순', value: 'PRICE_DESC' },
+  ],
+})
 
 export const SearchResultPage = () => {
   const navigate = useNavigate()
@@ -102,8 +111,8 @@ export const SearchResultPage = () => {
   }, [isLoading, hasMore, page, categoryCode, currentSort])
 
   // 💡 정렬 조건 변경 시 URL 쿼리스트링을 업데이트하여 상태와 페이지 이동 시 유지를 보장
-  const handleSortChange = (e) => {
-    const newSort = e.target.value
+  const handleSortChange = ({ value }) => {
+    const newSort = value[0] || ''
     const newParams = new URLSearchParams(searchParams)
 
     if (newSort) {
@@ -139,18 +148,35 @@ export const SearchResultPage = () => {
       {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */}
       <Container maxW="7xl" mx="auto" px={5} mb={4}>
         <Flex justify="flex-end">
-          <NativeSelect.Root size="sm" width="130px">
-            <NativeSelect.Field
-              value={currentSort}
-              onChange={handleSortChange}
-            >
-              <option value="">정렬</option>
-              <option value="NAME">글자순</option>
-              <option value="PRICE_ASC">낮은 가격순</option>
-              <option value="PRICE_DESC">높은 가격순</option>
-            </NativeSelect.Field>
-            <NativeSelect.Indicator />
-          </NativeSelect.Root>
+          <Select.Root
+            collection={sortCollection}
+            size="sm"
+            width="40"
+            value={[currentSort]}
+            onValueChange={handleSortChange}
+          >
+            <Select.HiddenSelect />
+            <Select.Control>
+              <Select.Trigger aria-label="상품 정렬">
+                <Select.ValueText placeholder="정렬" />
+              </Select.Trigger>
+              <Select.IndicatorGroup>
+                <Select.Indicator />
+              </Select.IndicatorGroup>
+            </Select.Control>
+            <Portal>
+              <Select.Positioner>
+                <Select.Content>
+                  {sortCollection.items.map((item) => (
+                    <Select.Item key={item.value} item={item}>
+                      <Select.ItemText>{item.label}</Select.ItemText>
+                      <Select.ItemIndicator />
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Portal>
+          </Select.Root>
         </Flex>
       </Container>
 
