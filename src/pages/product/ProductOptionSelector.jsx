@@ -179,6 +179,11 @@ export const ProductOptionSelector = ({ product }) => {
       >
         장바구니
       </Button>
+      { totalQuantity === 0 && (
+        <Text textStyle={ 'sm' } color={ 'fg.muted' } textAlign={ 'center' }>
+          { colors.length > 0 && !color ? '색상을 먼저 선택해 주세요.' : '사이즈를 선택해 주세요.' }
+        </Text>
+      ) }
     </Stack>
   )
 }
