@@ -127,7 +127,7 @@ export const handlers = [
     'http://localhost:8000/api/v1/products/:id',
     ({ params }) => {
       const product = products.find(
-        product => product.id === Number(params.id),
+        product => product.productId === Number(params.id),
       )
 
       if (!product) {
@@ -141,7 +141,7 @@ export const handlers = [
       }
       const options = ['블랙', '베이지'].flatMap((color, colorIndex) => (
         Object.keys(measurements).map((size, sizeIndex) => ({
-          optionId: product.id * 100 + colorIndex * 10 + sizeIndex,
+          optionId: product.productId * 100 + colorIndex * 10 + sizeIndex,
           color,
           size,
           measurement: measurements[size],
@@ -150,9 +150,9 @@ export const handlers = [
       ))
 
       return HttpResponse.json({
-        productId: product.id,
-        productName: product.name,
-        brandName: product.brand,
+        productId: product.productId,
+        productName: product.productName,
+        brandName: product.brandName,
         price: product.price,
         normalPrice: Math.round(product.price / 0.8 / 100) * 100,
         discountRate: 20,
@@ -374,7 +374,7 @@ export const handlers = [
         resultImageUrl: fittingResultImage,
         failReason: null,
         retryable: false,
-        products: products.filter((product) => productIds.includes(product.id)),
+        products: products.filter((product) => productIds.includes(product.productId)),
         createdAt: new Date().toISOString(),
       })
     },
