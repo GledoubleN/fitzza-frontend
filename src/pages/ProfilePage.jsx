@@ -26,16 +26,6 @@ import { AppBar } from '../components/AppBar.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
 
-const bodyTypeCollection = createListCollection({
-  items: [
-    { label: '선택 안함 (건너뛰기)', value: '' },
-    { label: '마른편 (슬림)', value: '마른편' },
-    { label: '보통 (스탠다드)', value: '보통' },
-    { label: '근육질 (탄탄함)', value: '근육질' },
-    { label: '통통한편 (체격 있음)', value: '통통한편' },
-  ],
-});
-
 const preferredFitCollection = createListCollection({
   items: [
     { label: '선택 안함 (건너뛰기)', value: '' },
@@ -62,7 +52,6 @@ export default function ProfilePage() {
     email: 'test@fitzza.com',
     height: '',
     weight: '',
-    bodyType: '',
     preferredFit: '',
     style: '',
   });
@@ -83,7 +72,6 @@ export default function ProfilePage() {
           email: response.data.email || prev.email,
           height: response.data.height ?? '',
           weight: response.data.weight ?? '',
-          bodyType: response.data.gender || '',
           preferredFit: response.data.preferredFit || '',
           style: response.data.preferredStyles?.[0] || '',
         }));
@@ -127,7 +115,7 @@ export default function ProfilePage() {
     const payload = {
       height: profileData.height ? Number(profileData.height) : null,
       weight: profileData.weight ? Number(profileData.weight) : null,
-      gender: profileData.bodyType || null,
+      gender: null,
       preferredFit: profileData.preferredFit || null,
       preferredStyles: profileData.style ? [profileData.style] : [],
       shoeSize: null,
@@ -199,7 +187,6 @@ export default function ProfilePage() {
                 <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted">
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력 (건너뜀)'}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체형</Text><Text textStyle="xs" fontWeight="600">{profileData.bodyType || '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit || '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style || '미입력 (건너뜀)'}</Text></Flex>
                 </Stack>
@@ -238,29 +225,6 @@ export default function ProfilePage() {
                       autoComplete="off"
                     />
                     <Button size="xs" variant="ghost" colorPalette="gray" onClick={() => handleSkipField('weight')}>건너뛰기</Button>
-                  </HStack>
-
-                  <HStack position="relative" zIndex={3}>
-                    <Text textStyle="xs" w="28%" color="fg.muted">체형</Text>
-                    <Select.Root
-                      collection={bodyTypeCollection}
-                      size="xs"
-                      width="full"
-                      value={profileData.bodyType ? [profileData.bodyType] : ['']}
-                      onValueChange={(e) => setProfileData({ ...profileData, bodyType: e.value[0] || '' })}
-                    >
-                      <Select.Trigger>
-                        <Select.ValueText placeholder="체형 선택" />
-                      </Select.Trigger>
-                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {bodyTypeCollection.items.map((item) => (
-                          <Select.Item key={item.value} item={item}>
-                            {item.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Root>
-                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('bodyType')}>비우기</Button>
                   </HStack>
 
                   <HStack position="relative" zIndex={2}>
