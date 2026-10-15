@@ -30,7 +30,7 @@ const items = [
   { to: "/categories", label: "카테고리", icon: LuLayoutGrid },
   { to: "/community/main", label: "커뮤니티", icon: LuUsers },
   { to: "/", label: "홈", icon: LuHouse, end: true },
-  { to: "/likes", label: "찜", icon: LuHeart },
+  { to: "/wishlist", label: "찜", icon: LuHeart },
   { to: "/profile", label: "프로필", icon: LuUser },
 ];
 

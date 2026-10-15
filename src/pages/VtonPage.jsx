@@ -18,7 +18,7 @@ import exampleClothesImage from '/src/assets/vite.svg'
 import { Footer } from '../components/Footer.jsx'
 import { LuPlus, LuX } from 'react-icons/lu'
 
-export const TryOnPage = () => {
+export const VtonPage = () => {
   const getReferenceImages = (direction) => {
     return (
       <Stack

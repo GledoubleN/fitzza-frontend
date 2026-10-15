@@ -1,11 +1,23 @@
 import { useState, useEffect } from 'react'
-import { Card, Container, Grid, GridItem, IconButton, Image, Input, InputGroup, Text, Box, Button, Spinner, Flex, Select, createListCollection, Portal } from '@chakra-ui/react'
+import {
+  Container,
+  Grid,
+  GridItem,
+  IconButton,
+  Image,
+  Input,
+  InputGroup,
+  Text,
+  Box,
+  Button,
+  Spinner, Stack, Heading, Center,
+} from '@chakra-ui/react'
 import { AppBar } from '../components/AppBar.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { LuHeart, LuSearch } from 'react-icons/lu'
-import exampleProductImage from '../assets/hero.png'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
+import { ProductItem } from '../components/ProductItem.jsx'
 
 const sortCollection = createListCollection({
   items: [
@@ -19,9 +31,7 @@ const sortCollection = createListCollection({
 export const SearchResultPage = () => {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-
   const categoryCode = searchParams.get('category')
-  // 💡 URL 쿼리스트링에서 정렬 조건을 읽어와서 페이지 이동/새로고침 시에도 조건 유지
   const currentSort = searchParams.get('sort') || ''
 
   const [displayProducts, setDisplayProducts] = useState([])
@@ -35,14 +45,17 @@ export const SearchResultPage = () => {
   const fetchProducts = async (targetPage = 0, sortKey = currentSort) => {
     setIsLoading(true)
     setError(null)
+
     try {
       const params = {
         page: targetPage,
         size: PAGE_SIZE,
       }
+
       if (sortKey) {
         params.sort = sortKey
       }
+
       if (categoryCode) {
         params.category = categoryCode
       }
@@ -61,6 +74,7 @@ export const SearchResultPage = () => {
       setHasMore(hasNext)
       setIsLoading(false)
       return { content, hasNext }
+
     } catch (err) {
       setError('상품 목록을 불러오지 못했습니다.')
       setIsLoading(false)
@@ -68,7 +82,6 @@ export const SearchResultPage = () => {
     }
   }
 
-  // categoryCode나 URL의 sort가 바뀔 때 초기 데이터 로드 및 스크롤바 확보
   useEffect(() => {
     let isMounted = true
 
@@ -125,28 +138,22 @@ export const SearchResultPage = () => {
   }
 
   return (
-    <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
-      <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" px={5} py={4}>
-        <Container maxW="7xl" mx="auto" px={0}>
-          <AppBar />
-        </Container>
-      </Box>
+    <Stack gap={ 4 } position="relative" minH="100vh" paddingY={ 4 }>
+      <AppBar/>
 
-      <Container maxW="3xl" mx="auto" px={5} mb={4}>
-        <InputGroup startElement={<Box as={LuSearch} boxSize={5} color="fg.muted" />}>
+      <Container maxW="3xl">
+        <InputGroup
+          startElement={ <LuSearch/> }
+        >
           <Input
             placeholder="검색어를 입력해주세요"
-            borderRadius="xl"
-            borderWidth="thin"
-            borderColor="border.subtle"
-            py={5}
-            defaultValue={categoryCode ? `카테고리 코드: ${categoryCode}` : ''}
+            defaultValue={ categoryCode ? `카테고리 코드: ${ categoryCode }` : '' }
           />
         </InputGroup>
       </Container>
 
       {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */}
-      <Container maxW="7xl" mx="auto" px={5} mb={4}>
+      <Container maxWidth="7xl" mx="auto" px={5} mb={4}>
         <Flex justify="flex-end">
           <Select.Root
             collection={sortCollection}
@@ -182,84 +189,47 @@ export const SearchResultPage = () => {
 
       <Container maxW="7xl" mx="auto" px={5}>
         <Grid
-          templateColumns={{
+          templateColumns={ {
             base: 'repeat(3, 1fr)',
-            lg: 'repeat(5, 1fr)'
-          }}
-          gap={4}
+            lg: 'repeat(5, 1fr)',
+          } }
+          gap={ 4 }
         >
           {
             displayProducts?.map((product, index) => {
-              const uniqueKey = product.productId ?? product.id ?? index
+              const uniqueKey = product.productId ?? index
               return (
-                <GridItem key={uniqueKey}>
-                  <Card.Root
-                    variant="subtle"
-                    borderWidth="thin"
-                    borderColor="border.subtle"
-                    bg="bg.panel"
-                    borderRadius="2xl"
-                    overflow="hidden"
-                    cursor="pointer"
-                    position="relative"
-                    _hover={{ borderColor: 'fg.muted' }}
-                    onClick={() => navigate(`/products/${product.productId ?? product.id}`)}
-                  >
-                    <Grid
-                      templateRows="auto auto"
-                      templateAreas={`
-                        "image"
-                        "content"
-                      `}
-                    >
-                      <GridItem gridArea="image" position="relative">
-                        <IconButton
-                          position="absolute"
-                          top={2}
-                          right={2}
-                          aria-label="찜하기"
-                          rounded="full"
-                          variant="ghost"
-                          size="xs"
-                          zIndex={2}
-                        >
-                          <Box as={LuHeart} boxSize={3.5} />
-                        </IconButton>
-                        <Image src={product.thumbnailUrl || exampleProductImage} w="100%" h="28" objectFit="cover" />
-                      </GridItem>
-
-                      <GridItem gridArea="content">
-                        <Card.Body p={2.5} gap={1}>
-                          <Text textStyle="xs" color="fg.muted" truncate>{product.brandName || product.brand}</Text>
-                          <Text textStyle="xs" fontWeight="semibold" truncate>{product.productName || product.name}</Text>
-                          <Text textStyle="2xs" fontWeight="bold">{product.price?.toLocaleString()} 원</Text>
-                        </Card.Body>
-                      </GridItem>
-                    </Grid>
-                  </Card.Root>
-                </GridItem>
+                <ProductItem product={ product }></ProductItem>
               )
             })
           }
         </Grid>
 
-        {error && (
-          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" py={10} gap={3}>
-            <Text color="fg.muted" textStyle="sm">{error}</Text>
-            <Button size="xs" variant="outline" onClick={() => fetchProducts(page, currentSort)}>다시 시도</Button>
-          </Box>
-        )}
+        { error && (
+          <Center
+            align="center"
+            justify="center"
+            py={ 12 }
+          >
+            <Text color="fg.muted" textStyle="sm">{ error }</Text>
+            <Button
+              size="md"
+              variant="outline"
+              onClick={ () => fetchProducts(page) }
+            >
+              다시 시도
+            </Button>
+          </Center>
+        ) }
 
-        {isLoading && (
-          <Box display="flex" justifyContent="center" alignItems="center" py={8}>
-            <Spinner size="sm" />
-          </Box>
-        )}
+        { isLoading && (
+          <Center py={ 12 }>
+            <Spinner size="md"/>
+          </Center>
+        ) }
       </Container>
 
-      <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
-        <TabBar />
-      </Box>
-    </Box>
+      <TabBar/>
+    </Stack>
   )
 }
