@@ -118,7 +118,12 @@ export const ShoppingCartPage = () => {
   const availableItems = items.filter((item) => item.available)
   const selectedItems = availableItems.filter((item) => !unselectedIds.has(item.cartId))
   const isAllSelected = availableItems.length > 0 && selectedItems.length === availableItems.length
-  const brandGroups = [...Map.groupBy(items, (item) => item.brandName ?? '판매 종료')].map(([brandName, groupItems]) => {
+  const itemsByBrand = new Map()
+  items.forEach((item) => {
+    const brandName = item.brandName ?? '판매 종료'
+    itemsByBrand.set(brandName, [...(itemsByBrand.get(brandName) ?? []), item])
+  })
+  const brandGroups = [...itemsByBrand].map(([brandName, groupItems]) => {
     const groupSelectedItems = groupItems.filter((item) => selectedItems.includes(item))
 
     return {
