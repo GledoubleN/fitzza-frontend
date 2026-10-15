@@ -37,6 +37,36 @@ const toFittingResponse = (fitting) => {
 }
 
 export const handlers = [
+  http.post(
+    'http://localhost:8000/api/v1/auth/signin',
+    ({ params }) => {
+      return HttpResponse.json({
+        accessToken:  "fitzza-access-token",
+        refreshToken: "fitzza-refresh-token",
+        userId: 1,
+        nickname: "CoffeeSlayer",
+      })
+    }
+  ),
+
+  http.post(
+    'http://localhost:8000/api/v1/auth/signup',
+    ({ params }) => {
+      return HttpResponse.json({
+        userId: 1
+      })
+    }
+  ),
+
+  http.post(
+    'http://localhost:8000/api/v1/auth/signout',
+    ({ params }) => {
+      return HttpResponse.json({
+
+      })
+    }
+  ),
+
   http.get(
     'http://localhost:8000/api/v1/uers/:id',
     ({ params }) => {

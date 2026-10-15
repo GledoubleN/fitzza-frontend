@@ -20,30 +20,23 @@ export const SignInPage = () => {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const moveUrl = useNavigate()
+  const navigate = useNavigate()
 
   const changeHandler = async (e) => {
     e.preventDefault()
 
-    if (!email && !password) {
-      localStorage.setItem('accessToken', 'mock-access-token-12345')
-      moveUrl('/')
-      return
-    }
-
     setLoading(true)
     setErrorMessage('')
+
     try {
-      const response = await api.post('/auth/login/sample', { email, password })
-      const token = response.data?.accessToken || response.data?.token
-      if (token) {
-        localStorage.setItem('accessToken', token)
-      }
-      moveUrl('/')
+      const response = await api.post('/auth/signin', { email, password })
+      const token = response.data?.accessToken
+
+      localStorage.setItem('accessToken', token)
+      navigate('/')
+
     } catch (err) {
-      console.warn("백엔드 통신 실패\n목업 모드로 로그인을 진행합니다.", err)
-      localStorage.setItem('accessToken', 'mock-access-token-12345')
-      moveUrl('/')
+
     } finally {
       setLoading(false)
     }
@@ -114,7 +107,7 @@ export const SignInPage = () => {
             variant="plain"
             size="sm"
             width="full"
-            onClick={() => moveUrl('/signup')} // 회원가입 라우트 경로에 맞게 수정하세요
+            onClick={() => navigate('/signup')}
             color="fg.muted"
           >
             계정이 없으신가요?
