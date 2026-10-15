@@ -343,7 +343,21 @@ export const ShoppingCartPage = () => {
                 disabled={ selectedItems.length === 0 || isUpdating || isLoadFailed }
                 onClick={ () => navigate('/checkout', { state: { cartIds: selectedItems.map((item) => item.cartId) } }) }
               >
-                주문하기 { selectedItems.length }
+                주문하기
+                <Flex
+                  as={ 'span' }
+                  minWidth={ '6' }
+                  height={ '6' }
+                  justify={ 'center' }
+                  align={ 'center' }
+                  rounded={ 'l1' }
+                  bg={ 'bg' }
+                  color={ 'fg' }
+                  textStyle={ 'sm' }
+                  fontWeight={ 'bold' }
+                >
+                  { selectedItems.length }
+                </Flex>
               </Button>
               { import.meta.env.DEV && <CartFailureTestButtons/> }
             </Stack>
