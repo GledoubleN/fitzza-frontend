@@ -79,10 +79,20 @@ export const ShoppingCartPage = () => {
     '장바구니를 수정하지 못했어요.',
   )
 
-  const removeItems = (cartIds) => updateCart(
-    () => Promise.all(cartIds.map((cartId) => api.delete(`/carts/${ cartId }`))),
-    '장바구니에서 삭제하지 못했어요.',
-  )
+  const removeItems = (cartIds) => updateCart(async () => {
+    const results = await Promise.allSettled(cartIds.map((cartId) => api.delete(`/carts/${ cartId }`)))
+    const failures = results.filter((result) => result.status === 'rejected')
+    if (failures.length === 0) {
+      return
+    }
+
+    toaster.create({
+      type: 'error',
+      title: cartIds.length === 1
+        ? failures[0].reason.response?.data?.message ?? '장바구니에서 삭제하지 못했어요.'
+        : `${ cartIds.length }개 중 ${ failures.length }개를 삭제하지 못했어요.`,
+    })
+  }, '장바구니에서 삭제하지 못했어요.')
 
   const changeOption = async (optionId) => {
     await changeItem(editingItem, { optionId })
