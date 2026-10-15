@@ -5,6 +5,7 @@ import products from '../data/products.json'
 import likes from '../data/wishlist.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
+import userProfile from '../data/user-profile.json'
 
 const fittings = []
 const FITTING_DURATION = 3000
@@ -23,17 +24,7 @@ const toFittingResponse = (fitting) => {
   })
 }
 
-let mockUserProfile = {
-  email: 'user@fitzza.com',
-  nickname: '핏짜',
-  height: 175,
-  weight: 68,
-  gender: '보통',
-  preferredFit: '레귤러',
-  preferredStyles: ['캐주얼'],
-  shoeSize: 270,
-  photoId: 1,
-};
+let mockUserProfile = { ...userProfile }
 
 export const handlers = [
   http.get('http://localhost:8000/api/v1/users/me', () => {
