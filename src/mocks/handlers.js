@@ -24,22 +24,17 @@ const toFittingResponse = (fitting) => {
   })
 }
 
-let mockUserProfile = { ...userProfile }
-
 export const handlers = [
   http.get('http://localhost:8000/api/v1/users/me', () => {
-    return HttpResponse.json(mockUserProfile);
+    return HttpResponse.json(userProfile)
   }),
 
   http.patch('http://localhost:8000/api/v1/users/me', async ({ request }) => {
-    const body = await request.json();
+    const body = await request.json()
 
-    mockUserProfile = {
-      ...mockUserProfile,
-      ...body,
-    };
+    Object.assign(userProfile, body)
 
-    return HttpResponse.json(mockUserProfile, { status: 200 });
+    return HttpResponse.json(userProfile, { status: 200 })
   }),
 
   http.post(
