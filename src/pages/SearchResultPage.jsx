@@ -153,11 +153,10 @@ export const SearchResultPage = () => {
       </Container>
 
       {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */}
-      <Container maxWidth="7xl" mx="auto" px={5} mb={4}>
+      <Container maxWidth="7xl" mx="auto">
         <Flex justify="flex-end">
           <Select.Root
             collection={sortCollection}
-            size="sm"
             width="40"
             value={[currentSort]}
             onValueChange={handleSortChange}
