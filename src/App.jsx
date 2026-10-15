@@ -39,7 +39,7 @@ function App() {
         <Route path="/profile" element={ <ProfilePage/> }/>
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
         <Route path="/shortcuts" element={ <ShortcutPage/> }/>
-        <Route path="/likes" element={ <WishlistPage/> }/>
+        <Route path="/wishlist" element={ <WishlistPage/> }/>
         <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orderdetail" element={<OrderDetail />} />
         <Route path="/theme-preview" element={<ThemePreviewPage />} />

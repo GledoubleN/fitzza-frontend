@@ -198,6 +198,20 @@ export const handlers = [
     },
   ),
 
+  http.get(
+    'http://localhost:8000/api/v1/wishlists',
+    async ({ request }) => {
+      return HttpResponse.json({
+        content: products,
+        page: 1,
+        size: products.length,
+        totalElements: 1,
+        totalPages: 1,
+        hasNext: 1
+      })
+    },
+  ),
+
   http.post(
     'http://localhost:8000/api/v1/wishlists',
     async ({ request }) => {
