@@ -34,6 +34,30 @@ export const OptionSelect = ({ label, collection, ...props }) => (
   </Select.Root>
 )
 
+export const QuantityStepper = ({ quantity, onChange, disabled }) => (
+  <Flex align={ 'center' } gap={ 4 } bg={ 'bg' } border={ 'sm' } borderColor={ 'border' } rounded={ 'l2' }>
+    <IconButton
+      variant={ 'ghost' }
+      size={ 'sm' }
+      aria-label={ '수량 줄이기' }
+      disabled={ disabled || quantity <= 1 }
+      onClick={ () => onChange(quantity - 1) }
+    >
+      <LuMinus/>
+    </IconButton>
+    <Text fontWeight={ 'bold' }>{ quantity }</Text>
+    <IconButton
+      variant={ 'ghost' }
+      size={ 'sm' }
+      aria-label={ '수량 늘리기' }
+      disabled={ disabled }
+      onClick={ () => onChange(quantity + 1) }
+    >
+      <LuPlus/>
+    </IconButton>
+  </Flex>
+)
+
 export const ProductOptionSelector = ({ product }) => {
   const navigate = useNavigate()
   const [color, setColor] = useState('')
@@ -129,26 +153,10 @@ export const ProductOptionSelector = ({ product }) => {
             </IconButton>
           </Flex>
           <Flex justify={ 'space-between' } align={ 'center' }>
-            <Flex align={ 'center' } gap={ 3 } bg={ 'bg' } border={ 'sm' } borderColor={ 'border' } rounded={ 'l2' }>
-              <IconButton
-                variant={ 'ghost' }
-                size={ 'sm' }
-                aria-label={ '수량 줄이기' }
-                disabled={ quantities[option.optionId] <= 1 }
-                onClick={ () => setQuantity(option.optionId, quantities[option.optionId] - 1) }
-              >
-                <LuMinus/>
-              </IconButton>
-              <Text fontWeight={ 'bold' }>{ quantities[option.optionId] }</Text>
-              <IconButton
-                variant={ 'ghost' }
-                size={ 'sm' }
-                aria-label={ '수량 늘리기' }
-                onClick={ () => setQuantity(option.optionId, quantities[option.optionId] + 1) }
-              >
-                <LuPlus/>
-              </IconButton>
-            </Flex>
+            <QuantityStepper
+              quantity={ quantities[option.optionId] }
+              onChange={ (quantity) => setQuantity(option.optionId, quantity) }
+            />
             <Text fontWeight={ 'bold' }>
               { (product.price * quantities[option.optionId]).toLocaleString() }원
             </Text>
