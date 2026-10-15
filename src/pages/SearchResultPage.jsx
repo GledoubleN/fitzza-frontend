@@ -155,7 +155,7 @@ export const SearchResultPage = () => {
       </Container>
 
       {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */ }
-      <Container maxWidth="7xl" mx="auto">
+      <Container maxWidth="7xl">
         <Flex justify="flex-end">
           <Select.Root
             collection={ sortCollection }
