@@ -106,7 +106,7 @@ export const ShoppingCartPage = () => {
 
   const changeItem = (item, changes) => updateCart(
     () => api.patch(`/carts/${ item.cartId }`, { optionId: item.optionId, quantity: item.quantity, ...changes }),
-    '장바구니를 수정하지 못했어요.',
+    '다시 시도해 주세요.',
   )
 
   const removeItems = (cartIds, isBulk = false) => updateCart(async () => {
