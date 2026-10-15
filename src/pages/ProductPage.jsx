@@ -17,7 +17,7 @@ import {
 import { useNavigate, useParams } from 'react-router-dom'
 import { LuArrowUp, LuHeart } from 'react-icons/lu'
 import { api } from '../api/axios.js'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
 import { ProductOptionSelector } from './product/ProductOptionSelector.jsx'
@@ -90,7 +90,7 @@ export const ProductPage = () => {
   if (isLoading || !product) {
     return (
       <Stack height={ '100%' } paddingY={ 4 } gap={ 4 }>
-        <AppBar></AppBar>
+        <Header></Header>
         <Container maxWidth={ '5xl' } paddingY={ 20 } centerContent>
           { isLoading ? <Spinner/> : <Text color={ 'fg.muted' }>상품을 찾을 수 없어요.</Text> }
         </Container>
@@ -100,7 +100,7 @@ export const ProductPage = () => {
 
   return (
     <Stack minHeight={ '100%' } direction={ 'column' } paddingY={ 4 } gap={ 4 }>
-      <AppBar></AppBar>
+      <Header></Header>
 
       <Container maxWidth={ '5xl' } flex={ '1' }>
         <Grid templateColumns={ { base: '1fr', md: '2fr 1fr' } } gap={ 4 }>

@@ -2,16 +2,9 @@ import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
 import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
 import { OnboardingSaveConfirmation } from './OnboardingSaveConfirmation.jsx'
 
-const bodyTypeOptions = [
-  { label: '마른편 (슬림)', value: '마른편' },
-  { label: '보통 (스탠다드)', value: '보통' },
-  { label: '근육질 (탄탄함)', value: '근육질' },
-  { label: '통통한편 (체격 있음)', value: '통통한편' },
-]
-
 const fitOptions = [
-  { label: '슬림 핏', value: '슬림' },
-  { label: '레귤러 핏', value: '레귤러' },
+  { label: '슬림핏', value: '슬림' },
+  { label: '레귤러핏', value: '레귤러' },
   { label: '오버사이즈', value: '오버사이즈' },
 ]
 
@@ -41,31 +34,12 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
     >
       <Box mb={ 4 }>
         <Heading mb={ 1 }>
-          체형과 선호하는 스타일을 골라주세요
+          선호하는 스타일을 골라주세요
         </Heading>
         <Text fontSize="sm" color="fg.muted">고객님께 딱 맞는 핏과 스타일을 추천해드려요</Text>
       </Box>
 
       <VStack gap={ 6 } align="stretch">
-        <VStack align="stretch" gap={ 3 }>
-          <Heading fontSize="md">체형</Heading>
-          <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 3 }>
-            { bodyTypeOptions.map((item) => {
-              const isSelected = formData.bodyType === item.value
-              return (
-                <Button
-                  key={ item.value }
-                  size="md"
-                  variant={ isSelected ? 'solid' : 'outline' }
-                  onClick={ () => onFieldChange('bodyType', item.value) }
-                >
-                  { item.label }
-                </Button>
-              )
-            }) }
-          </Grid>
-        </VStack>
-
         <VStack align="stretch" gap={ 3 }>
           <Heading fontSize="md">
             선호 핏

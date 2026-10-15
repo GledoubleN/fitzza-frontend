@@ -55,7 +55,7 @@ export const ProductItem = ({ product }) => {
           { product.brandName }
         </Text>
         <Heading
-          size={ { base: 'sm', md: 'lg' } }
+          size={ { base: 'sm', md: 'md' } }
           truncate
         >
           { product.productName }

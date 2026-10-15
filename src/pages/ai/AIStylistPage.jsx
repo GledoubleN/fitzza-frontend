@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from 'react'
 import { LuClock } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../../api/axios.js'
-import { AppBar } from '../../components/AppBar.jsx'
+import { Header } from '../../components/Header.jsx'
 import { Toaster } from '../../components/ui/toaster.jsx'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
@@ -228,7 +228,7 @@ export const AIStylistPage = () => {
 
   return (
     <Stack gap={ 4 } paddingY={ 4 } minHeight={ 'vh' }>
-      <AppBar></AppBar>
+      <Header></Header>
 
       <Container maxWidth={ '3xl' } flex={ 1 }>
         <Stack gap={ 4 }>

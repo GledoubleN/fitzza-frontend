@@ -18,7 +18,7 @@ import {
   LuFileText,
   LuPackage
 } from "react-icons/lu"
-import { AppBar } from "../components/AppBar.jsx"
+import { Header } from "../components/Header.jsx"
 import { TabBar } from "../components/TabBar.jsx"
 
 export const OrderDetail = () => {
@@ -26,7 +26,7 @@ export const OrderDetail = () => {
     <Box position="relative" minH="100vh" pb={28} bg="bg">
       <Container maxW="container.xl" mx="auto" py={10} px={5}>
         <Box mb={6}>
-          <AppBar />
+          <Header />
         </Box>
 
         <Flex align="center" justify="space-between" mb={4}>

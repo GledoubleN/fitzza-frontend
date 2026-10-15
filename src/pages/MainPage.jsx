@@ -16,7 +16,7 @@ import {
   LuSparkle,
 } from 'react-icons/lu'
 import exampleProductImage from '/src/assets/hero.png'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { useNavigate } from 'react-router-dom'
 import { Footer } from '../components/Footer.jsx'
@@ -101,7 +101,7 @@ export const MainPage = () => {
       paddingY={ '4' }
       minHeight={ '100vh' }
     >
-      <AppBar></AppBar>
+      <Header></Header>
 
       <Container maxWidth={ '3xl' }>
         <Card.Root
@@ -143,7 +143,10 @@ export const MainPage = () => {
       </Container>
 
       <Container maxWidth={ '5xl' }>
-        <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ 4 }>
+        <Grid
+          templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
+          gap={ 4 }
+        >
           {
             products.map((product, index) => (
               <ProductItem key={ index } product={ product }></ProductItem>

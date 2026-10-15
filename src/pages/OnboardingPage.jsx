@@ -17,7 +17,6 @@ export default function OnboardingPage () {
     weight: '',
     shoeSize: '',          // 발사이즈 추가
     gender: '기타',
-    bodyType: '보통',
     preferredFit: '레귤러',
     style: '캐주얼',
     topSize: 'M',

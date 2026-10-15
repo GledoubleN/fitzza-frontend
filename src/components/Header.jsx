@@ -4,7 +4,7 @@ import { LuBell, LuShoppingBag, LuLogIn, LuLogOut } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
 
-export const AppBar = ({ maxWidth = '7xl' }) => {
+export const Header = ({ maxWidth = '7xl' }) => {
   const navigate = useNavigate()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 

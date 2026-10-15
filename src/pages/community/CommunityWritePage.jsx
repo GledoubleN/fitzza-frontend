@@ -16,7 +16,7 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react'
-import { AppBar } from '../../components/AppBar.jsx'
+import { Header } from '../../components/Header.jsx'
 import { RichTextEditor } from '/src/components/ui/rich-text-editor'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
@@ -144,7 +144,7 @@ export const CommunityWritePage = () => {
   return (
     <Container maxWidth={ 'xl' } height={ '100vh' }>
       <Stack paddingY={ '4' } gap={ '4' }>
-        <AppBar></AppBar>
+        <Header></Header>
 
         <Flex align={ 'center' } gap={ '1' }>
           <Text fontSize={ 'lg' } fontWeight={ 'bold' }>커뮤니티</Text>

@@ -7,6 +7,7 @@ import likes from '../data/wishlist.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
 import carts from '../data/carts.json'
+import userProfile from '../data/user-profile.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendation-history.json'
 import recommendationMessages from '../data/recommendation-messages.json'
@@ -17,12 +18,9 @@ import fittingResultImage from '../assets/hero.png'
 // 실제 백엔드가 붙으면 필요 없습니다.
 const RECOMMENDATION_PROCESSING_MS = 3000
 
-// TODO API 필요: 가상 피팅 결과 조회·최신 피팅 조회 API가 명세에 없어 목에서만 저장한다.
-// 새로고침하면 비워진다.
 const fittings = []
 const FITTING_DURATION = 3000
 
-// 요청 후 일정 시간이 지나면 완료된 것으로 응답한다.
 const toFittingResponse = (fitting) => {
   if (!fitting) {
     return new HttpResponse(null, { status: 404 })
@@ -96,6 +94,18 @@ const validateCartRequest = ({ optionId, quantity }) => {
 }
 
 export const handlers = [
+  http.get('http://localhost:8000/api/v1/users/me', () => {
+    return HttpResponse.json(userProfile)
+  }),
+
+  http.patch('http://localhost:8000/api/v1/users/me', async ({ request }) => {
+    const body = await request.json()
+
+    Object.assign(userProfile, body)
+
+    return HttpResponse.json(userProfile, { status: 200 })
+  }),
+
   http.post(
     'http://localhost:8000/api/v1/auth/signin',
     ({ params }) => {
@@ -151,17 +161,25 @@ export const handlers = [
   http.get(
     'http://localhost:8000/api/v1/products',
     ({ request }) => {
-      // 🧪 [조회 실패 테스트용 주석]
-      // return new HttpResponse(null, { status: 500 })
-
       const url = new URL(request.url)
       const page = Number(url.searchParams.get('page') || 0)
       const size = Number(url.searchParams.get('size') || 10)
+      const sort = url.searchParams.get('sort') || ''
+
+      let sortedProducts = [...products]
+
+      if (sort === 'NAME') {
+        sortedProducts.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+      } else if (sort === 'PRICE_ASC') {
+        sortedProducts.sort((a, b) => (a.price || 0) - (b.price || 0))
+      } else if (sort === 'PRICE_DESC') {
+        sortedProducts.sort((a, b) => (b.price || 0) - (a.price || 0))
+      }
 
       const start = page * size
       const end = start + size
-      const paginatedContent = products.slice(start, end)
-      const hasNext = end < products.length
+      const paginatedContent = sortedProducts.slice(start, end)
+      const hasNext = end < sortedProducts.length
 
       return HttpResponse.json({
         content: paginatedContent,
@@ -170,7 +188,7 @@ export const handlers = [
         totalElements: products.length,
         totalPages: Math.ceil(products.length / size),
         hasNext: hasNext,
-        sort: url.searchParams.get('sort') || 'LATEST'
+        sort: sort
       })
     },
   ),
@@ -227,19 +245,22 @@ export const handlers = [
         4: '그냥저냥 입을 만하네요.',
         3: '별로입니다. 사지 마세요.',
       }
-      const content = Array.from({ length: TOTAL }, (_, index) => ({
-        reviewId: index + 1,
-        productId: Number(query.get('productId')),
-        userId: index + 1,
-        rating: 5 - (index % 3),
-        content: contents[5 - (index % 3)],
-        imageUrl: index % 2 === 0 ? '/src/assets/hero.png' : null,
-        createdAt: new Date(2026, 8, 30 - index).toISOString(),
-      }))
-        .sort((a, b) => (
-          sort === 'RATING_DESC' ? b.rating - a.rating : sort === 'RATING_ASC' ? a.rating - b.rating : 0
-        ))
-        .slice(page * size, (page + 1) * size)
+      const content = Array.from({ length: TOTAL }, (_, index) => {
+        const rating = 5 - (index % 3);
+        return {
+          reviewId: index + 1,
+          productId: Number(query.get('productId')),
+          userId: index + 1,
+          rating: rating,
+          content: contents[rating] || '좋아요!',
+          imageUrl: index % 2 === 0 ? '/src/assets/hero.png' : null,
+          createdAt: new Date(2026, 8, 30 + index).toISOString(),
+        };
+      })
+      .sort((a, b) => (
+        sort === 'RATING_DESC' ? b.rating - a.rating : sort === 'RATING_ASC' ? a.rating - b.rating : 0
+      ))
+      .slice(page * size, (page + 1) * size)
 
       return HttpResponse.json({ content, page, totalPages: Math.ceil(TOTAL / size) })
     },
@@ -336,12 +357,6 @@ export const handlers = [
   http.delete(
     'http://localhost:8000/api/v1/wishlists',
     () => new HttpResponse(null, { status: 204 }),
-  ),
-
-  // TODO API 필요: photoId(프로필 전신 사진 ID)는 명세의 /users/me 응답에 없는 가정 필드다.
-  http.get(
-    'http://localhost:8000/api/v1/users/me',
-    () => HttpResponse.json({ email: 'user@fitzza.com', nickname: '핏짜', photoId: 1 }),
   ),
 
   http.post(

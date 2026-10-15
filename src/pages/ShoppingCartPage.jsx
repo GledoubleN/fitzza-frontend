@@ -18,7 +18,7 @@ import {
 import { LuX } from 'react-icons/lu'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 import { Footer } from '../components/Footer.jsx'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
 import { api } from '../api/axios.js'
@@ -143,7 +143,7 @@ export const ShoppingCartPage = () => {
   if (!items) {
     return (
       <Stack minHeight={ '100vh' } paddingY={ 4 } gap={ 4 } bg={ 'bg' }>
-        <AppBar/>
+        <Header/>
         <Container maxWidth={ '5xl' } paddingY={ 20 } centerContent>
           { isLoadFailed ? (
             <Stack align={ 'center' } gap={ 4 }>
@@ -189,7 +189,7 @@ export const ShoppingCartPage = () => {
 
   return (
     <Grid templateRows={ 'auto auto 1fr auto' } minHeight={ '100vh' } paddingY={ 4 } gap={ 4 } bg={ 'bg' }>
-      <AppBar/>
+      <Header/>
 
       <Container maxWidth={ '5xl' }>
         <Heading>장바구니</Heading>

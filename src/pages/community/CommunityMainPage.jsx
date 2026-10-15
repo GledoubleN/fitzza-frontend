@@ -22,7 +22,7 @@ import {
 } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
-import { AppBar } from '../../components/AppBar.jsx'
+import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { HttpStatusCode } from 'axios'
 
@@ -92,7 +92,7 @@ export const CommunityMainPage = () => {
                  position="relative">
         <Stack direction="column" gap="4">
           {/* 상단 로고 바 */ }
-          <AppBar></AppBar>
+          <Header></Header>
 
           {/* 커뮤니티 헤더 */ }
           <Flex align="center" justify="space-between">

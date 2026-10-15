@@ -14,19 +14,17 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { AppBar } from '../components/AppBar.jsx';
+import {
+  LuUser,
+  LuPackage,
+  LuGift,
+  LuMessageSquare,
+  LuSettings,
+  LuChevronRight,
+} from 'react-icons/lu';
+import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
-
-const bodyTypeCollection = createListCollection({
-  items: [
-    { label: '선택 안함 (건너뛰기)', value: '' },
-    { label: '마른편 (슬림)', value: '마른편' },
-    { label: '보통 (스탠다드)', value: '보통' },
-    { label: '근육질 (탄탄함)', value: '근육질' },
-    { label: '통통한편 (체격 있음)', value: '통통한편' },
-  ],
-});
 
 const preferredFitCollection = createListCollection({
   items: [
@@ -54,7 +52,6 @@ export default function ProfilePage() {
     email: 'test@fitzza.com',
     height: '',
     weight: '',
-    bodyType: '',
     preferredFit: '',
     style: '',
   });
@@ -67,16 +64,24 @@ export default function ProfilePage() {
 
   const fetchProfile = async () => {
     try {
-      const response = await api.get('/profile');
+      const response = await api.get('/users/me');
       if (response.data) {
-        setProfileData((prev) => ({ ...prev, ...response.data }));
+        setProfileData((prev) => ({
+          ...prev,
+          nickname: response.data.nickname || prev.nickname,
+          email: response.data.email || prev.email,
+          height: response.data.height ?? '',
+          weight: response.data.weight ?? '',
+          preferredFit: response.data.preferredFit || '',
+          style: response.data.preferredStyles?.[0] || '',
+        }));
       }
     } catch (err) {
       if (err.response?.status === 401) {
         localStorage.removeItem('accessToken');
         navigate('/signin');
       } else {
-        console.warn("백엔드 통신 실패 - 기본 프로필 정보를 표시합니다.", err);
+        console.warn("백엔드 통신 실패. 기본 프로필 정보를 표시합니다.", err);
       }
     }
   };
@@ -107,13 +112,26 @@ export default function ProfilePage() {
     e.preventDefault();
     setMessage('');
 
+    const payload = {
+      height: profileData.height ? Number(profileData.height) : null,
+      weight: profileData.weight ? Number(profileData.weight) : null,
+      gender: null,
+      preferredFit: profileData.preferredFit || null,
+      preferredStyles: profileData.style ? [profileData.style] : [],
+      shoeSize: null,
+    };
+
     try {
-      await api.put('/profile', profileData);
+      await api.patch('/users/me', payload);
       setMessage('프로필이 성공적으로 저장되었습니다.');
       setIsEditing(false);
     } catch (err) {
-      setMessage('프로필이 저장되었습니다 (테스트 모드).');
-      setIsEditing(false);
+      if (err.response?.status === 400) {
+        setMessage('입력한 데이터의 단위나 범위를 확인해주세요.');
+      } else {
+        setMessage('프로필이 저장되었습니다 (테스트 모드).');
+        setIsEditing(false);
+      }
     }
   };
 
@@ -121,7 +139,7 @@ export default function ProfilePage() {
     <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
       <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" py={4}>
         <Container maxW="7xl" mx="auto" px={5}>
-          <AppBar />
+          <Header />
         </Container>
       </Box>
 
@@ -150,11 +168,11 @@ export default function ProfilePage() {
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                fontSize="4xl"
                 bg="bg.muted"
+                color="fg.muted"
                 mb={3}
               >
-                👤
+                <LuUser size={36} strokeWidth={1.5} />
               </Box>
               <Heading textStyle="lg" mt={1} fontWeight="600">
                 {profileData.nickname}
@@ -169,7 +187,6 @@ export default function ProfilePage() {
                 <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted">
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력 (건너뜀)'}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체형</Text><Text textStyle="xs" fontWeight="600">{profileData.bodyType || '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit || '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style || '미입력 (건너뜀)'}</Text></Flex>
                 </Stack>
@@ -208,29 +225,6 @@ export default function ProfilePage() {
                       autoComplete="off"
                     />
                     <Button size="xs" variant="ghost" colorPalette="gray" onClick={() => handleSkipField('weight')}>건너뛰기</Button>
-                  </HStack>
-
-                  <HStack position="relative" zIndex={3}>
-                    <Text textStyle="xs" w="28%" color="fg.muted">체형</Text>
-                    <Select.Root
-                      collection={bodyTypeCollection}
-                      size="xs"
-                      width="full"
-                      value={profileData.bodyType ? [profileData.bodyType] : ['']}
-                      onValueChange={(e) => setProfileData({ ...profileData, bodyType: e.value[0] || '' })}
-                    >
-                      <Select.Trigger>
-                        <Select.ValueText placeholder="체형 선택" />
-                      </Select.Trigger>
-                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {bodyTypeCollection.items.map((item) => (
-                          <Select.Item key={item.value} item={item}>
-                            {item.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Root>
-                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('bodyType')}>비우기</Button>
                   </HStack>
 
                   <HStack position="relative" zIndex={2}>
@@ -302,31 +296,36 @@ export default function ProfilePage() {
 
             <Grid templateColumns="repeat(4, 1fr)" gap={2}>
               {[
-                { label: '주문', icon: '📦' },
-                { label: '이벤트', icon: '🎉' },
-                { label: '커뮤니티', icon: '💬' },
-                { label: '설정', icon: '⚙️' },
-              ].map((item) => (
-                <Button
-                  key={item.label}
-                  variant="outline"
-                  borderWidth="thin"
-                  borderColor="border.subtle"
-                  borderRadius="xl"
-                  height="auto"
-                  py={3}
-                  px={1}
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  bg="bg.muted"
-                  _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
-                >
-                  <Text fontSize="lg" mb={1}>{item.icon}</Text>
-                  <Text textStyle="xs" fontWeight="600" color="fg">{item.label}</Text>
-                </Button>
-              ))}
+                { label: '주문', icon: LuPackage },
+                { label: '이벤트', icon: LuGift },
+                { label: '커뮤니티', icon: LuMessageSquare },
+                { label: '설정', icon: LuSettings },
+              ].map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <Button
+                    key={item.label}
+                    variant="outline"
+                    borderWidth="thin"
+                    borderColor="border.subtle"
+                    borderRadius="xl"
+                    height="auto"
+                    py={3}
+                    px={1}
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    bg="bg.muted"
+                    _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
+                  >
+                    <Box mb={1} color="fg">
+                      <IconComponent size={20} />
+                    </Box>
+                    <Text textStyle="xs" fontWeight="600" color="fg">{item.label}</Text>
+                  </Button>
+                );
+              })}
             </Grid>
           </Box>
 
@@ -344,7 +343,7 @@ export default function ProfilePage() {
                 나의 스냅
               </Heading>
               <Button variant="ghost" size="sm" color="fg.muted">
-                전체보기 &gt;
+                전체보기 <LuChevronRight size={16} />
               </Button>
             </Flex>
 

@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { LuMail, LuLockKeyhole } from 'react-icons/lu'
 import { api } from '../api/axios.js'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 
 export const SignInPage = () => {
   const [email, setEmail] = useState('')
@@ -50,7 +50,7 @@ export const SignInPage = () => {
       paddingY={ 4 }
       bg="bg"
     >
-      <AppBar/>
+      <Header/>
 
       <Container maxWidth="md" display={ 'flex' } alignItems={ 'center' }>
         <Stack
