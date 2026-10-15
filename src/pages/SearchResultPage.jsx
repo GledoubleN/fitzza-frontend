@@ -194,8 +194,7 @@ export const SearchResultPage = () => {
             displayProducts?.map((product, index) => {
               const uniqueKey = product.productId ?? index
               return (
-                <ProductItem key={ uniqueKey }
-                             product={ product }></ProductItem>
+                <ProductItem key={ uniqueKey } product={ product }></ProductItem>
               )
             })
           }
