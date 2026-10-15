@@ -5,7 +5,7 @@ import { Provider } from './components/ui/provider.jsx'
 import './index.css'
 
 async function enableMocking () {
-  if (process.env.NODE_ENV !== 'development') {
+  if (import.meta.env.VITE_ENABLE_MOCKING !== 'true') {
     return
   }
 
