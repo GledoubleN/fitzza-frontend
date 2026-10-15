@@ -253,7 +253,7 @@ export const ShoppingCartPage = () => {
               )) }
             </Stack>
 
-            <Stack gap={ 4 } position={ 'sticky' } top={ 4 } bottom={ 4 }>
+            <Stack gap={ 4 } position={ 'sticky' } top={ 4 } bottom={ 0 } paddingTop={ { base: 4, lg: 0 } } paddingBottom={ 4 } bg={ 'bg' }>
               <Card.Root>
                 <Card.Body>
                   <Flex justify={ 'space-between' } align={ 'center' }>
