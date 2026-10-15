@@ -8,41 +8,44 @@ import {
   Text,
   IconButton,
 } from '@chakra-ui/react'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import exampleProductImage from '/src/assets/hero.png'
-import { LuHeart, LuX } from 'react-icons/lu'
+import { ProductItem } from '../components/ProductItem.jsx'
+import { useEffect, useState } from 'react'
+import { api } from '../api/axios.js'
+import { HttpStatusCode } from 'axios'
 
 export const WishlistPage = () => {
+  const [products, setProducts] = useState([])
+
+  async function loadWishlist () {
+    api.get('/wishlists', {}).then((response) => {
+      if (response.status !== HttpStatusCode.Ok) {
+        return
+      }
+
+      setProducts(response.data.content)
+    }).catch((error) => {
+
+    })
+  }
+
+  useEffect(() => {
+    loadWishlist()
+  })
+
   return (
     <Stack paddingY={ 4 } height={ '100vh' } gap={ 4 }>
-      <AppBar></AppBar>
+      <Header></Header>
       <Container maxWidth="5xl">
         {/* gap={ 4 } 이기 때문에 spacing.4를 사용해야 한다. */ }
         <Grid
           templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
-          gapX={ 4 }
-          gapY={ 8 }
+          gap={ 4 }
         >
           {
-            Array.from({ length: 50 }, (_, index) => (
-              <Card.Root key={ index } borderWidth={ 0 }>
-                <Image src={ exampleProductImage }></Image>
-                <Card.Body padding={ '2' }>
-                  <Card.Title>Name</Card.Title>
-                  <Text truncate>{ (1_000).toLocaleString() } 원</Text>
-                </Card.Body>
-                <IconButton
-                  variant={ 'ghost' }
-                  position={ 'absolute' }
-                  right={ 0 }
-                  top={ 0 }
-                  rounded={ 'full' }
-                  size={ 'md' }
-                >
-                  <LuHeart></LuHeart>
-                </IconButton>
-              </Card.Root>
+            products.map((product, index) => (
+              <ProductItem key={ index } product={ product }></ProductItem>
             ))
           }
         </Grid>

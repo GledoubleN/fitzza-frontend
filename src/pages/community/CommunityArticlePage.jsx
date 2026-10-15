@@ -14,7 +14,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { LuChevronLeft, LuMessageCircle, LuThumbsUp } from "react-icons/lu";
-import { AppBar } from "../../components/AppBar.jsx";
+import { Header } from "../../components/Header.jsx";
 import { ScrollToTopButton } from "../../components/ScrollToTopButton.jsx";
 import { CommunityArticleCommentList } from "./CommunityArticleCommentList.jsx";
 import { api } from "../../api/axios.js";
@@ -186,7 +186,7 @@ export const CommunityArticlePage = () => {
   return (
     <Container maxWidth="xl" minHeight="100vh" paddingY="4">
       <Stack direction="column" gap="4">
-        <AppBar />
+        <Header />
 
         {/* 헤더 */}
         <Flex align="center" gap="2">

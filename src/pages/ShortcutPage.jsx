@@ -17,8 +17,10 @@ const ROUTES = [
   { path: "/prompt", label: "프롬프트" },
   { path: "/mypage", label: "마이페이지" },
   { path: "/worldcup", label: "상품 월드컵" },
-  { path: "/likes", label: "찜 목록" },
+  { path: "/wishlist", label: "찜 목록" },
   { path: "/category", label: "카테고리" },
+  { path: "/ai/sample", label: "AI 스타일리스트 (샘플)" },
+  { path: "/ai/history", label: "AI 대화 내역" },
 ];
 
 export const ShortcutPage = () => {

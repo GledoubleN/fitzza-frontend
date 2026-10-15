@@ -12,7 +12,7 @@ import {
   GridItem,
   Heading,
 } from '@chakra-ui/react'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import exampleProductImage from '/src/assets/react.svg'
 import { Footer } from '../components/Footer.jsx'
@@ -46,7 +46,7 @@ export const ShoppingCartPage = () => {
       gap={ 4 }
       bg="bg"
     >
-      <AppBar/>
+      <Header/>
 
       <Container maxWidth={ '7xl' }>
         <Heading>

@@ -22,7 +22,7 @@ import {
   LuSettings,
   LuChevronRight,
 } from 'react-icons/lu';
-import { AppBar } from '../components/AppBar.jsx';
+import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
 
@@ -139,7 +139,7 @@ export default function ProfilePage() {
     <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
       <Box position="fixed" top={0} left={0} right={0} zIndex={10} bg="bg" py={4}>
         <Container maxW="7xl" mx="auto" px={5}>
-          <AppBar />
+          <Header />
         </Container>
       </Box>
 

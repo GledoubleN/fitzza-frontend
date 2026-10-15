@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
@@ -52,7 +52,7 @@ export const CategoryPage = () => {
       height={ '100vh' }
       gap={ '4' }
     >
-      <AppBar></AppBar>
+      <Header></Header>
 
       <Container maxWidth={ '3xl' } flex={ '1' } minHeight={ '0' }>
         <Stack height={ 'full' } gap={ '4' }>
