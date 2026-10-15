@@ -143,7 +143,10 @@ export const MainPage = () => {
       </Container>
 
       <Container maxWidth={ '5xl' }>
-        <Grid templateColumns={ 'repeat(3, 1fr)' } gap={ 4 }>
+        <Grid
+          templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
+          gap={ 4 }
+        >
           {
             products.map((product, index) => (
               <ProductItem key={ index } product={ product }></ProductItem>
