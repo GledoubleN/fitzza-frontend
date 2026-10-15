@@ -84,6 +84,8 @@ export const ProductOptionSelector = ({ product }) => {
   })
   const selectedOptions = options.filter((option) => quantities[option.optionId])
   const totalQuantity = selectedOptions.reduce((sum, option) => sum + quantities[option.optionId], 0)
+  const getLinePrice = (option) => (option.price ?? product.price) * quantities[option.optionId]
+  const totalPrice = selectedOptions.reduce((sum, option) => sum + getLinePrice(option), 0)
 
   const setQuantity = (optionId, quantity) => {
     setQuantities(({ [optionId]: _removed, ...rest }) => (
@@ -160,7 +162,7 @@ export const ProductOptionSelector = ({ product }) => {
               onChange={ (quantity) => setQuantity(option.optionId, quantity) }
             />
             <Text fontWeight={ 'bold' }>
-              { (product.price * quantities[option.optionId]).toLocaleString() }원
+              { getLinePrice(option).toLocaleString() }원
             </Text>
           </Flex>
         </Stack>
@@ -169,7 +171,7 @@ export const ProductOptionSelector = ({ product }) => {
       <Flex justify={ 'space-between' } align={ 'center' }>
         <Text color={ 'fg.muted' }>총 상품 금액</Text>
         <Text textStyle={ 'xl' } fontWeight={ 'bold' }>
-          { (product.price * totalQuantity).toLocaleString() }원
+          { totalPrice.toLocaleString() }원
         </Text>
       </Flex>
 

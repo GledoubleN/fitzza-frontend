@@ -48,6 +48,8 @@ const getProductOptions = (product) => ['블랙', '베이지'].flatMap((color, c
     color,
     size,
     measurement: measurements[size],
+    additionalPrice: size === 'XL' ? 5000 : 0,
+    price: product.price + (size === 'XL' ? 5000 : 0),
     available: !(color === '베이지' && size === 'XL'),
   }))
 ))
@@ -79,8 +81,8 @@ const toCartItem = (cart) => {
     color: option.color,
     size: option.size,
     imageUrl: product.thumbnailUrl,
-    unitPrice: option.available ? product.price : null,
-    linePrice: option.available ? product.price * cart.quantity : 0,
+    unitPrice: option.available ? option.price : null,
+    linePrice: option.available ? option.price * cart.quantity : 0,
   }
 }
 
