@@ -110,6 +110,7 @@ export const SearchResultPage = () => {
     }
   }, [categoryCode, currentSort])
 
+  // 무한 스크롤 이벤트 리스너
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >=
@@ -124,6 +125,7 @@ export const SearchResultPage = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [isLoading, hasMore, page, categoryCode, currentSort])
 
+  // 💡 정렬 조건 변경 시 URL 쿼리스트링을 업데이트하여 상태와 페이지 이동 시 유지를 보장
   const handleSortChange = ({ value }) => {
     const newSort = value[0] || ''
     const newParams = new URLSearchParams(searchParams)
@@ -153,10 +155,10 @@ export const SearchResultPage = () => {
       </Container>
 
       <Container maxW="5xl">
-        <Grid templateColumns="1fr" justifyItems="end">
+        <Flex justify="flex-end">
           <Select.Root
             collection={ sortCollection }
-            width={{ base: 'auto', sm: '40' }}
+            width="40"
             value={ [currentSort] }
             onValueChange={ handleSortChange }
           >
@@ -182,9 +184,10 @@ export const SearchResultPage = () => {
               </Select.Positioner>
             </Portal>
           </Select.Root>
-        </Grid>
+        </Flex>
       </Container>
 
+      {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */ }
       <Container maxWidth="5xl">
         <Grid
           templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
