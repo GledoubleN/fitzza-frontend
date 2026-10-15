@@ -6,7 +6,7 @@ import { OptionSelect } from './product/ProductOptionSelector.jsx'
 export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
   const [options, setOptions] = useState(null)
   const [color, setColor] = useState(item.color ?? '')
-  const [optionId, setOptionId] = useState(String(item.optionId))
+  const [size, setSize] = useState(item.size ?? '')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
@@ -30,11 +30,12 @@ export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
       disabled: option.available === false,
     })),
   })
-  const isValid = sizeOptions.some((option) => String(option.optionId) === optionId && option.available !== false)
+  const selectedOption = sizeOptions.find((option) => option.size === size)
+  const isSoldOut = selectedOption?.available === false
 
   const submit = async () => {
     setIsSubmitting(true)
-    await onSubmit(Number(optionId))
+    await onSubmit(selectedOption.optionId)
     setIsSubmitting(false)
   }
 
@@ -58,21 +59,22 @@ export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
                       label={ '색상' }
                       collection={ colorCollection }
                       value={ color ? [color] : [] }
-                      onValueChange={ (event) => {
-                        setColor(event.value[0] ?? '')
-                        setOptionId('')
-                      } }
+                      onValueChange={ (event) => setColor(event.value[0] ?? '') }
                     />
                   ) }
                   <OptionSelect
                     label={ '사이즈' }
                     collection={ sizeCollection }
                     disabled={ sizeOptions.length === 0 }
-                    value={ optionId ? [optionId] : [] }
-                    onValueChange={ (event) => setOptionId(event.value[0] ?? '') }
+                    value={ selectedOption ? [String(selectedOption.optionId)] : [] }
+                    onValueChange={ (event) => setSize(
+                      sizeOptions.find((option) => String(option.optionId) === event.value[0])?.size ?? '',
+                    ) }
                   />
-                  { !isValid && (
-                    <Text textStyle={ 'sm' } color={ 'fg.error' }>구매할 수 있는 사이즈를 선택해 주세요.</Text>
+                  { (!selectedOption || isSoldOut) && (
+                    <Text textStyle={ 'sm' } color={ 'fg.error' }>
+                      { isSoldOut ? '품절된 상품입니다. 다른 사이즈를 선택해 주세요.' : '사이즈를 선택해 주세요.' }
+                    </Text>
                   ) }
                 </Stack>
               ) }
@@ -81,7 +83,7 @@ export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
               <Button variant={ 'outline' } flex={ 1 } onClick={ onClose }>취소</Button>
               <Button
                 flex={ 1 }
-                disabled={ !isValid || optionId === String(item.optionId) }
+                disabled={ !selectedOption || isSoldOut || selectedOption.optionId === item.optionId }
                 loading={ isSubmitting }
                 onClick={ submit }
               >
