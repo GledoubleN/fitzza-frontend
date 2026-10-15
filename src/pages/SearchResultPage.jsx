@@ -154,8 +154,7 @@ export const SearchResultPage = () => {
         </InputGroup>
       </Container>
 
-      {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */ }
-      <Container maxWidth="7xl">
+      <Container maxW="5xl">
         <Flex justify="flex-end">
           <Select.Root
             collection={ sortCollection }
@@ -188,7 +187,8 @@ export const SearchResultPage = () => {
         </Flex>
       </Container>
 
-      <Container maxW="7xl" mx="auto" px={ 5 }>
+      {/* 정렬 선택 UI (우측 배치 및 URL 연동을 통한 조건 유지) */ }
+      <Container maxWidth="5xl">
         <Grid
           templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
           gap={ 4 }
@@ -197,7 +197,8 @@ export const SearchResultPage = () => {
             displayProducts?.map((product, index) => {
               const uniqueKey = product.productId ?? index
               return (
-                <ProductItem key={ uniqueKey } product={ product }></ProductItem>
+                <ProductItem key={ uniqueKey }
+                             product={ product }></ProductItem>
               )
             })
           }
