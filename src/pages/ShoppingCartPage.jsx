@@ -3,11 +3,13 @@ import {
   Card,
   Checkbox,
   Container,
+  Dialog,
   Flex,
   Grid,
   Heading,
   IconButton,
   Image,
+  Portal,
   Separator,
   Spinner,
   Stack,
@@ -40,6 +42,7 @@ export const ShoppingCartPage = () => {
   const [unselectedIds, setUnselectedIds] = useState(new Set())
   const [isUpdating, setIsUpdating] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
+  const [failedDeleteIds, setFailedDeleteIds] = useState([])
 
   const loadCart = () => api.get('/carts')
     .then((response) => {
@@ -79,20 +82,31 @@ export const ShoppingCartPage = () => {
     '장바구니를 수정하지 못했어요.',
   )
 
-  const removeItems = (cartIds) => updateCart(async () => {
+  const removeItems = (cartIds, isBulk = false) => updateCart(async () => {
     const results = await Promise.allSettled(cartIds.map((cartId) => api.delete(`/carts/${ cartId }`)))
-    const failures = results.filter((result) => result.status === 'rejected')
-    if (failures.length === 0) {
+    const failedIds = cartIds.filter((_, index) => results[index].status === 'rejected')
+    if (failedIds.length === 0) {
+      return
+    }
+
+    if (isBulk) {
+      setFailedDeleteIds(failedIds)
       return
     }
 
     toaster.create({
       type: 'error',
-      title: cartIds.length === 1
-        ? failures[0].reason.response?.data?.message ?? '장바구니에서 삭제하지 못했어요.'
-        : `${ cartIds.length }개 중 ${ failures.length }개를 삭제하지 못했어요.`,
+      title: results[0].reason.response?.data?.message ?? '장바구니에서 삭제하지 못했어요.',
     })
   }, '장바구니에서 삭제하지 못했어요.')
+
+  const retryFailedDelete = () => {
+    const remainingIds = failedDeleteIds.filter((cartId) => items.some((item) => item.cartId === cartId))
+    setFailedDeleteIds([])
+    if (remainingIds.length > 0) {
+      removeItems(remainingIds, true)
+    }
+  }
 
   const changeOption = async (optionId) => {
     await changeItem(editingItem, { optionId })
@@ -174,7 +188,7 @@ export const ShoppingCartPage = () => {
                   variant={ 'outline' }
                   size={ 'sm' }
                   disabled={ selectedItems.length === 0 || isUpdating }
-                  onClick={ () => removeItems(selectedItems.map((item) => item.cartId)) }
+                  onClick={ () => removeItems(selectedItems.map((item) => item.cartId), true) }
                 >
                   선택삭제
                 </Button>
@@ -312,6 +326,27 @@ export const ShoppingCartPage = () => {
       { editingItem && (
         <CartOptionDialog item={ editingItem } onClose={ () => setEditingItem(null) } onSubmit={ changeOption }/>
       ) }
+      <Dialog.Root
+        open={ failedDeleteIds.length > 0 }
+        placement={ 'center' }
+        size={ 'xs' }
+        onOpenChange={ (event) => !event.open && setFailedDeleteIds([]) }
+      >
+        <Portal>
+          <Dialog.Backdrop/>
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>장바구니 삭제 중 일부 상품이 삭제되지 않았어요.</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Footer>
+                <Button variant={ 'outline' } flex={ 1 } onClick={ () => setFailedDeleteIds([]) }>닫기</Button>
+                <Button flex={ 1 } onClick={ retryFailedDelete }>다시 시도</Button>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
       <Toaster/>
     </Grid>
   )
