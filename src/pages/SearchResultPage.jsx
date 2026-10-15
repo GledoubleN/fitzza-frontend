@@ -161,7 +161,7 @@ export const SearchResultPage = () => {
         >
           <Select.Root
             collection={ sortCollection }
-            width="40"
+            gridColumn={-2}
             value={ [currentSort] }
             onValueChange={ handleSortChange }
           >
