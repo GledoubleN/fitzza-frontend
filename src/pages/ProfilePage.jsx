@@ -14,6 +14,14 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import {
+  User,
+  Package,
+  Gift,
+  MessageSquare,
+  Settings,
+  ChevronRight,
+} from 'lucide-react';
 import { AppBar } from '../components/AppBar.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
@@ -67,16 +75,25 @@ export default function ProfilePage() {
 
   const fetchProfile = async () => {
     try {
-      const response = await api.get('/profile');
+      const response = await api.get('/users/me');
       if (response.data) {
-        setProfileData((prev) => ({ ...prev, ...response.data }));
+        setProfileData((prev) => ({
+          ...prev,
+          nickname: response.data.nickname || prev.nickname,
+          email: response.data.email || prev.email,
+          height: response.data.height ?? '',
+          weight: response.data.weight ?? '',
+          bodyType: response.data.gender || '',
+          preferredFit: response.data.preferredFit || '',
+          style: response.data.preferredStyles?.[0] || '',
+        }));
       }
     } catch (err) {
       if (err.response?.status === 401) {
         localStorage.removeItem('accessToken');
         navigate('/signin');
       } else {
-        console.warn("백엔드 통신 실패 - 기본 프로필 정보를 표시합니다.", err);
+        console.warn("백엔드 통신 실패. 기본 프로필 정보를 표시합니다.", err);
       }
     }
   };
@@ -107,13 +124,26 @@ export default function ProfilePage() {
     e.preventDefault();
     setMessage('');
 
+    const payload = {
+      height: profileData.height ? Number(profileData.height) : null,
+      weight: profileData.weight ? Number(profileData.weight) : null,
+      gender: profileData.bodyType || null,
+      preferredFit: profileData.preferredFit || null,
+      preferredStyles: profileData.style ? [profileData.style] : [],
+      shoeSize: null,
+    };
+
     try {
-      await api.put('/profile', profileData);
+      await api.patch('/users/me', payload);
       setMessage('프로필이 성공적으로 저장되었습니다.');
       setIsEditing(false);
     } catch (err) {
-      setMessage('프로필이 저장되었습니다 (테스트 모드).');
-      setIsEditing(false);
+      if (err.response?.status === 400) {
+        setMessage('입력한 데이터의 단위나 범위를 확인해주세요.');
+      } else {
+        setMessage('프로필이 저장되었습니다 (테스트 모드).');
+        setIsEditing(false);
+      }
     }
   };
 
@@ -150,11 +180,11 @@ export default function ProfilePage() {
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                fontSize="4xl"
                 bg="bg.muted"
+                color="fg.muted"
                 mb={3}
               >
-                👤
+                <User size={36} strokeWidth={1.5} />
               </Box>
               <Heading textStyle="lg" mt={1} fontWeight="600">
                 {profileData.nickname}
@@ -302,31 +332,36 @@ export default function ProfilePage() {
 
             <Grid templateColumns="repeat(4, 1fr)" gap={2}>
               {[
-                { label: '주문', icon: '📦' },
-                { label: '이벤트', icon: '🎉' },
-                { label: '커뮤니티', icon: '💬' },
-                { label: '설정', icon: '⚙️' },
-              ].map((item) => (
-                <Button
-                  key={item.label}
-                  variant="outline"
-                  borderWidth="thin"
-                  borderColor="border.subtle"
-                  borderRadius="xl"
-                  height="auto"
-                  py={3}
-                  px={1}
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  bg="bg.muted"
-                  _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
-                >
-                  <Text fontSize="lg" mb={1}>{item.icon}</Text>
-                  <Text textStyle="xs" fontWeight="600" color="fg">{item.label}</Text>
-                </Button>
-              ))}
+                { label: '주문', icon: Package },
+                { label: '이벤트', icon: Gift },
+                { label: '커뮤니티', icon: MessageSquare },
+                { label: '설정', icon: Settings },
+              ].map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <Button
+                    key={item.label}
+                    variant="outline"
+                    borderWidth="thin"
+                    borderColor="border.subtle"
+                    borderRadius="xl"
+                    height="auto"
+                    py={3}
+                    px={1}
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    bg="bg.muted"
+                    _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
+                  >
+                    <Box mb={1} color="fg">
+                      <IconComponent size={20} />
+                    </Box>
+                    <Text textStyle="xs" fontWeight="600" color="fg">{item.label}</Text>
+                  </Button>
+                );
+              })}
             </Grid>
           </Box>
 
@@ -344,7 +379,7 @@ export default function ProfilePage() {
                 나의 스냅
               </Heading>
               <Button variant="ghost" size="sm" color="fg.muted">
-                전체보기 &gt;
+                전체보기 <ChevronRight size={16} />
               </Button>
             </Flex>
 

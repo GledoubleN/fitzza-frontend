@@ -6,12 +6,9 @@ import likes from '../data/wishlist.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
 
-// TODO API 필요: 가상 피팅 결과 조회·최신 피팅 조회 API가 명세에 없어 목에서만 저장한다.
-// 새로고침하면 비워진다.
 const fittings = []
 const FITTING_DURATION = 3000
 
-// 요청 후 일정 시간이 지나면 완료된 것으로 응답한다.
 const toFittingResponse = (fitting) => {
   if (!fitting) {
     return new HttpResponse(null, { status: 404 })
@@ -26,7 +23,34 @@ const toFittingResponse = (fitting) => {
   })
 }
 
+let mockUserProfile = {
+  email: 'user@fitzza.com',
+  nickname: '핏짜',
+  height: 175,
+  weight: 68,
+  gender: '보통',
+  preferredFit: '레귤러',
+  preferredStyles: ['캐주얼'],
+  shoeSize: 270,
+  photoId: 1,
+};
+
 export const handlers = [
+  http.get('http://localhost:8000/api/v1/users/me', () => {
+    return HttpResponse.json(mockUserProfile);
+  }),
+
+  http.patch('http://localhost:8000/api/v1/users/me', async ({ request }) => {
+    const body = await request.json();
+
+    mockUserProfile = {
+      ...mockUserProfile,
+      ...body,
+    };
+
+    return HttpResponse.json(mockUserProfile, { status: 200 });
+  }),
+
   http.post(
     'http://localhost:8000/api/v1/auth/signin',
     ({ params }) => {
@@ -171,19 +195,22 @@ export const handlers = [
         4: '그냥저냥 입을 만하네요.',
         3: '별로입니다. 사지 마세요.',
       }
-      const content = Array.from({ length: TOTAL }, (_, index) => ({
-        reviewId: index + 1,
-        productId: Number(query.get('productId')),
-        userId: index + 1,
-        rating: 5 - (index % 3),
-        content: contents[5 - (index % 3)],
-        imageUrl: index % 2 === 0 ? '/src/assets/hero.png' : null,
-        createdAt: new Date(2026, 8, 30 - index).toISOString(),
-      }))
-        .sort((a, b) => (
-          sort === 'RATING_DESC' ? b.rating - a.rating : sort === 'RATING_ASC' ? a.rating - b.rating : 0
-        ))
-        .slice(page * size, (page + 1) * size)
+      const content = Array.from({ length: TOTAL }, (_, index) => {
+        const rating = 5 - (index % 3);
+        return {
+          reviewId: index + 1,
+          productId: Number(query.get('productId')),
+          userId: index + 1,
+          rating: rating,
+          content: contents[rating] || '좋아요!',
+          imageUrl: index % 2 === 0 ? '/src/assets/hero.png' : null,
+          createdAt: new Date(2026, 8, 30 + index).toISOString(),
+        };
+      })
+      .sort((a, b) => (
+        sort === 'RATING_DESC' ? b.rating - a.rating : sort === 'RATING_ASC' ? a.rating - b.rating : 0
+      ))
+      .slice(page * size, (page + 1) * size)
 
       return HttpResponse.json({ content, page, totalPages: Math.ceil(TOTAL / size) })
     },
@@ -210,12 +237,6 @@ export const handlers = [
   http.delete(
     'http://localhost:8000/api/v1/wishlists',
     () => new HttpResponse(null, { status: 204 }),
-  ),
-
-  // TODO API 필요: photoId(프로필 전신 사진 ID)는 명세의 /users/me 응답에 없는 가정 필드다.
-  http.get(
-    'http://localhost:8000/api/v1/users/me',
-    () => HttpResponse.json({ email: 'user@fitzza.com', nickname: '핏짜', photoId: 1 }),
   ),
 
   http.post(
