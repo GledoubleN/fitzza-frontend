@@ -15,13 +15,13 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import {
-  User,
-  Package,
-  Gift,
-  MessageSquare,
-  Settings,
-  ChevronRight,
-} from 'lucide-react';
+  LuUser,
+  LuPackage,
+  LuGift,
+  LuMessageSquare,
+  LuSettings,
+  LuChevronRight,
+} from 'react-icons/lu';
 import { AppBar } from '../components/AppBar.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
@@ -172,7 +172,7 @@ export default function ProfilePage() {
                 color="fg.muted"
                 mb={3}
               >
-                <User size={36} strokeWidth={1.5} />
+                <LuUser size={36} strokeWidth={1.5} />
               </Box>
               <Heading textStyle="lg" mt={1} fontWeight="600">
                 {profileData.nickname}
@@ -296,10 +296,10 @@ export default function ProfilePage() {
 
             <Grid templateColumns="repeat(4, 1fr)" gap={2}>
               {[
-                { label: '주문', icon: Package },
-                { label: '이벤트', icon: Gift },
-                { label: '커뮤니티', icon: MessageSquare },
-                { label: '설정', icon: Settings },
+                { label: '주문', icon: LuPackage },
+                { label: '이벤트', icon: LuGift },
+                { label: '커뮤니티', icon: LuMessageSquare },
+                { label: '설정', icon: LuSettings },
               ].map((item) => {
                 const IconComponent = item.icon;
                 return (
@@ -343,7 +343,7 @@ export default function ProfilePage() {
                 나의 스냅
               </Heading>
               <Button variant="ghost" size="sm" color="fg.muted">
-                전체보기 <ChevronRight size={16} />
+                전체보기 <LuChevronRight size={16} />
               </Button>
             </Flex>
 
