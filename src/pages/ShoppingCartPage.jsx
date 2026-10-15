@@ -100,9 +100,7 @@ export const ShoppingCartPage = () => {
     } catch (error) {
       toaster.create({ type: 'error', title: error.response?.data?.message ?? failureTitle })
     }
-    if (!await loadCart()) {
-      toaster.create({ type: 'error', title: '장바구니를 다시 불러오지 못했어요. 새로고침 후 주문해 주세요.' })
-    }
+    await loadCart()
     setIsUpdating(false)
   }
 
@@ -327,9 +325,9 @@ export const ShoppingCartPage = () => {
                     </Flex>
                     { isLoadFailed && (
                       <Flex justify={ 'space-between' } align={ 'center' } gap={ 4 }>
-                        <Text textStyle={ 'sm' } color={ 'fg.error' }>최신 장바구니를 불러오지 못했어요.</Text>
+                        <Text textStyle={ 'sm' } color={ 'fg.error' }>장바구니를 불러오는데 실패했어요</Text>
                         <Button variant={ 'outline' } size={ 'sm' } disabled={ isUpdating } onClick={ loadCart }>
-                          다시 불러오기
+                          새로고침
                         </Button>
                       </Flex>
                     ) }
