@@ -215,7 +215,7 @@ export default function ProfilePage() {
                   <HStack position="relative" zIndex={2}>
                     <Text textStyle="xs" w="28%" color="fg.muted">선호 핏</Text>
                     <Select.Root
-                      collection={createListCollection(preferredFits)}
+                      collection={createListCollection({ items: preferredFits })}
                       size="xs"
                       width="full"
                       value={profileData.preferredFit ? [profileData.preferredFit] : ['']}
@@ -225,7 +225,7 @@ export default function ProfilePage() {
                         <Select.ValueText placeholder="선호 핏 선택" />
                       </Select.Trigger>
                       <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {preferredFits.items.map((item) => (
+                        {preferredFits.map((item) => (
                           <Select.Item key={item.value} item={item}>
                             {item.label}
                           </Select.Item>
@@ -238,7 +238,7 @@ export default function ProfilePage() {
                   <HStack position="relative" zIndex={1}>
                     <Text textStyle="xs" w="28%" color="fg.muted">스타일</Text>
                     <Select.Root
-                      collection={createListCollection(preferredStyles)}
+                      collection={createListCollection({ items: preferredStyles })}
                       size="xs"
                       width="full"
                       value={profileData.style ? [profileData.style] : ['']}
@@ -248,7 +248,7 @@ export default function ProfilePage() {
                         <Select.ValueText placeholder="선호 스타일 선택" />
                       </Select.Trigger>
                       <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {preferredStyles.items.map((item) => (
+                        {preferredStyles.map((item) => (
                           <Select.Item key={item.value} item={item}>
                             {item.label}
                           </Select.Item>
