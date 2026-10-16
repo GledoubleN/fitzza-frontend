@@ -50,7 +50,7 @@ export const MainPage = () => {
         return
       }
 
-      setProducts(response.data)
+      setProducts(response.data.content)
     }).catch(error => console.log(error))
   }
 
