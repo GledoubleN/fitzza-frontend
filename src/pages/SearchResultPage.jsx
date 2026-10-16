@@ -21,10 +21,8 @@ import { ProductItem } from '../components/ProductItem.jsx'
 
 const sortCollection = createListCollection({
   items: [
-    { label: '정렬', value: '' },
-    { label: '글자순', value: 'NAME' },
+    { label: '최신순', value: 'TIME_DESC' },
     { label: '낮은 가격순', value: 'PRICE_ASC' },
-    { label: '높은 가격순', value: 'PRICE_DESC' },
   ],
 })
 
