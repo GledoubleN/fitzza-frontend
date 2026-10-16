@@ -26,31 +26,8 @@ import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
 import { useAuth } from '../contexts/AuthContext.js'
-
-// TODO
-// OnboardingPage에서 같은 collection을 사용하도록 수정
-const preferredFitCollection = createListCollection({
-  items: [
-    { label: '선택 안함', value: '' },
-    { label: '레귤러', value: 'REGULAR' },
-    { label: '릴렉스드', value: 'RELAXED' },
-    { label: '슬림', value: 'SLIM' },
-    { label: '오버사이즈', value: 'OVERSIZED' },
-    { label: '크롭', value: 'CROPPED' },
-  ],
-});
-
-const preferredStyleCollection = createListCollection({
-  items: [
-    { label: '선택 안함', value: '' },
-    { label: '캐주얼', value: 'CASUAL' },
-    { label: '미니멀', value: 'MINIMAL' },
-    { label: '스트릿', value: 'STREET' },
-    { label: '포멀', value: 'FORMAL' },
-    { label: '스포티', value: 'SPORTY' },
-    { label: '빈티지', value: 'VINTAGE' },
-  ],
-});
+import preferredFits from '/src/data/preferred-fits.json'
+import preferredStyles from '/src/data/preferred-styles.json'
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
@@ -238,7 +215,7 @@ export default function ProfilePage() {
                   <HStack position="relative" zIndex={2}>
                     <Text textStyle="xs" w="28%" color="fg.muted">선호 핏</Text>
                     <Select.Root
-                      collection={preferredFitCollection}
+                      collection={createListCollection(preferredFits)}
                       size="xs"
                       width="full"
                       value={profileData.preferredFit ? [profileData.preferredFit] : ['']}
@@ -248,7 +225,7 @@ export default function ProfilePage() {
                         <Select.ValueText placeholder="선호 핏 선택" />
                       </Select.Trigger>
                       <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {preferredFitCollection.items.map((item) => (
+                        {preferredFits.items.map((item) => (
                           <Select.Item key={item.value} item={item}>
                             {item.label}
                           </Select.Item>
@@ -261,7 +238,7 @@ export default function ProfilePage() {
                   <HStack position="relative" zIndex={1}>
                     <Text textStyle="xs" w="28%" color="fg.muted">스타일</Text>
                     <Select.Root
-                      collection={preferredStyleCollection}
+                      collection={createListCollection(preferredStyles)}
                       size="xs"
                       width="full"
                       value={profileData.style ? [profileData.style] : ['']}
@@ -271,7 +248,7 @@ export default function ProfilePage() {
                         <Select.ValueText placeholder="선호 스타일 선택" />
                       </Select.Trigger>
                       <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {preferredStyleCollection.items.map((item) => (
+                        {preferredStyles.items.map((item) => (
                           <Select.Item key={item.value} item={item}>
                             {item.label}
                           </Select.Item>
