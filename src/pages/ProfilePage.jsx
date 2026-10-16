@@ -36,7 +36,7 @@ const preferredFitCollection = createListCollection({
     { label: '릴렉스드', value: 'RELAXED' },
     { label: '슬림', value: 'SLIM' },
     { label: '오버사이즈', value: 'OVERSIZED' },
-    { label: '크롭', value: 'CROP' },
+    { label: '크롭', value: 'CROPPED' },
   ],
 });
 
