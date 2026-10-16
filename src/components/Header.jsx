@@ -1,17 +1,12 @@
-import { useState, useEffect } from 'react'
 import { Box, Container, Grid, GridItem, IconButton, Popover, Portal, Separator, Stack, Text } from '@chakra-ui/react'
 import { LuBell, LuShoppingBag, LuLogIn, LuLogOut } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
+import { useAuth } from '../contexts/AuthContext.js'
 
 export const Header = ({ maxWidth = '7xl' }) => {
   const navigate = useNavigate()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken")
-    setIsLoggedIn(!!token)
-  }, [])
+  const { isLoggedIn, setAccessToken } = useAuth()
 
   const handleSignOutButtonClick = () => {
     if (isLoggedIn) {
@@ -21,8 +16,7 @@ export const Header = ({ maxWidth = '7xl' }) => {
         console.log(error)
       })
 
-      localStorage.removeItem("accessToken")
-      setIsLoggedIn(false)
+      setAccessToken(null)
       alert("로그아웃되었습니다.")
       navigate("/signin")
 

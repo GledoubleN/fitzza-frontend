@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { Provider } from './components/ui/provider.jsx'
+import { AuthProvider } from './contexts/AuthProvider.jsx'
 import './index.css'
 
 async function enableMocking () {
@@ -18,7 +19,9 @@ enableMocking().then(() => {
   createRoot(document.getElementById('root')).render(
     <StrictMode>
       <Provider>
-        <App/>
+        <AuthProvider>
+          <App/>
+        </AuthProvider>
       </Provider>
     </StrictMode>
   )

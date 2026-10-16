@@ -3,6 +3,7 @@ import { Button, Flex, IconButton, Portal, Select, Stack, Text, createListCollec
 import { LuMinus, LuPlus, LuX } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
+import { useAuth } from '../../contexts/AuthContext.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 
 // 옵션 구조는 명세에 열려 있어 { optionId, color, size, available }로 가정한다.
@@ -35,6 +36,7 @@ export const OptionSelect = ({ label, collection, ...props }) => (
 )
 
 export const ProductOptionSelector = ({ product }) => {
+  const { isLoggedIn } = useAuth()
   const navigate = useNavigate()
   const [color, setColor] = useState('')
   // { [optionId]: 수량 }
@@ -66,7 +68,7 @@ export const ProductOptionSelector = ({ product }) => {
   }
 
   const addToCart = async () => {
-    if (!localStorage.getItem('accessToken')) {
+    if (!isLoggedIn) {
       navigate('/signin')
       return
     }

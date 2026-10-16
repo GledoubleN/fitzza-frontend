@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
+import { useAuth } from '../../contexts/AuthContext.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { OptionSelect } from './ProductOptionSelector.jsx'
 
@@ -40,7 +41,7 @@ const unique = (values) => [...new Set(values.filter(Boolean))]
 
 export const ProductTryOnTab = ({ product }) => {
   const navigate = useNavigate()
-  const isLoggedIn = !!localStorage.getItem('accessToken')
+  const { isLoggedIn } = useAuth()
   const [fitting, setFitting] = useState(null)
   const [isLoading, setIsLoading] = useState(isLoggedIn)
   const [isSubmitting, setIsSubmitting] = useState(false)

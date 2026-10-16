@@ -25,6 +25,7 @@ import {
 import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
+import { useAuth } from '../contexts/AuthContext.js'
 
 const preferredFitCollection = createListCollection({
   items: [
@@ -46,6 +47,7 @@ const preferredStyleCollection = createListCollection({
 });
 
 export default function ProfilePage() {
+  const { setAccessToken } = useAuth()
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
     nickname: '테스트사용자',
@@ -78,7 +80,7 @@ export default function ProfilePage() {
       }
     } catch (err) {
       if (err.response?.status === 401) {
-        localStorage.removeItem('accessToken');
+        setAccessToken(null)
         navigate('/signin');
       } else {
         console.warn("백엔드 통신 실패. 기본 프로필 정보를 표시합니다.", err);
