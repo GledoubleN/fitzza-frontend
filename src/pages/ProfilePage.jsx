@@ -296,7 +296,7 @@ export default function ProfilePage() {
 
             <Grid templateColumns="repeat(4, 1fr)" gap={2}>
               {[
-                { label: '주문', icon: LuPackage },
+                { label: '주문', icon: LuPackage, path: '/orders' },
                 { label: '이벤트', icon: LuGift },
                 { label: '커뮤니티', icon: LuMessageSquare },
                 { label: '설정', icon: LuSettings },
@@ -318,6 +318,7 @@ export default function ProfilePage() {
                     justifyContent="center"
                     bg="bg.muted"
                     _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
+                    onClick={() => item.path && navigate(item.path)}
                   >
                     <Box mb={1} color="fg">
                       <IconComponent size={20} />
