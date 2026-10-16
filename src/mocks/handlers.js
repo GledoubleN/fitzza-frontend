@@ -49,13 +49,30 @@ export const handlers = [
 
   http.post(
     'http://localhost:8000/api/v1/auth/signin',
-    ({ params }) => {
+    () => {
       return HttpResponse.json({
         accessToken:  "fitzza-access-token",
         userId: 1,
         nickname: "CoffeeSlayer",
+      }, {
+        headers: {
+          'Set-Cookie': 'refreshToken=fitzza-refresh-token; Path=/; SameSite=Lax',
+        },
       })
     }
+  ),
+
+  http.post(
+    'http://localhost:8000/api/v1/auth/refresh',
+    ({ cookies }) => {
+      if (cookies.refreshToken !== 'fitzza-refresh-token') {
+        return new HttpResponse(null, { status: 401 })
+      }
+
+      return HttpResponse.json({
+        accessToken: 'fitzza-access-token',
+      })
+    },
   ),
 
   http.post(
@@ -69,9 +86,11 @@ export const handlers = [
 
   http.post(
     'http://localhost:8000/api/v1/auth/signout',
-    ({ params }) => {
-      return HttpResponse.json({
-
+    () => {
+      return HttpResponse.json({}, {
+        headers: {
+          'Set-Cookie': 'refreshToken=; Path=/; SameSite=Lax; Max-Age=0',
+        },
       })
     }
   ),
