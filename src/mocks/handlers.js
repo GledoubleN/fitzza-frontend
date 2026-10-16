@@ -536,13 +536,6 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/checkout',
-    () => {
-      return HttpResponse.json(products)
-    },
-  ),
-
-  http.get(
     'http://localhost:8000/api/v1/likes',
     () => {
       return HttpResponse.json(likes)
