@@ -29,20 +29,24 @@ import { useAuth } from '../contexts/AuthContext.js'
 
 const preferredFitCollection = createListCollection({
   items: [
-    { label: '선택 안함 (건너뛰기)', value: '' },
-    { label: '슬림 핏 (딱 붙는 스타일)', value: '슬림' },
-    { label: '레귤러 핏 (기본 스탠다드)', value: '레귤러' },
-    { label: '오버사이즈 핏 (여유 있는 스타일)', value: '오버사이즈' },
+    { label: '선택 안함', value: '' },
+    { label: '레귤러', value: 'REGULAR' },
+    { label: '릴렉스드', value: 'RELAXED' },
+    { label: '슬림', value: 'SLIM' },
+    { label: '오버사이즈', value: 'OVERSIZED' },
+    { label: '크롭', value: 'CROP' },
   ],
 });
 
 const preferredStyleCollection = createListCollection({
   items: [
-    { label: '선택 안함 (건너뛰기)', value: '' },
-    { label: '캐주얼 (데일리, 편안함)', value: '캐주얼' },
-    { label: '스트릿 (힙한 무드, 스트리트)', value: '스트릿' },
-    { label: '미니멀 (깔끔함, 모던)', value: '미니멀' },
-    { label: '포멀 / 비즈니스 (수트, 댄디)', value: '포멀' },
+    { label: '선택 안함', value: '' },
+    { label: '캐주얼', value: 'CASUAL' },
+    { label: '미니멀', value: 'MINIMAL' },
+    { label: '스트릿', value: 'STREET' },
+    { label: '포멀', value: 'FORMAL' },
+    { label: '스포티', value: 'SPORTY' },
+    { label: '빈티지', value: 'VINTAGE' },
   ],
 });
 
