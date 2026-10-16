@@ -35,11 +35,11 @@ const toFittingResponse = (fitting) => {
 }
 
 export const handlers = [
-  http.get('http://localhost:8000/api/v1/users/me', () => {
+  http.get('http://localhost:8080/api/v1/users/me', () => {
     return HttpResponse.json(userProfile)
   }),
 
-  http.patch('http://localhost:8000/api/v1/users/me', async ({ request }) => {
+  http.patch('http://localhost:8080/api/v1/users/me', async ({ request }) => {
     const body = await request.json()
 
     Object.assign(userProfile, body)
@@ -48,7 +48,7 @@ export const handlers = [
   }),
 
   http.post(
-    'http://localhost:8000/api/v1/auth/signin',
+    'http://localhost:8080/api/v1/auth/signin',
     () => {
       return HttpResponse.json({
         accessToken:  "fitzza-access-token",
@@ -63,7 +63,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/auth/refresh',
+    'http://localhost:8080/api/v1/auth/refresh',
     ({ cookies }) => {
       if (cookies.refreshToken !== 'fitzza-refresh-token') {
         return new HttpResponse(null, { status: 401 })
@@ -76,7 +76,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/auth/signup',
+    'http://localhost:8080/api/v1/auth/signup',
     ({ params }) => {
       return HttpResponse.json({
         userId: 1
@@ -85,7 +85,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/auth/signout',
+    'http://localhost:8080/api/v1/auth/signout',
     () => {
       return HttpResponse.json({}, {
         headers: {
@@ -96,7 +96,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/uers/:id',
+    'http://localhost:8080/api/v1/uers/:id',
     ({ params }) => {
       const user = users.find(
         user => user.id === Number(params.id),
@@ -111,14 +111,14 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/categories',
+    'http://localhost:8080/api/v1/categories',
     () => {
       return HttpResponse.json(categories)
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/products',
+    'http://localhost:8080/api/v1/products',
     ({ request }) => {
       const url = new URL(request.url)
       const page = Number(url.searchParams.get('page') || 0)
@@ -153,7 +153,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/products',
+    'http://localhost:8080/api/v1/products',
     () => {
       return HttpResponse.json({
         content: products,
@@ -168,7 +168,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/products/:id',
+    'http://localhost:8080/api/v1/products/:id',
     ({ params }) => {
       const product = products.find(
         product => product.productId === Number(params.id),
@@ -213,7 +213,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/reviews',
+    'http://localhost:8080/api/v1/reviews',
     ({ request }) => {
       const query = new URL(request.url).searchParams
       const page = Number(query.get('page') ?? 0)
@@ -247,7 +247,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/carts',
+    'http://localhost:8080/api/v1/carts',
     async ({ request }) => {
       const { optionId, quantity } = await request.json()
 
@@ -256,7 +256,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/wishlists',
+    'http://localhost:8080/api/v1/wishlists',
     async ({ request }) => {
       return HttpResponse.json({
         content: products,
@@ -270,7 +270,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/wishlists',
+    'http://localhost:8080/api/v1/wishlists',
     async ({ request }) => {
       const { itemId } = await request.json()
 
@@ -279,12 +279,12 @@ export const handlers = [
   ),
 
   http.delete(
-    'http://localhost:8000/api/v1/wishlists',
+    'http://localhost:8080/api/v1/wishlists',
     () => new HttpResponse(null, { status: 204 }),
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/vton',
+    'http://localhost:8080/api/v1/vton',
     async ({ request }) => {
       const { productIds, color, size } = await request.json()
       const fitting = {
@@ -301,56 +301,56 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/vton/latest',
+    'http://localhost:8080/api/v1/vton/latest',
     ({ request }) => toFittingResponse(fittings.findLast(
       fitting => fitting.productId === Number(new URL(request.url).searchParams.get('productId')),
     )),
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/vton/:fittingId',
+    'http://localhost:8080/api/v1/vton/:fittingId',
     ({ params }) => toFittingResponse(fittings.find(
       fitting => fitting.fittingId === Number(params.fittingId),
     )),
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/shopping-cart',
+    'http://localhost:8080/api/v1/shopping-cart',
     () => {
       return HttpResponse.json(products)
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/checkout',
+    'http://localhost:8080/api/v1/checkout',
     () => {
       return HttpResponse.json(products)
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/likes',
+    'http://localhost:8080/api/v1/likes',
     () => {
       return HttpResponse.json(likes)
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/community/articles/:id/comments',
+    'http://localhost:8080/api/v1/community/articles/:id/comments',
     () => {
       return HttpResponse.json(comments)
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/community/articles',
+    'http://localhost:8080/api/v1/community/articles',
     () => {
       return HttpResponse.json(articles)
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/community/articles/:id',
+    'http://localhost:8080/api/v1/community/articles/:id',
     ({ params }) => {
       const article = articles.find(
         product => product.id === Number(params.id),
@@ -366,7 +366,7 @@ export const handlers = [
 
   // AI 추천 요청. 추천이 끝나면 결과를 응답에 담아 돌려줍니다.
   http.post(
-    'http://localhost:8000/api/v1/recommendations',
+    'http://localhost:8080/api/v1/recommendations',
     async ({ request }) => {
       const { query } = await request.json()
 
@@ -383,7 +383,7 @@ export const handlers = [
 
   // 내 추천 대화 목록
   http.get(
-    'http://localhost:8000/api/v1/recommendations',
+    'http://localhost:8080/api/v1/recommendations',
     ({ request }) => {
       const page = Number(new URL(request.url).searchParams.get('page') ?? 0)
 
@@ -397,14 +397,14 @@ export const handlers = [
 
   // 지난 추천 결과 조회. 목업에서는 어떤 requestId든 같은 결과를 돌려줍니다.
   http.get(
-    'http://localhost:8000/api/v1/recommendations/:requestId',
+    'http://localhost:8080/api/v1/recommendations/:requestId',
     ({ params }) => {
       return HttpResponse.json({ requestId: params.requestId, ...recommendations })
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/recommendations/:requestId/messages',
+    'http://localhost:8080/api/v1/recommendations/:requestId/messages',
     () => {
       return HttpResponse.json(recommendationMessages)
     },
@@ -412,7 +412,7 @@ export const handlers = [
 
   // 가상 피팅. 생성이 끝나면 결과를 응답에 담아 돌려줍니다. 목업에서는 어떤 요청이든 같은 이미지를 돌려줍니다.
   http.post(
-    'http://localhost:8000/api/v1/fittings',
+    'http://localhost:8080/api/v1/fittings',
     async ({ request }) => {
       const { photoId, productIds } = await request.json()
 
@@ -437,7 +437,7 @@ export const handlers = [
 
   // 장바구니 담기
   http.post(
-    'http://localhost:8000/api/v1/carts',
+    'http://localhost:8080/api/v1/carts',
     async ({ request }) => {
       const { optionId, quantity } = await request.json()
 
