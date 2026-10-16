@@ -1,25 +1,25 @@
-import { useState, useEffect } from 'react'
 import { Box, Container, Grid, GridItem, IconButton, Popover, Portal, Separator, Stack, Text } from '@chakra-ui/react'
 import { LuBell, LuShoppingBag, LuLogIn, LuLogOut } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
+import { useAuth } from '../contexts/AuthContext.js'
 
 export const Header = ({ maxWidth = '7xl' }) => {
   const navigate = useNavigate()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { isSignedIn, setAccessToken } = useAuth()
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken")
-    setIsLoggedIn(!!token)
-  }, [])
+  const handleSignOutButtonClick = () => {
+    if (isSignedIn) {
+      api.post('/auth/signout', undefined, {
+        withCredentials: true,
+      }).catch((error) => {
+        console.log(error)
+      })
 
-  const handleAuthAction = () => {
-    if (isLoggedIn) {
-      api.post('/auth/logout').catch(() => {})
-      localStorage.removeItem("accessToken")
-      setIsLoggedIn(false)
+      setAccessToken(null)
       alert("로그아웃되었습니다.")
       navigate("/signin")
+
     } else {
       navigate("/signin")
     }
@@ -73,10 +73,10 @@ export const Header = ({ maxWidth = '7xl' }) => {
 
             <IconButton
               { ...buttonProps }
-              onClick={handleAuthAction}
-              title={isLoggedIn ? "로그아웃" : "로그인"}
+              onClick={handleSignOutButtonClick}
+              title={isSignedIn ? "로그아웃" : "로그인"}
             >
-              {isLoggedIn ? <LuLogOut /> : <LuLogIn />}
+              {isSignedIn ? <LuLogOut /> : <LuLogIn />}
             </IconButton>
           </Stack>
         </GridItem>

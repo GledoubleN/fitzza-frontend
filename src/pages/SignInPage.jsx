@@ -14,6 +14,7 @@ import {
 import { LuMail, LuLockKeyhole } from 'react-icons/lu'
 import { api } from '../api/axios.js'
 import { Header } from '../components/Header.jsx'
+import { useAuth } from '../contexts/AuthContext.js'
 
 export const SignInPage = () => {
   const [email, setEmail] = useState('')
@@ -21,6 +22,7 @@ export const SignInPage = () => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const navigate = useNavigate()
+  const { setAccessToken } = useAuth()
 
   const changeHandler = async (e) => {
     e.preventDefault()
@@ -29,10 +31,12 @@ export const SignInPage = () => {
     setErrorMessage('')
 
     try {
-      const response = await api.post('/auth/signin', { email, password })
+      const response = await api.post('/auth/signin', { email, password }, {
+        withCredentials: true,
+      })
       const token = response.data?.accessToken
 
-      localStorage.setItem('accessToken', token)
+      setAccessToken(token)
       navigate('/')
 
     } catch (err) {

@@ -1,3 +1,4 @@
+import { useAuth } from '../contexts/AuthContext.js'
 import {
   Badge,
   Box,
@@ -95,6 +96,7 @@ const PanelCard = ({ title, children }) => (
 )
 
 export const OrderDetail = () => {
+  const { isSignedIn } = useAuth()
   const navigate = useNavigate()
   const { orderId } = useParams()
   const [order, setOrder] = useState(null)
@@ -106,7 +108,7 @@ export const OrderDetail = () => {
   const [isSurveySaving, setIsSurveySaving] = useState(false)
 
   useEffect(() => {
-    if (!localStorage.getItem('accessToken')) {
+    if (!isSignedIn) {
       navigate('/signin')
       return
     }
@@ -129,7 +131,7 @@ export const OrderDetail = () => {
       .catch((error) => !cancelled && setErrorMessage(error.response?.data?.message ?? '주문 정보를 불러오지 못했어요.'))
 
     return () => { cancelled = true }
-  }, [orderId, attempt])
+  }, [orderId, attempt, isSignedIn, navigate])
 
   const mergeSurveys = (loaded) => setSurveys((current) => ({ ...loaded, ...current }))
 

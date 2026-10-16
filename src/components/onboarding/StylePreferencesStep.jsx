@@ -1,19 +1,8 @@
 import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
 import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
 import { OnboardingSaveConfirmation } from './OnboardingSaveConfirmation.jsx'
-
-const fitOptions = [
-  { label: '슬림핏', value: '슬림' },
-  { label: '레귤러핏', value: '레귤러' },
-  { label: '오버사이즈', value: '오버사이즈' },
-]
-
-const styleOptions = [
-  { label: '캐주얼', value: '캐주얼' },
-  { label: '스트릿', value: '스트릿' },
-  { label: '미니멀', value: '미니멀' },
-  { label: '포멀 / 비즈니스', value: '포멀' },
-]
+import preferredFits from '/src/data/preferred-fits.json'
+import preferredStyles from '/src/data/preferred-styles.json'
 
 export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMessage, onPrev, onSave, isLoading, isSaved, onConfirm }) {
   return (
@@ -45,7 +34,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
             선호 핏
           </Heading>
           <Grid templateColumns={ { base: '1fr', sm: 'repeat(3, minmax(0, 1fr))' } } gap={ 3 }>
-            { fitOptions.map((item) => {
+            { preferredFits.map((item) => {
               const isSelected = formData.preferredFit === item.value
               return (
                 <Button
@@ -66,7 +55,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
             선호 스타일
           </Heading>
           <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 3 }>
-            { styleOptions.map((item) => {
+            { preferredStyles.map((item) => {
               const isSelected = formData.style === item.value
               return (
                 <Button

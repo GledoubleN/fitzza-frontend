@@ -1,3 +1,4 @@
+import { api } from '../api/axios.js'
 import { delay } from 'msw'
 import { http, HttpResponse } from 'msw/http'
 import users from '../data/users.json'
@@ -130,11 +131,11 @@ const createOrderNum = () => {
 }
 
 export const handlers = [
-  http.get('http://localhost:8000/api/v1/users/me', () => {
+  http.get(`${ api.defaults.baseURL }/users/me`, () => {
     return HttpResponse.json(userProfile)
   }),
 
-  http.patch('http://localhost:8000/api/v1/users/me', async ({ request }) => {
+  http.patch(`${ api.defaults.baseURL }/users/me`, async ({ request }) => {
     const body = await request.json()
 
     Object.assign(userProfile, body)
@@ -143,19 +144,35 @@ export const handlers = [
   }),
 
   http.post(
-    'http://localhost:8000/api/v1/auth/signin',
-    ({ params }) => {
+    `${ api.defaults.baseURL }/auth/signin`,
+    () => {
       return HttpResponse.json({
         accessToken:  "fitzza-access-token",
-        refreshToken: "fitzza-refresh-token",
         userId: 1,
         nickname: "CoffeeSlayer",
+      }, {
+        headers: {
+          'Set-Cookie': 'refreshToken=fitzza-refresh-token; Path=/; SameSite=Lax',
+        },
       })
     }
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/auth/signup',
+    `${ api.defaults.baseURL }/auth/refresh`,
+    ({ cookies }) => {
+      if (cookies.refreshToken !== 'fitzza-refresh-token') {
+        return new HttpResponse(null, { status: 401 })
+      }
+
+      return HttpResponse.json({
+        accessToken: 'fitzza-access-token',
+      })
+    },
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/auth/signup`,
     ({ params }) => {
       return HttpResponse.json({
         userId: 1
@@ -164,16 +181,18 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/auth/signout',
-    ({ params }) => {
-      return HttpResponse.json({
-
+    `${ api.defaults.baseURL }/auth/signout`,
+    () => {
+      return HttpResponse.json({}, {
+        headers: {
+          'Set-Cookie': 'refreshToken=; Path=/; SameSite=Lax; Max-Age=0',
+        },
       })
     }
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/uers/:id',
+    `${ api.defaults.baseURL }/uers/:id`,
     ({ params }) => {
       const user = users.find(
         user => user.id === Number(params.id),
@@ -188,14 +207,14 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/categories',
+    `${ api.defaults.baseURL }/categories`,
     () => {
       return HttpResponse.json(categories)
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/products',
+    `${ api.defaults.baseURL }/products`,
     ({ request }) => {
       const url = new URL(request.url)
       const page = Number(url.searchParams.get('page') || 0)
@@ -230,14 +249,22 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/products/recommended',
+    `${ api.defaults.baseURL }/products`,
     () => {
-      return HttpResponse.json(products)
+      return HttpResponse.json({
+        content: products,
+        page: 1,
+        size: 1,
+        totalElements: 1,
+        totalPages: 1,
+        hasNext: true,
+        sort: "PRICE_ASC"
+      })
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/products/:id',
+    `${ api.defaults.baseURL }/products/:id`,
     ({ params }) => {
       const product = products.find(
         product => product.productId === Number(params.id),
@@ -269,7 +296,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/reviews',
+    `${ api.defaults.baseURL }/reviews`,
     ({ request }) => {
       const query = new URL(request.url).searchParams
       const page = Number(query.get('page') ?? 0)
@@ -303,12 +330,12 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/carts',
+    `${ api.defaults.baseURL }/carts`,
     () => HttpResponse.json([...carts].reverse().map(toCartItem)),
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/carts',
+    `${ api.defaults.baseURL }/carts`,
     async ({ request }) => {
       const body = await request.json()
       const error = validateCartRequest(body)
@@ -329,7 +356,7 @@ export const handlers = [
   ),
 
   http.patch(
-    'http://localhost:8000/api/v1/carts/:cartId',
+    `${ api.defaults.baseURL }/carts/:cartId`,
     async ({ params, request }) => {
       const cart = carts.find((cart) => cart.cartId === Number(params.cartId))
       if (!cart) {
@@ -355,7 +382,7 @@ export const handlers = [
   ),
 
   http.delete(
-    'http://localhost:8000/api/v1/carts/:cartId',
+    `${ api.defaults.baseURL }/carts/:cartId`,
     ({ params }) => {
       const index = carts.findIndex((cart) => cart.cartId === Number(params.cartId))
       if (index === -1) {
@@ -368,7 +395,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/orders',
+    `${ api.defaults.baseURL }/orders`,
     async ({ request }) => {
       const userId = getRequestUserId(request)
       if (!userId) {
@@ -425,7 +452,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/orders',
+    `${ api.defaults.baseURL }/orders`,
     ({ request }) => {
       const userId = getRequestUserId(request)
       if (!userId) {
@@ -454,7 +481,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/orders/:orderId',
+    `${ api.defaults.baseURL }/orders/:orderId`,
     ({ params, request }) => {
       const userId = getRequestUserId(request)
       if (!userId) {
@@ -482,7 +509,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/surveys/me',
+    `${ api.defaults.baseURL }/surveys/me`,
     ({ request }) => {
       const userId = getRequestUserId(request)
       if (!userId) {
@@ -505,7 +532,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/surveys',
+    `${ api.defaults.baseURL }/surveys`,
     async ({ request }) => {
       const userId = getRequestUserId(request)
       if (!userId) {
@@ -538,7 +565,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/wishlists',
+    `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
       return HttpResponse.json({
         content: products,
@@ -552,7 +579,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/wishlists',
+    `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
       const { itemId } = await request.json()
 
@@ -561,12 +588,12 @@ export const handlers = [
   ),
 
   http.delete(
-    'http://localhost:8000/api/v1/wishlists',
+    `${ api.defaults.baseURL }/wishlists`,
     () => new HttpResponse(null, { status: 204 }),
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/vton',
+    `${ api.defaults.baseURL }/vton`,
     async ({ request }) => {
       const { productIds, color, size } = await request.json()
       const fitting = {
@@ -583,42 +610,42 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/vton/latest',
+    `${ api.defaults.baseURL }/vton/latest`,
     ({ request }) => toFittingResponse(fittings.findLast(
       fitting => fitting.productId === Number(new URL(request.url).searchParams.get('productId')),
     )),
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/vton/:fittingId',
+    `${ api.defaults.baseURL }/vton/:fittingId`,
     ({ params }) => toFittingResponse(fittings.find(
       fitting => fitting.fittingId === Number(params.fittingId),
     )),
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/likes',
+    `${ api.defaults.baseURL }/likes`,
     () => {
       return HttpResponse.json(likes)
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/community/articles/:id/comments',
+    `${ api.defaults.baseURL }/community/articles/:id/comments`,
     () => {
       return HttpResponse.json(comments)
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/community/articles',
+    `${ api.defaults.baseURL }/community/articles`,
     () => {
       return HttpResponse.json(articles)
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/community/articles/:id',
+    `${ api.defaults.baseURL }/community/articles/:id`,
     ({ params }) => {
       const article = articles.find(
         product => product.id === Number(params.id),
@@ -634,7 +661,7 @@ export const handlers = [
 
   // AI 추천 요청. 추천이 끝나면 결과를 응답에 담아 돌려줍니다.
   http.post(
-    'http://localhost:8000/api/v1/recommendations',
+    `${ api.defaults.baseURL }/recommendations`,
     async ({ request }) => {
       const { query } = await request.json()
 
@@ -651,7 +678,7 @@ export const handlers = [
 
   // 내 추천 대화 목록
   http.get(
-    'http://localhost:8000/api/v1/recommendations',
+    `${ api.defaults.baseURL }/recommendations`,
     ({ request }) => {
       const page = Number(new URL(request.url).searchParams.get('page') ?? 0)
 
@@ -665,14 +692,14 @@ export const handlers = [
 
   // 지난 추천 결과 조회. 목업에서는 어떤 requestId든 같은 결과를 돌려줍니다.
   http.get(
-    'http://localhost:8000/api/v1/recommendations/:requestId',
+    `${ api.defaults.baseURL }/recommendations/:requestId`,
     ({ params }) => {
       return HttpResponse.json({ requestId: params.requestId, ...recommendations })
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/recommendations/:requestId/messages',
+    `${ api.defaults.baseURL }/recommendations/:requestId/messages`,
     () => {
       return HttpResponse.json(recommendationMessages)
     },
@@ -680,7 +707,7 @@ export const handlers = [
 
   // 가상 피팅. 생성이 끝나면 결과를 응답에 담아 돌려줍니다. 목업에서는 어떤 요청이든 같은 이미지를 돌려줍니다.
   http.post(
-    'http://localhost:8000/api/v1/fittings',
+    `${ api.defaults.baseURL }/fittings`,
     async ({ request }) => {
       const { photoId, productIds } = await request.json()
 

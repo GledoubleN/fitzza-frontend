@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
+import { useAuth } from '../../contexts/AuthContext.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { OptionSelect } from './ProductOptionSelector.jsx'
 
@@ -40,9 +41,9 @@ const unique = (values) => [...new Set(values.filter(Boolean))]
 
 export const ProductTryOnTab = ({ product }) => {
   const navigate = useNavigate()
-  const isLoggedIn = !!localStorage.getItem('accessToken')
+  const { isSignedIn } = useAuth()
   const [fitting, setFitting] = useState(null)
-  const [isLoading, setIsLoading] = useState(isLoggedIn)
+  const [isLoading, setIsLoading] = useState(isSignedIn)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [color, setColor] = useState('')
   const [size, setSize] = useState('')
@@ -62,7 +63,7 @@ export const ProductTryOnTab = ({ product }) => {
   const isInProgress = !!fitting && !FINISHED.includes(fitting.status)
 
   useEffect(() => {
-    if (!isLoggedIn) return
+    if (!isSignedIn) return
     let ignore = false
     api.get('/vton/latest', { params: { productId: product.productId } })
       .then((response) => !ignore && setFitting(response.data))
@@ -70,7 +71,7 @@ export const ProductTryOnTab = ({ product }) => {
       .finally(() => !ignore && setIsLoading(false))
 
     return () => { ignore = true }
-  }, [isLoggedIn, product.productId])
+  }, [isSignedIn, product.productId])
 
   useEffect(() => {
     if (!isInProgress) return
@@ -90,7 +91,7 @@ export const ProductTryOnTab = ({ product }) => {
   }
 
   const tryOn = async (isWithoutPhoto = false) => {
-    if (!isLoggedIn) {
+    if (!isSignedIn) {
       showNotice(LOGIN_NOTICE)
       return
     }

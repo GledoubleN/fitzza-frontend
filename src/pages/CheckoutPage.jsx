@@ -1,3 +1,4 @@
+import { useAuth } from '../contexts/AuthContext.js'
 import {
   Button,
   Card,
@@ -169,6 +170,7 @@ const OrderComplete = ({ order }) => {
 }
 
 export const CheckoutPage = () => {
+  const { isSignedIn } = useAuth()
   const navigate = useNavigate()
   const { state } = useLocation()
   const shippingRef = useRef(null)
@@ -190,7 +192,7 @@ export const CheckoutPage = () => {
     .catch(() => setIsLoadFailed(true))
 
   useEffect(() => {
-    if (!localStorage.getItem('accessToken')) {
+    if (!isSignedIn) {
       navigate('/signin')
       return
     }
@@ -200,7 +202,7 @@ export const CheckoutPage = () => {
     }
 
     loadItems()
-  }, [])
+  }, [isSignedIn, navigate])
 
   const placeOrder = async () => {
     setIsSubmitted(true)
