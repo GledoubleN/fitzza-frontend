@@ -16,6 +16,7 @@ import { ShortcutPage } from './pages/ShortcutPage.jsx'
 import { WishlistPage } from './pages/WishlistPage.jsx'
 import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
+import { OrderListPage } from './pages/OrderListPage.jsx'
 import { ThemePreviewPage } from './pages/ThemePreviewPage.jsx'
 import { AIStylistPage } from './pages/ai/AIStylistPage.jsx'
 import { AIHistoryPage } from './pages/ai/AIHistoryPage.jsx'
@@ -41,7 +42,8 @@ function App() {
         <Route path="/shortcuts" element={ <ShortcutPage/> }/>
         <Route path="/wishlist" element={ <WishlistPage/> }/>
         <Route path="/categories" element={ <CategoryPage/> }/>
-        <Route path="/orderdetail" element={<OrderDetail />} />
+        <Route path="/orders" element={ <OrderListPage/> }/>
+        <Route path="/orders/:orderId" element={ <OrderDetail/> }/>
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
         <Route path="/ai/history" element={ <AIHistoryPage/> }/>
         <Route path="/ai/:requestId?" element={ <AIStylistPage/> }/>
