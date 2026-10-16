@@ -41,7 +41,7 @@ function getEstimatedArrivalDate () {
 }
 
 export const ProductPage = () => {
-  const { isLoggedIn } = useAuth()
+  const { isSignedIn } = useAuth()
   const { id } = useParams()
   const navigate = useNavigate()
   const [product, setProduct] = useState(null)
@@ -70,7 +70,7 @@ export const ProductPage = () => {
   }, [id])
 
   const toggleWish = async () => {
-    if (!isLoggedIn) {
+    if (!isSignedIn) {
       navigate('/signin')
       return
     }

@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
   const value = useMemo(() => ({
     accessToken,
     setAccessToken,
-    isLoggedIn: !!accessToken,
+    isSignedIn: !!accessToken,
   }), [accessToken, setAccessToken])
 
   return <AuthContext.Provider value={ value }>{ children }</AuthContext.Provider>

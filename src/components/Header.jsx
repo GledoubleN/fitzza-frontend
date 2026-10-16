@@ -6,10 +6,10 @@ import { useAuth } from '../contexts/AuthContext.js'
 
 export const Header = ({ maxWidth = '7xl' }) => {
   const navigate = useNavigate()
-  const { isLoggedIn, setAccessToken } = useAuth()
+  const { isSignedIn, setAccessToken } = useAuth()
 
   const handleSignOutButtonClick = () => {
-    if (isLoggedIn) {
+    if (isSignedIn) {
       api.post('/auth/signout', {
         refreshToken: ""
       }).catch((error) => {
@@ -74,9 +74,9 @@ export const Header = ({ maxWidth = '7xl' }) => {
             <IconButton
               { ...buttonProps }
               onClick={handleSignOutButtonClick}
-              title={isLoggedIn ? "로그아웃" : "로그인"}
+              title={isSignedIn ? "로그아웃" : "로그인"}
             >
-              {isLoggedIn ? <LuLogOut /> : <LuLogIn />}
+              {isSignedIn ? <LuLogOut /> : <LuLogIn />}
             </IconButton>
           </Stack>
         </GridItem>

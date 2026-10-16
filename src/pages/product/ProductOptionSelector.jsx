@@ -36,7 +36,7 @@ export const OptionSelect = ({ label, collection, ...props }) => (
 )
 
 export const ProductOptionSelector = ({ product }) => {
-  const { isLoggedIn } = useAuth()
+  const { isSignedIn } = useAuth()
   const navigate = useNavigate()
   const [color, setColor] = useState('')
   // { [optionId]: 수량 }
@@ -68,7 +68,7 @@ export const ProductOptionSelector = ({ product }) => {
   }
 
   const addToCart = async () => {
-    if (!isLoggedIn) {
+    if (!isSignedIn) {
       navigate('/signin')
       return
     }
