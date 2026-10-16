@@ -52,7 +52,6 @@ export const handlers = [
     ({ params }) => {
       return HttpResponse.json({
         accessToken:  "fitzza-access-token",
-        refreshToken: "fitzza-refresh-token",
         userId: 1,
         nickname: "CoffeeSlayer",
       })

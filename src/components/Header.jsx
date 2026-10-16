@@ -10,8 +10,8 @@ export const Header = ({ maxWidth = '7xl' }) => {
 
   const handleSignOutButtonClick = () => {
     if (isSignedIn) {
-      api.post('/auth/signout', {
-        refreshToken: ""
+      api.post('/auth/signout', undefined, {
+        withCredentials: true,
       }).catch((error) => {
         console.log(error)
       })
