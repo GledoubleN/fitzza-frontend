@@ -8,6 +8,7 @@ import articles from '../data/articles.json'
 import comments from '../data/comments.json'
 import carts from '../data/carts.json'
 import orders from '../data/orders.json'
+import surveys from '../data/surveys.json'
 import userProfile from '../data/user-profile.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendation-history.json'
@@ -105,6 +106,10 @@ const getRequestUserId = (request) => (
 )
 
 const unauthorized = () => cartError(401, 'INVALID_TOKEN', '로그인이 필요해요.')
+
+const SIZE_FEEDBACKS = ['SMALL', 'FIT', 'BIG']
+
+const toSurveyResponse = ({ surveyId, orderItemId, sizeFeedback }) => ({ surveyId, orderItemId, sizeFeedback })
 
 const validateOrderRequest = ({ cartIds, recipientName, recipientPhone, shippingAddress }) => {
   if (!Array.isArray(cartIds) || cartIds.length === 0) {
@@ -473,6 +478,62 @@ export const handlers = [
         items: order.items.map(toOrderItem),
         totalPrice: getTotalPrice(order),
       })
+    },
+  ),
+
+  http.get(
+    'http://localhost:8000/api/v1/surveys/me',
+    ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const orderItemIds = (new URL(request.url).searchParams.get('orderItemIds') ?? '')
+        .split(',')
+        .filter(Boolean)
+        .map(Number)
+      if (orderItemIds.length === 0 || orderItemIds.length > 100) {
+        return cartError(400, 'INVALID_REQUEST', '입력값을 확인해주세요.')
+      }
+
+      return HttpResponse.json(surveys
+        .filter((survey) => survey.userId === userId && orderItemIds.includes(survey.orderItemId))
+        .sort((a, b) => a.orderItemId - b.orderItemId)
+        .map(toSurveyResponse))
+    },
+  ),
+
+  http.post(
+    'http://localhost:8000/api/v1/surveys',
+    async ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const { orderItemId, sizeFeedback } = await request.json()
+      if (!Number.isInteger(orderItemId) || orderItemId < 1 || !SIZE_FEEDBACKS.includes(sizeFeedback)) {
+        return cartError(400, 'INVALID_REQUEST', '입력값을 확인해주세요.')
+      }
+      if (surveys.some((survey) => survey.userId === userId && survey.orderItemId === orderItemId)) {
+        return cartError(409, 'DUPLICATE_SURVEY', '이미 설문을 작성한 주문 상품입니다.')
+      }
+
+      const order = orders.find((order) => order.items.some((item) => item.orderItemId === orderItemId))
+      if (!order) {
+        return cartError(404, 'ORDER_ITEM_NOT_FOUND', '주문 항목을 찾을 수 없습니다.')
+      }
+      if (order.userId !== userId) {
+        return cartError(403, 'NOT_ORDER_OWNER', '내 주문만 리뷰·설문할 수 있습니다.')
+      }
+      if (order.orderStatus !== 'COMPLETED') {
+        return cartError(409, 'ORDER_NOT_COMPLETED', '구매가 완료된 주문만 리뷰·설문할 수 있습니다.')
+      }
+
+      const surveyId = Math.max(0, ...surveys.map((survey) => survey.surveyId)) + 1
+      surveys.push({ surveyId, userId, orderItemId, sizeFeedback })
+      return HttpResponse.json({ surveyId }, { status: 201 })
     },
   ),
 
