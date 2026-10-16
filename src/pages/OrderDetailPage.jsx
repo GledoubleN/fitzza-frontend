@@ -4,11 +4,13 @@ import {
   Button,
   Card,
   Container,
+  Dialog,
   Flex,
   Grid,
   Heading,
   HStack,
   Link,
+  Portal,
   Separator,
   Spinner,
   Stack,
@@ -19,7 +21,7 @@ import { useEffect, useState } from 'react'
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import { Toaster, toaster } from '../components/ui/toaster.jsx'
+import { Toaster } from '../components/ui/toaster.jsx'
 import { api } from '../api/axios.js'
 import { FailureTestButtons } from '../mocks/FailureTestButtons.jsx'
 
@@ -39,24 +41,6 @@ export const maskPhone = (phone) => {
 }
 
 const sizeFeedbackLabels = { SMALL: '작아요', FIT: '잘 맞아요', BIG: '커요' }
-
-const surveyError = (status, code, message) => (HttpResponse) => HttpResponse.json({ code, message }, { status })
-
-const failureTests = [
-  {
-    label: '다음 설문 저장 실패',
-    method: 'post',
-    path: '/surveys',
-    respond: surveyError(503, 'ORDER_LOOKUP_UNAVAILABLE', '주문 정보를 확인하지 못했습니다. 잠시 후 다시 시도해주세요.'),
-  },
-  {
-    label: '다음 설문 이미 작성',
-    method: 'post',
-    path: '/surveys',
-    respond: surveyError(409, 'DUPLICATE_SURVEY', '이미 설문을 작성한 주문 상품입니다.'),
-  },
-  { label: '다음 설문 조회 실패', method: 'get', path: '/surveys/me' },
-]
 
 const fetchSurveys = (items) => api
   .get('/surveys/me', { params: { orderItemIds: items.map((item) => item.orderItemId).join(',') } })
@@ -118,6 +102,8 @@ export const OrderDetail = () => {
   const [attempt, setAttempt] = useState(0)
   const [surveys, setSurveys] = useState(null)
   const [isSurveyLoadFailed, setIsSurveyLoadFailed] = useState(false)
+  const [surveyError, setSurveyError] = useState(null)
+  const [isSurveySaving, setIsSurveySaving] = useState(false)
 
   useEffect(() => {
     if (!localStorage.getItem('accessToken')) {
@@ -155,14 +141,23 @@ export const OrderDetail = () => {
     .catch(() => setIsSurveyLoadFailed(true))
 
   const submitSurvey = async (orderItemId, sizeFeedback) => {
+    setIsSurveySaving(true)
     try {
       await api.post('/surveys', { orderItemId, sizeFeedback })
       setSurveys((current) => ({ ...current, [orderItemId]: sizeFeedback }))
+      setSurveyError(null)
     } catch (error) {
-      toaster.create({ type: 'error', title: error.response?.data?.message ?? '사이즈 평가를 남기지 못했어요. 다시 시도해 주세요.' })
+      setSurveyError({
+        message: error.response?.data?.message || '잠시 후 다시 시도해 주세요.',
+        orderItemId,
+        sizeFeedback,
+        canRetry: !error.response || error.response.status >= 500,
+      })
       if (error.response?.data?.code === 'DUPLICATE_SURVEY') {
         reloadSurveys()
       }
+    } finally {
+      setIsSurveySaving(false)
     }
   }
 
@@ -286,13 +281,46 @@ export const OrderDetail = () => {
                     </HStack>
                   </Card.Body>
                 </Card.Root>
-                { import.meta.env.DEV && <FailureTestButtons tests={ failureTests }/> }
+                { import.meta.env.DEV && isSurveyable && (
+                  <Stack gap={ 4 }>
+                    <FailureTestButtons tests={ [
+                      { label: '저장 실패', method: 'post', path: '/surveys' },
+                      { label: '조회 실패', method: 'get', path: '/surveys/me', onReady: reloadSurveys },
+                    ] }/>
+                    <Text textStyle={ 'xs' } color={ 'fg.muted' }>
+                      저장 실패를 누른 뒤 미작성 상품의 평가를 남기면 한 번 실패해요. 조회 실패는 즉시 확인할 수 있어요.
+                    </Text>
+                  </Stack>
+                ) }
               </Stack>
             </Grid>
           </>
         ) }
       </Container>
 
+      <Dialog.Root open={ !!surveyError } placement={ 'center' } size={ 'xs' } onOpenChange={ ({ open }) => !open && !isSurveySaving && setSurveyError(null) }>
+        <Portal>
+          <Dialog.Backdrop/>
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>사이즈 평가를 저장하지 못했어요.</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Text color={ 'fg.muted' }>{ surveyError?.message }</Text>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Button flex={ 1 } variant={ 'outline' } disabled={ isSurveySaving } onClick={ () => setSurveyError(null) }>닫기</Button>
+                { surveyError?.canRetry && (
+                  <Button flex={ 1 } loading={ isSurveySaving } disabled={ isSurveySaving } onClick={ () => submitSurvey(surveyError.orderItemId, surveyError.sizeFeedback) }>
+                    다시 시도하기
+                  </Button>
+                ) }
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
       <TabBar/>
       <Toaster/>
     </Box>

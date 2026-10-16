@@ -2,13 +2,14 @@ import { Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { toaster } from '../components/ui/toaster.jsx'
 import { api } from '../api/axios.js'
 
-const failNextRequest = async ({ label, method, path, respond }) => {
+const failNextRequest = async ({ label, method, path, respond, onReady }) => {
   const [{ worker }, { http, HttpResponse }] = await Promise.all([import('./browser'), import('msw')])
   worker.use(http[method](
     `${ api.defaults.baseURL }${ path }`,
     () => respond ? respond(HttpResponse) : new HttpResponse(null, { status: 500 }),
     { once: true },
   ))
+  await onReady?.()
   toaster.create({ title: `${ label }: 해당 요청이 한 번 실패해요.` })
 }
 
