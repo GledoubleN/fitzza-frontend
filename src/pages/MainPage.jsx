@@ -45,7 +45,7 @@ export const MainPage = () => {
   }
 
   async function loadRecommendedProducts () {
-    api.get('/products/recommended', {}).then((response) => {
+    api.get('/products', {}).then((response) => {
       if (response.status !== HttpStatusCode.Ok) {
         return
       }
