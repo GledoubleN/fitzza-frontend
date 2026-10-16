@@ -24,7 +24,7 @@ export const CategoryPage = () => {
   const [selected, setSelected] = useState(undefined)
 
   const search = (query) => navigate(
-    `/search?${ new URLSearchParams({ q: query }) }`,
+    `/search?${ new URLSearchParams({ category: query }) }`,
   )
 
   async function loadCategories () {
