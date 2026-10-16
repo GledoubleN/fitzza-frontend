@@ -27,6 +27,8 @@ import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
 import { useAuth } from '../contexts/AuthContext.js'
 
+// TODO
+// OnboardingPage에서 같은 collection을 사용하도록 수정
 const preferredFitCollection = createListCollection({
   items: [
     { label: '선택 안함', value: '' },
