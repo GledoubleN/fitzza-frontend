@@ -7,6 +7,7 @@ import likes from '../data/wishlist.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
 import carts from '../data/carts.json'
+import orders from '../data/orders.json'
 import userProfile from '../data/user-profile.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendation-history.json'
@@ -91,6 +92,36 @@ const validateCartRequest = ({ optionId, quantity }) => {
   if (!found.option.available) {
     return cartError(400, 'OPTION_NOT_AVAILABLE', '품절된 옵션이에요.')
   }
+}
+
+const getTotalPrice = (order) => order.items.reduce((sum, item) => sum + item.unitPrice * item.orderQty, 0)
+
+const toOrderItem = ({ orderItemId, productId, productName, color, size, orderQty, unitPrice }) => (
+  { orderItemId, productId, productName, color, size, orderQty, unitPrice }
+)
+
+const getRequestUserId = (request) => (
+  request.headers.get('Authorization') === 'Bearer fitzza-access-token' ? 1 : null
+)
+
+const unauthorized = () => cartError(401, 'INVALID_TOKEN', '로그인이 필요해요.')
+
+const validateOrderRequest = ({ cartIds, recipientName, recipientPhone, shippingAddress }) => {
+  if (!Array.isArray(cartIds) || cartIds.length === 0) {
+    return cartError(400, 'INVALID_REQUEST', '주문할 상품을 선택해 주세요.')
+  }
+  if (!recipientName?.trim() || !shippingAddress?.trim()) {
+    return cartError(400, 'INVALID_REQUEST', '배송 정보를 입력해 주세요.')
+  }
+  if (!/^[0-9+-]{9,20}$/.test(recipientPhone ?? '')) {
+    return cartError(400, 'INVALID_REQUEST', '연락처는 숫자, \'+\', \'-\'만 사용해 9~20자로 입력해야 합니다.')
+  }
+}
+
+const createOrderNum = () => {
+  const date = new Date().toISOString().slice(0, 10).replaceAll('-', '')
+  const suffix = Math.random().toString(16).slice(2, 12).toUpperCase().padEnd(10, '0')
+  return `ORD-${ date }-${ suffix }`
 }
 
 export const handlers = [
@@ -328,6 +359,120 @@ export const handlers = [
 
       carts.splice(index, 1)
       return new HttpResponse(null, { status: 204 })
+    },
+  ),
+
+  http.post(
+    'http://localhost:8000/api/v1/orders',
+    async ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const body = await request.json()
+      const error = validateOrderRequest(body)
+      if (error) {
+        return error
+      }
+
+      const cartIds = [...new Set(body.cartIds)]
+      const orderedCarts = cartIds.map((cartId) => carts.find((cart) => cart.cartId === cartId))
+      if (orderedCarts.includes(undefined)) {
+        return cartError(404, 'CART_NOT_FOUND', '장바구니 항목을 찾을 수 없습니다.')
+      }
+      const unavailable = orderedCarts.find((cart) => !findOption(cart.optionId)?.option.available)
+      if (unavailable) {
+        return cartError(400, 'OPTION_NOT_AVAILABLE', '주문할 수 없는 상품 옵션이 포함되어 있습니다.')
+      }
+
+      const lastItemId = Math.max(0, ...orders.flatMap((order) => order.items.map((item) => item.orderItemId)))
+      const order = {
+        orderId: Math.max(0, ...orders.map((order) => order.orderId)) + 1,
+        userId,
+        orderNum: createOrderNum(),
+        orderStatus: 'COMPLETED',
+        recipientName: body.recipientName,
+        recipientPhone: body.recipientPhone,
+        shippingAddress: body.shippingAddress,
+        createdAt: new Date().toISOString(),
+        items: orderedCarts.map((cart, index) => {
+          const { product, option } = findOption(cart.optionId)
+          return {
+            orderItemId: lastItemId + index + 1,
+            optionId: cart.optionId,
+            productId: product.productId,
+            productName: product.productName,
+            color: option.color,
+            size: option.size,
+            thumbnailUrl: product.thumbnailUrl,
+            orderQty: cart.quantity,
+            unitPrice: option.price,
+          }
+        }),
+      }
+      orders.push(order)
+      orderedCarts.forEach((cart) => carts.splice(carts.indexOf(cart), 1))
+
+      const { orderId, orderNum, orderStatus } = order
+      return HttpResponse.json({ orderId, orderNum, totalPrice: getTotalPrice(order), orderStatus }, { status: 201 })
+    },
+  ),
+
+  http.get(
+    'http://localhost:8000/api/v1/orders',
+    ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const query = new URL(request.url).searchParams
+      const page = Number(query.get('page') ?? 0)
+      const size = Number(query.get('size') ?? 10)
+      const myOrders = orders.filter((order) => order.userId === userId)
+      const content = myOrders
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.orderId - a.orderId)
+        .slice(page * size, (page + 1) * size)
+        .map((order) => ({
+          orderId: order.orderId,
+          orderNum: order.orderNum,
+          totalPrice: getTotalPrice(order),
+          orderStatus: order.orderStatus,
+          createdAt: order.createdAt,
+          itemCount: order.items.length,
+          thumbnailUrl: order.items[0]?.thumbnailUrl ?? null,
+        }))
+
+      return HttpResponse.json({ content, page, totalPages: Math.ceil(myOrders.length / size) })
+    },
+  ),
+
+  http.get(
+    'http://localhost:8000/api/v1/orders/:orderId',
+    ({ params, request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const order = orders.find((order) => order.orderId === Number(params.orderId))
+      if (!order) {
+        return cartError(404, 'ORDER_NOT_FOUND', '주문을 찾을 수 없습니다.')
+      }
+      if (order.userId !== userId) {
+        return cartError(403, 'ORDER_FORBIDDEN', '본인의 주문만 조회할 수 있습니다.')
+      }
+
+      return HttpResponse.json({
+        orderId: order.orderId,
+        orderNum: order.orderNum,
+        orderStatus: order.orderStatus,
+        recipient: { name: order.recipientName, phone: order.recipientPhone },
+        shippingAddress: order.shippingAddress,
+        items: order.items.map(toOrderItem),
+        totalPrice: getTotalPrice(order),
+      })
     },
   ),
 
