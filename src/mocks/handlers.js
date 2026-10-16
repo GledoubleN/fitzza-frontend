@@ -153,9 +153,17 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/products/recommended',
+    'http://localhost:8000/api/v1/products',
     () => {
-      return HttpResponse.json(products)
+      return HttpResponse.json({
+        content: products,
+        page: 1,
+        size: 1,
+        totalElements: 1,
+        totalPages: 1,
+        hasNext: true,
+        sort: "PRICE_ASC"
+      })
     },
   ),
 
