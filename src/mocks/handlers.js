@@ -6,6 +6,7 @@ import products from '../data/products.json'
 import likes from '../data/wishlist.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
+import carts from '../data/carts.json'
 import userProfile from '../data/user-profile.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendation-history.json'
@@ -32,6 +33,64 @@ const toFittingResponse = (fitting) => {
     status: isDone ? 'DONE' : 'PROCESSING',
     resultImageUrl: isDone ? '/src/assets/hero.png' : null,
   })
+}
+
+const measurements = {
+  M: { 총장: 70, 가슴단면: 55, 소매길이: 60, 소매단면: 11 },
+  L: { 총장: 72, 가슴단면: 58, 소매길이: 62, 소매단면: 12 },
+  XL: { 총장: 75, 가슴단면: 63, 소매길이: 63, 소매단면: 12 },
+}
+
+const getProductOptions = (product) => ['블랙', '베이지'].flatMap((color, colorIndex) => (
+  Object.keys(measurements).map((size, sizeIndex) => ({
+    optionId: product.productId * 100 + colorIndex * 10 + sizeIndex,
+    color,
+    size,
+    measurement: measurements[size],
+    additionalPrice: size === 'XL' ? 5000 : 0,
+    price: product.price + (size === 'XL' ? 5000 : 0),
+    available: !(color === '베이지' && size === 'XL'),
+  }))
+))
+
+const findOption = (optionId) => {
+  const product = products.find((product) => product.productId === Math.floor(optionId / 100))
+  const option = product && getProductOptions(product).find((option) => option.optionId === optionId)
+
+  return option && { product, option }
+}
+
+const toCartItem = (cart) => {
+  const { product, option } = findOption(cart.optionId)
+
+  return {
+    ...cart,
+    available: option.available,
+    productId: product.productId,
+    brandName: product.brandName,
+    productName: product.productName,
+    color: option.color,
+    size: option.size,
+    imageUrl: product.thumbnailUrl,
+    unitPrice: option.available ? option.price : null,
+    linePrice: option.available ? option.price * cart.quantity : 0,
+  }
+}
+
+const cartError = (status, code, message) => HttpResponse.json({ code, message }, { status })
+
+const validateCartRequest = ({ optionId, quantity }) => {
+  if (!Number.isInteger(quantity) || quantity < 1) {
+    return cartError(400, 'INVALID_REQUEST', '수량은 1개 이상이어야 해요.')
+  }
+
+  const found = findOption(optionId)
+  if (!found) {
+    return cartError(400, 'OPTION_NOT_FOUND', '존재하지 않는 옵션이에요.')
+  }
+  if (!found.option.available) {
+    return cartError(400, 'OPTION_NOT_AVAILABLE', '품절된 옵션이에요.')
+  }
 }
 
 export const handlers = [
@@ -152,20 +211,7 @@ export const handlers = [
         return new HttpResponse(null, { status: 404 })
       }
 
-      const measurements = {
-        M: { 총장: 70, 가슴단면: 55, 소매길이: 60, 소매단면: 11 },
-        L: { 총장: 72, 가슴단면: 58, 소매길이: 62, 소매단면: 12 },
-        XL: { 총장: 75, 가슴단면: 63, 소매길이: 63, 소매단면: 12 },
-      }
-      const options = ['블랙', '베이지'].flatMap((color, colorIndex) => (
-        Object.keys(measurements).map((size, sizeIndex) => ({
-          optionId: product.productId * 100 + colorIndex * 10 + sizeIndex,
-          color,
-          size,
-          measurement: measurements[size],
-          available: !(color === '베이지' && size === 'XL'),
-        }))
-      ))
+      const options = getProductOptions(product)
 
       return HttpResponse.json({
         productId: product.productId,
@@ -220,12 +266,68 @@ export const handlers = [
     },
   ),
 
+  http.get(
+    'http://localhost:8000/api/v1/carts',
+    () => HttpResponse.json([...carts].reverse().map(toCartItem)),
+  ),
+
   http.post(
     'http://localhost:8000/api/v1/carts',
     async ({ request }) => {
-      const { optionId, quantity } = await request.json()
+      const body = await request.json()
+      const error = validateCartRequest(body)
+      if (error) {
+        return error
+      }
 
-      return HttpResponse.json({ cartId: optionId, optionId, quantity }, { status: 201 })
+      const existing = carts.find((cart) => cart.optionId === body.optionId)
+      if (existing) {
+        existing.quantity += body.quantity
+        return HttpResponse.json(toCartItem(existing), { status: 201 })
+      }
+
+      const cart = { cartId: Math.max(0, ...carts.map((cart) => cart.cartId)) + 1, ...body }
+      carts.push(cart)
+      return HttpResponse.json(toCartItem(cart), { status: 201 })
+    },
+  ),
+
+  http.patch(
+    'http://localhost:8000/api/v1/carts/:cartId',
+    async ({ params, request }) => {
+      const cart = carts.find((cart) => cart.cartId === Number(params.cartId))
+      if (!cart) {
+        return cartError(404, 'CART_NOT_FOUND', '장바구니 항목을 찾을 수 없어요.')
+      }
+
+      const body = await request.json()
+      const error = validateCartRequest(body)
+      if (error) {
+        return error
+      }
+
+      const sameOption = carts.find((other) => other !== cart && other.optionId === body.optionId)
+      if (sameOption) {
+        sameOption.quantity += body.quantity
+        carts.splice(carts.indexOf(cart), 1)
+        return HttpResponse.json(toCartItem(sameOption))
+      }
+
+      Object.assign(cart, body)
+      return HttpResponse.json(toCartItem(cart))
+    },
+  ),
+
+  http.delete(
+    'http://localhost:8000/api/v1/carts/:cartId',
+    ({ params }) => {
+      const index = carts.findIndex((cart) => cart.cartId === Number(params.cartId))
+      if (index === -1) {
+        return cartError(404, 'CART_NOT_FOUND', '장바구니 항목을 찾을 수 없어요.')
+      }
+
+      carts.splice(index, 1)
+      return new HttpResponse(null, { status: 204 })
     },
   ),
 
@@ -286,13 +388,6 @@ export const handlers = [
     ({ params }) => toFittingResponse(fittings.find(
       fitting => fitting.fittingId === Number(params.fittingId),
     )),
-  ),
-
-  http.get(
-    'http://localhost:8000/api/v1/shopping-cart',
-    () => {
-      return HttpResponse.json(products)
-    },
   ),
 
   http.get(
@@ -406,20 +501,6 @@ export const handlers = [
         products: products.filter((product) => productIds.includes(product.productId)),
         createdAt: new Date().toISOString(),
       })
-    },
-  ),
-
-  // 장바구니 담기
-  http.post(
-    'http://localhost:8000/api/v1/carts',
-    async ({ request }) => {
-      const { optionId, quantity } = await request.json()
-
-      if (!optionId || quantity < 1) {
-        return new HttpResponse(null, { status: 400 })
-      }
-
-      return HttpResponse.json({ cartId: optionId, quantity })
     },
   ),
 ]
