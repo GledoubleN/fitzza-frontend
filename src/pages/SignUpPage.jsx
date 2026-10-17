@@ -24,7 +24,6 @@ export const SignUpPage = () => {
   });
 
   const [errorMessage, setErrorMessage] = useState('');
-  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -74,7 +73,7 @@ export const SignUpPage = () => {
       navigate("/signin");
     } catch (err) {
       // 💡 백엔드 미구동 시 테스트를 위한 목업(Mock) 처리
-      console.warn("백엔드 통신 실패. 목업 모드로 회원가입을 완료합니다.", err);
+      console.warn("백엔드 통신 실패 - 목업 모드로 회원가입을 완료합니다.", err);
       alert("회원가입이 완료되었습니다. (목업 모드) 로그인해주세요.");
       navigate("/signin");
     } finally {
@@ -113,8 +112,6 @@ export const SignUpPage = () => {
                 variant="outline"
                 size="lg"
                 textAlign="left"
-                autoComplete="off"
-                borderColor={ errors.email ? "fg.error" : undefined }
               />
             </InputGroup>
           </Field.Root>
@@ -130,8 +127,6 @@ export const SignUpPage = () => {
                 variant="outline"
                 size="lg"
                 textAlign="left"
-                autoComplete="off"
-                borderColor={ errors.nickname ? "fg.error" : undefined }
               />
             </InputGroup>
           </Field.Root>
@@ -147,14 +142,12 @@ export const SignUpPage = () => {
                 variant="outline"
                 size="lg"
                 textAlign="left"
-                autoComplete="new-password"
-                borderColor={ errors.password ? "fg.error" : undefined }
               />
             </InputGroup>
           </Field.Root>
 
           { errorMessage && (
-            <Text color="fg.error" textStyle="sm">
+            <Text color="red.500" textStyle="sm">
               { errorMessage }
             </Text>
           ) }
@@ -164,9 +157,6 @@ export const SignUpPage = () => {
             loading={ loading }
             size="lg"
             width="full"
-            bg="black"
-            color="white"
-            _hover={ { bg: 'gray.800' } }
           >
             가입하기
           </Button>
