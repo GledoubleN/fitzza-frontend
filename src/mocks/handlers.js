@@ -1,3 +1,4 @@
+import { api } from '../api/axios.js'
 import { delay } from 'msw'
 import { http, HttpResponse } from 'msw/http'
 import users from '../data/users.json'
@@ -7,6 +8,8 @@ import likes from '../data/wishlist.json'
 import articles from '../data/articles.json'
 import comments from '../data/comments.json'
 import carts from '../data/carts.json'
+import orders from '../data/orders.json'
+import surveys from '../data/surveys.json'
 import userProfile from '../data/user-profile.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendation-history.json'
@@ -93,12 +96,46 @@ const validateCartRequest = ({ optionId, quantity }) => {
   }
 }
 
+const getTotalPrice = (order) => order.items.reduce((sum, item) => sum + item.unitPrice * item.orderQty, 0)
+
+const toOrderItem = ({ orderItemId, productId, productName, color, size, orderQty, unitPrice }) => (
+  { orderItemId, productId, productName, color, size, orderQty, unitPrice }
+)
+
+const getRequestUserId = (request) => (
+  request.headers.get('Authorization') === 'Bearer fitzza-access-token' ? 1 : null
+)
+
+const unauthorized = () => cartError(401, 'INVALID_TOKEN', '로그인이 필요해요.')
+
+const SIZE_FEEDBACKS = ['SMALL', 'FIT', 'BIG']
+
+const toSurveyResponse = ({ surveyId, orderItemId, sizeFeedback }) => ({ surveyId, orderItemId, sizeFeedback })
+
+const validateOrderRequest = ({ cartIds, recipientName, recipientPhone, shippingAddress }) => {
+  if (!Array.isArray(cartIds) || cartIds.length === 0) {
+    return cartError(400, 'INVALID_REQUEST', '주문할 상품을 선택해 주세요.')
+  }
+  if (!recipientName?.trim() || !shippingAddress?.trim()) {
+    return cartError(400, 'INVALID_REQUEST', '배송 정보를 입력해 주세요.')
+  }
+  if (!/^[0-9+-]{9,20}$/.test(recipientPhone ?? '')) {
+    return cartError(400, 'INVALID_REQUEST', '연락처는 숫자, \'+\', \'-\'만 사용해 9~20자로 입력해야 합니다.')
+  }
+}
+
+const createOrderNum = () => {
+  const date = new Date().toISOString().slice(0, 10).replaceAll('-', '')
+  const suffix = Math.random().toString(16).slice(2, 12).toUpperCase().padEnd(10, '0')
+  return `ORD-${ date }-${ suffix }`
+}
+
 export const handlers = [
-  http.get('http://localhost:8080/api/v1/users/me', () => {
+  http.get(`${ api.defaults.baseURL }/users/me`, () => {
     return HttpResponse.json(userProfile)
   }),
 
-  http.patch('http://localhost:8080/api/v1/users/me', async ({ request }) => {
+  http.patch(`${ api.defaults.baseURL }/users/me`, async ({ request }) => {
     const body = await request.json()
 
     Object.assign(userProfile, body)
@@ -107,7 +144,7 @@ export const handlers = [
   }),
 
   http.post(
-    'http://localhost:8080/api/v1/auth/signin',
+    `${ api.defaults.baseURL }/auth/signin`,
     () => {
       return HttpResponse.json({
         accessToken:  "fitzza-access-token",
@@ -122,7 +159,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8080/api/v1/auth/refresh',
+    `${ api.defaults.baseURL }/auth/refresh`,
     ({ cookies }) => {
       if (cookies.refreshToken !== 'fitzza-refresh-token') {
         return new HttpResponse(null, { status: 401 })
@@ -135,7 +172,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8080/api/v1/auth/signup',
+    `${ api.defaults.baseURL }/auth/signup`,
     ({ params }) => {
       return HttpResponse.json({
         userId: 1
@@ -144,7 +181,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8080/api/v1/auth/signout',
+    `${ api.defaults.baseURL }/auth/signout`,
     () => {
       return HttpResponse.json({}, {
         headers: {
@@ -155,7 +192,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/uers/:id',
+    `${ api.defaults.baseURL }/uers/:id`,
     ({ params }) => {
       const user = users.find(
         user => user.id === Number(params.id),
@@ -170,14 +207,14 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/categories',
+    `${ api.defaults.baseURL }/categories`,
     () => {
       return HttpResponse.json(categories)
     },
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/products',
+    `${ api.defaults.baseURL }/products`,
     ({ request }) => {
       const url = new URL(request.url)
       const page = Number(url.searchParams.get('page') || 0)
@@ -212,7 +249,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/products',
+    `${ api.defaults.baseURL }/products`,
     () => {
       return HttpResponse.json({
         content: products,
@@ -227,7 +264,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/products/:id',
+    `${ api.defaults.baseURL }/products/:id`,
     ({ params }) => {
       const product = products.find(
         product => product.productId === Number(params.id),
@@ -259,7 +296,7 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/reviews',
+    `${ api.defaults.baseURL }/reviews`,
     ({ request }) => {
       const query = new URL(request.url).searchParams
       const page = Number(query.get('page') ?? 0)
@@ -293,12 +330,12 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/carts',
+    `${ api.defaults.baseURL }/carts`,
     () => HttpResponse.json([...carts].reverse().map(toCartItem)),
   ),
 
   http.post(
-    'http://localhost:8080/api/v1/carts',
+    `${ api.defaults.baseURL }/carts`,
     async ({ request }) => {
       const body = await request.json()
       const error = validateCartRequest(body)
@@ -319,7 +356,7 @@ export const handlers = [
   ),
 
   http.patch(
-    'http://localhost:8080/api/v1/carts/:cartId',
+    `${ api.defaults.baseURL }/carts/:cartId`,
     async ({ params, request }) => {
       const cart = carts.find((cart) => cart.cartId === Number(params.cartId))
       if (!cart) {
@@ -345,7 +382,7 @@ export const handlers = [
   ),
 
   http.delete(
-    'http://localhost:8080/api/v1/carts/:cartId',
+    `${ api.defaults.baseURL }/carts/:cartId`,
     ({ params }) => {
       const index = carts.findIndex((cart) => cart.cartId === Number(params.cartId))
       if (index === -1) {
@@ -357,8 +394,178 @@ export const handlers = [
     },
   ),
 
+  http.post(
+    `${ api.defaults.baseURL }/orders`,
+    async ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const body = await request.json()
+      const error = validateOrderRequest(body)
+      if (error) {
+        return error
+      }
+
+      const cartIds = [...new Set(body.cartIds)]
+      const orderedCarts = cartIds.map((cartId) => carts.find((cart) => cart.cartId === cartId))
+      if (orderedCarts.includes(undefined)) {
+        return cartError(404, 'CART_NOT_FOUND', '장바구니 항목을 찾을 수 없습니다.')
+      }
+      const unavailable = orderedCarts.find((cart) => !findOption(cart.optionId)?.option.available)
+      if (unavailable) {
+        return cartError(400, 'OPTION_NOT_AVAILABLE', '주문할 수 없는 상품 옵션이 포함되어 있습니다.')
+      }
+
+      const lastItemId = Math.max(0, ...orders.flatMap((order) => order.items.map((item) => item.orderItemId)))
+      const order = {
+        orderId: Math.max(0, ...orders.map((order) => order.orderId)) + 1,
+        userId,
+        orderNum: createOrderNum(),
+        orderStatus: 'COMPLETED',
+        recipientName: body.recipientName,
+        recipientPhone: body.recipientPhone,
+        shippingAddress: body.shippingAddress,
+        createdAt: new Date().toISOString(),
+        items: orderedCarts.map((cart, index) => {
+          const { product, option } = findOption(cart.optionId)
+          return {
+            orderItemId: lastItemId + index + 1,
+            optionId: cart.optionId,
+            productId: product.productId,
+            productName: product.productName,
+            color: option.color,
+            size: option.size,
+            thumbnailUrl: product.thumbnailUrl,
+            orderQty: cart.quantity,
+            unitPrice: option.price,
+          }
+        }),
+      }
+      orders.push(order)
+      orderedCarts.forEach((cart) => carts.splice(carts.indexOf(cart), 1))
+
+      const { orderId, orderNum, orderStatus } = order
+      return HttpResponse.json({ orderId, orderNum, totalPrice: getTotalPrice(order), orderStatus }, { status: 201 })
+    },
+  ),
+
   http.get(
-    'http://localhost:8080/api/v1/wishlists',
+    `${ api.defaults.baseURL }/orders`,
+    ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const query = new URL(request.url).searchParams
+      const page = Number(query.get('page') ?? 0)
+      const size = Number(query.get('size') ?? 10)
+      const myOrders = orders.filter((order) => order.userId === userId)
+      const content = myOrders
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.orderId - a.orderId)
+        .slice(page * size, (page + 1) * size)
+        .map((order) => ({
+          orderId: order.orderId,
+          orderNum: order.orderNum,
+          totalPrice: getTotalPrice(order),
+          orderStatus: order.orderStatus,
+          createdAt: order.createdAt,
+          itemCount: order.items.length,
+          thumbnailUrl: order.items[0]?.thumbnailUrl ?? null,
+        }))
+
+      return HttpResponse.json({ content, page, totalPages: Math.ceil(myOrders.length / size) })
+    },
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/orders/:orderId`,
+    ({ params, request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const order = orders.find((order) => order.orderId === Number(params.orderId))
+      if (!order) {
+        return cartError(404, 'ORDER_NOT_FOUND', '주문을 찾을 수 없습니다.')
+      }
+      if (order.userId !== userId) {
+        return cartError(403, 'ORDER_FORBIDDEN', '본인의 주문만 조회할 수 있습니다.')
+      }
+
+      return HttpResponse.json({
+        orderId: order.orderId,
+        orderNum: order.orderNum,
+        orderStatus: order.orderStatus,
+        recipient: { name: order.recipientName, phone: order.recipientPhone },
+        shippingAddress: order.shippingAddress,
+        items: order.items.map(toOrderItem),
+        totalPrice: getTotalPrice(order),
+      })
+    },
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/surveys/me`,
+    ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const orderItemIds = (new URL(request.url).searchParams.get('orderItemIds') ?? '')
+        .split(',')
+        .filter(Boolean)
+        .map(Number)
+      if (orderItemIds.length === 0 || orderItemIds.length > 100) {
+        return cartError(400, 'INVALID_REQUEST', '입력값을 확인해주세요.')
+      }
+
+      return HttpResponse.json(surveys
+        .filter((survey) => survey.userId === userId && orderItemIds.includes(survey.orderItemId))
+        .sort((a, b) => a.orderItemId - b.orderItemId)
+        .map(toSurveyResponse))
+    },
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/surveys`,
+    async ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const { orderItemId, sizeFeedback } = await request.json()
+      if (!Number.isInteger(orderItemId) || orderItemId < 1 || !SIZE_FEEDBACKS.includes(sizeFeedback)) {
+        return cartError(400, 'INVALID_REQUEST', '입력값을 확인해주세요.')
+      }
+      if (surveys.some((survey) => survey.userId === userId && survey.orderItemId === orderItemId)) {
+        return cartError(409, 'DUPLICATE_SURVEY', '이미 설문을 작성한 주문 상품입니다.')
+      }
+
+      const order = orders.find((order) => order.items.some((item) => item.orderItemId === orderItemId))
+      if (!order) {
+        return cartError(404, 'ORDER_ITEM_NOT_FOUND', '주문 항목을 찾을 수 없습니다.')
+      }
+      if (order.userId !== userId) {
+        return cartError(403, 'NOT_ORDER_OWNER', '내 주문만 리뷰·설문할 수 있습니다.')
+      }
+      if (order.orderStatus !== 'COMPLETED') {
+        return cartError(409, 'ORDER_NOT_COMPLETED', '구매가 완료된 주문만 리뷰·설문할 수 있습니다.')
+      }
+
+      const surveyId = Math.max(0, ...surveys.map((survey) => survey.surveyId)) + 1
+      surveys.push({ surveyId, userId, orderItemId, sizeFeedback })
+      return HttpResponse.json({ surveyId }, { status: 201 })
+    },
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
       return HttpResponse.json({
         content: products,
@@ -372,7 +579,7 @@ export const handlers = [
   ),
 
   http.post(
-    'http://localhost:8080/api/v1/wishlists',
+    `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
       const { itemId } = await request.json()
 
@@ -381,12 +588,12 @@ export const handlers = [
   ),
 
   http.delete(
-    'http://localhost:8080/api/v1/wishlists',
+    `${ api.defaults.baseURL }/wishlists`,
     () => new HttpResponse(null, { status: 204 }),
   ),
 
   http.post(
-    'http://localhost:8080/api/v1/vton',
+    `${ api.defaults.baseURL }/vton`,
     async ({ request }) => {
       const { productIds, color, size } = await request.json()
       const fitting = {
@@ -403,49 +610,42 @@ export const handlers = [
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/vton/latest',
+    `${ api.defaults.baseURL }/vton/latest`,
     ({ request }) => toFittingResponse(fittings.findLast(
       fitting => fitting.productId === Number(new URL(request.url).searchParams.get('productId')),
     )),
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/vton/:fittingId',
+    `${ api.defaults.baseURL }/vton/:fittingId`,
     ({ params }) => toFittingResponse(fittings.find(
       fitting => fitting.fittingId === Number(params.fittingId),
     )),
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/checkout',
-    () => {
-      return HttpResponse.json(products)
-    },
-  ),
-
-  http.get(
-    'http://localhost:8080/api/v1/likes',
+    `${ api.defaults.baseURL }/likes`,
     () => {
       return HttpResponse.json(likes)
     },
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/community/articles/:id/comments',
+    `${ api.defaults.baseURL }/community/articles/:id/comments`,
     () => {
       return HttpResponse.json(comments)
     },
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/community/articles',
+    `${ api.defaults.baseURL }/community/articles`,
     () => {
       return HttpResponse.json(articles)
     },
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/community/articles/:id',
+    `${ api.defaults.baseURL }/community/articles/:id`,
     ({ params }) => {
       const article = articles.find(
         product => product.id === Number(params.id),
@@ -461,7 +661,7 @@ export const handlers = [
 
   // AI 추천 요청. 추천이 끝나면 결과를 응답에 담아 돌려줍니다.
   http.post(
-    'http://localhost:8080/api/v1/recommendations',
+    `${ api.defaults.baseURL }/recommendations`,
     async ({ request }) => {
       const { query } = await request.json()
 
@@ -478,7 +678,7 @@ export const handlers = [
 
   // 내 추천 대화 목록
   http.get(
-    'http://localhost:8080/api/v1/recommendations',
+    `${ api.defaults.baseURL }/recommendations`,
     ({ request }) => {
       const page = Number(new URL(request.url).searchParams.get('page') ?? 0)
 
@@ -492,14 +692,14 @@ export const handlers = [
 
   // 지난 추천 결과 조회. 목업에서는 어떤 requestId든 같은 결과를 돌려줍니다.
   http.get(
-    'http://localhost:8080/api/v1/recommendations/:requestId',
+    `${ api.defaults.baseURL }/recommendations/:requestId`,
     ({ params }) => {
       return HttpResponse.json({ requestId: params.requestId, ...recommendations })
     },
   ),
 
   http.get(
-    'http://localhost:8080/api/v1/recommendations/:requestId/messages',
+    `${ api.defaults.baseURL }/recommendations/:requestId/messages`,
     () => {
       return HttpResponse.json(recommendationMessages)
     },
@@ -507,7 +707,7 @@ export const handlers = [
 
   // 가상 피팅. 생성이 끝나면 결과를 응답에 담아 돌려줍니다. 목업에서는 어떤 요청이든 같은 이미지를 돌려줍니다.
   http.post(
-    'http://localhost:8080/api/v1/fittings',
+    `${ api.defaults.baseURL }/fittings`,
     async ({ request }) => {
       const { photoId, productIds } = await request.json()
 

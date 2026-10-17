@@ -1,3 +1,4 @@
+import { useAuth } from '../contexts/AuthContext.js'
 import {
   Button,
   Card,
@@ -24,6 +25,7 @@ import { Toaster, toaster } from '../components/ui/toaster.jsx'
 import { api } from '../api/axios.js'
 import { QuantityStepper } from './product/ProductOptionSelector.jsx'
 import { CartOptionDialog } from './CartOptionDialog.jsx'
+import { FailureTestButtons } from '../mocks/FailureTestButtons.jsx'
 
 const formatPrice = (price) => `${ price.toLocaleString() }원`
 
@@ -41,30 +43,8 @@ const failureTests = [
   { label: '다음 선택삭제 일부 실패', method: 'delete', path: '/carts/:cartId' },
 ]
 
-const failNextRequest = async ({ label, method, path }) => {
-  const [{ worker }, { http, HttpResponse }] = await Promise.all([import('../mocks/browser'), import('msw')])
-  worker.use(http[method](
-    `${ api.defaults.baseURL }${ path }`,
-    () => new HttpResponse(null, { status: 500 }),
-    { once: true },
-  ))
-  toaster.create({ title: `${ label }: 해당 요청이 한 번 실패해요.` })
-}
-
-const CartFailureTestButtons = () => (
-  <Stack gap={ 4 }>
-    <Text textStyle={ 'xs' } color={ 'fg.muted' }>실패 테스트 (개발 서버에서만 표시)</Text>
-    <Flex gap={ 4 } wrap={ 'wrap' }>
-      { failureTests.map((test) => (
-        <Button key={ test.label } variant={ 'outline' } size={ 'xs' } onClick={ () => failNextRequest(test) }>
-          { test.label }
-        </Button>
-      )) }
-    </Flex>
-  </Stack>
-)
-
 export const ShoppingCartPage = () => {
+  const { isSignedIn } = useAuth()
   const navigate = useNavigate()
   const [items, setItems] = useState(null)
   const [isLoadFailed, setIsLoadFailed] = useState(false)
@@ -85,13 +65,13 @@ export const ShoppingCartPage = () => {
     })
 
   useEffect(() => {
-    if (!localStorage.getItem('accessToken')) {
+    if (!isSignedIn) {
       navigate('/signin')
       return
     }
 
     loadCart()
-  }, [])
+  }, [isSignedIn, navigate])
 
   const updateCart = async (request, failureTitle) => {
     setIsUpdating(true)
@@ -357,7 +337,7 @@ export const ShoppingCartPage = () => {
                   { selectedItems.length }
                 </Flex>
               </Button>
-              { import.meta.env.DEV && <CartFailureTestButtons/> }
+              { import.meta.env.DEV && <FailureTestButtons tests={ failureTests }/> }
             </Stack>
           </Grid>
         ) }
