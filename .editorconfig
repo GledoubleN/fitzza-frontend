@@ -144,7 +144,7 @@ ij_xml_space_around_equals_in_attribute = false
 ij_xml_space_inside_empty_tag = false
 ij_xml_text_wrap = normal
 
-[{*.ats,*.cts,*.mts,*.ts}]
+[{*.ats,*.cts,*.mts,*.ts,*.tsx}]
 indent_size = 2
 tab_width = 2
 ij_continuation_indent_size = 2
@@ -334,7 +334,7 @@ ij_shell_redirect_followed_by_space = false
 ij_shell_switch_cases_indented = false
 ij_shell_use_unix_line_separator = true
 
-[{*.cjs,*.es6,*.js,*.mjs}]
+[{*.cjs,*.es6,*.js,*.mjs,*.jsx}]
 indent_size = 2
 max_line_length = 80
 tab_width = 2

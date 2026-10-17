@@ -7,21 +7,23 @@ const ROUTES = [
   { path: "/shopping-cart", label: "장바구니" },
   { path: "/signin", label: "로그인" },
   { path: "/signup", label: "회원가입" },
-  { path: "/try-on", label: "가상피팅" },
+  { path: "/vton", label: "가상피팅" },
   { path: "/search", label: "검색 결과" },
   { path: "/products/1", label: "상품 상세 (id:1)" },
   { path: "/checkout", label: "결제" },
-  { path: "/communitymain", label: "커뮤니티 메인" },
-  { path: "/communityarticle/1", label: "커뮤니티 글 상세 (id:1)" },
-  { path: "/communitywrite", label: "커뮤니티 글쓰기" },
+  { path: "/community/main", label: "커뮤니티 메인" },
+  { path: "/community/articles/1", label: "커뮤니티 글 상세 (id:1)" },
+  { path: "/community/write", label: "커뮤니티 글쓰기" },
   { path: "/prompt", label: "프롬프트" },
   { path: "/mypage", label: "마이페이지" },
   { path: "/worldcup", label: "상품 월드컵" },
-  { path: "/likes", label: "찜 목록" },
+  { path: "/wishlist", label: "찜 목록" },
   { path: "/category", label: "카테고리" },
+  { path: "/ai/sample", label: "AI 스타일리스트 (샘플)" },
+  { path: "/ai/history", label: "AI 대화 내역" },
 ];
 
-export const DevNavi = () => {
+export const ShortcutPage = () => {
   const moveUrl = useNavigate();
 
   return (

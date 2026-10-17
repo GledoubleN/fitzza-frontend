@@ -14,17 +14,17 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { LuChevronLeft, LuMessageCircle, LuThumbsUp } from "react-icons/lu";
-import { AppBar } from "../../components/AppBar.jsx";
+import { Header } from "../../components/Header.jsx";
 import { ScrollToTopButton } from "../../components/ScrollToTopButton.jsx";
 import { CommunityArticleCommentList } from "./CommunityArticleCommentList.jsx";
 import { api } from "../../api/axios.js";
-import { ARTICLES } from "/src/data/articles.js";
-import { COMMENTS } from "/src/data/comments.js";
+import { HttpStatusCode } from 'axios'
 
 export const CommunityArticlePage = () => {
   const { id } = useParams();
   console.log(">>> Debug: CommunityArticlePage Mounted", id);
   const moveUrl = useNavigate();
+  const [articles, setArticles] = useState([]);
 
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -40,8 +40,8 @@ export const CommunityArticlePage = () => {
       try {
         const [articleRes, commentsRes]
           = await Promise.all([
-          api.get(`/communityarticle/${id}`),
-          api.get(`/communityarticle/${id}/comments`),
+          api.get(`/community/articles/${id}`),
+          api.get(`/community/articles/${id}/comments`),
         ]);
         setArticle(articleRes.data);
         setComments(commentsRes.data);
@@ -49,13 +49,13 @@ export const CommunityArticlePage = () => {
         if (err.response?.status !== 401) {
           // 개발용 목업 폴백 — 완성되면 setError로 교체
           console.log("글 조회 실패, 더미 사용(개발용)", err);
-          const found = ARTICLES.find((a) => a.id === Number(id));
+          const found = articles.find((a) => a.id === Number(id));
           // const found 부터는 목업에 없는 id 번호로 들어왔을 때를 방지하는 코드입니다.
           // 그냥 여기 아래 블럭은 싹다 목업용이니 개발 완료되면 수정 필요
           // TO-DO-NEXT : 실제로 통신되면 수정하기
           if (found) {
             setArticle(found);
-            setComments(COMMENTS.filter((c) => c.articleId === Number(id)));
+            setComments(comments.filter((c) => c.articleId === Number(id)));
           } else {
             setError("글을 찾을 수 없습니다.");
           }
@@ -79,7 +79,7 @@ export const CommunityArticlePage = () => {
     }
 
     try {
-      const res = await api.post(`/communityarticle/${id}/comments`, {
+      const res = await api.post(`/community/articles/${id}/comments`, {
         content: trimmed,
         parentId,
       });
@@ -186,7 +186,7 @@ export const CommunityArticlePage = () => {
   return (
     <Container maxWidth="xl" minHeight="100vh" paddingY="4">
       <Stack direction="column" gap="4">
-        <AppBar />
+        <Header />
 
         {/* 헤더 */}
         <Flex align="center" gap="2">
