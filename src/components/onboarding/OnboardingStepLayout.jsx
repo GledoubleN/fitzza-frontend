@@ -4,15 +4,14 @@ export function OnboardingStepLayout ({ step, onSkip, errorMessage, actions, chi
   return (
     <Container
       maxW={ { base: 'md', md: 'lg' } }
-      py={ 12 }
+      py={ { base: 6, md: 12 } }
       bg="bg"
       minH="100vh"
       display="flex"
       flexDirection="column"
-      justifyContent="space-between"
       position="relative"
     >
-      <Box>
+      <Box flexShrink={ 0 }>
         <Flex justifyContent="space-between" alignItems="center" mb={ 4 }>
           <Text fontSize="sm" fontWeight="bold" color="fg.subtle">
             STEP { step } / 3
@@ -26,6 +25,9 @@ export function OnboardingStepLayout ({ step, onSkip, errorMessage, actions, chi
             <Progress.Range bg="bg.inverted" />
           </Progress.Track>
         </Progress.Root>
+      </Box>
+
+      <Box flex="1" pb={ 16 }>
         { children }
         { errorMessage && (
           <Text color="fg.error" fontSize="sm" mt={ 4 } textAlign="center">
@@ -33,7 +35,10 @@ export function OnboardingStepLayout ({ step, onSkip, errorMessage, actions, chi
           </Text>
         ) }
       </Box>
-      { actions }
+
+      <Box flexShrink={ 0 } pt={ 4 } bg="bg">
+        { actions }
+      </Box>
     </Container>
   )
 }
