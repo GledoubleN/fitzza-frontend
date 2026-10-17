@@ -25,27 +25,12 @@ import {
 import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { api } from '../api/axios.js';
-
-const preferredFitCollection = createListCollection({
-  items: [
-    { label: '선택 안함 (건너뛰기)', value: '' },
-    { label: '슬림 핏 (딱 붙는 스타일)', value: '슬림' },
-    { label: '레귤러 핏 (기본 스탠다드)', value: '레귤러' },
-    { label: '오버사이즈 핏 (여유 있는 스타일)', value: '오버사이즈' },
-  ],
-});
-
-const preferredStyleCollection = createListCollection({
-  items: [
-    { label: '선택 안함 (건너뛰기)', value: '' },
-    { label: '캐주얼 (데일리, 편안함)', value: '캐주얼' },
-    { label: '스트릿 (힙한 무드, 스트리트)', value: '스트릿' },
-    { label: '미니멀 (깔끔함, 모던)', value: '미니멀' },
-    { label: '포멀 / 비즈니스 (수트, 댄디)', value: '포멀' },
-  ],
-});
+import { useAuth } from '../contexts/AuthContext.js'
+import preferredFits from '/src/data/preferred-fits.json'
+import preferredStyles from '/src/data/preferred-styles.json'
 
 export default function ProfilePage() {
+  const { setAccessToken } = useAuth()
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
     nickname: '테스트사용자',
@@ -78,7 +63,7 @@ export default function ProfilePage() {
       }
     } catch (err) {
       if (err.response?.status === 401) {
-        localStorage.removeItem('accessToken');
+        setAccessToken(null)
         navigate('/signin');
       } else {
         console.warn("백엔드 통신 실패. 기본 프로필 정보를 표시합니다.", err);
@@ -230,7 +215,7 @@ export default function ProfilePage() {
                   <HStack position="relative" zIndex={2}>
                     <Text textStyle="xs" w="28%" color="fg.muted">선호 핏</Text>
                     <Select.Root
-                      collection={preferredFitCollection}
+                      collection={createListCollection({ items: preferredFits })}
                       size="xs"
                       width="full"
                       value={profileData.preferredFit ? [profileData.preferredFit] : ['']}
@@ -240,7 +225,7 @@ export default function ProfilePage() {
                         <Select.ValueText placeholder="선호 핏 선택" />
                       </Select.Trigger>
                       <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {preferredFitCollection.items.map((item) => (
+                        {preferredFits.map((item) => (
                           <Select.Item key={item.value} item={item}>
                             {item.label}
                           </Select.Item>
@@ -253,7 +238,7 @@ export default function ProfilePage() {
                   <HStack position="relative" zIndex={1}>
                     <Text textStyle="xs" w="28%" color="fg.muted">스타일</Text>
                     <Select.Root
-                      collection={preferredStyleCollection}
+                      collection={createListCollection({ items: preferredStyles })}
                       size="xs"
                       width="full"
                       value={profileData.style ? [profileData.style] : ['']}
@@ -263,7 +248,7 @@ export default function ProfilePage() {
                         <Select.ValueText placeholder="선호 스타일 선택" />
                       </Select.Trigger>
                       <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {preferredStyleCollection.items.map((item) => (
+                        {preferredStyles.map((item) => (
                           <Select.Item key={item.value} item={item}>
                             {item.label}
                           </Select.Item>

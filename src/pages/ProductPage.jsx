@@ -17,6 +17,7 @@ import {
 import { useNavigate, useParams } from 'react-router-dom'
 import { LuArrowUp, LuHeart } from 'react-icons/lu'
 import { api } from '../api/axios.js'
+import { useAuth } from '../contexts/AuthContext.js'
 import { Header } from '../components/Header.jsx'
 import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
@@ -40,6 +41,7 @@ function getEstimatedArrivalDate () {
 }
 
 export const ProductPage = () => {
+  const { isSignedIn } = useAuth()
   const { id } = useParams()
   const navigate = useNavigate()
   const [product, setProduct] = useState(null)
@@ -68,7 +70,7 @@ export const ProductPage = () => {
   }, [id])
 
   const toggleWish = async () => {
-    if (!localStorage.getItem('accessToken')) {
+    if (!isSignedIn) {
       navigate('/signin')
       return
     }

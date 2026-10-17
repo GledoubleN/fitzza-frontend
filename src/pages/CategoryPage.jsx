@@ -23,8 +23,8 @@ export const CategoryPage = () => {
   const [categories, setCategories] = useState([])
   const [selected, setSelected] = useState(undefined)
 
-  const search = (query) => navigate(
-    `/search?${ new URLSearchParams({ q: query }) }`,
+  const search = (code) => navigate(
+    `/search?${ new URLSearchParams({ category: code }) }`,
   )
 
   async function loadCategories () {
@@ -87,7 +87,7 @@ export const CategoryPage = () => {
                     variant={ 'ghost' }
                     width={ 'full' }
                     justifyContent={ 'space-between' }
-                    onClick={ () => search(selected.name) }
+                    onClick={ () => search(selected.code) }
                   >
                     <Heading size={ 'md' }>{ selected?.name }</Heading>
                     <Icon><LuChevronRight></LuChevronRight></Icon>
@@ -107,7 +107,7 @@ export const CategoryPage = () => {
                           variant={ 'ghost' }
                           justifyContent={ 'space-between' }
                           onClick={ () => search(
-                            `${ subcategory.name }`) }
+                            `${ subcategory.code }`) }
                         >
                           <Text truncate>{ subcategory.name }</Text>
                           <Icon><LuChevronRight></LuChevronRight></Icon>

@@ -3,6 +3,7 @@ import { Button, Flex, IconButton, Portal, Select, Stack, Text, createListCollec
 import { LuMinus, LuPlus, LuX } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
+import { useAuth } from '../../contexts/AuthContext.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 
@@ -60,6 +61,7 @@ export const QuantityStepper = ({ quantity, onChange, disabled }) => (
 )
 
 export const ProductOptionSelector = ({ product }) => {
+  const { isSignedIn } = useAuth()
   const navigate = useNavigate()
   const [color, setColor] = useState('')
   // { [optionId]: 수량 }
@@ -94,7 +96,7 @@ export const ProductOptionSelector = ({ product }) => {
   }
 
   const addToCart = async () => {
-    if (!localStorage.getItem('accessToken')) {
+    if (!isSignedIn) {
       navigate('/signin')
       return
     }
