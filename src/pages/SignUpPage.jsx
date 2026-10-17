@@ -131,7 +131,7 @@ export const SignUpPage = () => {
                 name="nickname"
                 value={ formData.nickname }
                 onChange={ handleChange }
-                placeholder="사용자명 (2~10자)"
+                placeholder="사용자명"
                 variant="outline"
                 size="lg"
                 textAlign="left"
@@ -146,7 +146,7 @@ export const SignUpPage = () => {
                 name="password"
                 value={ formData.password }
                 onChange={ handleChange }
-                placeholder="비밀번호 (영문 소문자, 숫자 조합 8~24자)"
+                placeholder="비밀번호"
                 variant="outline"
                 size="lg"
                 textAlign="left"
