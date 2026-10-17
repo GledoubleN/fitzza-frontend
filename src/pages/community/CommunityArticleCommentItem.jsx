@@ -1,123 +1,139 @@
-import { useState } from "react";
-import { Badge, Box, Button, HStack, Input, Stack, Text } from "@chakra-ui/react";
-import { LuThumbsUp } from "react-icons/lu";
+import { useState } from 'react'
+import { Badge, Button, HStack, Input, Stack, Text } from '@chakra-ui/react'
+import { LuThumbsUp } from 'react-icons/lu'
+import { formatRelativeTime } from './communityFormat.js'
 
-const INDENT_STEP = "6"; // 한 단계 들여쓰기 폭
-const MAX_INDENT_DEPTH = 1; // depth 1까지만 들여쓰기
-const CONTINUE_DEPTH = 3; // 대댓글 3개 이상의 답글은 "계속 보기"로 접음 임의값 합의 필요
+const COMMENT_MAX_LENGTH = 500
 
 export const CommunityArticleCommentItem = ({
   comment,
-  comments,
-  articleAuthor,
+  isReply = false,
+  postAuthorNickname,
+  myNickname,
+  voteOptions,
   onLike,
   onReply,
-  depth = 0,
+  onUpdate,
+  onDelete,
 }) => {
-  const { id, author, time, content, likes, liked } = comment;
-  const replies = comments.filter((c) => c.parentId === id); // 댓글 직속 답글
-  const isAuthor = author === articleAuthor; // 글 작성자가 댓글 작성자인지 확인
-  // To-Do-Next: isAuthor는 id를 받지 않는 구조로 같은 닉네임을 허용한다면 수정 필요합니다.
-  const [showReply, setShowReply] = useState(false);
-  const [replyText, setReplyText] = useState("");
-  const [expanded, setExpanded] = useState(false); // "계속보기" 펼침여부
+  const { commentId, author, content, createdAt, likeCount, liked, isDeleted, supportedOptionId, replies = [] } = comment
+  const [replying, setReplying] = useState(false)
+  const [replyText, setReplyText] = useState('')
+  const [editing, setEditing] = useState(false)
+  const [editText, setEditText] = useState(content)
 
-  const submitReply = () => {
-    if (!replyText.trim()) return;
-    onReply(id, replyText);
-    setReplyText("");
-    setShowReply(false);
-  };
+  const isMine = myNickname !== null && author?.nickname === myNickname
+  const supportedOption = voteOptions?.find((option) => option.voteOptionId === supportedOptionId)
 
-  // 정해진 Depth 이상은 더 들여쓰지 않음
-  const padLeft = depth === 0 || depth > MAX_INDENT_DEPTH ? "0" : INDENT_STEP;
-  // depth가 CONTINUE_DEPTH 이상이고 답글이 있으면 접기/펼치기 가능한 지점
-  const canCollapse = depth >= CONTINUE_DEPTH && replies.length > 0;
+  const submitReply = async (event) => {
+    event.preventDefault()
+    if (await onReply(replyText, commentId)) {
+      setReplyText('')
+      setReplying(false)
+    }
+  }
+
+  const submitEdit = async (event) => {
+    event.preventDefault()
+    if (await onUpdate(commentId, editText)) {
+      setEditing(false)
+    }
+  }
+
+  const actionProps = { size: 'xs', variant: 'ghost', color: 'fg.muted' }
 
   return (
-    <Stack direction="column" gap="2" paddingLeft={padLeft}>
-      {/* 댓글 본문 */}
-      <Stack direction="column" gap="1">
-        <HStack gap="2" fontSize="sm">
-          <Box boxSize="6" rounded="full" bg="bg.muted" flexShrink="0" />
-          <Text>{author}</Text>
-          {isAuthor && (
-            <Badge colorPalette="orange" size="sm">작성자</Badge>
-          )}
-          <Text color="fg.muted">·</Text>
-          <Text color="fg.muted">{time}</Text>
-        </HStack>
-        <Text fontSize="sm" paddingLeft="8">
-          {content}
-        </Text>
-
-        {/* 좋아요 / 답글 */}
-        <HStack gap="4" paddingLeft="8" fontSize="sm">
-          <HStack
-            gap="1"
-            cursor="pointer"
-            color={liked ? "orange.500" : "fg.muted"}
-            onClick={() => onLike(id)}
-          >
-            <LuThumbsUp />
-            <Text>{likes}</Text>
+    <Stack direction="column" gap="4" paddingLeft={ isReply ? '8' : '0' }>
+      { isDeleted ? (
+        <Text fontSize="sm" color="fg.muted">삭제된 댓글입니다</Text>
+      ) : (
+        <Stack direction="column" gap="0">
+          <HStack gap="4" fontSize="sm" wrap="wrap">
+            <Text fontWeight="medium">{ author?.nickname }</Text>
+            { author?.nickname === postAuthorNickname && <Badge colorPalette="primary" size="sm">작성자</Badge> }
+            { supportedOption && <Badge colorPalette="gray" size="sm">{ supportedOption.label } 추천</Badge> }
+            <Text color="fg.muted">{ formatRelativeTime(createdAt) }</Text>
           </HStack>
-          <Text
-            cursor="pointer"
-            color="fg.muted"
-            onClick={() => setShowReply((v) => !v)}
-          >
-            답글
-          </Text>
-        </HStack>
-      </Stack>
 
-      {/* 답글 입력 / 길이는 임의값 합의 필요*/}
-      {showReply && (
-        <HStack gap="2" paddingLeft="8">
-          <Input
-            size="sm"
-            maxLength = {500}
-            placeholder="답글을 입력하세요"
-            value={replyText}
-            onChange={(e) => setReplyText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") submitReply();
-            }}
-          />
-          <Button size="sm" colorPalette="orange" flexShrink="0" onClick={submitReply}>
-            등록
-          </Button>
-        </HStack>
-      )}
+          { editing ? (
+            <form onSubmit={ submitEdit }>
+              <HStack gap="4">
+                <Input
+                  size="sm"
+                  maxLength={ COMMENT_MAX_LENGTH }
+                  aria-label="댓글 수정"
+                  value={ editText }
+                  onChange={ (e) => setEditText(e.target.value) }
+                />
+                <Button type="submit" size="sm" colorPalette="primary" flexShrink="0" disabled={ !editText.trim() }>
+                  저장
+                </Button>
+                <Button size="sm" variant="ghost" flexShrink="0" onClick={ () => setEditing(false) }>
+                  취소
+                </Button>
+              </HStack>
+            </form>
+          ) : (
+            <Text fontSize="sm" whiteSpace="pre-wrap">{ content }</Text>
+          ) }
 
-      {/* 대댓글: 너무 깊으면 "계속 보기"로 접음 */}
-      {/* 계속 보기 / 접기 토글 */}
-      {canCollapse && (
-        <Text
-          paddingLeft="8"
-          fontSize="sm"
-          color="blue.500"
-          cursor="pointer"
-          onClick={() => setExpanded((v) => !v)}
-        >
-          {expanded ? "답글 접기" : `답글 ${replies.length}개 계속 보기`}
-        </Text>
-      )}
+          <HStack gap="0">
+            <Button
+              { ...actionProps }
+              color={ liked ? 'primary.fg' : 'fg.muted' }
+              aria-pressed={ liked }
+              onClick={ () => onLike(comment) }
+            >
+              <LuThumbsUp/> { likeCount }
+            </Button>
+            { !isReply && (
+              <Button { ...actionProps } onClick={ () => setReplying((value) => !value) }>답글</Button>
+            ) }
+            { isMine && !editing && (
+              <>
+                <Button { ...actionProps } onClick={ () => {
+                  setEditText(content)
+                  setEditing(true)
+                } }>수정</Button>
+                <Button { ...actionProps } onClick={ () => onDelete(commentId) }>삭제</Button>
+              </>
+            ) }
+          </HStack>
+        </Stack>
+      ) }
 
-      {/* 접기 지점이 아니면 항상표시, 접기 지점이면서 펼쳐졌을 때만 답글 렌더 */}
-      {(!canCollapse || expanded) &&
-        replies.map((reply) => (
-          <CommunityArticleCommentItem
-            key={reply.id}
-            comment={reply}
-            comments={comments}
-            articleAuthor={articleAuthor}
-            onLike={onLike}
-            onReply={onReply}
-            depth={depth + 1}
-          />
-        ))}
+      { replying && (
+        <form onSubmit={ submitReply }>
+          <HStack gap="4" paddingLeft="8">
+            <Input
+              size="sm"
+              maxLength={ COMMENT_MAX_LENGTH }
+              placeholder="답글을 입력하세요"
+              aria-label="답글 입력"
+              value={ replyText }
+              onChange={ (e) => setReplyText(e.target.value) }
+            />
+            <Button type="submit" size="sm" colorPalette="primary" flexShrink="0" disabled={ !replyText.trim() }>
+              등록
+            </Button>
+          </HStack>
+        </form>
+      ) }
+
+      { replies.map((reply) => (
+        <CommunityArticleCommentItem
+          key={ reply.commentId }
+          comment={ reply }
+          isReply
+          postAuthorNickname={ postAuthorNickname }
+          myNickname={ myNickname }
+          voteOptions={ voteOptions }
+          onLike={ onLike }
+          onReply={ onReply }
+          onUpdate={ onUpdate }
+          onDelete={ onDelete }
+        />
+      )) }
     </Stack>
-  );
-};
+  )
+}
