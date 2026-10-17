@@ -4,13 +4,12 @@ import users from '../data/users.json'
 import categories from '../data/categories.json'
 import products from '../data/products.json'
 import likes from '../data/wishlist.json'
-import articles from '../data/articles.json'
-import comments from '../data/comments.json'
 import userProfile from '../data/user-profile.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendation-history.json'
 import recommendationMessages from '../data/recommendation-messages.json'
 import fittingResultImage from '../assets/hero.png'
+import { communityHandlers } from './communityHandlers.js'
 
 // [개발용] 추천 요청의 응답이 오기까지 걸리는 시간을 흉내 냅니다.
 // 추천 결과는 요청(POST)의 응답에 담겨 오므로, 이 시간 동안 화면의 로딩 말풍선을 확인할 수 있습니다.
@@ -335,34 +334,7 @@ export const handlers = [
     },
   ),
 
-  http.get(
-    'http://localhost:8080/api/v1/community/articles/:id/comments',
-    () => {
-      return HttpResponse.json(comments)
-    },
-  ),
-
-  http.get(
-    'http://localhost:8080/api/v1/community/articles',
-    () => {
-      return HttpResponse.json(articles)
-    },
-  ),
-
-  http.get(
-    'http://localhost:8080/api/v1/community/articles/:id',
-    ({ params }) => {
-      const article = articles.find(
-        product => product.id === Number(params.id),
-      )
-
-      if (!article) {
-        return new HttpResponse(null, { status: 404 })
-      }
-
-      return HttpResponse.json(article)
-    },
-  ),
+  ...communityHandlers,
 
   // AI 추천 요청. 추천이 끝나면 결과를 응답에 담아 돌려줍니다.
   http.post(
