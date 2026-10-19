@@ -6,6 +6,8 @@ import {
   subscribeToPush,
 } from '../services/pushNotifications.js'
 
+const notificationLimit = 50
+
 export const usePushNotifications = (isSignedIn) => {
   const [notifications, setNotifications] = useState([])
   const [error, setError] = useState('')
@@ -20,21 +22,31 @@ export const usePushNotifications = (isSignedIn) => {
 
   useEffect(() => {
     const currentSession = ++session.current
+
     if (!isSignedIn || !isPushConfigured) return
+
     let unsubscribe
     let registering = false
     let registeredToken
-    const register = async () => {
+
+    const registerPushToken = async () => {
       if (registering || session.current !== currentSession) return
+
       registering = true
+
       try {
         const token = await enablePush()
+
         if (!token || session.current !== currentSession) return
         if (token === registeredToken) return
+
         const endpoint = import.meta.env.VITE_FCM_TOKEN_ENDPOINT
+
         if (!endpoint) throw new Error('알림 토큰 등록 API 설정이 필요합니다.')
+
         await api.post(endpoint, { token })
         registeredToken = token
+
         if (session.current === currentSession) setError('')
       } catch (cause) {
         if (session.current === currentSession) {
@@ -44,34 +56,45 @@ export const usePushNotifications = (isSignedIn) => {
         registering = false
       }
     }
+
     const handleFocus = () => {
-      if (Notification.permission === 'granted') void register()
+      if (Notification.permission === 'granted') void registerPushToken()
     }
-    const receive = (payload) => {
+
+    const handleMessage = (payload) => {
       if (session.current !== currentSession) return
+
       const title = payload.notification?.title || payload.data?.title
       const body = payload.notification?.body || payload.data?.body
+
       if (!title && !body) return
+
       const notification = {
         id: payload.messageId || crypto.randomUUID(),
         title: title || '알림',
         body,
       }
-      setNotifications(
-        (previous) => previous.some((item) => item.id === notification.id)
-          ? previous
-          : [notification, ...previous].slice(0, 50))
+
+      setNotifications((previous) => {
+        const isDuplicate = previous.some((item) => item.id === notification.id)
+
+        if (isDuplicate) return previous
+
+        return [notification, ...previous].slice(0, notificationLimit)
+      })
     }
-    subscribeToPush(receive).then((cleanup) => {
+
+    subscribeToPush(handleMessage).then((cleanup) => {
       if (session.current !== currentSession) cleanup()
       else {
         unsubscribe = cleanup
         window.addEventListener('focus', handleFocus)
-        void register()
+        void registerPushToken()
       }
     }).catch(() => {
       if (session.current === currentSession) setError('푸시 알림을 연결하지 못했습니다.')
     })
+
     return () => {
       session.current = currentSession + 1
       unsubscribe?.()
@@ -79,5 +102,9 @@ export const usePushNotifications = (isSignedIn) => {
     }
   }, [isSignedIn])
 
-  return { notifications, error, isConfigured: isPushConfigured }
+  return {
+    notifications,
+    error,
+    isConfigured: isPushConfigured,
+  }
 }
