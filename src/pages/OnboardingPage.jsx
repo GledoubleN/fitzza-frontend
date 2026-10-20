@@ -12,19 +12,30 @@ export default function OnboardingPage () {
   const [errorMessage, setErrorMessage] = useState('')
   const [isSaved, setIsSaved] = useState(false)
 
+  // 💡 여기서 모든 선택값을 빈 문자열('')로 초기화하여 아무것도 선택되지 않은 상태로 설정
   const [formData, setFormData] = useState({
     height: '',
     weight: '',
-    shoeSize: '',          // 발사이즈 추가
-    gender: '기타',
-    preferredFit: '레귤러',
-    style: '캐주얼',
-    topSize: 'M',
+    shoeSize: '',
+    gender: '',
+    preferredFit: '',
+    style: '',
+    topSize: '',
+    weightSize: '',        // 하의 사이즈
+  })
+
+  const [fieldErrors, setFieldErrors] = useState({
+    height: '',
+    weight: '',
+    shoeSize: '',
   })
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }))
     if (errorMessage) setErrorMessage('')
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: '' }))
+    }
   }
 
   const handleSkip = () => {
@@ -37,20 +48,36 @@ export default function OnboardingPage () {
       const w = Number(formData.weight)
       const s = Number(formData.shoeSize)
 
-      if (!formData.height || !formData.weight || !formData.shoeSize) {
-        setErrorMessage('키, 몸무게, 발사이즈를 모두 입력해주세요.')
-        return
+      let hasError = false
+      const newErrors = { height: '', weight: '', shoeSize: '' }
+
+      if (!formData.height) {
+        newErrors.height = '키를 입력해주세요.'
+        hasError = true
+      } else if (h < 130 || h > 210) {
+        newErrors.height = '키는 130cm ~ 210cm 사이로 입력해주세요.'
+        hasError = true
       }
-      if (h < 130 || h > 200) {
-        setErrorMessage('키는 130cm ~ 200cm 사이로 입력해주세요.')
-        return
+
+      if (!formData.weight) {
+        newErrors.weight = '몸무게를 입력해주세요.'
+        hasError = true
+      } else if (w < 30 || w > 120) {
+        newErrors.weight = '몸무게는 30kg ~ 120kg 사이로 입력해주세요.'
+        hasError = true
       }
-      if (w < 30 || w > 120) {
-        setErrorMessage('몸무게는 30kg ~ 120kg 사이로 입력해주세요.')
-        return
+
+      if (!formData.shoeSize) {
+        newErrors.shoeSize = '발사이즈를 입력해주세요.'
+        hasError = true
+      } else if (s < 210 || s > 300) {
+        newErrors.shoeSize = '발사이즈는 210mm ~ 300mm 사이로 입력해주세요.'
+        hasError = true
       }
-      if (s < 210 || s > 320) {
-        setErrorMessage('발사이즈는 210mm ~ 320mm 사이로 입력해주세요.')
+
+      setFieldErrors(newErrors)
+
+      if (hasError) {
         return
       }
     }
@@ -61,6 +88,7 @@ export default function OnboardingPage () {
 
   const handlePrev = () => {
     setErrorMessage('')
+    setFieldErrors({ height: '', weight: '', shoeSize: '' })
     if (step > 1) setStep(step - 1)
   }
 
@@ -112,6 +140,7 @@ export default function OnboardingPage () {
       return (
         <BodyMeasurementsStep
           { ...sharedProps }
+          fieldErrors={ fieldErrors }
           onNext={ handleNext }
         />
       )
