@@ -18,41 +18,6 @@ export const WishlistPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
-  const fallbackWishlists = [
-    {
-      productId: 5,
-      productName: "Denim Trucker Jacket",
-      brandName: "Saint Laurent",
-      price: 2300000,
-      thumbnailUrl: "/product-image.png",
-      status: "ON_SALE"
-    },
-    {
-      productId: 8,
-      productName: "Technical Windbreaker",
-      brandName: "Moncler",
-      price: 1950000,
-      thumbnailUrl: "/product-image.png",
-      status: "ON_SALE"
-    },
-    {
-      productId: 12,
-      productName: "Silk Poplin Shirt",
-      brandName: "Valentino",
-      price: 980000,
-      thumbnailUrl: "/product-image.png",
-      status: "ON_SALE"
-    },
-    {
-      productId: 13,
-      productName: "Re-Nylon Puffer Jacket",
-      brandName: "Prada",
-      price: 3400000,
-      thumbnailUrl: "/product-image.png",
-      status: "ON_SALE"
-    }
-  ]
-
   async function loadWishlist (page = 0, size = 10) {
     setIsLoading(true)
     setIsError(false)
@@ -64,7 +29,7 @@ export const WishlistPage = () => {
         const rawData = response.data.content || response.data
 
         // 백엔드 응답 필드를 ProductItem 규격에 맞게 변환
-        const formattedData = Array.isArray(rawData) && rawData.length > 0
+        const formattedData = Array.isArray(rawData)
           ? rawData.map(item => ({
             ...item,
             productId: item.productId || item.itemId,
@@ -72,15 +37,15 @@ export const WishlistPage = () => {
             thumbnailUrl: item.thumbnailUrl || item.imageUrl,
             brandName: item.brandName || '' // 추후 백엔드 추가 예정
           }))
-          : fallbackWishlists
+          : []
 
         setProducts(formattedData)
       } else {
-        setProducts(fallbackWishlists)
+        setIsError(true)
       }
     } catch (error) {
-      console.warn('백엔드 통신 실패, 목업 데이터를 사용합니다:', error)
-      setProducts(fallbackWishlists)
+      console.warn('백엔드 통신 실패:', error)
+      setIsError(true)
     } finally {
       setIsLoading(false)
     }
