@@ -61,8 +61,20 @@ export const WishlistPage = () => {
         params: { page, size }
       })
       if (response.status === HttpStatusCode.Ok) {
-        const data = response.data.content || response.data
-        setProducts(Array.isArray(data) && data.length > 0 ? data : fallbackWishlists)
+        const rawData = response.data.content || response.data
+
+        // 백엔드 응답 필드를 ProductItem 규격에 맞게 변환
+        const formattedData = Array.isArray(rawData) && rawData.length > 0
+          ? rawData.map(item => ({
+            ...item,
+            productId: item.productId || item.itemId,
+            productName: item.productName || item.name,
+            thumbnailUrl: item.thumbnailUrl || item.imageUrl,
+            brandName: item.brandName || '' // 추후 백엔드 추가 예정
+          }))
+          : fallbackWishlists
+
+        setProducts(formattedData)
       } else {
         setProducts(fallbackWishlists)
       }
@@ -119,7 +131,7 @@ export const WishlistPage = () => {
                 <ProductItem
                   key={ product.productId || product.itemId || product.wishlistId }
                   product={ product }
-                  isLiked={ true } // 찜 목록 페이지이므로 초기값을 true로 설정
+                  isLiked={ true }
                   onWishlistChange={ handleWishlistChange }
                 />
               ))
