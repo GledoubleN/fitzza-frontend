@@ -28,14 +28,13 @@ export const WishlistPage = () => {
       if (response.status === HttpStatusCode.Ok) {
         const rawData = response.data.content || response.data
 
-        // 백엔드 응답 필드를 ProductItem 규격에 맞게 변환
         const formattedData = Array.isArray(rawData)
           ? rawData.map(item => ({
             ...item,
             productId: item.productId || item.itemId,
             productName: item.productName || item.name,
             thumbnailUrl: item.thumbnailUrl || item.imageUrl,
-            brandName: item.brandName || '' // 추후 백엔드 추가 예정
+            brandName: item.brandName || ''
           }))
           : []
 
