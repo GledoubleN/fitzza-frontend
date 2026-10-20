@@ -133,6 +133,7 @@ export const VtonGallery = () => {
         onOpenChange={ (event) => !event.open && setSelected(null) }
         placement={ 'center' }
         scrollBehavior={ 'inside' }
+        size={ 'xl' }
       >
         <Portal>
           <Dialog.Backdrop/>
@@ -144,13 +145,15 @@ export const VtonGallery = () => {
               <Dialog.Body>
                 {
                   selected &&
-                  <Stack gap={ 4 }>
-                    <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } borderRadius={ 'xl' } overflow={ 'hidden' }>
-                      <FittingThumbnail fitting={ selected }></FittingThumbnail>
-                    </AspectRatio>
-                    { selected.errorMessage && <Text color={ 'fg.error' } textStyle={ 'sm' }>{ selected.errorMessage }</Text> }
-                    <Text textStyle={ 'xs' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
+                  <Grid templateColumns={ { base: '1fr', md: '3fr 2fr' } } gap={ 4 } alignItems={ 'start' }>
                     <Stack gap={ 2 }>
+                      <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } borderRadius={ 'xl' } overflow={ 'hidden' }>
+                        <FittingThumbnail fitting={ selected }></FittingThumbnail>
+                      </AspectRatio>
+                      { selected.errorMessage && <Text color={ 'fg.error' } textStyle={ 'sm' }>{ selected.errorMessage }</Text> }
+                      <Text textStyle={ 'xs' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
+                    </Stack>
+                    <Stack gap={ 4 }>
                       {
                         selected.products?.map((product) => (
                           <Flex
@@ -175,7 +178,7 @@ export const VtonGallery = () => {
                         ))
                       }
                     </Stack>
-                  </Stack>
+                  </Grid>
                 }
               </Dialog.Body>
               <Dialog.Footer>
