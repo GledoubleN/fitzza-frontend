@@ -18,7 +18,7 @@ export const WishlistPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
-  async function loadWishlist (page = 0, size = 10) {
+  async function loadWishlist (page = 0, size = 100) {
     setIsLoading(true)
     setIsError(false)
     try {
@@ -31,10 +31,10 @@ export const WishlistPage = () => {
         const formattedData = Array.isArray(rawData)
           ? rawData.map(item => ({
             ...item,
-            productId: item.productId || item.itemId,
-            productName: item.productName || item.name,
-            thumbnailUrl: item.thumbnailUrl || item.imageUrl,
-            brandName: item.brandName || ''
+            productId: item.productId ?? item.itemId,
+            productName: item.productName ?? item.name,
+            thumbnailUrl: item.thumbnailUrl ?? item.imageUrl,
+            brandName: item.brandName ?? ''
           }))
           : []
 
@@ -53,7 +53,7 @@ export const WishlistPage = () => {
   const handleWishlistChange = (targetProductId) => {
     setProducts((prevProducts) =>
       prevProducts.filter(
-        (product) => (product.productId || product.itemId) !== targetProductId
+        (product) => (product.productId ?? product.itemId) !== targetProductId
       )
     )
   }
@@ -73,27 +73,27 @@ export const WishlistPage = () => {
         )}
 
         {!isLoading && isError && (
-          <Center height="100%" flexDirection="column" gap={4}>
-            <Text color="red.500">찜 목록을 불러오지 못했습니다.</Text>
+          <Center height="100%" flexDirection="column" gap={ 4 }>
+            <Text color="fg.error">찜 목록을 불러오지 못했습니다.</Text>
             <Button onClick={() => loadWishlist()} size="sm">다시 시도</Button>
           </Center>
         )}
 
         {!isLoading && !isError && products.length === 0 && (
           <Center height="100%">
-            <Text color="gray.500">찜한 상품이 없습니다.</Text>
+            <Text color="fg.muted">찜한 상품이 없습니다.</Text>
           </Center>
         )}
 
         {!isLoading && !isError && products.length > 0 && (
           <Grid
-            templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - 1rem * 4) / 5)), 1fr))' }
+            templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
             gap={ 4 }
           >
             {
               products.map((product) => (
                 <ProductItem
-                  key={ product.productId || product.itemId || product.wishlistId }
+                  key={ product.productId ?? product.itemId ?? product.wishlistId }
                   product={ product }
                   isLiked={ true }
                   onWishlistChange={ handleWishlistChange }
