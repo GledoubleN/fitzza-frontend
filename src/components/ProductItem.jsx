@@ -2,17 +2,43 @@ import { Box, Heading, IconButton, Stack, Image, Text } from '@chakra-ui/react'
 import { LuHeart } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { api } from '../api/axios.js'
 
-export const ProductItem = ({ product }) => {
+export const ProductItem = ({ product, onWishlistChange }) => {
   const [isLiked, setIsLiked] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
-  function handleProductClick (product) {
-    navigate(`/products/${ product.productId }`)
+  const targetId = product.productId || product.itemId
+
+  function handleProductClick () {
+    navigate(`/products/${ targetId }`)
   }
 
-  function handleLikeButtonClick () {
-    setIsLiked((isLiked) => !isLiked)
+  async function handleLikeButtonClick () {
+    if (isLoading) return
+    setIsLoading(true)
+
+    try {
+      if (isLiked) {
+        await api.delete('/wishlists', {
+          params: { itemId: targetId }
+        })
+        setIsLiked(false)
+
+        if (onWishlistChange) {
+          onWishlistChange(targetId)
+        }
+      } else {
+        await api.post('/wishlists', { itemId: targetId })
+        setIsLiked(true)
+      }
+    } catch (error) {
+      console.error('찜 상태 변경 실패:', error)
+      alert('요청을 처리하지 못했습니다.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -26,7 +52,7 @@ export const ProductItem = ({ product }) => {
           aspectRatio={ 1 }
           objectFit={ 'contain' }
           src={ product.thumbnailUrl }
-          onClick={ () => handleProductClick(product) }
+          onClick={ handleProductClick }
           cursor="pointer"
         ></Image>
         <IconButton
@@ -39,6 +65,7 @@ export const ProductItem = ({ product }) => {
             event.stopPropagation()
             handleLikeButtonClick()
           } }
+          isLoading={ isLoading }
         >
           <LuHeart
             color={ isLiked ? 'red' : 'black' }
