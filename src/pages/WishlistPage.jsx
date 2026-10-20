@@ -119,6 +119,7 @@ export const WishlistPage = () => {
                 <ProductItem
                   key={ product.productId || product.itemId || product.wishlistId }
                   product={ product }
+                  isLiked={ true } // 찜 목록 페이지이므로 초기값을 true로 설정
                   onWishlistChange={ handleWishlistChange }
                 />
               ))

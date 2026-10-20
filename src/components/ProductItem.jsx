@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { api } from '../api/axios.js'
 
-export const ProductItem = ({ product, onWishlistChange }) => {
-  const [isLiked, setIsLiked] = useState(true)
+export const ProductItem = ({ product, isLiked: initialIsLiked = false, onWishlistChange }) => {
+  const [isLiked, setIsLiked] = useState(initialIsLiked)
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
