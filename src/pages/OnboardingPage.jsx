@@ -16,10 +16,11 @@ export default function OnboardingPage () {
     height: '',
     weight: '',
     shoeSize: '',
-    gender: '기타',
-    preferredFit: '레귤러',
-    style: '캐주얼',
-    topSize: 'M',
+    gender: '',
+    preferredFit: '',
+    style: '',
+    topSize: '',
+    weightSize: '',
   })
 
   const [fieldErrors, setFieldErrors] = useState({
@@ -52,8 +53,8 @@ export default function OnboardingPage () {
       if (!formData.height) {
         newErrors.height = '키를 입력해주세요.'
         hasError = true
-      } else if (h < 130 || h > 210) {
-        newErrors.height = '키는 130cm ~ 210cm 사이로 입력해주세요.'
+      } else if (h < 130 || h > 200) {
+        newErrors.height = '키는 130cm ~ 200cm 사이로 입력해주세요.'
         hasError = true
       }
 
@@ -68,8 +69,8 @@ export default function OnboardingPage () {
       if (!formData.shoeSize) {
         newErrors.shoeSize = '발사이즈를 입력해주세요.'
         hasError = true
-      } else if (s < 210 || s > 300) {
-        newErrors.shoeSize = '발사이즈는 210mm ~ 300mm 사이로 입력해주세요.'
+      } else if (s < 210 || s > 320) {
+        newErrors.shoeSize = '발사이즈는 210mm ~ 320mm 사이로 입력해주세요.'
         hasError = true
       }
 
