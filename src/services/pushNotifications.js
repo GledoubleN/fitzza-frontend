@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import {
+  deleteToken,
   getMessaging,
   getToken,
   isSupported,
@@ -55,7 +56,10 @@ export const subscribeToPush = async (receive) => {
   return onMessage(messaging, receive)
 }
 
-export const enablePush = async () => {
+let pendingRegistration
+let disablingPush = false
+
+const registerPush = async () => {
   if (!isPushConfigured) throw new Error('푸시 알림 설정이 필요합니다.')
   if (!('Notification' in window)) throw new Error('이 브라우저는 푸시 알림을 지원하지 않습니다.')
 
@@ -76,4 +80,42 @@ export const enablePush = async () => {
   if (!token) throw new Error('알림 등록 토큰을 발급받지 못했습니다.')
 
   return token
+}
+
+export const enablePush = () => {
+  if (disablingPush) return Promise.resolve(null)
+
+  pendingRegistration ??= registerPush().finally(() => {
+    pendingRegistration = undefined
+  })
+
+  return pendingRegistration
+}
+
+export const disablePush = async () => {
+  if (!isPushConfigured || !('serviceWorker' in navigator)) return
+
+  disablingPush = true
+
+  try {
+    await pendingRegistration?.catch(() => {})
+
+    const registration = await navigator.serviceWorker.getRegistration(
+      `${ import.meta.env.BASE_URL }firebase-cloud-messaging-push-scope/`,
+    )
+
+    if (!registration) return
+
+    const messaging = await loadMessaging()
+
+    await deleteToken(messaging)
+
+    const subscription = await registration.pushManager.getSubscription()
+
+    if (subscription && !await subscription.unsubscribe()) {
+      throw new Error('푸시 알림 구독을 해제하지 못했습니다.')
+    }
+  } finally {
+    disablingPush = false
+  }
 }
