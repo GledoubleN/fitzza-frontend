@@ -79,6 +79,9 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
           </InputGroup>
         </VStack>
 
+        <Text fontSize="xs" color="fg.subtle" pt={ 4 }>
+          키(130~200cm), 몸무게(30~120kg), 발사이즈(210~320mm) 범위 내로 입력해주세요.
+        </Text>
       </VStack>
     </OnboardingStepLayout>
   )

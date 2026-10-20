@@ -15,7 +15,7 @@ export default function OnboardingPage () {
   const [formData, setFormData] = useState({
     height: '',
     weight: '',
-    shoeSize: '',          // 발사이즈 추가
+    shoeSize: '',
     gender: '기타',
     preferredFit: '레귤러',
     style: '캐주얼',
@@ -41,16 +41,8 @@ export default function OnboardingPage () {
         setErrorMessage('키, 몸무게, 발사이즈를 모두 입력해주세요.')
         return
       }
-      if (h < 130 || h > 200) {
-        setErrorMessage('키는 130cm ~ 200cm 사이로 입력해주세요.')
-        return
-      }
-      if (w < 30 || w > 120) {
-        setErrorMessage('몸무게는 30kg ~ 120kg 사이로 입력해주세요.')
-        return
-      }
-      if (s < 210 || s > 320) {
-        setErrorMessage('발사이즈는 210mm ~ 320mm 사이로 입력해주세요.')
+
+      if (h < 130 || h > 200 || w < 30 || w > 120 || s < 210 || s > 320) {
         return
       }
     }
