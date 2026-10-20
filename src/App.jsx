@@ -10,6 +10,7 @@ import { CommunityWritePage } from "./pages/community/CommunityWritePage.jsx";
 import { CommunityArticlePage } from "./pages/community/CommunityArticlePage.jsx";
 import { ProductPage } from './pages/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
+import { VtonGalleryPage } from './pages/profile/VtonGalleryPage.jsx'
 import WorldCupPage from './pages/WorldCupPage.jsx'
 import { ShortcutPage } from './pages/ShortcutPage.jsx'
 import { WishlistPage } from './pages/WishlistPage.jsx'
@@ -36,6 +37,7 @@ function App() {
         <Route path="/community/articles/:id" element={ <CommunityArticlePage/> }/>
         <Route path="/community/write" element={ <CommunityWritePage/> }/>
         <Route path="/profile" element={ <ProfilePage/> }/>
+        <Route path="/profile/fittings" element={ <VtonGalleryPage/> }/>
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
         <Route path="/shortcuts" element={ <ShortcutPage/> }/>
         <Route path="/wishlist" element={ <WishlistPage/> }/>

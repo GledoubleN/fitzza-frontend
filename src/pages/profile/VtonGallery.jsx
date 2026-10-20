@@ -19,6 +19,7 @@ import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 
 const PAGE_SIZE = 20
+const PREVIEW_SIZE = 4
 
 const formatDate = (value) => new Date(value).toLocaleDateString('ko-KR')
 
@@ -35,14 +36,18 @@ const FittingThumbnail = ({ fitting }) => {
   )
 }
 
-export const VtonGallery = () => {
+export const VtonGallery = ({ preview = false }) => {
   const navigate = useNavigate()
   const [fittings, setFittings] = useState([])
   const [totalCount, setTotalCount] = useState(0)
   const [status, setStatus] = useState('loading')
   const [selected, setSelected] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
-  const visibleFittings = fittings.filter((fitting) => fitting.status !== 'FAILED')
+  const successfulFittings = fittings.filter((fitting) => fitting.status !== 'FAILED')
+  const visibleFittings = preview ? successfulFittings.slice(0, PREVIEW_SIZE) : successfulFittings
+  const hasMore = preview
+    ? successfulFittings.length > PREVIEW_SIZE || fittings.length < totalCount
+    : fittings.length < totalCount
 
   const load = async (offset = 0) => {
     setStatus('loading')
@@ -76,7 +81,7 @@ export const VtonGallery = () => {
 
   return (
     <Stack gap={ 4 }>
-      <Heading textStyle={ 'md' } fontWeight={ '700' }>가상 피팅 갤러리</Heading>
+      { preview && <Heading textStyle={ 'md' } fontWeight={ '700' }>가상 피팅 갤러리</Heading> }
 
       {
         status === 'done' && !visibleFittings.length &&
@@ -86,7 +91,12 @@ export const VtonGallery = () => {
         </Stack>
       }
 
-      <Grid templateColumns={ { base: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)' } } gap={ 4 }>
+      <Grid
+        templateColumns={ preview
+          ? { base: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)' }
+          : { base: 'repeat(3, 1fr)', md: 'repeat(5, 1fr)', lg: 'repeat(6, 1fr)' } }
+        gap={ 4 }
+      >
         {
           visibleFittings.map((fitting) => (
             <Button
@@ -119,8 +129,14 @@ export const VtonGallery = () => {
         </Stack>
       }
       {
-        status === 'done' && fittings.length < totalCount &&
-        <Button variant={ 'outline' } size={ 'sm' } onClick={ () => load(fittings.length) }>더 보기</Button>
+        status === 'done' && hasMore &&
+        <Button
+          variant={ 'outline' }
+          size={ 'sm' }
+          onClick={ () => preview ? navigate('/profile/fittings') : load(fittings.length) }
+        >
+          더 보기
+        </Button>
       }
 
       <Dialog.Root

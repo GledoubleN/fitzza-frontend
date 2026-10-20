@@ -325,7 +325,7 @@ export default function ProfilePage() {
             display="flex"
             flexDirection="column"
           >
-            <VtonGallery />
+            <VtonGallery preview />
           </Box>
         </Grid>
       </Container>
