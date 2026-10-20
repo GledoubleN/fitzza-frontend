@@ -65,7 +65,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked = false, onWishli
             event.stopPropagation()
             handleLikeButtonClick()
           } }
-          isLoading={ isLoading }
+          loading={ isLoading }
         >
           <LuHeart
             color={ isLiked ? 'red' : 'black' }
