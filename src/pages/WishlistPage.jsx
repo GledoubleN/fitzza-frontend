@@ -87,7 +87,7 @@ export const WishlistPage = () => {
 
         {!isLoading && !isError && products.length > 0 && (
           <Grid
-            templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
+            templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - var(--chakra-spacing-4) * 4) / 5)), 1fr))' }
             gap={ 4 }
           >
             {

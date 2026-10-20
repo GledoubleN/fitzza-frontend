@@ -9,7 +9,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked = false, onWishli
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
-  const targetId = product.productId || product.itemId
+  const targetId = product.productId ?? product.itemId
 
   function handleProductClick () {
     navigate(`/products/${ targetId }`)
