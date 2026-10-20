@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Heading, Text, Input, InputGroup, VStack } from '@chakra-ui/react'
 import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
 
-export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMessage, onNext }) {
+export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMessage, fieldErrors, onNext }) {
   const handleNumberChange = (e) => {
     const { name, value } = e.target
     onFieldChange(name, value.replace(/[^0-9]/g, ''))
@@ -31,7 +31,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
 
       <VStack gap={ 4 } align="stretch">
 
-        <VStack align="stretch">
+        <VStack align="stretch" gap={ 1 }>
           <Heading fontSize="sm" color="fg.subtle">키</Heading>
           <InputGroup endAddon="cm" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
@@ -43,11 +43,15 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
               maxLength={ 3 }
               autoComplete="off"
               size="md"
+              borderColor={ fieldErrors?.height ? "fg.error" : undefined }
             />
           </InputGroup>
+          { fieldErrors?.height && (
+            <Text fontSize="xs" color="fg.error">{ fieldErrors.height }</Text>
+          ) }
         </VStack>
 
-        <VStack align="stretch">
+        <VStack align="stretch" gap={ 1 }>
           <Heading fontSize="sm" color="fg.subtle">몸무게</Heading>
           <InputGroup endAddon="kg" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
@@ -59,11 +63,15 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
               maxLength={ 3 }
               autoComplete="off"
               size="md"
+              borderColor={ fieldErrors?.weight ? "fg.error" : undefined }
             />
           </InputGroup>
+          { fieldErrors?.weight && (
+            <Text fontSize="xs" color="fg.error">{ fieldErrors.weight }</Text>
+          ) }
         </VStack>
 
-        <VStack align="stretch">
+        <VStack align="stretch" gap={ 1 }>
           <Heading fontSize="sm" color="fg.subtle">발사이즈</Heading>
           <InputGroup endAddon="mm" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
@@ -75,8 +83,12 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
               maxLength={ 3 }
               autoComplete="off"
               size="md"
+              borderColor={ fieldErrors?.shoeSize ? "fg.error" : undefined }
             />
           </InputGroup>
+          { fieldErrors?.shoeSize && (
+            <Text fontSize="xs" color="fg.error">{ fieldErrors.shoeSize }</Text>
+          ) }
         </VStack>
 
         <Text fontSize="xs" color="fg.subtle" pt={ 4 }>
