@@ -50,10 +50,20 @@ const registerMessagingWorker = () => {
   })
 }
 
+const receivers = new Set()
+let isListening = false
+
 export const subscribeToPush = async (receive) => {
   const messaging = await loadMessaging()
 
-  return onMessage(messaging, receive)
+  if (!isListening) {
+    onMessage(messaging, (payload) => receivers.forEach((receiver) => receiver(payload)))
+    isListening = true
+  }
+
+  receivers.add(receive)
+
+  return () => receivers.delete(receive)
 }
 
 let pendingRegistration
