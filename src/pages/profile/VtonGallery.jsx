@@ -91,7 +91,7 @@ export const VtonGallery = () => {
         </Stack>
       }
 
-      <Grid templateColumns={ 'repeat(2, 1fr)' } gap={ 4 }>
+      <Grid templateColumns={ { base: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)' } } gap={ 4 }>
         {
           fittings.map((fitting) => (
             <Button
