@@ -13,6 +13,7 @@ export const usePushNotifications = (isSignedIn) => {
   const [error, setError] = useState('')
   const [previousSignedIn, setPreviousSignedIn] = useState(isSignedIn)
   const session = useRef(0)
+  const registerPush = useRef(null)
 
   if (previousSignedIn !== isSignedIn) {
     setPreviousSignedIn(isSignedIn)
@@ -29,13 +30,13 @@ export const usePushNotifications = (isSignedIn) => {
     let registering = false
     let registeredToken
 
-    const registerPushToken = async () => {
+    const registerPushToken = async (requestPermission = false) => {
       if (registering || session.current !== currentSession) return
 
       registering = true
 
       try {
-        const token = await enablePush()
+        const token = await enablePush({ requestPermission })
 
         if (!token || session.current !== currentSession) return
         if (token === registeredToken) return
@@ -53,8 +54,10 @@ export const usePushNotifications = (isSignedIn) => {
       }
     }
 
+    registerPush.current = registerPushToken
+
     const handleFocus = () => {
-      if (Notification.permission === 'granted') void registerPushToken()
+      if ('Notification' in window && Notification.permission === 'granted') void registerPushToken()
     }
 
     const handleMessage = (payload) => {
@@ -85,13 +88,14 @@ export const usePushNotifications = (isSignedIn) => {
       else {
         unsubscribe = cleanup
         window.addEventListener('focus', handleFocus)
-        void registerPushToken()
+        handleFocus()
       }
     }).catch(() => {
       if (session.current === currentSession) setError('푸시 알림을 연결하지 못했습니다.')
     })
 
     return () => {
+      registerPush.current = null
       session.current = currentSession + 1
       unsubscribe?.()
       window.removeEventListener('focus', handleFocus)
@@ -100,6 +104,7 @@ export const usePushNotifications = (isSignedIn) => {
 
   return {
     notifications,
+    requestPushPermission: () => registerPush.current?.(true),
     error,
     isConfigured: isPushConfigured,
   }

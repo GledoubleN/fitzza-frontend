@@ -59,11 +59,11 @@ export const subscribeToPush = async (receive) => {
 let pendingRegistration
 let disablingPush = false
 
-const registerPush = async () => {
+const registerPush = async (requestPermission) => {
   if (!isPushConfigured) throw new Error('푸시 알림 설정이 필요합니다.')
   if (!('Notification' in window)) throw new Error('이 브라우저는 푸시 알림을 지원하지 않습니다.')
 
-  const permission = Notification.permission === 'default'
+  const permission = Notification.permission === 'default' && requestPermission
     ? await Notification.requestPermission()
     : Notification.permission
 
@@ -82,10 +82,10 @@ const registerPush = async () => {
   return token
 }
 
-export const enablePush = () => {
+export const enablePush = ({ requestPermission = false } = {}) => {
   if (disablingPush) return Promise.resolve(null)
 
-  pendingRegistration ??= registerPush().finally(() => {
+  pendingRegistration ??= registerPush(requestPermission).finally(() => {
     pendingRegistration = undefined
   })
 

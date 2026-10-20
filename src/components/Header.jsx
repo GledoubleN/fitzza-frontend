@@ -22,7 +22,7 @@ export const Header = ({ maxWidth = '7xl' }) => {
   const navigate = useNavigate()
   const { isSignedIn, setAccessToken } = useAuth()
   const [isSigningOut, setIsSigningOut] = useState(false)
-  const { notifications, error, isConfigured } = usePushNotifications(isSignedIn && !isSigningOut)
+  const { notifications, error, isConfigured, requestPushPermission } = usePushNotifications(isSignedIn && !isSigningOut)
 
   const handleSignOutButtonClick = async () => {
     if (isSigningOut) return
@@ -77,7 +77,11 @@ export const Header = ({ maxWidth = '7xl' }) => {
           <Stack direction={ 'row' } gap={ 4 } align="center">
             <Popover.Root>
               <Popover.Trigger asChild>
-                <IconButton { ...buttonProps } title="알림">
+                <IconButton
+                  { ...buttonProps }
+                  onClick={ requestPushPermission }
+                  title="알림"
+                >
                   <LuBell/>
                 </IconButton>
               </Popover.Trigger>
