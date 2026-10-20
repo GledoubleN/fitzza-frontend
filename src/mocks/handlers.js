@@ -24,11 +24,13 @@ const RECOMMENDATION_PROCESSING_MS = 3000
 const FITTING_DURATION = 3000
 const fittingResultImageUrl = new URL(fittingResultImage, location.origin).href
 const photos = []
-const fittings = [
-  { fittingId: 1, photoId: null, productIds: [1, 2], createdAt: Date.parse('2026-10-18T10:00:00Z') },
-  { fittingId: 2, photoId: null, productIds: [3], createdAt: Date.parse('2026-10-19T10:00:00Z') },
-  { fittingId: 3, photoId: null, productIds: [2], createdAt: Date.parse('2026-10-19T12:00:00Z'), isFailed: true },
-]
+const fittings = Array.from({ length: 30 }, (_, index) => ({
+  fittingId: index + 1,
+  photoId: null,
+  productIds: [products[index % products.length].productId],
+  createdAt: Date.parse('2026-10-01T10:00:00Z') + index * 12 * 60 * 60 * 1000,
+  isFailed: index % 7 === 3,
+}))
 
 const toVtonProduct = (productId) => {
   const product = products.find((product) => product.productId === productId)
