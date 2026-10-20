@@ -21,22 +21,41 @@ import fittingResultImage from '../assets/hero.png'
 // 실제 백엔드가 붙으면 필요 없습니다.
 const RECOMMENDATION_PROCESSING_MS = 3000
 
-const fittings = []
 const FITTING_DURATION = 3000
+const fittingResultImageUrl = new URL(fittingResultImage, location.origin).href
+const photos = []
+const fittings = []
 
-const toFittingResponse = (fitting) => {
-  if (!fitting) {
-    return new HttpResponse(null, { status: 404 })
+const toVtonProduct = (productId) => {
+  const product = products.find((product) => product.productId === productId)
+
+  return {
+    productId,
+    productName: product?.productName ?? `상품 ${ productId }`,
+    price: product?.price ?? 0,
+    imageUrl: product?.thumbnailUrl ?? '/product-image.png',
+    categoryName: '상의',
   }
-
-  const isDone = Date.now() - fitting.createdAt >= FITTING_DURATION
-
-  return HttpResponse.json({
-    fittingId: fitting.fittingId,
-    status: isDone ? 'DONE' : 'PROCESSING',
-    resultImageUrl: isDone ? '/src/assets/hero.png' : null,
-  })
 }
+
+const toVtonDetail = (fitting) => {
+  const isDone = Date.now() - fitting.createdAt >= FITTING_DURATION
+  const timestamp = new Date(fitting.createdAt).toISOString()
+
+  return {
+    fittingId: fitting.fittingId,
+    userId: 1,
+    photoId: fitting.photoId,
+    status: isDone ? 'COMPLETED' : 'PENDING',
+    resultImageUrl: isDone ? fittingResultImageUrl : null,
+    errorMessage: null,
+    products: fitting.productIds.map(toVtonProduct),
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  }
+}
+
+const findFitting = (fittingId) => fittings.find((fitting) => fitting.fittingId === Number(fittingId))
 
 const measurements = {
   M: { 총장: 70, 가슴단면: 55, 소매길이: 60, 소매단면: 11 },
@@ -593,14 +612,41 @@ export const handlers = [
   ),
 
   http.post(
+    `${ api.defaults.baseURL }/vton/photos`,
+    async ({ request }) => {
+      const file = (await request.formData()).get('file')
+
+      if (!file?.size) {
+        return HttpResponse.json({ detail: '업로드된 파일이 비어 있습니다.' }, { status: 400 })
+      }
+
+      const photo = { photoId: photos.length + 1, userId: 1, createdAt: new Date().toISOString() }
+      photos.push(photo)
+
+      return HttpResponse.json({ ...photo, photoUrl: URL.createObjectURL(file) }, { status: 201 })
+    },
+  ),
+
+  http.post(
     `${ api.defaults.baseURL }/vton`,
     async ({ request }) => {
-      const { productIds, color, size } = await request.json()
+      const { photoId = null, productIds } = await request.json()
+      const uniqueProductIds = [...new Set(productIds)]
+
+      if (!uniqueProductIds.length) {
+        return HttpResponse.json({ detail: [{ loc: ['body', 'productIds'], msg: 'productIds is required' }] }, { status: 422 })
+      }
+      if (uniqueProductIds.length > 5) {
+        return HttpResponse.json({ detail: '피팅 가능한 상품은 최대 5개입니다.' }, { status: 400 })
+      }
+      if (photoId !== null && !photos.some((photo) => photo.photoId === photoId)) {
+        return HttpResponse.json({ detail: '등록된 전신 사진 정보를 찾을 수 없습니다.' }, { status: 404 })
+      }
+
       const fitting = {
         fittingId: fittings.length + 1,
-        productId: productIds[0],
-        color,
-        size,
+        photoId,
+        productIds: uniqueProductIds,
         createdAt: Date.now(),
       }
       fittings.push(fitting)
@@ -610,17 +656,31 @@ export const handlers = [
   ),
 
   http.get(
-    `${ api.defaults.baseURL }/vton/latest`,
-    ({ request }) => toFittingResponse(fittings.findLast(
-      fitting => fitting.productId === Number(new URL(request.url).searchParams.get('productId')),
-    )),
+    `${ api.defaults.baseURL }/vton/:fittingId`,
+    ({ params }) => {
+      const fitting = findFitting(params.fittingId)
+
+      if (!fitting || fitting.isDeleted) {
+        return HttpResponse.json({ detail: '존재하지 않는 가상 피팅입니다.' }, { status: 404 })
+      }
+
+      return HttpResponse.json(toVtonDetail(fitting))
+    },
   ),
 
-  http.get(
+  http.delete(
     `${ api.defaults.baseURL }/vton/:fittingId`,
-    ({ params }) => toFittingResponse(fittings.find(
-      fitting => fitting.fittingId === Number(params.fittingId),
-    )),
+    ({ params }) => {
+      const fitting = findFitting(params.fittingId)
+
+      if (!fitting || fitting.isDeleted) {
+        return HttpResponse.json({ detail: '존재하지 않거나 이미 삭제된 가상 피팅입니다.' }, { status: 404 })
+      }
+
+      fitting.isDeleted = true
+
+      return new HttpResponse(null, { status: 204 })
+    },
   ),
 
   http.get(
@@ -702,31 +762,6 @@ export const handlers = [
     `${ api.defaults.baseURL }/recommendations/:requestId/messages`,
     () => {
       return HttpResponse.json(recommendationMessages)
-    },
-  ),
-
-  // 가상 피팅. 생성이 끝나면 결과를 응답에 담아 돌려줍니다. 목업에서는 어떤 요청이든 같은 이미지를 돌려줍니다.
-  http.post(
-    `${ api.defaults.baseURL }/fittings`,
-    async ({ request }) => {
-      const { photoId, productIds } = await request.json()
-
-      if (!photoId || !productIds?.length) {
-        return new HttpResponse(null, { status: 400 })
-      }
-
-      // [개발용] 이미지 생성에 걸리는 시간만큼 응답을 늦춥니다.
-      await delay(RECOMMENDATION_PROCESSING_MS)
-
-      return HttpResponse.json({
-        fittingId: 'sample-fitting',
-        status: 'COMPLETED',
-        resultImageUrl: fittingResultImage,
-        failReason: null,
-        retryable: false,
-        products: products.filter((product) => productIds.includes(product.productId)),
-        createdAt: new Date().toISOString(),
-      })
     },
   ),
 ]
