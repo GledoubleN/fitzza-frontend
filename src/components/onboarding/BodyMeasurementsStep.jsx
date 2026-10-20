@@ -36,7 +36,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
           <InputGroup endAddon="cm" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
               name="height"
-              placeholder="175"
+              placeholder="178"
               value={ formData.height }
               onChange={ handleNumberChange }
               onKeyDown={ handleKeyDown }
@@ -52,7 +52,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
           <InputGroup endAddon="kg" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
               name="weight"
-              placeholder="65"
+              placeholder="75"
               value={ formData.weight }
               onChange={ handleNumberChange }
               onKeyDown={ handleKeyDown }
@@ -68,7 +68,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
           <InputGroup endAddon="mm" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
               name="shoeSize"
-              placeholder="270"
+              placeholder="280"
               value={ formData.shoeSize }
               onChange={ handleNumberChange }
               onKeyDown={ handleKeyDown }
@@ -79,9 +79,6 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
           </InputGroup>
         </VStack>
 
-        <Text fontSize="xs" color="fg.subtle" pt={ 4 }>
-          키(130~200cm), 몸무게(30~120kg), 발사이즈(210~320mm) 범위 내로 입력해주세요.
-        </Text>
       </VStack>
     </OnboardingStepLayout>
   )
