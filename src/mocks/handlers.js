@@ -24,7 +24,10 @@ const RECOMMENDATION_PROCESSING_MS = 3000
 const FITTING_DURATION = 3000
 const fittingResultImageUrl = new URL(fittingResultImage, location.origin).href
 const photos = []
-const fittings = []
+const fittings = [
+  { fittingId: 1, photoId: null, productIds: [1, 2], createdAt: Date.parse('2026-10-18T10:00:00Z') },
+  { fittingId: 2, photoId: null, productIds: [3], createdAt: Date.parse('2026-10-19T10:00:00Z') },
+]
 
 const toVtonProduct = (productId) => {
   const product = products.find((product) => product.productId === productId)
@@ -652,6 +655,21 @@ export const handlers = [
       fittings.push(fitting)
 
       return HttpResponse.json({ fittingId: fitting.fittingId, status: 'PENDING' }, { status: 202 })
+    },
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/vton`,
+    ({ request }) => {
+      const searchParams = new URL(request.url).searchParams
+      const limit = Number(searchParams.get('limit') ?? 20)
+      const offset = Number(searchParams.get('offset') ?? 0)
+      const visibleFittings = fittings.filter((fitting) => !fitting.isDeleted).reverse()
+
+      return HttpResponse.json({
+        items: visibleFittings.slice(offset, offset + limit).map(toVtonDetail),
+        totalCount: visibleFittings.length,
+      })
     },
   ),
 
