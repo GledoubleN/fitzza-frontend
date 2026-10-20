@@ -40,11 +40,7 @@ export const usePushNotifications = (isSignedIn) => {
         if (!token || session.current !== currentSession) return
         if (token === registeredToken) return
 
-        const endpoint = import.meta.env.VITE_FCM_TOKEN_ENDPOINT
-
-        if (!endpoint) throw new Error('알림 토큰 등록 API 설정이 필요합니다.')
-
-        await api.post(endpoint, { token })
+        await api.post('/notifications/tokens', { token })
         registeredToken = token
 
         if (session.current === currentSession) setError('')
