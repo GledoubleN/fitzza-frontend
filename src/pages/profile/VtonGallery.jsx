@@ -29,11 +29,8 @@ const FittingThumbnail = ({ fitting }) => {
 
   return (
     <Flex direction={ 'column' } align={ 'center' } justify={ 'center' } gap={ 2 } bg={ 'bg.muted' }>
-      {
-        fitting.status === 'PENDING'
-          ? <><Spinner size={ 'sm' }></Spinner><Text textStyle={ 'xs' } color={ 'fg.muted' }>만드는 중</Text></>
-          : <Text textStyle={ 'xs' } color={ 'fg.error' }>생성 실패</Text>
-      }
+      <Spinner size={ 'sm' }></Spinner>
+      <Text textStyle={ 'xs' } color={ 'fg.muted' }>만드는 중</Text>
     </Flex>
   )
 }
@@ -45,6 +42,7 @@ export const VtonGallery = () => {
   const [status, setStatus] = useState('loading')
   const [selected, setSelected] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const visibleFittings = fittings.filter((fitting) => fitting.status !== 'FAILED')
 
   const load = async (offset = 0) => {
     setStatus('loading')
@@ -78,13 +76,10 @@ export const VtonGallery = () => {
 
   return (
     <Stack gap={ 4 }>
-      <Flex justify={ 'space-between' } align={ 'center' }>
-        <Heading textStyle={ 'md' } fontWeight={ '700' }>가상 피팅 갤러리</Heading>
-        <Text textStyle={ 'sm' } color={ 'fg.muted' }>{ totalCount }개</Text>
-      </Flex>
+      <Heading textStyle={ 'md' } fontWeight={ '700' }>가상 피팅 갤러리</Heading>
 
       {
-        status === 'done' && !fittings.length &&
+        status === 'done' && !visibleFittings.length &&
         <Stack align={ 'center' } gap={ 3 } paddingY={ 8 }>
           <Text color={ 'fg.muted' }>아직 입어본 옷이 없어요. AI 스타일리스트의 추천 상품으로 입어보세요.</Text>
           <Button variant={ 'outline' } size={ 'sm' } onClick={ () => navigate('/ai') }>AI 스타일리스트로 가기</Button>
@@ -93,7 +88,7 @@ export const VtonGallery = () => {
 
       <Grid templateColumns={ { base: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)' } } gap={ 4 }>
         {
-          fittings.map((fitting) => (
+          visibleFittings.map((fitting) => (
             <Button
               key={ fitting.fittingId }
               variant={ 'plain' }
@@ -150,7 +145,6 @@ export const VtonGallery = () => {
                       <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } borderRadius={ 'xl' } overflow={ 'hidden' }>
                         <FittingThumbnail fitting={ selected }></FittingThumbnail>
                       </AspectRatio>
-                      { selected.errorMessage && <Text color={ 'fg.error' } textStyle={ 'sm' }>{ selected.errorMessage }</Text> }
                       <Text textStyle={ 'xs' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
                     </Stack>
                     <Stack gap={ 4 }>

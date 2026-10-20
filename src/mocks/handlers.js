@@ -27,6 +27,7 @@ const photos = []
 const fittings = [
   { fittingId: 1, photoId: null, productIds: [1, 2], createdAt: Date.parse('2026-10-18T10:00:00Z') },
   { fittingId: 2, photoId: null, productIds: [3], createdAt: Date.parse('2026-10-19T10:00:00Z') },
+  { fittingId: 3, photoId: null, productIds: [2], createdAt: Date.parse('2026-10-19T12:00:00Z'), isFailed: true },
 ]
 
 const toVtonProduct = (productId) => {
@@ -43,15 +44,16 @@ const toVtonProduct = (productId) => {
 
 const toVtonDetail = (fitting) => {
   const isDone = Date.now() - fitting.createdAt >= FITTING_DURATION
+  const status = fitting.isFailed ? 'FAILED' : isDone ? 'COMPLETED' : 'PENDING'
   const timestamp = new Date(fitting.createdAt).toISOString()
 
   return {
     fittingId: fitting.fittingId,
     userId: 1,
     photoId: fitting.photoId,
-    status: isDone ? 'COMPLETED' : 'PENDING',
-    resultImageUrl: isDone ? fittingResultImageUrl : null,
-    errorMessage: null,
+    status,
+    resultImageUrl: status === 'COMPLETED' ? fittingResultImageUrl : null,
+    errorMessage: fitting.isFailed ? '이미지 합성에 실패했습니다.' : null,
     products: fitting.productIds.map(toVtonProduct),
     createdAt: timestamp,
     updatedAt: timestamp,
