@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
+  Box,
   Button,
   Container,
   Field,
@@ -40,7 +41,7 @@ export const SignInPage = () => {
       navigate('/')
 
     } catch (err) {
-
+      setErrorMessage(err.response?.data?.message || '로그인 중 오류가 발생했습니다. 다시 시도해 주세요.')
     } finally {
       setLoading(false)
     }
@@ -67,12 +68,15 @@ export const SignInPage = () => {
           <Heading size="lg">로그인</Heading>
 
           <Field.Root w="100%">
-            <InputGroup startElement={ <LuMail/> }>
+            <InputGroup startElement={ <Box as={ LuMail } boxSize={ 4 }/> }>
               <Input
                 type="email"
                 placeholder="이메일"
                 value={ email }
-                onChange={ (e) => setEmail(e.target.value) }
+                onChange={ (e) => {
+                  setEmail(e.target.value)
+                  setErrorMessage('')
+                } }
                 variant="outline"
                 size="lg"
                 textAlign="left"
@@ -81,12 +85,16 @@ export const SignInPage = () => {
           </Field.Root>
 
           <Field.Root w="100%">
-            <InputGroup startElement={ <LuLockKeyhole/> }>
+            <InputGroup startElement={ <Box as={ LuLockKeyhole } boxSize={ 4 }/> }>
               <Input
                 type="password"
                 placeholder="비밀번호"
+                autoComplete="current-password"
                 value={ password }
-                onChange={ (e) => setPassword(e.target.value) }
+                onChange={ (e) => {
+                  setPassword(e.target.value)
+                  setErrorMessage('')
+                } }
                 variant="outline"
                 size="lg"
                 textAlign="left"
@@ -95,7 +103,7 @@ export const SignInPage = () => {
           </Field.Root>
 
           { errorMessage && (
-            <Text color="red.500" textStyle="sm">{ errorMessage }</Text>
+            <Text color="fg.error" textStyle="sm">{ errorMessage }</Text>
           ) }
 
           <Button

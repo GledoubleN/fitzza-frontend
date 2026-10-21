@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
 import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
 import { OnboardingSaveConfirmation } from './OnboardingSaveConfirmation.jsx'
@@ -5,6 +6,19 @@ import preferredFits from '/src/data/preferred-fits.json'
 import preferredStyles from '/src/data/preferred-styles.json'
 
 export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMessage, onPrev, onSave, isLoading, isSaved, onConfirm }) {
+  const styleSectionRef = useRef(null)
+
+  const handleFitSelect = (value) => {
+    onFieldChange('preferredFit', value)
+    if (styleSectionRef.current) {
+      styleSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  const handleStyleSelect = (value) => {
+    onFieldChange('style', value)
+  }
+
   return (
     <OnboardingStepLayout
       step={ 3 }
@@ -28,7 +42,9 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
         <Text fontSize="sm" color="fg.muted">고객님께 딱 맞는 핏과 스타일을 추천해드려요</Text>
       </Box>
 
-      <VStack gap={ 6 } align="stretch">
+      {/* 💡 mb={ 12 }를 추가하여 하단 '저장하기' 버튼과의 간격을 넉넉히 확보합니다 */}
+      <VStack gap={ 6 } align="stretch" mb={ 12 }>
+        {/* 선호 핏 영역 */}
         <VStack align="stretch" gap={ 3 }>
           <Heading fontSize="md">
             선호 핏
@@ -41,7 +57,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
                   key={ item.value }
                   size="md"
                   variant={ isSelected ? 'solid' : 'outline' }
-                  onClick={ () => onFieldChange('preferredFit', item.value) }
+                  onClick={ () => handleFitSelect(item.value) }
                 >
                   { item.label }
                 </Button>
@@ -50,7 +66,8 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
           </Grid>
         </VStack>
 
-        <VStack align="stretch" gap={ 3 }>
+        {/* 선호 스타일 영역 */}
+        <VStack ref={ styleSectionRef } align="stretch" gap={ 3 }>
           <Heading fontSize="md">
             선호 스타일
           </Heading>
@@ -62,7 +79,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
                   key={ item.value }
                   size="md"
                   variant={ isSelected ? 'solid' : 'outline' }
-                  onClick={ () => onFieldChange('style', item.value) }
+                  onClick={ () => handleStyleSelect(item.value) }
                 >
                   { item.label }
                 </Button>
