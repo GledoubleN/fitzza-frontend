@@ -30,7 +30,7 @@ export const SearchResultPage = () => {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const categoryCode = searchParams.get('category')
-  const currentSort = searchParams.get('sort') || ''
+  const currentSort = searchParams.get('sort') || 'TIME_DESC'
 
   const [displayProducts, setDisplayProducts] = useState([])
   const [page, setPage] = useState(0)
