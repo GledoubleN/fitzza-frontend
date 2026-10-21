@@ -13,6 +13,7 @@ import {
   Spinner,
   Stack,
   Text,
+  useFileUpload,
 } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { LuClock, LuUpload } from 'react-icons/lu'
@@ -36,6 +37,10 @@ const FITTING_WAIT_LIMIT = 120000
 const FITTING_TIMEOUT_MESSAGE = '가상 피팅이 오래 걸리고 있어요. 완성되면 프로필의 가상 피팅 갤러리에서 볼 수 있어요.'
 const PHOTO_TYPES = ['image/png', 'image/jpeg', 'image/webp']
 const PHOTO_MAX_SIZE = 15 * 1024 * 1024
+const PHOTO_ERRORS = {
+  FILE_INVALID_TYPE: 'PNG, JPG, WEBP 이미지만 올릴 수 있어요.',
+  FILE_TOO_LARGE: '사진은 15MB 이하로 올려 주세요.',
+}
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -167,7 +172,9 @@ export const AIStylistPage = () => {
   // 이 화면에서 입어본 가상 피팅들. { id, label, items, photo, status, fittingId, imageUrl, message, retryable }
   const [fittings, setFittings] = useState([])
   const [pendingTryOn, setPendingTryOn] = useState(null)
-  const [photo, setPhoto] = useState(null)
+  const photoUpload = useFileUpload({ accept: PHOTO_TYPES, maxFileSize: PHOTO_MAX_SIZE })
+  const photo = photoUpload.acceptedFiles[0] ?? null
+  const photoErrorCode = photo ? null : photoUpload.rejectedFiles[0]?.errors[0]
   const fittingsEnd = useRef(null)
   const tryingOn = fittings.some((fitting) => fitting.status === 'loading')
 
@@ -230,7 +237,8 @@ export const AIStylistPage = () => {
   }
 
   const tryOn = (label, items) => {
-    setPhoto(null)
+    photoUpload.clearFiles()
+    photoUpload.clearRejectedFiles()
     setPendingTryOn({ label, items })
   }
 
@@ -425,19 +433,34 @@ export const AIStylistPage = () => {
                   <Text color={ 'fg.muted' }>
                     전신 사진을 올리면 고객님 모습으로 입혀 드려요. 사진 없이도 기본 모델로 입어볼 수 있어요.
                   </Text>
-                  <FileUpload.Root
-                    accept={ PHOTO_TYPES }
-                    maxFileSize={ PHOTO_MAX_SIZE }
-                    onFileChange={ (details) => setPhoto(details.acceptedFiles[0] ?? null) }
-                  >
+                  <FileUpload.RootProvider value={ photoUpload }>
                     <FileUpload.HiddenInput/>
                     <FileUpload.Trigger asChild>
                       <Button variant={ 'outline' } size={ 'sm' }>
                         <LuUpload></LuUpload> 전신 사진 선택
                       </Button>
                     </FileUpload.Trigger>
-                    <FileUpload.List showSize clearable/>
-                  </FileUpload.Root>
+                    <FileUpload.ItemGroup>
+                      <FileUpload.Context>
+                        {
+                          ({ acceptedFiles }) => acceptedFiles.map((file) => (
+                            <FileUpload.Item key={ file.name } file={ file }>
+                              <FileUpload.ItemPreviewImage width={ 24 } aspectRatio={ 3 / 4 } objectFit={ 'cover' }/>
+                              <FileUpload.ItemContent>
+                                <FileUpload.ItemName/>
+                                <FileUpload.ItemSizeText/>
+                              </FileUpload.ItemContent>
+                              <FileUpload.ItemDeleteTrigger/>
+                            </FileUpload.Item>
+                          ))
+                        }
+                      </FileUpload.Context>
+                    </FileUpload.ItemGroup>
+                  </FileUpload.RootProvider>
+                  {
+                    photoErrorCode &&
+                    <Text fontSize={ 'sm' } color={ 'fg.error' }>{ PHOTO_ERRORS[photoErrorCode] ?? '이 사진은 올릴 수 없어요.' }</Text>
+                  }
                   <Text fontSize={ 'sm' } color={ 'fg.muted' }>PNG, JPG, WEBP · 최대 15MB</Text>
                 </Stack>
               </Dialog.Body>
