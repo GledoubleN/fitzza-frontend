@@ -14,6 +14,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
@@ -46,9 +47,6 @@ export const VtonGallery = ({ preview = false }) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const successfulFittings = fittings.filter((fitting) => fitting.status !== 'FAILED')
   const visibleFittings = preview ? successfulFittings.slice(0, PREVIEW_SIZE) : successfulFittings
-  const hasMore = preview
-    ? successfulFittings.length > PREVIEW_SIZE || fittings.length < totalCount
-    : fittings.length < totalCount
 
   const load = async (offset = 0) => {
     setStatus('loading')
@@ -82,7 +80,20 @@ export const VtonGallery = ({ preview = false }) => {
 
   return (
     <Stack gap={ 4 }>
-      { preview && <Heading textStyle={ 'md' } fontWeight={ '700' }>가상 피팅 갤러리</Heading> }
+      {
+        preview &&
+        <Button
+          variant={ 'plain' }
+          alignSelf={ 'flex-start' }
+          padding={ 0 }
+          height={ 'auto' }
+          gap={ 1 }
+          onClick={ () => navigate('/profile/fittings') }
+        >
+          <Heading textStyle={ 'md' } fontWeight={ '700' }>가상 피팅 갤러리</Heading>
+          <LuChevronRight></LuChevronRight>
+        </Button>
+      }
 
       {
         status === 'done' && !visibleFittings.length &&
@@ -132,14 +143,8 @@ export const VtonGallery = ({ preview = false }) => {
         </Stack>
       }
       {
-        status === 'done' && hasMore &&
-        <Button
-          variant={ 'outline' }
-          size={ 'sm' }
-          onClick={ () => preview ? navigate('/profile/fittings') : load(fittings.length) }
-        >
-          더 보기
-        </Button>
+        !preview && status === 'done' && fittings.length < totalCount &&
+        <Button variant={ 'outline' } size={ 'sm' } onClick={ () => load(fittings.length) }>더 보기</Button>
       }
 
       {
