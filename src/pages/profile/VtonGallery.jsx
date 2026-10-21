@@ -6,7 +6,6 @@ import {
   Dialog,
   Flex,
   Grid,
-  Heading,
   Image,
   Portal,
   Spinner,
@@ -31,7 +30,7 @@ const FittingThumbnail = ({ fitting }) => {
   }
 
   return (
-    <Flex direction={ 'column' } align={ 'center' } justify={ 'center' } gap={ 2 } bg={ 'bg.muted' }>
+    <Flex direction={ 'column' } align={ 'center' } justify={ 'center' } gap={ 4 } bg={ 'bg.muted' }>
       <Spinner size={ 'sm' }></Spinner>
       <Text textStyle={ 'xs' } color={ 'fg.muted' }>만드는 중</Text>
     </Flex>
@@ -100,17 +99,16 @@ export const VtonGallery = ({ preview = false }) => {
           alignSelf={ 'flex-start' }
           padding={ 0 }
           height={ 'auto' }
-          gap={ 1 }
           onClick={ () => navigate('/profile/fittings') }
         >
-          <Heading textStyle={ 'md' } fontWeight={ '700' }>가상 피팅 갤러리</Heading>
+          <Text as={ 'span' } textStyle={ 'md' } fontWeight={ '700' }>가상 피팅 갤러리</Text>
           <LuChevronRight></LuChevronRight>
         </Button>
       }
 
       {
         status === 'done' && !visibleFittings.length &&
-        <Stack align={ 'center' } gap={ 3 } paddingY={ 8 }>
+        <Stack align={ 'center' } gap={ 4 } paddingY={ 8 }>
           <Text color={ 'fg.muted' } textAlign={ 'center' }>
             아직 입어본 옷이 없어요. 메인 화면에서 AI 스타일리스트에게 추천받은 상품으로 입어볼 수 있어요.
           </Text>
@@ -138,7 +136,7 @@ export const VtonGallery = ({ preview = false }) => {
               <AspectRatio ratio={ 3 / 4 } borderRadius={ 'xl' } overflow={ 'hidden' } borderWidth={ 'thin' } borderColor={ 'border.subtle' }>
                 <FittingThumbnail fitting={ fitting }></FittingThumbnail>
               </AspectRatio>
-              <Text textStyle={ 'xs' } color={ 'fg.muted' } marginTop={ 2 } truncate>
+              <Text textStyle={ 'xs' } color={ 'fg.muted' } marginTop={ 4 } truncate>
                 { fitting.products?.map((product) => product.productName).join(', ') }
               </Text>
               <Text textStyle={ 'xs' } color={ 'fg.subtle' }>{ formatDate(fitting.createdAt) }</Text>
@@ -151,7 +149,7 @@ export const VtonGallery = ({ preview = false }) => {
       { status === 'loading' && <Flex justify={ 'center' } paddingY={ 4 }><Spinner></Spinner></Flex> }
       {
         status === 'failed' &&
-        <Stack align={ 'center' } gap={ 3 }>
+        <Stack align={ 'center' } gap={ 4 }>
           <Text color={ 'fg.error' }>가상 피팅 기록을 불러오지 못했어요.</Text>
           <Button variant={ 'outline' } size={ 'sm' } onClick={ () => load(fittings.length) }>다시 시도</Button>
         </Stack>
@@ -186,7 +184,7 @@ export const VtonGallery = ({ preview = false }) => {
                 {
                   selected &&
                   <Grid templateColumns={ { base: '1fr', md: '3fr 2fr' } } gap={ 4 } alignItems={ 'start' }>
-                    <Stack gap={ 2 }>
+                    <Stack gap={ 4 }>
                       <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } borderRadius={ 'xl' } overflow={ 'hidden' }>
                         <FittingThumbnail fitting={ selected }></FittingThumbnail>
                       </AspectRatio>
@@ -199,7 +197,7 @@ export const VtonGallery = ({ preview = false }) => {
                             key={ product.productId }
                             as={ 'button' }
                             align={ 'center' }
-                            gap={ 3 }
+                            gap={ 4 }
                             textAlign={ 'start' }
                             cursor={ 'pointer' }
                             onClick={ () => navigate(`/products/${ product.productId }`) }
