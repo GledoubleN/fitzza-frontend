@@ -11,6 +11,7 @@ import {
   Box,
   Stack,
   Dialog,
+  Portal,
 } from '@chakra-ui/react';
 import { LuMail, LuUser, LuLockKeyhole } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -269,22 +270,24 @@ export const SignUpPage = () => {
       </Container>
 
       <Dialog.Root open={isSuccessOpen} onOpenChange={(e) => !e.open && handleDialogClose()}>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content>
-            <Dialog.Header>
-              <Heading size="md">회원가입 완료</Heading>
-            </Dialog.Header>
-            <Dialog.Body>
-              <Text>회원가입이 완료되었습니다. 로그인해주세요.</Text>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Button onClick={handleDialogClose} width="full">
-                확인
-              </Button>
-            </Dialog.Footer>
-          </Dialog.Content>
-        </Dialog.Positioner>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Heading size="md">회원가입 완료</Heading>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Text>회원가입이 완료되었습니다. 로그인해주세요.</Text>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Button onClick={handleDialogClose} width="full">
+                  확인
+                </Button>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
       </Dialog.Root>
     </Grid>
   );
