@@ -1,5 +1,4 @@
 import { api } from '../api/axios.js'
-import { delay } from 'msw'
 import { http, HttpResponse } from 'msw/http'
 import users from '../data/users.json'
 import categories from '../data/categories.json'
@@ -14,14 +13,11 @@ import userProfile from '../data/user-profile.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendation-history.json'
 import recommendationMessages from '../data/recommendation-messages.json'
+import notifications from '../data/notifications.json'
 import fittingResultImage from '../assets/hero.png'
 
-// [개발용] 추천 요청의 응답이 오기까지 걸리는 시간을 흉내 냅니다.
-// 추천 결과는 요청(POST)의 응답에 담겨 오므로, 이 시간 동안 화면의 로딩 말풍선을 확인할 수 있습니다.
-// 실제 백엔드가 붙으면 필요 없습니다.
-const RECOMMENDATION_PROCESSING_MS = 3000
+let lastRecommendationId = 0
 
-const FITTING_DURATION = 3000
 const fittingResultImageUrl = new URL(fittingResultImage, location.origin).href
 const fittings = Array.from({ length: 30 }, (_, index) => ({
   fittingId: index + 1,
@@ -46,8 +42,7 @@ const toVtonProduct = (productId) => {
 const vtonError = (status, code, message) => HttpResponse.json({ status, code, message }, { status })
 
 const toVtonDetail = (fitting) => {
-  const isDone = Date.now() - fitting.createdAt >= FITTING_DURATION
-  const status = fitting.isFailed ? 'FAILED' : isDone ? 'COMPLETED' : 'PENDING'
+  const status = fitting.isFailed ? 'FAILED' : 'COMPLETED'
   const timestamp = new Date(fitting.createdAt).toISOString()
 
   return {
@@ -751,7 +746,6 @@ export const handlers = [
     },
   ),
 
-  // AI 추천 요청. 추천이 끝나면 결과를 응답에 담아 돌려줍니다.
   http.post(
     `${ api.defaults.baseURL }/recommendations`,
     async ({ request }) => {
@@ -761,10 +755,7 @@ export const handlers = [
         return new HttpResponse(null, { status: 400 })
       }
 
-      // [개발용] 추천에 걸리는 시간만큼 응답을 늦춥니다.
-      await delay(RECOMMENDATION_PROCESSING_MS)
-
-      return HttpResponse.json({ requestId: 'sample', ...recommendations })
+      return HttpResponse.json({ requestId: ++lastRecommendationId, status: 'PROCESSING' }, { status: 202 })
     },
   ),
 
@@ -787,6 +778,24 @@ export const handlers = [
     `${ api.defaults.baseURL }/recommendations/:requestId`,
     ({ params }) => {
       return HttpResponse.json({ requestId: params.requestId, ...recommendations })
+    },
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/notifications`,
+    ({ request }) => {
+      const size = Number(new URL(request.url).searchParams.get('size') ?? 20)
+      return HttpResponse.json({ content: notifications.slice(0, size), page: 0, totalPages: Math.ceil(notifications.length / size) })
+    },
+  ),
+
+  http.patch(
+    `${ api.defaults.baseURL }/notifications/:notificationId`,
+    ({ params }) => {
+      const notification = notifications.find((notification) => notification.notificationId === Number(params.notificationId))
+      if (!notification) return new HttpResponse(null, { status: 404 })
+      notification.isRead = true
+      return new HttpResponse(null, { status: 200 })
     },
   ),
 
