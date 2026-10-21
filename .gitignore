@@ -29,6 +29,4 @@ dist-ssr
 .claude/
 skills-lock.json
 
-.firebase/
-
 .env
