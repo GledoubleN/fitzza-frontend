@@ -175,7 +175,7 @@ export const SignUpPage = () => {
 
           <Field.Root required w="100%">
             <InputGroup
-              startElement={ <Box as={LuMail} boxSize={5} color={errors.email ? "fg.error" : "fg.muted"} /> }
+              startElement={ <Box as={LuMail} boxSize={4} color={errors.email ? "fg.error" : "fg.muted"} /> }
               w="100%"
             >
               <Input
@@ -201,7 +201,7 @@ export const SignUpPage = () => {
 
           <Field.Root required w="100%">
             <InputGroup
-              startElement={ <Box as={LuUser} boxSize={5} color={errors.nickname ? "fg.error" : "fg.muted"} /> }
+              startElement={ <Box as={LuUser} boxSize={4} color={errors.nickname ? "fg.error" : "fg.muted"} /> }
               w="100%"
             >
               <Input
@@ -227,7 +227,7 @@ export const SignUpPage = () => {
 
           <Field.Root required w="100%">
             <InputGroup
-              startElement={ <Box as={LuLockKeyhole} boxSize={5} color={errors.password ? "fg.error" : "fg.muted"} /> }
+              startElement={ <Box as={LuLockKeyhole} boxSize={4} color={errors.password ? "fg.error" : "fg.muted"} /> }
               w="100%"
             >
               <Input

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
+  Box,
   Button,
   Container,
   Field,
@@ -67,7 +68,7 @@ export const SignInPage = () => {
           <Heading size="lg">로그인</Heading>
 
           <Field.Root w="100%">
-            <InputGroup startElement={ <LuMail/> }>
+            <InputGroup startElement={ <Box as={ LuMail } boxSize={ 4 }/> }>
               <Input
                 type="email"
                 placeholder="이메일"
@@ -81,7 +82,7 @@ export const SignInPage = () => {
           </Field.Root>
 
           <Field.Root w="100%">
-            <InputGroup startElement={ <LuLockKeyhole/> }>
+            <InputGroup startElement={ <Box as={ LuLockKeyhole } boxSize={ 4 }/> }>
               <Input
                 type="password"
                 placeholder="비밀번호"
