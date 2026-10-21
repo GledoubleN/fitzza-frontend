@@ -10,7 +10,7 @@ import {
   Grid,
   Box,
   Stack,
-  Dialog, // 💡 Chakra UI Dialog 임포트 추가
+  Dialog,
 } from '@chakra-ui/react';
 import { LuMail, LuUser, LuLockKeyhole } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -32,10 +32,9 @@ export const SignUpPage = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false); // 💡 회원가입 성공 다이얼로그 상태 관리
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const navigate = useNavigate();
 
-  // 💡 1. 검증 로직을 하나의 함수로 분리하여 중복 제거
   const validateField = (name, value) => {
     if (!value.trim()) {
       if (name === 'email') return '이메일을 입력해 주세요.';
@@ -87,7 +86,6 @@ export const SignUpPage = () => {
     let newErrors = { email: '', nickname: '', password: '', general: '' };
     let hasError = false;
 
-    // 분리된 검증 함수를 순회하며 전체 폼 검사
     Object.keys(formData).forEach((key) => {
       const errorMsg = validateField(key, formData[key]);
       if (errorMsg) {
@@ -109,7 +107,6 @@ export const SignUpPage = () => {
         nickname: formData.nickname,
       });
 
-      // 💡 alert 대신 Dialog 오픈
       setIsSuccessOpen(true);
     } catch (err) {
       if (err.response?.status === 409) {
@@ -137,7 +134,10 @@ export const SignUpPage = () => {
         return;
       }
 
-      setErrors((prev) => ({ ...prev, general: err.response?.data?.message || '회원가입 중 오류가 발생했습니다.' }));
+      setErrors((prev) => ({
+        ...prev,
+        general: err.response?.data?.message || '회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.',
+      }));
     } finally {
       setLoading(false);
     }
@@ -188,7 +188,6 @@ export const SignUpPage = () => {
                 borderColor={errors.email ? "fg.error !important" : undefined}
               />
             </InputGroup>
-            {/* 💡 mt={1} 제거 */}
             {errors.email && (
               <Text color="fg.error" fontSize="xs">
                 {errors.email}
@@ -215,7 +214,6 @@ export const SignUpPage = () => {
                 borderColor={errors.nickname ? "fg.error !important" : undefined}
               />
             </InputGroup>
-            {/* 💡 mt={1} 제거 */}
             {errors.nickname && (
               <Text color="fg.error" fontSize="xs">
                 {errors.nickname}
@@ -242,7 +240,6 @@ export const SignUpPage = () => {
                 borderColor={errors.password ? "fg.error !important" : undefined}
               />
             </InputGroup>
-            {/* 💡 mt={1} 제거 */}
             {errors.password && (
               <Text color="fg.error" fontSize="xs">
                 {errors.password}
@@ -268,7 +265,6 @@ export const SignUpPage = () => {
         </Stack>
       </Container>
 
-      {/* 💡 Chakra UI Dialog 적용 */}
       <Dialog.Root open={isSuccessOpen} onOpenChange={(e) => !e.open && handleDialogClose()}>
         <Dialog.Backdrop />
         <Dialog.Positioner>
