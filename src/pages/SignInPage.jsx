@@ -73,7 +73,10 @@ export const SignInPage = () => {
                 type="email"
                 placeholder="이메일"
                 value={ email }
-                onChange={ (e) => setEmail(e.target.value) }
+                onChange={ (e) => {
+                  setEmail(e.target.value)
+                  setErrorMessage('')
+                } }
                 variant="outline"
                 size="lg"
                 textAlign="left"
@@ -87,7 +90,10 @@ export const SignInPage = () => {
                 type="password"
                 placeholder="비밀번호"
                 value={ password }
-                onChange={ (e) => setPassword(e.target.value) }
+                onChange={ (e) => {
+                  setPassword(e.target.value)
+                  setErrorMessage('')
+                } }
                 variant="outline"
                 size="lg"
                 textAlign="left"
