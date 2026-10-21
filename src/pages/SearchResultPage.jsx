@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import {
   Container,
   Grid,
   GridItem,
+  Icon,
   IconButton,
   Image,
   Text,
@@ -12,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import { LuHeart } from 'react-icons/lu'
+import { LuChevronRight, LuHeart } from 'react-icons/lu'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { ProductItem } from '../components/ProductItem.jsx'
@@ -23,6 +24,19 @@ const sortCollection = createListCollection({
     { label: '낮은 가격순', value: 'PRICE_ASC' },
   ],
 })
+
+const findCategoryPath = (categories, code) => {
+  for (const category of categories) {
+    if (category.code === code) {
+      return [category.name]
+    }
+    const childPath = findCategoryPath(category.children ?? [], code)
+    if (childPath.length > 0) {
+      return [category.name, ...childPath]
+    }
+  }
+  return []
+}
 
 export const SearchResultPage = () => {
   const navigate = useNavigate()
@@ -35,6 +49,7 @@ export const SearchResultPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [hasMore, setHasMore] = useState(true)
+  const [categoryPath, setCategoryPath] = useState([])
 
   const PAGE_SIZE = 10
 
@@ -106,6 +121,17 @@ export const SearchResultPage = () => {
     }
   }, [categoryCode, currentSort])
 
+  useEffect(() => {
+    if (!categoryCode) {
+      setCategoryPath([])
+      return
+    }
+
+    api.get('/categories')
+      .then((response) => setCategoryPath(findCategoryPath(response.data ?? [], categoryCode)))
+      .catch(() => setCategoryPath([]))
+  }, [categoryCode])
+
   // 무한 스크롤 이벤트 리스너
   useEffect(() => {
     const handleScroll = () => {
@@ -142,7 +168,20 @@ export const SearchResultPage = () => {
         <Grid
           templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
           gap={ 4 }
+          alignItems="center"
         >
+          { categoryPath.length > 0 && (
+            <Flex gridColumn="1 / -2" alignItems="center" gap={ 4 } minWidth={ 0 }>
+              { categoryPath.map((name, index) => (
+                <Fragment key={ name }>
+                  { index > 0 && (
+                    <Icon size="sm" color="fg.muted"><LuChevronRight/></Icon>
+                  ) }
+                  <Heading size="lg" truncate>{ name }</Heading>
+                </Fragment>
+              )) }
+            </Flex>
+          ) }
           <Select.Root
             collection={ sortCollection }
             gridColumn={ -2 }
