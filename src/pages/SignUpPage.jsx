@@ -125,23 +125,40 @@ export const SignUpPage = () => {
       navigate("/signin");
     } catch (err) {
       if (err.response?.status === 409) {
-        const serverMessage = err.response.data?.message || '';
+        const errorData = err.response.data;
+        const serverErrors = errorData?.errors;
 
-        if (serverMessage.includes('이메일') || serverMessage.includes('email')) {
-          setErrors((prev) => ({ ...prev, email: serverMessage || '이미 사용 중인 이메일입니다.' }));
-        } else if (serverMessage.includes('닉네임') || serverMessage.includes('사용자명') || serverMessage.includes('nickname')) {
-          setErrors((prev) => ({ ...prev, nickname: serverMessage || '이미 사용 중인 사용자명입니다.' }));
+        // errors 배열이 존재할 경우 순회하면서 각 필드별 에러 설정
+        if (Array.isArray(serverErrors) && serverErrors.length > 0) {
+          const nextErrors = { email: '', nickname: '', password: '', general: '' };
+
+          serverErrors.forEach((errItem) => {
+            if (errItem.field === 'email') {
+              nextErrors.email = errItem.reason || '이미 사용 중인 이메일입니다.';
+            } else if (errItem.field === 'nickname') {
+              nextErrors.nickname = errItem.reason || '이미 사용 중인 사용자명입니다.';
+            }
+            // 필요에 따라 다른 필드(password 등)도 확장 가능
+          });
+
+          setErrors((prev) => ({ ...prev, ...nextErrors }));
         } else {
-          setErrors((prev) => ({ ...prev, general: serverMessage || '중복된 회원 정보가 존재합니다.' }));
+          // errors 배열이 없거나 비어있는 경우 기존 message를 general에 표시
+          setErrors((prev) => ({
+            ...prev,
+            general: errorData?.message || '중복된 회원 정보가 존재합니다.',
+          }));
         }
         return;
       }
 
-      setErrors((prev) => ({ ...prev, general: err.response?.data?.message || '회원가입 중 오류가 발생했습니다.' }));
+      setErrors((prev) => ({
+        ...prev,
+        general: err.response?.data?.message || '회원가입 중 오류가 발생했습니다.',
+      }));
     } finally {
       setLoading(false);
     }
-  };
 
   return (
     <Grid
