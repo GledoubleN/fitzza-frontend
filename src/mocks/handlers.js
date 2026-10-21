@@ -16,9 +16,6 @@ import recommendationHistory from '../data/recommendation-history.json'
 import recommendationMessages from '../data/recommendation-messages.json'
 import fittingResultImage from '../assets/hero.png'
 
-// [개발용] 추천 요청의 응답이 오기까지 걸리는 시간을 흉내 냅니다.
-// 추천 결과는 요청(POST)의 응답에 담겨 오므로, 이 시간 동안 화면의 로딩 말풍선을 확인할 수 있습니다.
-// 실제 백엔드가 붙으면 필요 없습니다.
 const RECOMMENDATION_PROCESSING_MS = 3000
 
 const FITTING_DURATION = 3000
@@ -215,7 +212,7 @@ export const handlers = [
 
   http.post(
     `${ api.defaults.baseURL }/auth/signup`,
-    ({ params }) => {
+    () => {
       return HttpResponse.json({
         userId: 1
       })
@@ -275,7 +272,12 @@ export const handlers = [
 
       const start = page * size
       const end = start + size
-      const paginatedContent = sortedProducts.slice(start, end)
+
+      const paginatedContent = sortedProducts.slice(start, end).map(product => ({
+        ...product,
+        wished: product.wished ?? false,
+      }))
+
       const hasNext = end < sortedProducts.length
 
       return HttpResponse.json({
@@ -286,21 +288,6 @@ export const handlers = [
         totalPages: Math.ceil(products.length / size),
         hasNext: hasNext,
         sort: sort
-      })
-    },
-  ),
-
-  http.get(
-    `${ api.defaults.baseURL }/products`,
-    () => {
-      return HttpResponse.json({
-        content: products,
-        page: 1,
-        size: 1,
-        totalElements: 1,
-        totalPages: 1,
-        hasNext: true,
-        sort: "PRICE_ASC"
       })
     },
   ),
@@ -332,7 +319,7 @@ export const handlers = [
         images: ['/src/assets/hero.png'],
         options,
         status: 'ON_SALE',
-        wished: false,
+        wished: product.wished ?? false,
       })
     },
   ),
@@ -351,7 +338,7 @@ export const handlers = [
         3: '별로입니다. 사지 마세요.',
       }
       const content = Array.from({ length: TOTAL }, (_, index) => {
-        const rating = 5 - (index % 3);
+        const rating = 5 - (index % 3)
         return {
           reviewId: index + 1,
           productId: Number(query.get('productId')),
@@ -360,7 +347,7 @@ export const handlers = [
           content: contents[rating] || '좋아요!',
           imageUrl: index % 2 === 0 ? '/src/assets/hero.png' : null,
           createdAt: new Date(2026, 8, 30 + index).toISOString(),
-        };
+        }
       })
       .sort((a, b) => (
         sort === 'RATING_DESC' ? b.rating - a.rating : sort === 'RATING_ASC' ? a.rating - b.rating : 0
@@ -506,17 +493,17 @@ export const handlers = [
       const size = Number(query.get('size') ?? 10)
       const myOrders = orders.filter((order) => order.userId === userId)
       const content = myOrders
-        .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.orderId - a.orderId)
-        .slice(page * size, (page + 1) * size)
-        .map((order) => ({
-          orderId: order.orderId,
-          orderNum: order.orderNum,
-          totalPrice: getTotalPrice(order),
-          orderStatus: order.orderStatus,
-          createdAt: order.createdAt,
-          itemCount: order.items.length,
-          thumbnailUrl: order.items[0]?.thumbnailUrl ?? null,
-        }))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.orderId - a.orderId)
+      .slice(page * size, (page + 1) * size)
+      .map((order) => ({
+        orderId: order.orderId,
+        orderNum: order.orderNum,
+        totalPrice: getTotalPrice(order),
+        orderStatus: order.orderStatus,
+        createdAt: order.createdAt,
+        itemCount: order.items.length,
+        thumbnailUrl: order.items[0]?.thumbnailUrl ?? null,
+      }))
 
       return HttpResponse.json({ content, page, totalPages: Math.ceil(myOrders.length / size) })
     },
@@ -559,17 +546,17 @@ export const handlers = [
       }
 
       const orderItemIds = (new URL(request.url).searchParams.get('orderItemIds') ?? '')
-        .split(',')
-        .filter(Boolean)
-        .map(Number)
+      .split(',')
+      .filter(Boolean)
+      .map(Number)
       if (orderItemIds.length === 0 || orderItemIds.length > 100) {
         return cartError(400, 'INVALID_REQUEST', '입력값을 확인해주세요.')
       }
 
       return HttpResponse.json(surveys
-        .filter((survey) => survey.userId === userId && orderItemIds.includes(survey.orderItemId))
-        .sort((a, b) => a.orderItemId - b.orderItemId)
-        .map(toSurveyResponse))
+      .filter((survey) => survey.userId === userId && orderItemIds.includes(survey.orderItemId))
+      .sort((a, b) => a.orderItemId - b.orderItemId)
+      .map(toSurveyResponse))
     },
   ),
 
@@ -609,13 +596,30 @@ export const handlers = [
   http.get(
     `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
+      const authHeader = request.headers.get('Authorization')
+      if (!authHeader) {
+        return new HttpResponse(null, { status: 401 })
+      }
+
+      const url = new URL(request.url)
+      const page = Number(url.searchParams.get('page') || 0)
+
+      const mockWishlists = products.filter(p => p.wished).map((product) => ({
+        itemId: product.productId,
+        name: product.productName,
+        brandName: product.brandName,
+        price: product.price,
+        imageUrl: product.thumbnailUrl || '/src/assets/hero.png',
+        status: product.status || 'ON_SALE'
+      }))
+
       return HttpResponse.json({
-        content: products,
-        page: 1,
-        size: products.length,
-        totalElements: 1,
+        content: mockWishlists,
+        page: page,
+        size: mockWishlists.length,
+        totalElements: mockWishlists.length,
         totalPages: 1,
-        hasNext: 1
+        hasNext: false
       })
     },
   ),
@@ -623,7 +627,14 @@ export const handlers = [
   http.post(
     `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
+      const authHeader = request.headers.get('Authorization')
+      if (!authHeader) {
+        return new HttpResponse(null, { status: 401 })
+      }
+
       const { itemId } = await request.json()
+      const target = products.find(p => p.productId === itemId)
+      if (target) target.wished = true
 
       return HttpResponse.json({ wishlistId: itemId })
     },
@@ -631,7 +642,21 @@ export const handlers = [
 
   http.delete(
     `${ api.defaults.baseURL }/wishlists`,
-    () => new HttpResponse(null, { status: 204 }),
+    async ({ request }) => {
+      const authHeader = request.headers.get('Authorization')
+      if (!authHeader) {
+        return new HttpResponse(null, { status: 401 })
+      }
+
+      const body = await request.json().catch(() => ({}))
+      const itemId = body.itemId
+      if (itemId) {
+        const target = products.find(p => p.productId === itemId)
+        if (target) target.wished = false
+      }
+
+      return new HttpResponse(null, { status: 204 })
+    },
   ),
 
   http.post(
@@ -751,7 +776,6 @@ export const handlers = [
     },
   ),
 
-  // AI 추천 요청. 추천이 끝나면 결과를 응답에 담아 돌려줍니다.
   http.post(
     `${ api.defaults.baseURL }/recommendations`,
     async ({ request }) => {
@@ -761,14 +785,12 @@ export const handlers = [
         return new HttpResponse(null, { status: 400 })
       }
 
-      // [개발용] 추천에 걸리는 시간만큼 응답을 늦춥니다.
       await delay(RECOMMENDATION_PROCESSING_MS)
 
       return HttpResponse.json({ requestId: 'sample', ...recommendations })
     },
   ),
 
-  // 내 추천 대화 목록
   http.get(
     `${ api.defaults.baseURL }/recommendations`,
     ({ request }) => {
@@ -782,7 +804,6 @@ export const handlers = [
     },
   ),
 
-  // 지난 추천 결과 조회. 목업에서는 어떤 requestId든 같은 결과를 돌려줍니다.
   http.get(
     `${ api.defaults.baseURL }/recommendations/:requestId`,
     ({ params }) => {
