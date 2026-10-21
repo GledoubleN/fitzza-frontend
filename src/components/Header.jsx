@@ -21,6 +21,8 @@ import { toNotificationPath, toNotificationText, useNotifications } from '../hoo
 import { usePushNotifications } from '../hooks/usePushNotifications.js'
 import { disablePush } from '../services/pushNotifications.js'
 
+const isNotificationDenied = () => 'Notification' in window && Notification.permission === 'denied'
+
 const formatNotificationTime = (value) => new Date(value).toLocaleString('ko-KR', {
   month: 'numeric',
   day: 'numeric',
@@ -130,6 +132,8 @@ export const Header = ({ maxWidth = '7xl' }) => {
                           <>
                             { !isConfigured &&
                               <Text color="fg.muted">푸시 알림 설정이 필요합니다.</Text> }
+                            { isConfigured && isNotificationDenied() &&
+                              <Text color="fg.muted">브라우저 설정에서 알림을 허용하면 결과를 바로 받을 수 있어요.</Text> }
                             { error && (
                               <Text role="alert" color="fg.error">{ error }</Text>
                             ) }

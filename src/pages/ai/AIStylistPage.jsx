@@ -36,12 +36,20 @@ const RECOMMENDATION_WAIT_LIMIT = 120000
 const RECOMMENDATION_TIMEOUT_MESSAGE = '추천이 오래 걸리고 있어요. 잠시 후 다시 확인해주세요.'
 const FITTING_WAIT_LIMIT = 120000
 const FITTING_TIMEOUT_MESSAGE = '가상 피팅이 오래 걸리고 있어요. 완성되면 프로필의 가상 피팅 갤러리에서 볼 수 있어요.'
+const NOTIFICATION_HINT = '알림을 허용하면 결과가 나오는 즉시 알려드려요.'
 const PHOTO_TYPES = ['image/png', 'image/jpeg', 'image/webp']
 const PHOTO_MAX_SIZE = 15 * 1024 * 1024
 const PHOTO_ERRORS = {
   FILE_INVALID_TYPE: 'PNG, JPG, WEBP 이미지만 올릴 수 있어요.',
   FILE_TOO_LARGE: '사진은 15MB 이하로 올려 주세요.',
 }
+
+const isNotificationGranted = () => !('Notification' in window) || Notification.permission === 'granted'
+
+const NotificationHint = () => (
+  !isNotificationGranted() &&
+  <Text fontSize={ 'sm' } color={ 'fg.muted' }>{ NOTIFICATION_HINT }</Text>
+)
 
 export const AIStylistPage = () => {
   const { requestId } = useParams()
@@ -305,11 +313,12 @@ export const AIStylistPage = () => {
           {
             status === 'loading' &&
             <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
-              <Card.Body>
+              <Card.Body gap={ 4 }>
                 <Flex align={ 'center' } gap={ 3 }>
                   <Spinner size={ 'sm' }></Spinner>
                   <Text>고객님에게 맞는 제품을 찾고 있어요</Text>
                 </Flex>
+                <NotificationHint></NotificationHint>
               </Card.Body>
             </Card.Root>
           }
@@ -388,10 +397,13 @@ export const AIStylistPage = () => {
                       <Text fontWeight={ 'bold' }>{ fitting.label } 가상 피팅</Text>
                       {
                         fitting.status === 'loading' &&
-                        <Flex align={ 'center' } gap={ 3 }>
-                          <Spinner size={ 'sm' }></Spinner>
-                          <Text>{ fitting.photo ? '고객님 사진에 입혀보고 있어요' : '기본 모델에 입혀보고 있어요' }</Text>
-                        </Flex>
+                        <>
+                          <Flex align={ 'center' } gap={ 3 }>
+                            <Spinner size={ 'sm' }></Spinner>
+                            <Text>{ fitting.photo ? '고객님 사진에 입혀보고 있어요' : '기본 모델에 입혀보고 있어요' }</Text>
+                          </Flex>
+                          <NotificationHint></NotificationHint>
+                        </>
                       }
                       {
                         fitting.status === 'failed' &&
