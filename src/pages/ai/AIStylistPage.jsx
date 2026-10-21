@@ -24,6 +24,7 @@ import { Toaster } from '../../components/ui/toaster.jsx'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
+import { toFittingImageUrl } from '../profile/toFittingImageUrl.js'
 
 const FAIL_MESSAGE = '추천을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
@@ -225,7 +226,7 @@ export const AIStylistPage = () => {
       if (!detail) {
         update({ status: 'failed', message: FITTING_TIMEOUT_MESSAGE, retryable: false })
       } else if (detail.status === 'COMPLETED' && detail.resultImageUrl) {
-        update({ status: 'done', fittingId: detail.fittingId, imageUrl: detail.resultImageUrl })
+        update({ status: 'done', fittingId: detail.fittingId, imageUrl: toFittingImageUrl(detail.resultImageUrl) })
       } else {
         update({ status: 'failed', message: detail.errorMessage, retryable: true })
       }

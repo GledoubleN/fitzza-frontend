@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { FailureTestButtons } from '../../mocks/FailureTestButtons.jsx'
+import { toFittingImageUrl } from './toFittingImageUrl.js'
 
 const PAGE_SIZE = 20
 const PREVIEW_PAGE_SIZE = 8
@@ -43,7 +44,7 @@ const toFittingTitle = ({ products = [] }) => {
 
 const FittingThumbnail = ({ fitting }) => {
   if (fitting.status === 'COMPLETED' && fitting.resultImageUrl) {
-    return <Image src={ fitting.resultImageUrl } alt={ '가상 피팅 결과' } objectFit={ 'cover' }></Image>
+    return <Image src={ toFittingImageUrl(fitting.resultImageUrl) } alt={ '가상 피팅 결과' } objectFit={ 'cover' }></Image>
   }
 
   return (
