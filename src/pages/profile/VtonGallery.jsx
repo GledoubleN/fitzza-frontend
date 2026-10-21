@@ -166,7 +166,7 @@ export const VtonGallery = ({ preview = false }) => {
             onReady: () => load(),
           },
           { label: '다음 목록 불러오기', method: 'get', path: '/vton' },
-          { label: '삭제', method: 'delete', path: '/vton/:fittingId' },
+          { label: '삭제 실패', method: 'delete', path: '/vton/:fittingId' },
         ] }/>
       }
 
