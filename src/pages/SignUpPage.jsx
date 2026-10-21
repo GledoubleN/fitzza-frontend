@@ -44,7 +44,10 @@ export const SignUpPage = () => {
     }
 
     if (name === 'email') {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
+      if (value.length > 255) {
+        return '이메일은 255자 이하로 입력해 주세요.';
+      }
       if (!emailRegex.test(value)) {
         return '올바른 이메일 형식을 입력해 주세요.';
       }
