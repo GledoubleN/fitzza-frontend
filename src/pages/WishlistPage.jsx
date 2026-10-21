@@ -5,6 +5,7 @@ import {
   Text,
   Center,
   Button,
+  Box,
 } from '@chakra-ui/react'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
@@ -12,12 +13,15 @@ import { ProductItem } from '../components/ProductItem.jsx'
 import { useEffect, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { LuTrophy } from 'react-icons/lu'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
 
 export const WishlistPage = () => {
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
+  const navigate = useNavigate()
 
   async function loadWishlist (page = 0, size = 100) {
     setIsLoading(true)
@@ -47,6 +51,7 @@ export const WishlistPage = () => {
       toaster.create({
         title: '찜 목록을 불러오지 못했습니다.',
         type: 'error',
+        closable: true,
       })
     } finally {
       setIsLoading(false)
@@ -121,6 +126,28 @@ export const WishlistPage = () => {
           </Grid>
         ) }
       </Container>
+
+      { products.length >= 2 && (
+        <Box
+          position="fixed"
+          bottom={ 20 }
+          right={ 6 }
+          zIndex={ 30 }
+        >
+          <Button
+            size="lg"
+            colorPalette="purple"
+            boxShadow="xl"
+            borderRadius="full"
+            px={ 6 }
+            gap={ 2 }
+            onClick={ () => navigate('/select') }
+          >
+            <LuTrophy />
+            월드컵 시작하기
+          </Button>
+        </Box>
+      ) }
 
       <TabBar />
 
