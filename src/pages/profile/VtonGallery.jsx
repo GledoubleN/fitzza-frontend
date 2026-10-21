@@ -27,6 +27,20 @@ const isSuccessful = (fitting) => fitting.status !== 'FAILED'
 
 const formatDate = (value) => new Date(value).toLocaleDateString('ko-KR')
 
+const formatDateTime = (value) => new Date(value).toLocaleString('ko-KR', {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+})
+
+const toFittingTitle = ({ products = [] }) => {
+  if (!products.length) return '가상 피팅'
+  const [first, ...rest] = products
+  return rest.length ? `${ first.productName } 외 ${ rest.length }개` : first.productName
+}
+
 const FittingThumbnail = ({ fitting }) => {
   if (fitting.status === 'COMPLETED' && fitting.resultImageUrl) {
     return <Image src={ fitting.resultImageUrl } alt={ '가상 피팅 결과' } objectFit={ 'cover' }></Image>
@@ -212,9 +226,11 @@ export const VtonGallery = ({ preview = false }) => {
           <Dialog.Backdrop/>
           <Dialog.Positioner>
             <Dialog.Content marginX={ 4 }>
-              <Dialog.Header alignItems={ 'baseline' } flexWrap={ 'wrap' }>
-                <Dialog.Title>{ selected && formatDate(selected.createdAt) } 가상 피팅</Dialog.Title>
-                <Text textStyle={ 'xs' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
+              <Dialog.Header flexDirection={ 'column' } alignItems={ 'flex-start' }>
+                <Dialog.Title paddingEnd={ 8 }>{ selected && toFittingTitle(selected) }</Dialog.Title>
+                <Text textStyle={ 'xs' } color={ 'fg.muted' }>
+                  { selected && formatDateTime(selected.createdAt) } · AI 생성 이미지 · 실제와 다를 수 있어요
+                </Text>
               </Dialog.Header>
               <Dialog.Body>
                 {
