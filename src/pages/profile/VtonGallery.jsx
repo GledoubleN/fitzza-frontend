@@ -212,19 +212,17 @@ export const VtonGallery = ({ preview = false }) => {
           <Dialog.Backdrop/>
           <Dialog.Positioner>
             <Dialog.Content marginX={ 4 }>
-              <Dialog.Header>
+              <Dialog.Header alignItems={ 'baseline' } flexWrap={ 'wrap' }>
                 <Dialog.Title>{ selected && formatDate(selected.createdAt) } 가상 피팅</Dialog.Title>
+                <Text textStyle={ 'xs' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
               </Dialog.Header>
               <Dialog.Body>
                 {
                   selected &&
                   <Grid templateColumns={ { base: '1fr', md: '3fr 2fr' } } gap={ 4 } alignItems={ 'start' }>
-                    <Stack gap={ 4 }>
-                      <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } borderRadius={ 'xl' } overflow={ 'hidden' }>
-                        <FittingThumbnail fitting={ selected }></FittingThumbnail>
-                      </AspectRatio>
-                      <Text textStyle={ 'xs' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
-                    </Stack>
+                    <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } borderRadius={ 'xl' } overflow={ 'hidden' }>
+                      <FittingThumbnail fitting={ selected }></FittingThumbnail>
+                    </AspectRatio>
                     <Stack gap={ 4 }>
                       {
                         selected.products?.map((product) => (
