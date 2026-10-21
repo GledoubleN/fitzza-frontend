@@ -32,6 +32,8 @@ const TIMEOUT = { timeout: 10000 }
 const RECOMMEND_TIMEOUT = { timeout: 60000 }
 // 응답을 기다리던 중 새로고침된 추천 요청을 알아보기 위한 표시입니다. (sessionStorage 키)
 const PENDING_KEY = 'ai-recommendation-pending'
+// TODO FCM 연결 후: 피팅 완료·실패 푸시를 받으면 바로 GET /vton/{fittingId}를 조회하고,
+// 이 주기 조회는 알림이 오지 않는 경우를 대비해 간격을 늘려(예: 10초) 남겨둡니다.
 const FITTING_POLL_INTERVAL = 2000
 const FITTING_WAIT_LIMIT = 120000
 const FITTING_TIMEOUT_MESSAGE = '가상 피팅이 오래 걸리고 있어요. 완성되면 프로필의 가상 피팅 갤러리에서 볼 수 있어요.'
@@ -431,13 +433,13 @@ export const AIStylistPage = () => {
               <Dialog.Body>
                 <Stack gap={ 4 }>
                   <Text color={ 'fg.muted' }>
-                    얼굴이 나온 사진을 올리면 고객님 얼굴로 입혀 드려요. 사진 없이도 기본 모델로 입어볼 수 있어요.
+                    얼굴이 나온 사진을 올리면 맞춰서 입혀드려요. 사진 없이도 기본 모델로 입어볼 수 있어요.
                   </Text>
                   <FileUpload.RootProvider value={ photoUpload }>
                     <FileUpload.HiddenInput/>
                     <FileUpload.Trigger asChild>
                       <Button variant={ 'outline' } size={ 'sm' }>
-                        <LuUpload></LuUpload> 얼굴 사진 선택
+                        <LuUpload></LuUpload> 사진 선택
                       </Button>
                     </FileUpload.Trigger>
                     <FileUpload.ItemGroup>
