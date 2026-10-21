@@ -12,15 +12,20 @@ import { ProductItem } from '../components/ProductItem.jsx'
 import { useEffect, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { toaster } from '../components/ui/toaster.jsx'
 
 export const WishlistPage = () => {
+  const navigate = useNavigate()
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
+  const [isUnauthorized, setIsUnauthorized] = useState(false)
 
   async function loadWishlist (page = 0, size = 100) {
     setIsLoading(true)
     setIsError(false)
+    setIsUnauthorized(false)
     try {
       const response = await api.get('/wishlists', {
         params: { page, size }
@@ -44,7 +49,15 @@ export const WishlistPage = () => {
       }
     } catch (error) {
       console.warn('백엔드 통신 실패:', error)
-      setIsError(true)
+      if (error.response?.status === HttpStatusCode.Unauthorized) {
+        setIsUnauthorized(true)
+      } else {
+        setIsError(true)
+        toaster.create({
+          title: '찜 목록을 불러오지 못했습니다.',
+          type: 'error',
+        })
+      }
     } finally {
       setIsLoading(false)
     }
@@ -72,22 +85,33 @@ export const WishlistPage = () => {
           </Center>
         )}
 
-        {!isLoading && isError && (
+        {/* 비로그인 상태 안내 화면 */}
+        {!isLoading && isUnauthorized && (
+          <Center height="100%" flexDirection="column" gap={ 4 }>
+            <Text color="fg.muted">로그인 후 이용 가능한 서비스입니다.</Text>
+            <Button onClick={() => navigate('/signin')} size="sm">
+              로그인하러 가기
+            </Button>
+          </Center>
+        )}
+
+        {/* 일반 에러 화면 */}
+        {!isLoading && !isUnauthorized && isError && (
           <Center height="100%" flexDirection="column" gap={ 4 }>
             <Text color="fg.error">찜 목록을 불러오지 못했습니다.</Text>
             <Button onClick={() => loadWishlist()} size="sm">다시 시도</Button>
           </Center>
         )}
 
-        {!isLoading && !isError && products.length === 0 && (
+        {!isLoading && !isUnauthorized && !isError && products.length === 0 && (
           <Center height="100%">
             <Text color="fg.muted">찜한 상품이 없습니다.</Text>
           </Center>
         )}
 
-        {!isLoading && !isError && products.length > 0 && (
+        {!isLoading && !isUnauthorized && !isError && products.length > 0 && (
           <Grid
-            templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - var(--chakra-spacing-4) * 4) / 5)), 1fr))' }
+            templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
             gap={ 4 }
           >
             {

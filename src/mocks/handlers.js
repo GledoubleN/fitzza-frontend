@@ -134,7 +134,13 @@ export const handlers = [
 
       const start = page * size
       const end = start + size
-      const paginatedContent = sortedProducts.slice(start, end)
+
+      // 메인/검색 화면 찜 상태 반영을 위해 wished 필드 매핑 추가
+      const paginatedContent = sortedProducts.slice(start, end).map(product => ({
+        ...product,
+        wished: product.wished ?? false,
+      }))
+
       const hasNext = end < sortedProducts.length
 
       return HttpResponse.json({
@@ -167,7 +173,7 @@ export const handlers = [
       }
       const options = ['블랙', '베이지'].flatMap((color, colorIndex) => (
         Object.keys(measurements).map((size, sizeIndex) => ({
-          optionId: product.productId * 100 + colorIndex * 10 + sizeIndex,
+          optionId: product.productId - 100 + colorIndex * 10 + sizeIndex,
           color,
           size,
           measurement: measurements[size],
@@ -189,7 +195,7 @@ export const handlers = [
         images: ['/src/assets/hero.png'],
         options,
         status: 'ON_SALE',
-        wished: false,
+        wished: product.wished ?? false,
       })
     },
   ),
@@ -240,6 +246,11 @@ export const handlers = [
   http.get(
     'http://localhost:8080/api/v1/wishlists',
     async ({ request }) => {
+      const authHeader = request.headers.get('Authorization')
+      if (!authHeader) {
+        return new HttpResponse(null, { status: 401 })
+      }
+
       const url = new URL(request.url)
       const page = Number(url.searchParams.get('page') || 0)
 
@@ -266,6 +277,11 @@ export const handlers = [
   http.post(
     'http://localhost:8080/api/v1/wishlists',
     async ({ request }) => {
+      const authHeader = request.headers.get('Authorization')
+      if (!authHeader) {
+        return new HttpResponse(null, { status: 401 })
+      }
+
       const { itemId } = await request.json()
 
       return HttpResponse.json({ wishlistId: itemId })
@@ -274,7 +290,13 @@ export const handlers = [
 
   http.delete(
     'http://localhost:8080/api/v1/wishlists',
-    () => new HttpResponse(null, { status: 204 }),
+    ({ request }) => {
+      const authHeader = request.headers.get('Authorization')
+      if (!authHeader) {
+        return new HttpResponse(null, { status: 401 })
+      }
+      return new HttpResponse(null, { status: 204 })
+    },
   ),
 
   http.post(
@@ -420,19 +442,6 @@ export const handlers = [
         products: products.filter((product) => productIds.includes(product.productId)),
         createdAt: new Date().toISOString(),
       })
-    },
-  ),
-
-  http.post(
-    'http://localhost:8080/api/v1/carts',
-    async ({ request }) => {
-      const { optionId, quantity } = await request.json()
-
-      if (!optionId || quantity < 1) {
-        return new HttpResponse(null, { status: 400 })
-      }
-
-      return HttpResponse.json({ cartId: optionId, quantity })
     },
   ),
 ]
