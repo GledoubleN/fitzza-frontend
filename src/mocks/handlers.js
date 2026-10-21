@@ -23,10 +23,9 @@ const RECOMMENDATION_PROCESSING_MS = 3000
 
 const FITTING_DURATION = 3000
 const fittingResultImageUrl = new URL(fittingResultImage, location.origin).href
-const photos = []
 const fittings = Array.from({ length: 30 }, (_, index) => ({
   fittingId: index + 1,
-  photoId: null,
+  userImageUrl: null,
   productIds: [products[index % products.length].productId],
   createdAt: Date.parse('2026-10-01T10:00:00Z') + index * 12 * 60 * 60 * 1000,
   isFailed: index % 7 === 3,
@@ -44,6 +43,8 @@ const toVtonProduct = (productId) => {
   }
 }
 
+const vtonError = (status, code, message) => HttpResponse.json({ status, code, message }, { status })
+
 const toVtonDetail = (fitting) => {
   const isDone = Date.now() - fitting.createdAt >= FITTING_DURATION
   const status = fitting.isFailed ? 'FAILED' : isDone ? 'COMPLETED' : 'PENDING'
@@ -52,13 +53,28 @@ const toVtonDetail = (fitting) => {
   return {
     fittingId: fitting.fittingId,
     userId: 1,
-    photoId: fitting.photoId,
+    userImageUrl: fitting.userImageUrl,
     status,
     resultImageUrl: status === 'COMPLETED' ? fittingResultImageUrl : null,
     errorMessage: fitting.isFailed ? '이미지 합성에 실패했습니다.' : null,
     products: fitting.productIds.map(toVtonProduct),
     createdAt: timestamp,
     updatedAt: timestamp,
+  }
+}
+
+const toVtonSummary = (fitting) => {
+  const { fittingId, userId, status, resultImageUrl, userImageUrl, products, createdAt } = toVtonDetail(fitting)
+
+  return { fittingId, userId, status, resultImageUrl, userImageUrl, productCount: products.length, products, createdAt }
+}
+
+const parseProductIds = (value) => {
+  try {
+    const parsed = value.trim().startsWith('[') ? JSON.parse(value) : value.split(',')
+    return parsed.map(Number)
+  } catch {
+    return []
   }
 }
 
@@ -619,40 +635,31 @@ export const handlers = [
   ),
 
   http.post(
-    `${ api.defaults.baseURL }/vton/photos`,
-    async ({ request }) => {
-      const file = (await request.formData()).get('file')
-
-      if (!file?.size) {
-        return HttpResponse.json({ detail: '업로드된 파일이 비어 있습니다.' }, { status: 400 })
-      }
-
-      const photo = { photoId: photos.length + 1, userId: 1, createdAt: new Date().toISOString() }
-      photos.push(photo)
-
-      return HttpResponse.json({ ...photo, photoUrl: URL.createObjectURL(file) }, { status: 201 })
-    },
-  ),
-
-  http.post(
     `${ api.defaults.baseURL }/vton`,
     async ({ request }) => {
-      const { photoId = null, productIds } = await request.json()
-      const uniqueProductIds = [...new Set(productIds)]
+      const isMultipart = request.headers.get('content-type')?.includes('multipart/form-data')
+      let productIds
+      let userImage = null
 
-      if (!uniqueProductIds.length) {
-        return HttpResponse.json({ detail: [{ loc: ['body', 'productIds'], msg: 'productIds is required' }] }, { status: 422 })
+      if (isMultipart) {
+        const form = await request.formData()
+        productIds = form.getAll('productIds').flatMap(parseProductIds)
+        userImage = form.get('userImage')
+      } else {
+        productIds = (await request.json()).productIds ?? []
       }
-      if (uniqueProductIds.length > 5) {
-        return HttpResponse.json({ detail: '피팅 가능한 상품은 최대 5개입니다.' }, { status: 400 })
+
+      const uniqueProductIds = [...new Set(productIds)]
+      if (!uniqueProductIds.length || uniqueProductIds.length > 5 || uniqueProductIds.some(Number.isNaN)) {
+        return vtonError(400, 'BAD_REQUEST', 'productIds는 1개 이상 5개 이하의 유효한 정수 배열이어야 합니다.')
       }
-      if (photoId !== null && !photos.some((photo) => photo.photoId === photoId)) {
-        return HttpResponse.json({ detail: '등록된 전신 사진 정보를 찾을 수 없습니다.' }, { status: 404 })
+      if (userImage?.size > 15 * 1024 * 1024) {
+        return vtonError(400, 'BAD_REQUEST', '사용자 사진 파일 크기는 최대 15MB까지 가능합니다.')
       }
 
       const fitting = {
         fittingId: fittings.length + 1,
-        photoId,
+        userImageUrl: userImage?.size ? URL.createObjectURL(userImage) : null,
         productIds: uniqueProductIds,
         createdAt: Date.now(),
       }
@@ -668,10 +675,13 @@ export const handlers = [
       const searchParams = new URL(request.url).searchParams
       const limit = Number(searchParams.get('limit') ?? 20)
       const offset = Number(searchParams.get('offset') ?? 0)
+      if (!(limit >= 1 && limit <= 100) || !(offset >= 0)) {
+        return vtonError(400, 'INVALID_REQUEST', '요청 값이 올바르지 않습니다.')
+      }
       const visibleFittings = fittings.filter((fitting) => !fitting.isDeleted).reverse()
 
       return HttpResponse.json({
-        items: visibleFittings.slice(offset, offset + limit).map(toVtonDetail),
+        items: visibleFittings.slice(offset, offset + limit).map(toVtonSummary),
         totalCount: visibleFittings.length,
       })
     },
@@ -683,7 +693,7 @@ export const handlers = [
       const fitting = findFitting(params.fittingId)
 
       if (!fitting || fitting.isDeleted) {
-        return HttpResponse.json({ detail: '존재하지 않는 가상 피팅입니다.' }, { status: 404 })
+        return vtonError(404, 'NOT_FOUND', '존재하지 않는 가상 피팅입니다.')
       }
 
       return HttpResponse.json(toVtonDetail(fitting))
@@ -696,7 +706,7 @@ export const handlers = [
       const fitting = findFitting(params.fittingId)
 
       if (!fitting || fitting.isDeleted) {
-        return HttpResponse.json({ detail: '존재하지 않거나 이미 삭제된 가상 피팅입니다.' }, { status: 404 })
+        return vtonError(404, 'NOT_FOUND', '존재하지 않거나 이미 삭제된 가상 피팅입니다.')
       }
 
       fitting.isDeleted = true

@@ -164,7 +164,7 @@ export const AIStylistPage = () => {
     else setAttempt((attempt) => attempt + 1)
   }
 
-  // 이 화면에서 입어본 가상 피팅들. { id, label, items, photo, photoId, status, fittingId, imageUrl, message, retryable }
+  // 이 화면에서 입어본 가상 피팅들. { id, label, items, photo, status, fittingId, imageUrl, message, retryable }
   const [fittings, setFittings] = useState([])
   const [pendingTryOn, setPendingTryOn] = useState(null)
   const [photo, setPhoto] = useState(null)
@@ -176,14 +176,19 @@ export const AIStylistPage = () => {
     if (fittings.length) fittingsEnd.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }, [fittings])
 
-  const uploadPhoto = async (file) => {
+  const createFitting = ({ items, photo }) => {
+    const productIds = items.map((item) => item.productId)
+    if (!photo) {
+      return api.post('/vton', { productIds }, TIMEOUT)
+    }
+
     const form = new FormData()
-    form.append('file', file)
-    const { data } = await api.post('/vton/photos', form, {
+    form.append('productIds', JSON.stringify(productIds))
+    form.append('userImage', photo)
+    return api.post('/vton', form, {
       ...TIMEOUT,
       headers: { 'Content-Type': 'multipart/form-data' },
     })
-    return data.photoId
   }
 
   const waitForFitting = async (fittingId) => {
@@ -205,13 +210,7 @@ export const AIStylistPage = () => {
       { ...fitting, status: 'loading', message: '' },
     ])
     try {
-      const photoId = fitting.photoId ?? (fitting.photo ? await uploadPhoto(fitting.photo) : null)
-      update({ photoId })
-
-      const { data: created } = await api.post('/vton', {
-        photoId,
-        productIds: fitting.items.map((item) => item.productId),
-      }, TIMEOUT)
+      const { data: created } = await createFitting(fitting)
       const detail = await waitForFitting(created.fittingId)
 
       if (!detail) {
@@ -222,10 +221,9 @@ export const AIStylistPage = () => {
         update({ status: 'failed', message: detail.errorMessage, retryable: true })
       }
     } catch (err) {
-      const detail = err.response?.data?.detail
       update({
         status: 'failed',
-        message: typeof detail === 'string' ? detail : '',
+        message: err.response?.data?.message ?? '',
         retryable: true,
       })
     }
