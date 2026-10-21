@@ -177,7 +177,7 @@ export const AIStylistPage = () => {
     else setAttempt((attempt) => attempt + 1)
   }
 
-  // 이 화면에서 입어본 가상 피팅들. { id, label, items, photo, status, fittingId, imageUrl, message, retryable }
+  // 이 화면에서 입어본 가상 피팅들. { id, label, items, photo, status, fittingId, imageUrl, message, timedOut }
   const [fittings, setFittings] = useState([])
   const [pendingTryOn, setPendingTryOn] = useState(null)
   const photoUpload = useFileUpload({ accept: PHOTO_TYPES, maxFileSize: PHOTO_MAX_SIZE })
@@ -227,26 +227,22 @@ export const AIStylistPage = () => {
     const update = (patch) => setFittings((fittings) => fittings.map(
       (other) => other.id === fitting.id ? { ...other, ...patch } : other,
     ))
-    setFittings((fittings) => [
-      ...fittings.filter((other) => other.id !== fitting.id),
-      { ...fitting, status: 'loading', message: '' },
-    ])
+    setFittings((fittings) => [...fittings, { ...fitting, status: 'loading', message: '' }])
     try {
       const { data: created } = await createFitting(fitting)
       const detail = await waitForFitting(created.fittingId)
 
       if (!detail) {
-        update({ status: 'failed', message: FITTING_TIMEOUT_MESSAGE, retryable: false })
+        update({ status: 'failed', message: FITTING_TIMEOUT_MESSAGE, timedOut: true })
       } else if (detail.status === 'COMPLETED' && detail.resultImageUrl) {
         update({ status: 'done', fittingId: detail.fittingId, imageUrl: toFittingImageUrl(detail.resultImageUrl) })
       } else {
-        update({ status: 'failed', message: detail.errorMessage, retryable: true })
+        update({ status: 'failed', message: detail.errorMessage })
       }
     } catch (err) {
       update({
         status: 'failed',
         message: err.response?.data?.message ?? '',
-        retryable: true,
       })
     }
   }
@@ -401,13 +397,11 @@ export const AIStylistPage = () => {
                         fitting.status === 'failed' &&
                         <>
                           <Text color={ 'fg.error' }>
-                            { fitting.message || '가상 피팅을 만들지 못했어요. 잠시 후 다시 시도해주세요.' }
+                            { fitting.message || '가상 피팅을 만들지 못했어요.' }
                           </Text>
                           {
-                            fitting.retryable &&
-                            <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ () => runFitting(fitting) }>
-                              다시 시도
-                            </Button>
+                            !fitting.timedOut &&
+                            <Text fontSize={ 'sm' } color={ 'fg.muted' }>실패한 가상 피팅은 다시 시도할 수 없어요.</Text>
                           }
                         </>
                       }
