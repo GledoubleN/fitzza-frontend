@@ -12,7 +12,6 @@ export default function OnboardingPage () {
   const [errorMessage, setErrorMessage] = useState('')
   const [isSaved, setIsSaved] = useState(false)
 
-  // 💡 여기서 모든 선택값을 빈 문자열('')로 초기화하여 아무것도 선택되지 않은 상태로 설정
   const [formData, setFormData] = useState({
     height: '',
     weight: '',
@@ -21,7 +20,7 @@ export default function OnboardingPage () {
     preferredFit: '',
     style: '',
     topSize: '',
-    weightSize: '',        // 하의 사이즈
+    weightSize: '',
   })
 
   const [fieldErrors, setFieldErrors] = useState({
@@ -116,7 +115,7 @@ export default function OnboardingPage () {
       } else if (status === 401) {
         setErrorMessage('로그인 정보가 만료되었거나 토큰이 없습니다. 다시 로그인해주세요.')
       } else {
-        setIsSaved(true)
+        setErrorMessage('프로필 저장 중 오류가 발생했습니다. 다시 시도해주세요.')
       }
     } finally {
       setIsLoading(false)
