@@ -47,13 +47,13 @@ export const SignUpPage = () => {
     if (name === 'email') {
       const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
       if (value.length > 255) {
-        return '이메일은 255자 이하로 입력해 주세요.';
+        return '이메일의 총 길이는 255자 이하여야 합니다.';
       }
       if (value.split('@')[0].length > 64) {
-        return '이메일의 @ 앞부분은 64자 이하로 입력해 주세요.';
+        return '이메일의 @ 앞부분은 64자 이하여야 합니다.';
       }
       if (!emailRegex.test(value)) {
-        return '올바른 이메일 형식을 입력해 주세요.';
+        return '올바른 이메일 형식이 아닙니다.';
       }
     } else if (name === 'nickname') {
       const nicknameRegex = /^[가-힣A-Za-z0-9]{2,10}$/;
