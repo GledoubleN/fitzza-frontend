@@ -96,7 +96,7 @@ export const SignInPage = () => {
           </Field.Root>
 
           { errorMessage && (
-            <Text color="red.500" textStyle="sm">{ errorMessage }</Text>
+            <Text color="fg.error" textStyle="sm">{ errorMessage }</Text>
           ) }
 
           <Button
