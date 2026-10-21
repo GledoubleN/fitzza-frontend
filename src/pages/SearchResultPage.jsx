@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Container,
   Grid,
@@ -9,11 +9,11 @@ import {
   Text,
   Box,
   Button,
-  Spinner, Stack, Heading, Center, createListCollection, Flex, Select, Portal,
+  Spinner, Stack, Heading, Center, createListCollection, Flex, Select, Portal, Menu,
 } from '@chakra-ui/react'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import { LuChevronRight, LuHeart } from 'react-icons/lu'
+import { LuChevronDown, LuChevronRight, LuHeart } from 'react-icons/lu'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { ProductItem } from '../components/ProductItem.jsx'
@@ -28,15 +28,37 @@ const sortCollection = createListCollection({
 const findCategoryPath = (categories, code) => {
   for (const category of categories) {
     if (category.code === code) {
-      return [category.name]
+      return [category]
     }
     const childPath = findCategoryPath(category.children ?? [], code)
     if (childPath.length > 0) {
-      return [category.name, ...childPath]
+      return [category, ...childPath]
     }
   }
   return []
 }
+
+const CategoryMenu = ({ label, categories, onSelect }) => (
+  <Menu.Root onSelect={ ({ value }) => onSelect(value) }>
+    <Menu.Trigger asChild>
+      <Button variant="plain" paddingX={ 0 } minWidth={ 0 }>
+        <Heading size="lg" truncate>{ label }</Heading>
+        <Icon size="xs" ><LuChevronDown/></Icon>
+      </Button>
+    </Menu.Trigger>
+    <Portal>
+      <Menu.Positioner>
+        <Menu.Content>
+          { categories.map((category) => (
+            <Menu.Item key={ category.code } value={ category.code }>
+              { category.name }
+            </Menu.Item>
+          )) }
+        </Menu.Content>
+      </Menu.Positioner>
+    </Portal>
+  </Menu.Root>
+)
 
 export const SearchResultPage = () => {
   const navigate = useNavigate()
@@ -49,11 +71,19 @@ export const SearchResultPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [hasMore, setHasMore] = useState(true)
-  const [categoryPath, setCategoryPath] = useState([])
+  const [categories, setCategories] = useState([])
+
+  const [topCategory, secondCategory] = categoryCode
+    ? findCategoryPath(categories, categoryCode)
+    : []
 
   const PAGE_SIZE = 10
+  const latestRequestId = useRef(0)
 
   const fetchProducts = async (targetPage = 0, sortKey = currentSort) => {
+    const requestId = ++latestRequestId.current
+    const isStale = () => requestId !== latestRequestId.current
+
     setIsLoading(true)
     setError(null)
 
@@ -73,6 +103,10 @@ export const SearchResultPage = () => {
 
       const response = await api.get('/products', { params })
 
+      if (isStale()) {
+        return { content: [], hasNext: false }
+      }
+
       const { content = [], hasNext = false } = response.data || {}
 
       if (targetPage === 0) {
@@ -87,6 +121,10 @@ export const SearchResultPage = () => {
       return { content, hasNext }
 
     } catch (err) {
+      if (isStale()) {
+        return { content: [], hasNext: false }
+      }
+
       setError('상품 목록을 불러오지 못했습니다.')
       setIsLoading(false)
       return { content: [], hasNext: false }
@@ -122,15 +160,16 @@ export const SearchResultPage = () => {
   }, [categoryCode, currentSort])
 
   useEffect(() => {
-    if (!categoryCode) {
-      setCategoryPath([])
-      return
-    }
-
     api.get('/categories')
-      .then((response) => setCategoryPath(findCategoryPath(response.data ?? [], categoryCode)))
-      .catch(() => setCategoryPath([]))
-  }, [categoryCode])
+      .then((response) => setCategories(response.data ?? []))
+      .catch(() => setCategories([]))
+  }, [])
+
+  const selectCategory = (code) => {
+    const newParams = new URLSearchParams(searchParams)
+    newParams.set('category', code)
+    setSearchParams(newParams)
+  }
 
   // 무한 스크롤 이벤트 리스너
   useEffect(() => {
@@ -170,16 +209,23 @@ export const SearchResultPage = () => {
           gap={ 4 }
           alignItems="center"
         >
-          { categoryPath.length > 0 && (
+          { topCategory && (
             <Flex gridColumn="1 / -2" alignItems="center" gap={ 4 } minWidth={ 0 }>
-              { categoryPath.map((name, index) => (
-                <Fragment key={ name }>
-                  { index > 0 && (
-                    <Icon size="sm" color="fg.muted"><LuChevronRight/></Icon>
-                  ) }
-                  <Heading size="lg" truncate>{ name }</Heading>
-                </Fragment>
-              )) }
+              <CategoryMenu
+                label={ topCategory.name }
+                categories={ categories }
+                onSelect={ selectCategory }
+              />
+              { topCategory.children?.length > 0 && (
+                <>
+                  <Icon size="sm" color="fg.muted"><LuChevronRight/></Icon>
+                  <CategoryMenu
+                    label={ secondCategory?.name ?? '전체' }
+                    categories={ [{ code: topCategory.code, name: '전체' }, ...topCategory.children] }
+                    onSelect={ selectCategory }
+                  />
+                </>
+              ) }
             </Flex>
           ) }
           <Select.Root
