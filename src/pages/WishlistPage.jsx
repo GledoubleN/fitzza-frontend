@@ -85,7 +85,6 @@ export const WishlistPage = () => {
           </Center>
         )}
 
-        {/* 비로그인 상태 안내 화면 */}
         {!isLoading && isUnauthorized && (
           <Center height="100%" flexDirection="column" gap={ 4 }>
             <Text color="fg.muted">로그인 후 이용 가능한 서비스입니다.</Text>
@@ -95,7 +94,6 @@ export const WishlistPage = () => {
           </Center>
         )}
 
-        {/* 일반 에러 화면 */}
         {!isLoading && !isUnauthorized && isError && (
           <Center height="100%" flexDirection="column" gap={ 4 }>
             <Text color="fg.error">찜 목록을 불러오지 못했습니다.</Text>

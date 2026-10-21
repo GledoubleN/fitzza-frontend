@@ -10,10 +10,9 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
   const [isLiked, setIsLiked] = useState(initialIsLiked ?? product.wished ?? false)
 
   const handleWishClick = async (e) => {
-    e.stopPropagation() // 상품 상세 페이지로의 이동 이벤트 전파 방지
+    e.stopPropagation()
 
-    // 1. 로그인 상태 확인 (토큰 유무 검사)
-    const token = localStorage.getItem('accessToken') // 프로젝트 내 토큰 저장소 키명에 맞춰 확인해주세요
+    const token = localStorage.getItem('accessToken')
     if (!token) {
       navigate('/signin')
       return
@@ -21,7 +20,6 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
 
     try {
       if (isLiked) {
-        // 찜 취소 요청
         await api.delete('/wishlists', { data: { itemId: product.productId ?? product.itemId } })
         setIsLiked(false)
         toaster.create({
@@ -32,7 +30,6 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           onWishlistChange(product.productId ?? product.itemId)
         }
       } else {
-        // 찜 등록 요청
         await api.post('/wishlists', { itemId: product.productId ?? product.itemId })
         setIsLiked(true)
         toaster.create({
