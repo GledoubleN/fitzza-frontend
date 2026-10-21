@@ -1,20 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Container,
   Grid,
   GridItem,
+  Icon,
   IconButton,
   Image,
-  Input,
-  InputGroup,
   Text,
   Box,
   Button,
-  Spinner, Stack, Heading, Center, createListCollection, Flex, Select, Portal,
+  Spinner, Stack, Heading, Center, createListCollection, Flex, Select, Portal, Menu,
 } from '@chakra-ui/react'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import { LuHeart, LuSearch } from 'react-icons/lu'
+import { LuChevronDown, LuChevronRight, LuHeart } from 'react-icons/lu'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { ProductItem } from '../components/ProductItem.jsx'
@@ -26,21 +25,65 @@ const sortCollection = createListCollection({
   ],
 })
 
+const findCategoryPath = (categories, code) => {
+  for (const category of categories) {
+    if (category.code === code) {
+      return [category]
+    }
+    const childPath = findCategoryPath(category.children ?? [], code)
+    if (childPath.length > 0) {
+      return [category, ...childPath]
+    }
+  }
+  return []
+}
+
+const CategoryMenu = ({ label, categories, onSelect }) => (
+  <Menu.Root onSelect={ ({ value }) => onSelect(value) }>
+    <Menu.Trigger asChild>
+      <Button variant="plain" paddingX={ 0 } minWidth={ 0 }>
+        <Heading size="lg" truncate>{ label }</Heading>
+        <Icon size="xs" ><LuChevronDown/></Icon>
+      </Button>
+    </Menu.Trigger>
+    <Portal>
+      <Menu.Positioner>
+        <Menu.Content>
+          { categories.map((category) => (
+            <Menu.Item key={ category.code } value={ category.code }>
+              { category.name }
+            </Menu.Item>
+          )) }
+        </Menu.Content>
+      </Menu.Positioner>
+    </Portal>
+  </Menu.Root>
+)
+
 export const SearchResultPage = () => {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const categoryCode = searchParams.get('category')
-  const currentSort = searchParams.get('sort') || ''
+  const currentSort = searchParams.get('sort') || 'TIME_DESC'
 
   const [displayProducts, setDisplayProducts] = useState([])
   const [page, setPage] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [hasMore, setHasMore] = useState(true)
+  const [categories, setCategories] = useState([])
+
+  const [topCategory, secondCategory] = categoryCode
+    ? findCategoryPath(categories, categoryCode)
+    : []
 
   const PAGE_SIZE = 10
+  const latestRequestId = useRef(0)
 
   const fetchProducts = async (targetPage = 0, sortKey = currentSort) => {
+    const requestId = ++latestRequestId.current
+    const isStale = () => requestId !== latestRequestId.current
+
     setIsLoading(true)
     setError(null)
 
@@ -60,6 +103,10 @@ export const SearchResultPage = () => {
 
       const response = await api.get('/products', { params })
 
+      if (isStale()) {
+        return { content: [], hasNext: false }
+      }
+
       const { content = [], hasNext = false } = response.data || {}
 
       if (targetPage === 0) {
@@ -74,6 +121,10 @@ export const SearchResultPage = () => {
       return { content, hasNext }
 
     } catch (err) {
+      if (isStale()) {
+        return { content: [], hasNext: false }
+      }
+
       setError('상품 목록을 불러오지 못했습니다.')
       setIsLoading(false)
       return { content: [], hasNext: false }
@@ -108,6 +159,18 @@ export const SearchResultPage = () => {
     }
   }, [categoryCode, currentSort])
 
+  useEffect(() => {
+    api.get('/categories')
+      .then((response) => setCategories(response.data ?? []))
+      .catch(() => setCategories([]))
+  }, [])
+
+  const selectCategory = (code) => {
+    const newParams = new URLSearchParams(searchParams)
+    newParams.set('category', code)
+    setSearchParams(newParams)
+  }
+
   // 무한 스크롤 이벤트 리스너
   useEffect(() => {
     const handleScroll = () => {
@@ -140,23 +203,31 @@ export const SearchResultPage = () => {
   return (
     <Stack gap={ 4 } position="relative" minH="100vh" paddingY={ 4 }>
       <Header/>
-
-      <Container maxW="3xl">
-        <InputGroup
-          startElement={ <LuSearch/> }
-        >
-          <Input
-            placeholder="검색어를 입력해주세요"
-            defaultValue={ categoryCode ? `카테고리 코드: ${ categoryCode }` : '' }
-          />
-        </InputGroup>
-      </Container>
-
       <Container maxW="5xl">
         <Grid
           templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
           gap={ 4 }
+          alignItems="center"
         >
+          { topCategory && (
+            <Flex gridColumn="1 / -2" alignItems="center" gap={ 4 } minWidth={ 0 }>
+              <CategoryMenu
+                label={ topCategory.name }
+                categories={ categories }
+                onSelect={ selectCategory }
+              />
+              { topCategory.children?.length > 0 && (
+                <>
+                  <Icon size="sm" color="fg.muted"><LuChevronRight/></Icon>
+                  <CategoryMenu
+                    label={ secondCategory?.name ?? '전체' }
+                    categories={ [{ code: topCategory.code, name: '전체' }, ...topCategory.children] }
+                    onSelect={ selectCategory }
+                  />
+                </>
+              ) }
+            </Flex>
+          ) }
           <Select.Root
             collection={ sortCollection }
             gridColumn={ -2 }
