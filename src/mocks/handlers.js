@@ -13,6 +13,7 @@ import userProfile from '../data/user-profile.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendation-history.json'
 import recommendationMessages from '../data/recommendation-messages.json'
+import notifications from '../data/notifications.json'
 import fittingResultImage from '../assets/hero.png'
 
 let lastRecommendationId = 0
@@ -777,6 +778,24 @@ export const handlers = [
     `${ api.defaults.baseURL }/recommendations/:requestId`,
     ({ params }) => {
       return HttpResponse.json({ requestId: params.requestId, ...recommendations })
+    },
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/notifications`,
+    ({ request }) => {
+      const size = Number(new URL(request.url).searchParams.get('size') ?? 20)
+      return HttpResponse.json({ content: notifications.slice(0, size), page: 0, totalPages: Math.ceil(notifications.length / size) })
+    },
+  ),
+
+  http.patch(
+    `${ api.defaults.baseURL }/notifications/:notificationId`,
+    ({ params }) => {
+      const notification = notifications.find((notification) => notification.notificationId === Number(params.notificationId))
+      if (!notification) return new HttpResponse(null, { status: 404 })
+      notification.isRead = true
+      return new HttpResponse(null, { status: 200 })
     },
   ),
 

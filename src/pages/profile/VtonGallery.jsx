@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { LuChevronRight } from 'react-icons/lu'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { FailureTestButtons } from '../../mocks/FailureTestButtons.jsx'
@@ -57,6 +57,8 @@ const FittingThumbnail = ({ fitting }) => {
 
 export const VtonGallery = ({ preview = false }) => {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const linkedFittingId = searchParams.get('fittingId')
   const [fittings, setFittings] = useState([])
   const [totalCount, setTotalCount] = useState(0)
   const [status, setStatus] = useState('loading')
@@ -113,6 +115,24 @@ export const VtonGallery = ({ preview = false }) => {
   }, [])
 
   useEffect(() => {
+    if (!linkedFittingId) return
+    let cancelled = false
+    api.get(`/vton/${ encodeURIComponent(linkedFittingId) }`)
+      .then(({ data }) => {
+        if (!cancelled) setSelected(data)
+      })
+      .catch(() => {
+        if (!cancelled) toaster.create({ type: 'error', title: '가상 피팅을 찾지 못했어요.' })
+      })
+    return () => { cancelled = true }
+  }, [linkedFittingId])
+
+  const closeDialog = () => {
+    setSelected(null)
+    if (linkedFittingId) setSearchParams({}, { replace: true })
+  }
+
+  useEffect(() => {
     if (!preview) return
     const measure = () => setColumnCount(getComputedStyle(grid.current).gridTemplateColumns.split(' ').length)
     measure()
@@ -127,7 +147,7 @@ export const VtonGallery = ({ preview = false }) => {
       await api.delete(`/vton/${ selected.fittingId }`)
       setFittings((fittings) => fittings.filter((fitting) => fitting.fittingId !== selected.fittingId))
       setTotalCount((count) => count - 1)
-      setSelected(null)
+      closeDialog()
     } catch {
       toaster.create({ type: 'error', title: '가상 피팅을 삭제하지 못했어요. 다시 시도해 주세요.' })
     } finally {
@@ -218,7 +238,7 @@ export const VtonGallery = ({ preview = false }) => {
 
       <Dialog.Root
         open={ !!selected }
-        onOpenChange={ (event) => !event.open && setSelected(null) }
+        onOpenChange={ (event) => !event.open && closeDialog() }
         placement={ 'center' }
         scrollBehavior={ 'inside' }
         size={ 'xl' }
