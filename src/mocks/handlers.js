@@ -16,6 +16,8 @@ import recommendationMessages from '../data/recommendation-messages.json'
 import notifications from '../data/notifications.json'
 import fittingResultImage from '../assets/hero.png'
 
+let worldcupHistories = []
+
 let lastRecommendationId = 0
 
 const fittingResultImageUrl = new URL(fittingResultImage, location.origin).href
@@ -872,6 +874,71 @@ export const handlers = [
     `${ api.defaults.baseURL }/recommendations/:requestId/messages`,
     () => {
       return HttpResponse.json(recommendationMessages)
+    },
+  ),
+  http.post(
+    `${ api.defaults.baseURL }/worldcups`,
+    async ({ request }) => {
+      const body = await request.json()
+      const { winnerProductId } = body
+
+      const targetProduct = products.find(p => p.productId === winnerProductId) || {
+        productId: winnerProductId,
+        brandName: '',
+        productName: '상품',
+        price: 0,
+        thumbnailUrl: '/src/assets/hero.png',
+      }
+
+      const newHistory = {
+        worldcupHistoryId: Date.now(),
+        winnerProduct: {
+          productId: targetProduct.productId,
+          brandName: targetProduct.brandName || '',
+          productName: targetProduct.productName || targetProduct.name || '',
+          price: targetProduct.price || 0,
+          imageUrl: targetProduct.thumbnailUrl || targetProduct.imageUrl || '/src/assets/hero.png',
+          status: 'ON_SALE',
+        },
+        completedAt: new Date().toISOString(),
+      }
+
+      worldcupHistories.unshift(newHistory)
+
+      return HttpResponse.json(newHistory, { status: 201 })
+    },
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/worldcups/history`,
+    ({ request }) => {
+      const url = new URL(request.url)
+      const page = Number(url.searchParams.get('page') || 0)
+      const size = Number(url.searchParams.get('size') || 20)
+
+      return HttpResponse.json({
+        content: worldcupHistories,
+        page: page,
+        size: size,
+        totalElements: worldcupHistories.length,
+        totalPages: Math.ceil(worldcupHistories.length / size) || 1,
+        hasNext: false,
+      })
+    },
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/worldcups/:historyId`,
+    ({ params }) => {
+      const history = worldcupHistories.find(
+        h => h.worldcupHistoryId === Number(params.historyId)
+      )
+
+      if (!history) {
+        return new HttpResponse(null, { status: 404 })
+      }
+
+      return HttpResponse.json(history)
     },
   ),
 ]
