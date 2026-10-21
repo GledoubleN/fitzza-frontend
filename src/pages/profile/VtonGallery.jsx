@@ -226,12 +226,8 @@ export const VtonGallery = ({ preview = false }) => {
           <Dialog.Backdrop/>
           <Dialog.Positioner>
             <Dialog.Content marginX={ 4 }>
-              <Dialog.Header
-                flexDirection={ { base: 'column', md: 'row' } }
-                alignItems={ { base: 'flex-start', md: 'center' } }
-                columnGap={ 4 }
-              >
-                <Dialog.Title paddingEnd={ 8 }>{ selected && toFittingTitle(selected) }</Dialog.Title>
+              <Dialog.Header flexWrap={ 'wrap' } alignItems={ 'center' } columnGap={ 4 } paddingEnd={ 12 }>
+                <Dialog.Title>{ selected && toFittingTitle(selected) }</Dialog.Title>
                 <Stack gap={ 0 }>
                   <Text textStyle={ 'xs' } color={ 'fg.muted' }>{ selected && formatDateTime(selected.createdAt) }</Text>
                   <Text textStyle={ 'xs' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
