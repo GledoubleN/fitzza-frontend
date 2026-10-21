@@ -54,13 +54,16 @@ export const SignUpPage = () => {
         errorMsg = '올바른 이메일 형식을 입력해 주세요.';
       }
     } else if (name === 'nickname') {
-      if (value.length < 2 || value.length > 10) {
-        errorMsg = '사용자명은 2자 이상 10자 이하로 입력해 주세요.';
+      // 💡 백엔드 닉네임 규칙 적용 (한글, 영문, 숫자만 허용, 2~10자)
+      const nicknameRegex = /^[가-힣A-Za-z0-9]{2,10}$/;
+      if (!nicknameRegex.test(value)) {
+        errorMsg = '사용자명은 2~10자의 한글, 영문, 숫자만 사용 가능합니다.';
       }
     } else if (name === 'password') {
-      const passwordRegex = /^[a-z0-9]{8,24}$/;
+      // 💡 백엔드 비밀번호 규칙 적용 (영문, 숫자 모두 포함, 대소문자 허용, 8~24자)
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,24}$/;
       if (!passwordRegex.test(value)) {
-        errorMsg = '비밀번호는 8~24자의 영문 소문자와 숫자만 사용 가능합니다.';
+        errorMsg = '비밀번호는 8~24자의 영문과 숫자를 모두 포함해야 합니다.';
       }
     }
 
@@ -97,20 +100,23 @@ export const SignUpPage = () => {
       hasError = true;
     }
 
-    if (formData.nickname.length < 2 || formData.nickname.length > 10) {
-      newErrors.nickname = '사용자명은 2자 이상 10자 이하로 입력해 주세요.';
+    // 💡 폼 제출 시 닉네임 검증 정규식 동기화
+    const nicknameRegex = /^[가-힣A-Za-z0-9]{2,10}$/;
+    if (!nicknameRegex.test(formData.nickname)) {
+      newErrors.nickname = '사용자명은 2~10자의 한글, 영문, 숫자만 사용 가능합니다.';
       hasError = true;
     }
 
-    const passwordRegex = /^[a-z0-9]{8,24}$/;
+    // 💡 폼 제출 시 비밀번호 검증 정규식 동기화
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,24}$/;
     if (!passwordRegex.test(formData.password)) {
-      newErrors.password = '비밀번호는 8~24자의 영문 소문자와 숫자만 사용 가능합니다.';
+      newErrors.password = '비밀번호는 8~24자의 영문과 숫자를 모두 포함해야 합니다.';
       hasError = true;
     }
 
     if (hasError) {
       setErrors(newErrors);
-      return; // 에러 발생 시 진행 중단 추가
+      return;
     }
 
     setLoading(true);
@@ -128,7 +134,6 @@ export const SignUpPage = () => {
         const errorData = err.response.data;
         const serverErrors = errorData?.errors;
 
-        // errors 배열이 존재할 경우 순회하면서 각 필드별 에러 설정
         if (Array.isArray(serverErrors) && serverErrors.length > 0) {
           const nextErrors = { email: '', nickname: '', password: '', general: '' };
 
@@ -138,12 +143,10 @@ export const SignUpPage = () => {
             } else if (errItem.field === 'nickname') {
               nextErrors.nickname = errItem.reason || '이미 사용 중인 사용자명입니다.';
             }
-            // 필요에 따라 다른 필드(password 등)도 확장 가능
           });
 
           setErrors((prev) => ({ ...prev, ...nextErrors }));
         } else {
-          // errors 배열이 없거나 비어있는 경우 기존 message를 general에 표시
           setErrors((prev) => ({
             ...prev,
             general: errorData?.message || '중복된 회원 정보가 존재합니다.',
@@ -152,13 +155,11 @@ export const SignUpPage = () => {
         return;
       }
 
-      setErrors((prev) => ({
-        ...prev,
-        general: err.response?.data?.message || '회원가입 중 오류가 발생했습니다.',
-      }));
+      setErrors((prev) => ({ ...prev, general: err.response?.data?.message || '회원가입 중 오류가 발생했습니다.' }));
     } finally {
       setLoading(false);
     }
+  };
 
   return (
     <Grid
@@ -207,7 +208,6 @@ export const SignUpPage = () => {
             )}
           </Field.Root>
 
-          {/* 💡 중복되던 InputGroup 태그를 깔끔하게 정리했습니다 */}
           <Field.Root required w="100%">
             <InputGroup
               startElement={ <Box as={LuUser} boxSize={5} color={errors.nickname ? "red.500" : "fg.muted"} /> }
