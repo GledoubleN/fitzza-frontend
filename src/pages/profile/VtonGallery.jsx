@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
+import { FailureTestButtons } from '../../mocks/FailureTestButtons.jsx'
 
 const PAGE_SIZE = 20
 const PREVIEW_SIZE = 4
@@ -139,6 +140,17 @@ export const VtonGallery = ({ preview = false }) => {
         >
           더 보기
         </Button>
+      }
+
+      {
+        import.meta.env.DEV &&
+        <FailureTestButtons tests={ [{
+          label: '빈 갤러리',
+          method: 'get',
+          path: '/vton',
+          respond: (HttpResponse) => HttpResponse.json({ items: [], totalCount: 0 }),
+          onReady: () => load(),
+        }] }/>
       }
 
       <Dialog.Root
