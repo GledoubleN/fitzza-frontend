@@ -89,6 +89,7 @@ export const SignInPage = () => {
               <Input
                 type="password"
                 placeholder="비밀번호"
+                autoComplete="current-password"
                 value={ password }
                 onChange={ (e) => {
                   setPassword(e.target.value)
