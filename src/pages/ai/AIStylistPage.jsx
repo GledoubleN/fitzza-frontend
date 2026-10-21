@@ -25,17 +25,15 @@ import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
 import { toFittingImageUrl } from '../profile/toFittingImageUrl.js'
+import { listenForPush } from './listenForPush.js'
 
 const FAIL_MESSAGE = '추천을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
 const TIMEOUT = { timeout: 10000 }
-// 추천 요청은 응답에 결과가 담겨 올 때까지 기다리므로 더 길게 잡습니다. 추천 처리 시간이 정해지면 맞춰야 하는 임시 값입니다.
-const RECOMMEND_TIMEOUT = { timeout: 60000 }
 // 응답을 기다리던 중 새로고침된 추천 요청을 알아보기 위한 표시입니다. (sessionStorage 키)
 const PENDING_KEY = 'ai-recommendation-pending'
-// TODO FCM 연결 후: 피팅 완료·실패 푸시를 받으면 바로 GET /vton/{fittingId}를 조회하고,
-// 이 주기 조회는 알림이 오지 않는 경우를 대비해 간격을 늘려(예: 10초) 남겨둡니다.
-const FITTING_POLL_INTERVAL = 2000
+const RECOMMENDATION_WAIT_LIMIT = 120000
+const RECOMMENDATION_TIMEOUT_MESSAGE = '추천이 오래 걸리고 있어요. 잠시 후 다시 확인해주세요.'
 const FITTING_WAIT_LIMIT = 120000
 const FITTING_TIMEOUT_MESSAGE = '가상 피팅이 오래 걸리고 있어요. 완성되면 프로필의 가상 피팅 갤러리에서 볼 수 있어요.'
 const PHOTO_TYPES = ['image/png', 'image/jpeg', 'image/webp']
@@ -44,8 +42,6 @@ const PHOTO_ERRORS = {
   FILE_INVALID_TYPE: 'PNG, JPG, WEBP 이미지만 올릴 수 있어요.',
   FILE_TOO_LARGE: '사진은 15MB 이하로 올려 주세요.',
 }
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const AIStylistPage = () => {
   const { requestId } = useParams()
@@ -80,7 +76,6 @@ export const AIStylistPage = () => {
     setStatus('done')
   }
 
-  // 추천을 요청합니다. 결과는 이 요청의 응답에 바로 담겨 옵니다.
   const request = async (text) => {
     setQuery(text)
     setResult(null)
@@ -88,17 +83,16 @@ export const AIStylistPage = () => {
     const key = location.key
     sessionStorage.setItem(PENDING_KEY, key)
     try {
-      const { data } = await api.post('/recommendations', { query: text }, RECOMMEND_TIMEOUT)
+      const { data } = await api.post('/recommendations', { query: text }, TIMEOUT)
       sessionStorage.removeItem(PENDING_KEY)
       // 응답을 기다리는 사이 다른 화면으로 옮겼으면 결과화면으로 강제로 이동시키지 않습니다.
       if (activeKey.current !== key) return
       if (data.status === 'FAILED') {
         fail(data.message, true)
       } else if (data.requestId) {
-        // 받은 결과를 함께 넘겨서, 주소를 바꾼 뒤 같은 추천을 다시 조회하지 않게 합니다.
-        navigate(`/ai/${ data.requestId }`, { replace: true, state: { query: text, result: data } })
+        navigate(`/ai/${ data.requestId }`, { replace: true, state: { query: text } })
       } else {
-        show(data)
+        fail()
       }
     } catch (err) {
       sessionStorage.removeItem(PENDING_KEY)
@@ -142,25 +136,36 @@ export const AIStylistPage = () => {
         .catch(() => {})
     }
 
-    if (location.state?.result) {
-      // 방금 추천 요청의 응답으로 받은 결과입니다.
-      show(location.state.result)
-    } else {
-      // 대화 내역이나 주소로 들어온 지난 추천은 조회해서 보여줍니다.
-      setResult(null)
-      setStatus('loading')
-      api.get(`/recommendations/${ encodeURIComponent(requestId) }`, TIMEOUT)
-        .then(({ data }) => {
-          if (cancelled) return
-          if (data.status === 'FAILED') fail(data.message, true)
-          else show(data)
-        })
-        .catch(() => {
-          if (!cancelled) fail()
-        })
+    setResult(null)
+    setStatus('loading')
+    const push = listenForPush(['RECOMMENDATION_DONE'], requestId)
+    const fetchRecommendation = async () => (
+      await api.get(`/recommendations/${ encodeURIComponent(requestId) }`, TIMEOUT)
+    ).data
+    const deadline = Date.now() + RECOMMENDATION_WAIT_LIMIT
+    const load = async () => {
+      let data = await fetchRecommendation()
+      while (data.status === 'PROCESSING') {
+        const shouldCheck = await push.wait(deadline - Date.now())
+        if (cancelled) return
+        data = await fetchRecommendation()
+        if (cancelled) return
+        if (!shouldCheck && data.status === 'PROCESSING') return fail(RECOMMENDATION_TIMEOUT_MESSAGE)
+      }
+      if (cancelled) return
+      if (data.status === 'FAILED') fail(data.message, true)
+      else show(data)
     }
+    load()
+      .catch(() => {
+        if (!cancelled) fail()
+      })
+      .finally(() => push.close())
 
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+      push.close()
+    }
   }, [requestId, location.key, attempt])
 
   // 추천 요청 자체가 실패했거나 서버가 추천 실패를 돌려준 경우에만 새로 요청합니다.
@@ -202,13 +207,20 @@ export const AIStylistPage = () => {
   }
 
   const waitForFitting = async (fittingId) => {
+    const push = listenForPush(['FITTING_DONE', 'FITTING_FAILED'], fittingId)
+    const fetchFitting = async () => (await api.get(`/vton/${ fittingId }`, TIMEOUT)).data
     const deadline = Date.now() + FITTING_WAIT_LIMIT
-    while (Date.now() < deadline && activeKey.current) {
-      await sleep(FITTING_POLL_INTERVAL)
-      const { data } = await api.get(`/vton/${ fittingId }`, TIMEOUT)
-      if (data.status !== 'PENDING') return data
+    try {
+      let detail = await fetchFitting()
+      while (detail.status === 'PENDING') {
+        const shouldCheck = await push.wait(deadline - Date.now())
+        detail = await fetchFitting()
+        if (!shouldCheck && detail.status === 'PENDING') return null
+      }
+      return detail
+    } finally {
+      push.close()
     }
-    return null
   }
 
   const runFitting = async (fitting) => {
