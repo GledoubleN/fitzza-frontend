@@ -20,7 +20,10 @@ import { toaster } from '../../components/ui/toaster.jsx'
 import { FailureTestButtons } from '../../mocks/FailureTestButtons.jsx'
 
 const PAGE_SIZE = 20
-const PREVIEW_SIZE = 4
+const PREVIEW_PAGE_SIZE = 8
+const PREVIEW_ROWS = 2
+
+const isSuccessful = (fitting) => fitting.status !== 'FAILED'
 
 const formatDate = (value) => new Date(value).toLocaleDateString('ko-KR')
 
@@ -45,15 +48,33 @@ export const VtonGallery = ({ preview = false }) => {
   const [selected, setSelected] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
   const loadMoreTrigger = useRef(null)
-  const successfulFittings = fittings.filter((fitting) => fitting.status !== 'FAILED')
-  const visibleFittings = preview ? successfulFittings.slice(0, PREVIEW_SIZE) : successfulFittings
+  const grid = useRef(null)
+  const [columnCount, setColumnCount] = useState(0)
+  const successfulFittings = fittings.filter(isSuccessful)
+  const visibleFittings = preview ? successfulFittings.slice(0, columnCount * PREVIEW_ROWS) : successfulFittings
+
+  const fetchPreview = async () => {
+    const items = []
+    let totalCount = Infinity
+    while (items.filter(isSuccessful).length < PREVIEW_PAGE_SIZE && items.length < totalCount) {
+      const { data } = await api.get('/vton', { params: { limit: PREVIEW_PAGE_SIZE, offset: items.length } })
+      if (!data.items.length) break
+      items.push(...data.items)
+      totalCount = data.totalCount
+    }
+    return items
+  }
 
   const load = async (offset = 0) => {
     setStatus('loading')
     try {
-      const { data } = await api.get('/vton', { params: { limit: PAGE_SIZE, offset } })
-      setFittings((fittings) => offset ? [...fittings, ...data.items] : data.items)
-      setTotalCount(data.totalCount)
+      if (preview) {
+        setFittings(await fetchPreview())
+      } else {
+        const { data } = await api.get('/vton', { params: { limit: PAGE_SIZE, offset } })
+        setFittings((fittings) => offset ? [...fittings, ...data.items] : data.items)
+        setTotalCount(data.totalCount)
+      }
       setStatus('done')
     } catch {
       setStatus('failed')
@@ -75,6 +96,15 @@ export const VtonGallery = ({ preview = false }) => {
   useEffect(() => {
     load()
   }, [])
+
+  useEffect(() => {
+    if (!preview) return
+    const observer = new ResizeObserver(() => {
+      setColumnCount(getComputedStyle(grid.current).gridTemplateColumns.split(' ').length)
+    })
+    observer.observe(grid.current)
+    return () => observer.disconnect()
+  }, [preview])
 
   const deleteFitting = async () => {
     setIsDeleting(true)
@@ -107,7 +137,7 @@ export const VtonGallery = ({ preview = false }) => {
       }
 
       {
-        status === 'done' && !visibleFittings.length &&
+        status === 'done' && !successfulFittings.length &&
         <Stack align={ 'center' } gap={ 4 } paddingY={ 8 }>
           <Text color={ 'fg.muted' } textAlign={ 'center' }>
             아직 입어본 옷이 없어요. 메인 화면에서 AI 스타일리스트에게 추천받은 상품으로 입어볼 수 있어요.
@@ -117,6 +147,7 @@ export const VtonGallery = ({ preview = false }) => {
       }
 
       <Grid
+        ref={ grid }
         templateColumns={ preview
           ? 'repeat(auto-fill, minmax(max({sizes.24}, calc((100% - 3 * {spacing.4}) / 4)), 1fr))'
           : 'repeat(auto-fill, minmax(max({sizes.28}, calc((100% - 5 * {spacing.4}) / 6)), 1fr))' }
