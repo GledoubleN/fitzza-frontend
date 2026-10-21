@@ -157,13 +157,17 @@ export const VtonGallery = ({ preview = false }) => {
 
       {
         import.meta.env.DEV &&
-        <FailureTestButtons tests={ [{
-          label: '빈 갤러리',
-          method: 'get',
-          path: '/vton',
-          respond: (HttpResponse) => HttpResponse.json({ items: [], totalCount: 0 }),
-          onReady: () => load(),
-        }] }/>
+        <FailureTestButtons tests={ [
+          {
+            label: '빈 갤러리',
+            method: 'get',
+            path: '/vton',
+            respond: (HttpResponse) => HttpResponse.json({ items: [], totalCount: 0 }),
+            onReady: () => load(),
+          },
+          { label: '다음 목록 불러오기', method: 'get', path: '/vton' },
+          { label: '삭제', method: 'delete', path: '/vton/:fittingId' },
+        ] }/>
       }
 
       <Dialog.Root
