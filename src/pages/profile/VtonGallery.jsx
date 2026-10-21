@@ -86,8 +86,10 @@ export const VtonGallery = ({ preview = false }) => {
       {
         status === 'done' && !visibleFittings.length &&
         <Stack align={ 'center' } gap={ 3 } paddingY={ 8 }>
-          <Text color={ 'fg.muted' }>아직 입어본 옷이 없어요. AI 스타일리스트의 추천 상품으로 입어보세요.</Text>
-          <Button variant={ 'outline' } size={ 'sm' } onClick={ () => navigate('/ai') }>AI 스타일리스트로 가기</Button>
+          <Text color={ 'fg.muted' } textAlign={ 'center' }>
+            아직 입어본 옷이 없어요. 메인 화면에서 AI 스타일리스트에게 추천받은 상품으로 입어볼 수 있어요.
+          </Text>
+          <Button variant={ 'outline' } size={ 'sm' } onClick={ () => navigate('/') }>메인에서 추천받기</Button>
         </Stack>
       }
 
