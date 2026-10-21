@@ -13,15 +13,14 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { FailureTestButtons } from '../../mocks/FailureTestButtons.jsx'
 
-const PREVIEW_PAGE_SIZE = 20
-const MAX_PAGE_SIZE = 100
+const PAGE_SIZE = 20
 const PREVIEW_SIZE = 4
 
 const formatDate = (value) => new Date(value).toLocaleDateString('ko-KR')
@@ -42,35 +41,37 @@ const FittingThumbnail = ({ fitting }) => {
 export const VtonGallery = ({ preview = false }) => {
   const navigate = useNavigate()
   const [fittings, setFittings] = useState([])
+  const [totalCount, setTotalCount] = useState(0)
   const [status, setStatus] = useState('loading')
   const [selected, setSelected] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const loadMoreTrigger = useRef(null)
   const successfulFittings = fittings.filter((fitting) => fitting.status !== 'FAILED')
   const visibleFittings = preview ? successfulFittings.slice(0, PREVIEW_SIZE) : successfulFittings
 
-  const fetchPage = async (limit, offset) => (await api.get('/vton', { params: { limit, offset } })).data
-
-  const fetchAll = async () => {
-    const items = []
-    let totalCount = Infinity
-    while (items.length < totalCount) {
-      const page = await fetchPage(MAX_PAGE_SIZE, items.length)
-      if (!page.items.length) break
-      items.push(...page.items)
-      totalCount = page.totalCount
-    }
-    return items
-  }
-
-  const load = async () => {
+  const load = async (offset = 0) => {
     setStatus('loading')
     try {
-      setFittings(preview ? (await fetchPage(PREVIEW_PAGE_SIZE, 0)).items : await fetchAll())
+      const { data } = await api.get('/vton', { params: { limit: PAGE_SIZE, offset } })
+      setFittings((fittings) => offset ? [...fittings, ...data.items] : data.items)
+      setTotalCount(data.totalCount)
       setStatus('done')
     } catch {
       setStatus('failed')
     }
   }
+
+  const hasMore = !preview && fittings.length < totalCount
+
+  useEffect(() => {
+    if (!hasMore || status !== 'done') return
+    const observer = new IntersectionObserver(
+      ([entry]) => entry.isIntersecting && load(fittings.length),
+      { rootMargin: '200px' },
+    )
+    observer.observe(loadMoreTrigger.current)
+    return () => observer.disconnect()
+  }, [hasMore, status, fittings.length])
 
   useEffect(() => {
     load()
@@ -81,6 +82,7 @@ export const VtonGallery = ({ preview = false }) => {
     try {
       await api.delete(`/vton/${ selected.fittingId }`)
       setFittings((fittings) => fittings.filter((fitting) => fitting.fittingId !== selected.fittingId))
+      setTotalCount((count) => count - 1)
       setSelected(null)
     } catch {
       toaster.create({ type: 'error', title: '가상 피팅을 삭제하지 못했어요. 다시 시도해 주세요.' })
@@ -145,12 +147,13 @@ export const VtonGallery = ({ preview = false }) => {
         }
       </Grid>
 
+      { hasMore && <Box ref={ loadMoreTrigger }></Box> }
       { status === 'loading' && <Flex justify={ 'center' } paddingY={ 4 }><Spinner></Spinner></Flex> }
       {
         status === 'failed' &&
         <Stack align={ 'center' } gap={ 3 }>
           <Text color={ 'fg.error' }>가상 피팅 기록을 불러오지 못했어요.</Text>
-          <Button variant={ 'outline' } size={ 'sm' } onClick={ () => load() }>다시 시도</Button>
+          <Button variant={ 'outline' } size={ 'sm' } onClick={ () => load(fittings.length) }>다시 시도</Button>
         </Stack>
       }
 
