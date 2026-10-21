@@ -228,9 +228,10 @@ export const VtonGallery = ({ preview = false }) => {
             <Dialog.Content marginX={ 4 }>
               <Dialog.Header flexDirection={ 'column' } alignItems={ 'flex-start' }>
                 <Dialog.Title paddingEnd={ 8 }>{ selected && toFittingTitle(selected) }</Dialog.Title>
-                <Text textStyle={ 'xs' } color={ 'fg.muted' }>
-                  { selected && formatDateTime(selected.createdAt) } · AI 생성 이미지 · 실제와 다를 수 있어요
-                </Text>
+                <Stack gap={ 0 }>
+                  <Text textStyle={ 'xs' } color={ 'fg.muted' }>{ selected && formatDateTime(selected.createdAt) }</Text>
+                  <Text textStyle={ 'xs' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
+                </Stack>
               </Dialog.Header>
               <Dialog.Body>
                 {
