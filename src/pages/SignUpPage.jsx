@@ -49,6 +49,9 @@ export const SignUpPage = () => {
       if (value.length > 255) {
         return '이메일은 255자 이하로 입력해 주세요.';
       }
+      if (value.split('@')[0].length > 64) {
+        return '이메일의 @ 앞부분은 64자 이하로 입력해 주세요.';
+      }
       if (!emailRegex.test(value)) {
         return '올바른 이메일 형식을 입력해 주세요.';
       }
