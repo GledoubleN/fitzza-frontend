@@ -11,6 +11,7 @@ import {
   Box,
   Stack,
   Dialog,
+  Portal,
 } from '@chakra-ui/react';
 import { LuMail, LuUser, LuLockKeyhole } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -44,9 +45,15 @@ export const SignUpPage = () => {
     }
 
     if (name === 'email') {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
+      if (value.length > 255) {
+        return '이메일의 총 길이는 255자 이하여야 합니다.';
+      }
+      if (value.split('@')[0].length > 64) {
+        return '이메일의 @ 앞부분은 64자 이하여야 합니다.';
+      }
       if (!emailRegex.test(value)) {
-        return '올바른 이메일 형식을 입력해 주세요.';
+        return '올바른 이메일 형식이 아닙니다.';
       }
     } else if (name === 'nickname') {
       const nicknameRegex = /^[가-힣A-Za-z0-9]{2,10}$/;
@@ -171,7 +178,7 @@ export const SignUpPage = () => {
 
           <Field.Root required w="100%">
             <InputGroup
-              startElement={ <Box as={LuMail} boxSize={5} color={errors.email ? "fg.error" : "fg.muted"} /> }
+              startElement={ <Box as={LuMail} boxSize={4} color={errors.email ? "fg.error" : "fg.muted"} /> }
               w="100%"
             >
               <Input
@@ -197,7 +204,7 @@ export const SignUpPage = () => {
 
           <Field.Root required w="100%">
             <InputGroup
-              startElement={ <Box as={LuUser} boxSize={5} color={errors.nickname ? "fg.error" : "fg.muted"} /> }
+              startElement={ <Box as={LuUser} boxSize={4} color={errors.nickname ? "fg.error" : "fg.muted"} /> }
               w="100%"
             >
               <Input
@@ -223,7 +230,7 @@ export const SignUpPage = () => {
 
           <Field.Root required w="100%">
             <InputGroup
-              startElement={ <Box as={LuLockKeyhole} boxSize={5} color={errors.password ? "fg.error" : "fg.muted"} /> }
+              startElement={ <Box as={LuLockKeyhole} boxSize={4} color={errors.password ? "fg.error" : "fg.muted"} /> }
               w="100%"
             >
               <Input
@@ -266,22 +273,24 @@ export const SignUpPage = () => {
       </Container>
 
       <Dialog.Root open={isSuccessOpen} onOpenChange={(e) => !e.open && handleDialogClose()}>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content>
-            <Dialog.Header>
-              <Heading size="md">회원가입 완료</Heading>
-            </Dialog.Header>
-            <Dialog.Body>
-              <Text>회원가입이 완료되었습니다. 로그인해주세요.</Text>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Button onClick={handleDialogClose} width="full">
-                확인
-              </Button>
-            </Dialog.Footer>
-          </Dialog.Content>
-        </Dialog.Positioner>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Heading size="md">회원가입 완료</Heading>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Text>회원가입이 완료되었습니다. 로그인해주세요.</Text>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Button onClick={handleDialogClose} width="full">
+                  확인
+                </Button>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
       </Dialog.Root>
     </Grid>
   );
