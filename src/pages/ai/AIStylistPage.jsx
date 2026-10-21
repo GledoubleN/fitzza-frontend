@@ -431,13 +431,13 @@ export const AIStylistPage = () => {
               <Dialog.Body>
                 <Stack gap={ 4 }>
                   <Text color={ 'fg.muted' }>
-                    전신 사진을 올리면 고객님 모습으로 입혀 드려요. 사진 없이도 기본 모델로 입어볼 수 있어요.
+                    얼굴이 나온 사진을 올리면 고객님 얼굴로 입혀 드려요. 사진 없이도 기본 모델로 입어볼 수 있어요.
                   </Text>
                   <FileUpload.RootProvider value={ photoUpload }>
                     <FileUpload.HiddenInput/>
                     <FileUpload.Trigger asChild>
                       <Button variant={ 'outline' } size={ 'sm' }>
-                        <LuUpload></LuUpload> 전신 사진 선택
+                        <LuUpload></LuUpload> 얼굴 사진 선택
                       </Button>
                     </FileUpload.Trigger>
                     <FileUpload.ItemGroup>
