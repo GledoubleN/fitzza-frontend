@@ -112,14 +112,14 @@ export const VtonGallery = ({ preview = false }) => {
           <Text color={ 'fg.muted' } textAlign={ 'center' }>
             아직 입어본 옷이 없어요. 메인 화면에서 AI 스타일리스트에게 추천받은 상품으로 입어볼 수 있어요.
           </Text>
-          <Button variant={ 'outline' } size={ 'sm' } onClick={ () => navigate('/') }>메인에서 추천받기</Button>
+          <Button variant={ 'outline' } size={ 'sm' } onClick={ () => navigate('/') }>추천받기</Button>
         </Stack>
       }
 
       <Grid
         templateColumns={ preview
-          ? { base: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)' }
-          : { base: 'repeat(3, 1fr)', md: 'repeat(5, 1fr)', lg: 'repeat(6, 1fr)' } }
+          ? 'repeat(auto-fill, minmax(max({sizes.24}, calc((100% - 3 * {spacing.4}) / 4)), 1fr))'
+          : 'repeat(auto-fill, minmax(max({sizes.28}, calc((100% - 5 * {spacing.4}) / 6)), 1fr))' }
         gap={ 4 }
       >
         {
