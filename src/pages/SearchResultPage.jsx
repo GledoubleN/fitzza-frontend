@@ -5,8 +5,6 @@ import {
   GridItem,
   IconButton,
   Image,
-  Input,
-  InputGroup,
   Text,
   Box,
   Button,
@@ -14,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import { LuHeart, LuSearch } from 'react-icons/lu'
+import { LuHeart } from 'react-icons/lu'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { ProductItem } from '../components/ProductItem.jsx'
@@ -140,18 +138,6 @@ export const SearchResultPage = () => {
   return (
     <Stack gap={ 4 } position="relative" minH="100vh" paddingY={ 4 }>
       <Header/>
-
-      <Container maxW="3xl">
-        <InputGroup
-          startElement={ <LuSearch/> }
-        >
-          <Input
-            placeholder="검색어를 입력해주세요"
-            defaultValue={ categoryCode ? `카테고리 코드: ${ categoryCode }` : '' }
-          />
-        </InputGroup>
-      </Container>
-
       <Container maxW="5xl">
         <Grid
           templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
