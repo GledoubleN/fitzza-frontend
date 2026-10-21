@@ -99,9 +99,9 @@ export const VtonGallery = ({ preview = false }) => {
 
   useEffect(() => {
     if (!preview) return
-    const observer = new ResizeObserver(() => {
-      setColumnCount(getComputedStyle(grid.current).gridTemplateColumns.split(' ').length)
-    })
+    const measure = () => setColumnCount(getComputedStyle(grid.current).gridTemplateColumns.split(' ').length)
+    measure()
+    const observer = new ResizeObserver(measure)
     observer.observe(grid.current)
     return () => observer.disconnect()
   }, [preview])
