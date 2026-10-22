@@ -10,6 +10,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
   const navigate = useNavigate()
   const { isSignedIn } = useAuth()
   const [isLiked, setIsLiked] = useState(initialIsLiked ?? product.wished ?? false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleWishClick = async (e) => {
     e.stopPropagation()
@@ -19,20 +20,26 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
       return
     }
 
+    if (isLoading) return
+
+    const nextLikedState = !isLiked
+    const itemId = product.productId ?? product.itemId
+
+    setIsLiked(nextLikedState)
+    setIsLoading(true)
+
     try {
-      if (isLiked) {
-        await api.delete('/wishlists', { data: { itemId: product.productId ?? product.itemId } })
-        setIsLiked(false)
+      if (!nextLikedState) {
+        await api.delete('/wishlists', { params: { itemId } })
         toaster.create({
           title: '찜 목록에서 제외되었습니다.',
           type: 'success',
         })
         if (onWishlistChange) {
-          onWishlistChange(product.productId ?? product.itemId)
+          onWishlistChange(itemId)
         }
       } else {
-        await api.post('/wishlists', { itemId: product.productId ?? product.itemId })
-        setIsLiked(true)
+        await api.post('/wishlists', { itemId })
         toaster.create({
           title: '찜 목록에 추가되었습니다.',
           type: 'success',
@@ -40,6 +47,8 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
       }
     } catch (error) {
       console.warn('찜 상태 변경 실패:', error)
+      setIsLiked(isLiked)
+
       if (error.response?.status === 401) {
         navigate('/signin')
       } else {
@@ -48,6 +57,8 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           type: 'error',
         })
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -77,6 +88,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           variant="ghost"
           size="sm"
           onClick={handleWishClick}
+          disabled={isLoading}
         >
           <LuHeart fill={isLiked ? 'red' : 'none'} color={isLiked ? 'red' : 'currentColor'} />
         </IconButton>
