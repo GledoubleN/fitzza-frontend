@@ -26,6 +26,7 @@ import { HttpStatusCode } from 'axios'
 import { ProductItem } from '../components/ProductItem.jsx'
 import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
+import { Toaster } from '../components/ui/toaster.jsx'
 
 // AI 버튼(LuSparkle)으로 펼쳤을 때의 줄 수이자 자동으로 늘어나는 최대 줄 수.
 const MAX_PROMPT_ROWS = 4
@@ -158,7 +159,7 @@ export const MainPage = () => {
           {
             products.map((product) => (
               <ProductItem
-                key={ product.productId ?? product.itemId }
+                key={ product.productId }
                 product={ product }
               />
             ))
@@ -171,6 +172,8 @@ export const MainPage = () => {
       <Footer></Footer>
 
       <SignInRequiredDialog open={ isSignInDialogOpen } onClose={ () => setIsSignInDialogOpen(false) }/>
+
+      <Toaster />
     </Stack>
   )
 }
