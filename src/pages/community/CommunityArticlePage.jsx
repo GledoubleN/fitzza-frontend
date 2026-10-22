@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Badge,
   Box,
@@ -50,6 +50,7 @@ export const CommunityArticlePage = () => {
   const [error, setError] = useState('')
   const [comment, setComment] = useState('')
   const [signInOpen, setSignInOpen] = useState(false)
+  const savingComment = useRef(false)
 
   const loadComments = () => api.get(`/community/posts/${ id }/comments`)
     .then((response) => setComments(response.data))
@@ -122,10 +123,11 @@ export const CommunityArticlePage = () => {
     }
 
     const trimmed = content.trim()
-    if (!trimmed) {
+    if (!trimmed || savingComment.current) {
       return false
     }
 
+    savingComment.current = true
     try {
       await api.post(`/community/posts/${ id }/comments`, { content: trimmed, parentCommentId })
       await loadComments()
@@ -134,6 +136,8 @@ export const CommunityArticlePage = () => {
     } catch (error) {
       notifyError(error, '댓글을 등록하지 못했어요.')
       return false
+    } finally {
+      savingComment.current = false
     }
   }
 
@@ -145,6 +149,11 @@ export const CommunityArticlePage = () => {
   }
 
   const updateComment = async (commentId, content) => {
+    if (savingComment.current) {
+      return false
+    }
+
+    savingComment.current = true
     try {
       await api.patch(`/comments/${ commentId }`, { content: content.trim() })
       await loadComments()
@@ -152,6 +161,8 @@ export const CommunityArticlePage = () => {
     } catch (error) {
       notifyError(error, '댓글을 수정하지 못했어요.')
       return false
+    } finally {
+      savingComment.current = false
     }
   }
 
