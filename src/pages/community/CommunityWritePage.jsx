@@ -19,6 +19,7 @@ import { RichTextEditor } from '/src/components/ui/rich-text-editor'
 import { Toaster, toaster } from '../../components/ui/toaster.jsx'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import { Placeholder } from '@tiptap/extensions'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
@@ -68,7 +69,7 @@ export const CommunityWritePage = () => {
   const [pollStarted, setPollStarted] = useState(null)
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, Placeholder.configure({ placeholder: '내용을 입력해주세요' })],
     content: toEditorContent(editingPost?.content ?? ''),
     shouldRerenderOnTransaction: true,
     immediatelyRender: false,
