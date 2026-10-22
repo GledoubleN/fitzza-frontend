@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Flex, Grid, Image, Stack, Text } from '@chakra-ui/react'
+import { Button, Dialog, Flex, Grid, Image, Portal, Stack, Text } from '@chakra-ui/react'
 import { LuCheck } from 'react-icons/lu'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
@@ -8,6 +8,8 @@ import { errorMessage, formatRemaining } from './communityFormat.js'
 export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onRequireSignIn }) => {
   const [poll, setPoll] = useState(null)
   const [submittingId, setSubmittingId] = useState(null)
+  const [closeDialogOpen, setCloseDialogOpen] = useState(false)
+  const [closing, setClosing] = useState(false)
 
   const loadPoll = () => api.get(`/community/posts/${ postId }/poll`)
     .then((response) => setPoll(response.data))
@@ -51,15 +53,15 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
   }
 
   const closePoll = async () => {
-    if (!window.confirm('투표를 종료할까요? 종료한 투표는 다시 열 수 없어요.')) {
-      return
-    }
-
+    setClosing(true)
     try {
       await api.patch(`/community/posts/${ postId }/poll`, { closed: true })
       await loadPoll()
+      setCloseDialogOpen(false)
     } catch (error) {
       toaster.create({ type: 'error', title: errorMessage(error, '투표를 종료하지 못했어요.') })
+    } finally {
+      setClosing(false)
     }
   }
 
@@ -121,9 +123,34 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
             : `투표중${ poll.voteEndAt ? ` ${ formatRemaining(poll.voteEndAt) }` : '' }${ myLabel ? ` · 내 선택 ${ myLabel }` : '' }` }
         </Text>
         { isAuthor && !poll.closed && (
-          <Button size="xs" variant="outline" onClick={ closePoll }>투표 종료하기</Button>
+          <Button size="xs" variant="outline" onClick={ () => setCloseDialogOpen(true) }>투표 종료하기</Button>
         ) }
       </Flex>
+
+      <Dialog.Root
+        open={ closeDialogOpen }
+        placement="center"
+        size="xs"
+        onOpenChange={ (e) => !e.open && setCloseDialogOpen(false) }
+      >
+        <Portal>
+          <Dialog.Backdrop/>
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>투표를 종료할까요?</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Text color="fg.muted">종료한 투표는 다시 열 수 없어요.</Text>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Button variant="outline" flex="1" onClick={ () => setCloseDialogOpen(false) }>취소</Button>
+                <Button flex="1" loading={ closing } onClick={ closePoll }>종료하기</Button>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </Stack>
   )
 }
