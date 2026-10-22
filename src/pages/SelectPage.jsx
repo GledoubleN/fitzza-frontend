@@ -28,10 +28,12 @@ export const SelectPage = () => {
   async function loadWishlist (page = 0, size = 100) {
     setIsLoading(true)
     setIsError(false)
+
     try {
       const response = await api.get('/wishlists', {
-        params: { page, size, _t: Date.now() }
+        params: { page, size }
       })
+
       if (response.status === HttpStatusCode.Ok) {
         const rawData = response.data.content || response.data
 
@@ -87,87 +89,118 @@ export const SelectPage = () => {
   }, [location.pathname])
 
   return (
-    <Stack paddingY={ 4 } minH="100vh" pb={ 32 } gap={ 4 }>
+    <Stack
+      paddingY={ 4 }
+      minH="100vh"
+      pb={ 32 }
+      gap={ 4 }
+    >
       <Header />
-      <Container maxWidth="5xl" flex="1">
-        <Flex align="center" gap={ 2 } mb={ 4 }>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/wishlist')}>
+
+      <Container
+        maxWidth="5xl"
+        flex="1"
+      >
+        <Flex
+          align="center"
+          gap={ 2 }
+          mb={ 4 }
+        >
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={ () => navigate('/wishlist') }
+          >
             <LuChevronLeft size={ 20 } />
           </Button>
-          <Text textStyle="lg" fontWeight="bold">월드컵 후보 선택</Text>
+          <Text
+            textStyle="lg"
+            fontWeight="bold"
+          >
+            월드컵 후보 선택
+          </Text>
         </Flex>
 
-        {isLoading && (
+        { isLoading && (
           <Center height="100%">
             <Text>찜 목록을 불러오는 중입니다...</Text>
           </Center>
-        )}
+        ) }
 
-        {!isLoading && isError && (
-          <Center height="100%" flexDirection="column" gap={ 4 }>
+        { !isLoading && isError && (
+          <Center
+            height="100%"
+            flexDirection="column"
+            gap={ 4 }
+          >
             <Text color="fg.error">찜 목록을 불러오지 못했습니다.</Text>
-            <Button onClick={() => loadWishlist()} size="sm">다시 시도</Button>
+            <Button
+              onClick={ () => loadWishlist() }
+              size="sm"
+            >
+              다시 시도
+            </Button>
           </Center>
-        )}
+        ) }
 
-        {!isLoading && !isError && products.length === 0 && (
+        { !isLoading && !isError && products.length === 0 && (
           <Center height="100%">
             <Text color="fg.muted">찜한 상품이 없습니다.</Text>
           </Center>
-        )}
+        ) }
 
-        {!isLoading && !isError && products.length > 0 && (
+        { !isLoading && !isError && products.length > 0 && (
           <>
-            {/* 💡 상단 안내 문구와 월드컵 시작 버튼을 같은 라인에 배치 */}
-            <Flex justify="space-between" align="center" mb={ 3 } wrap="wrap" gap={ 2 }>
-              <Text textStyle="sm" color="fg.muted">
-                이상형 월드컵에 참여할 상품을 선택해 주세요 (2개 이상)
+            <Flex
+              justify="space-between"
+              align="center"
+              mb={ 4 }
+            >
+              <Text
+                textStyle="sm"
+                color="fg.muted"
+              >
+                후보로 선택된 상품: { selectedProductIds.length }개
               </Text>
-
               <Button
+                colorPalette="purple"
                 size="sm"
-                bg="black"
-                color="white"
-                borderRadius="full"
-                px={ 4 }
                 disabled={ selectedProductIds.length < 2 }
                 onClick={ handleStartWorldCup }
-                _hover={{ bg: 'gray.800' }}
               >
-                월드컵 시작 ({ selectedProductIds.length })
+                { selectedProductIds.length }개로 시작하기
               </Button>
             </Flex>
 
             <Grid
-              templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - var(--chakra-spacing-4) * 4) / 5)), 1fr))' }
+              templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
               gap={ 4 }
             >
               {
                 products.map((product) => {
-                  const id = product.productId ?? product.itemId ?? product.wishlistId
+                  const id = product.productId ?? product.itemId
                   const isSelected = selectedProductIds.includes(id)
-                  const imageUrl = product.thumbnailUrl || product.imageUrl
-                  const name = product.productName || product.name
+                  const name = product.productName ?? product.name
+                  const imageUrl = product.thumbnailUrl ?? product.imageUrl
 
                   return (
                     <Box
                       key={ id }
-                      borderWidth="2px"
-                      borderColor={ isSelected ? 'black' : 'border.subtle' }
+                      position="relative"
+                      borderWidth="1px"
+                      borderColor={ isSelected ? 'border.emphasized' : 'border.subtle' }
                       borderRadius="xl"
                       overflow="hidden"
-                      bg={ isSelected ? 'bg.subtle' : 'bg.panel' }
-                      position="relative"
                       cursor="pointer"
-                      onClick={() => handleToggleSelect(id)}
+                      onClick={ () => handleToggleSelect(id) }
                       transition="all 0.2s"
-                      boxShadow={ isSelected ? 'md' : 'none' }
-                      transform={ isSelected ? 'translateY(-2px)' : 'translateY(0)' }
-                      _hover={{ borderColor: isSelected ? 'black' : 'fg.muted' }}
-                      userSelect="none"
                     >
-                      {/* 이미지 영역 */}
-                      <Box w="100%" h="48" position="relative" overflow="hidden">
+                      <Box
+                        w="100%"
+                        h="48"
+                        position="relative"
+                        overflow="hidden"
+                      >
                         <Image
                           src={ imageUrl }
                           alt={ name }
@@ -176,25 +209,24 @@ export const SelectPage = () => {
                           objectFit="cover"
                         />
 
-                        {/* 선택 시 이미지에 어두운 오버레이 */}
-                        {isSelected && (
+                        { isSelected && (
                           <Box
                             position="absolute"
                             inset={ 0 }
-                            bg="blackAlpha.200"
+                            bg="bg.emphasized"
+                            opacity={ 0.2 }
                             transition="all 0.2s"
                           />
-                        )}
+                        ) }
 
-                        {/* 우측 상단 체크 동그라미 표시 */}
                         <Flex
                           position="absolute"
                           top={ 2.5 }
                           right={ 2.5 }
                           boxSize={ 6 }
                           borderRadius="full"
-                          bg={ isSelected ? 'black' : 'whiteAlpha.900' }
-                          color={ isSelected ? 'white' : 'gray.400' }
+                          bg={ isSelected ? 'fg' : 'bg' }
+                          color={ isSelected ? 'bg' : 'fg.muted' }
                           align="center"
                           justify="center"
                           boxShadow="sm"
@@ -202,15 +234,37 @@ export const SelectPage = () => {
                           borderColor="border.subtle"
                           zIndex={ 20 }
                         >
-                          <Box as={ LuCheck } boxSize={ 3.5 } />
+                          <Box
+                            as={ LuCheck }
+                            boxSize={ 3.5 }
+                          />
                         </Flex>
                       </Box>
 
-                      {/* 상품 정보 영역 */}
-                      <Stack p={ 3 } gap={ 1 }>
-                        <Text textStyle="xs" color="fg.muted" truncate>{ product.brandName }</Text>
-                        <Text textStyle="sm" fontWeight="medium" truncate>{ name }</Text>
-                        <Text textStyle="sm" fontWeight="bold">{ product.price ? `${product.price.toLocaleString()}원` : '' }</Text>
+                      <Stack
+                        p={ 3 }
+                        gap={ 1 }
+                      >
+                        <Text
+                          textStyle="xs"
+                          color="fg.muted"
+                          truncate
+                        >
+                          { product.brandName }
+                        </Text>
+                        <Text
+                          textStyle="sm"
+                          fontWeight="medium"
+                          truncate
+                        >
+                          { name }
+                        </Text>
+                        <Text
+                          textStyle="sm"
+                          fontWeight="bold"
+                        >
+                          { product.price ? `${ product.price.toLocaleString() }원` : '' }
+                        </Text>
                       </Stack>
                     </Box>
                   )
@@ -218,7 +272,7 @@ export const SelectPage = () => {
               }
             </Grid>
           </>
-        )}
+        ) }
       </Container>
 
       <TabBar />
