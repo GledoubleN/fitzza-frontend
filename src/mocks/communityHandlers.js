@@ -1,10 +1,11 @@
+import { api } from '../api/axios.js'
 import { http, HttpResponse } from 'msw/http'
 import postsData from '../data/posts.json'
 import commentsData from '../data/comments.json'
 import products from '../data/products.json'
 import recommendations from '../data/recommendations.json'
 
-const BASE_URL = 'http://localhost:8080/api/v1'
+const BASE_URL = api.defaults.baseURL
 const ME = { userId: 1, nickname: '핏짜' }
 const VOTE_DURATION_MS = 7 * 24 * 60 * 60 * 1000
 const COMMENT_MAX_LENGTH = 500
