@@ -38,10 +38,10 @@ function App() {
         <Route path="/community/articles/:id" element={ <CommunityArticlePage/> }/>
         <Route path="/community/write" element={ <CommunityWritePage/> }/>
         <Route path="/profile" element={ <RequireSignIn><ProfilePage/></RequireSignIn> }/>
-        <Route path="/profile/fittings" element={ <VtonGalleryPage/> }/>
+        <Route path="/profile/fittings" element={ <RequireSignIn><VtonGalleryPage/></RequireSignIn> }/>
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
         <Route path="/shortcuts" element={ <ShortcutPage/> }/>
-        <Route path="/wishlist" element={ <WishlistPage/> }/>
+        <Route path="/wishlist" element={ <RequireSignIn><WishlistPage/></RequireSignIn> }/>
         <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orders" element={ <RequireSignIn><OrderListPage/></RequireSignIn> }/>
         <Route path="/orders/:orderId" element={ <RequireSignIn><OrderDetail/></RequireSignIn> }/>
