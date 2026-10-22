@@ -58,12 +58,19 @@ export const CommunityArticlePage = () => {
   useEffect(() => {
     setLoading(true)
     setError('')
-    Promise.all([api.get(`/community/posts/${ id }`), loadComments()])
-      .then(([postResponse]) => setPost(postResponse.data))
+    api.get(`/community/posts/${ id }`)
+      .then((response) => setPost(response.data))
       .catch((error) => setError(error.response?.status === 404
         ? '삭제되었거나 없는 게시글이에요.'
         : errorMessage(error, '게시글을 불러오지 못했어요.')))
       .finally(() => setLoading(false))
+
+    setComments([])
+    loadComments().catch((error) => {
+      if (error.response?.status !== 404) {
+        toaster.create({ type: 'error', title: errorMessage(error, '댓글을 불러오지 못했어요.') })
+      }
+    })
   }, [id])
 
   useEffect(() => {
