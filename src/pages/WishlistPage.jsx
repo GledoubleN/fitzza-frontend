@@ -5,6 +5,7 @@ import {
   Text,
   Center,
   Button,
+  IconButton,
   Box,
 } from '@chakra-ui/react'
 import { Header } from '../components/Header.jsx'
@@ -130,22 +131,25 @@ export const WishlistPage = () => {
       { products.length >= 2 && (
         <Box
           position="fixed"
-          bottom={ 20 }
-          right={ 6 }
+          bottom={ 24 }
+          right={ { base: 6, lg: 'calc((100vw - 64rem) / 2 + 2.5rem)' } }
           zIndex={ 30 }
         >
-          <Button
+          <IconButton
             size="lg"
-            colorPalette="purple"
-            boxShadow="xl"
-            borderRadius="full"
-            px={ 6 }
-            gap={ 2 }
+            rounded="full"
+            bg="bg.panel"
+            color="fg"
+            borderWidth="1px"
+            borderColor="border.subtle"
+            boxShadow="lg"
+            _hover={ { bg: 'bg.subtle', transform: 'scale(1.05)' } }
+            transition="all 0.2s"
+            aria-label="이상형 월드컵 시작"
             onClick={ () => navigate('/select') }
           >
             <LuTrophy />
-            월드컵 시작하기
-          </Button>
+          </IconButton>
         </Box>
       ) }
 
