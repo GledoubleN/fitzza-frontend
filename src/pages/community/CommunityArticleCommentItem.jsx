@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Badge, Button, HStack, Input, Stack, Text } from '@chakra-ui/react'
-import { LuThumbsUp } from 'react-icons/lu'
 import { formatRelativeTime } from './communityFormat.js'
 
 const COMMENT_MAX_LENGTH = 500
@@ -40,7 +39,7 @@ export const CommunityArticleCommentItem = ({
     }
   }
 
-  const actionProps = { size: 'xs', variant: 'ghost', color: 'fg.muted' }
+  const actionProps = { size: 'xs', variant: 'plain', color: 'fg.muted', paddingX: '0', minWidth: '0' }
 
   return (
     <Stack direction="column" gap="4" paddingLeft={ isReply ? '8' : '0' }>
@@ -49,10 +48,10 @@ export const CommunityArticleCommentItem = ({
       ) : (
         <Stack direction="column" gap="0">
           <HStack gap="4" fontSize="sm" wrap="wrap">
-            <Text fontWeight="medium">{ author?.nickname }</Text>
-            { author?.nickname === postAuthorNickname && <Badge colorPalette="primary" size="sm">작성자</Badge> }
-            { supportedOption && <Badge colorPalette="gray" size="sm">{ supportedOption.label } 추천</Badge> }
-            <Text color="fg.muted">{ formatRelativeTime(createdAt) }</Text>
+            <Text fontWeight="bold">{ author?.nickname }</Text>
+            { author?.nickname === postAuthorNickname && <Badge size="sm">작성자</Badge> }
+            { supportedOption && <Badge size="sm">{ supportedOption.label } 추천</Badge> }
+            <Text color="fg.muted" fontSize="xs">· { formatRelativeTime(createdAt) }</Text>
           </HStack>
 
           { editing ? (
@@ -65,7 +64,7 @@ export const CommunityArticleCommentItem = ({
                   value={ editText }
                   onChange={ (e) => setEditText(e.target.value) }
                 />
-                <Button type="submit" size="sm" colorPalette="primary" flexShrink="0" disabled={ !editText.trim() }>
+                <Button type="submit" size="sm" flexShrink="0" disabled={ !editText.trim() }>
                   저장
                 </Button>
                 <Button size="sm" variant="ghost" flexShrink="0" onClick={ () => setEditing(false) }>
@@ -77,17 +76,17 @@ export const CommunityArticleCommentItem = ({
             <Text fontSize="sm" whiteSpace="pre-wrap">{ content }</Text>
           ) }
 
-          <HStack gap="0">
+          <HStack gap="4">
             <Button
               { ...actionProps }
               color={ liked ? 'primary.fg' : 'fg.muted' }
               aria-pressed={ liked }
               onClick={ () => onLike(comment) }
             >
-              <LuThumbsUp/> { likeCount }
+              좋아요 { likeCount }
             </Button>
             { !isReply && (
-              <Button { ...actionProps } onClick={ () => setReplying((value) => !value) }>답글</Button>
+              <Button { ...actionProps } fontWeight="bold" onClick={ () => setReplying((value) => !value) }>답글</Button>
             ) }
             { isMine && !editing && (
               <>
@@ -113,7 +112,7 @@ export const CommunityArticleCommentItem = ({
               value={ replyText }
               onChange={ (e) => setReplyText(e.target.value) }
             />
-            <Button type="submit" size="sm" colorPalette="primary" flexShrink="0" disabled={ !replyText.trim() }>
+            <Button type="submit" size="sm" flexShrink="0" disabled={ !replyText.trim() }>
               등록
             </Button>
           </HStack>

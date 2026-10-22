@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {
   Badge,
+  Box,
   Button,
   Card,
   Container,
@@ -16,17 +17,26 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { LuChevronLeft, LuEllipsisVertical, LuMessageCircle, LuThumbsUp } from 'react-icons/lu'
+import { LuEllipsisVertical, LuMessageCircle, LuThumbsUp } from 'react-icons/lu'
 import { Header } from '../../components/Header.jsx'
 import { ScrollToTopButton } from '../../components/ScrollToTopButton.jsx'
+import { SignInRequiredDialog } from '../../components/SignInRequiredDialog.jsx'
 import { Toaster, toaster } from '../../components/ui/toaster.jsx'
 import { useAuth } from '../../contexts/AuthContext.js'
 import { api } from '../../api/axios.js'
 import { CommunityArticleCommentList } from './CommunityArticleCommentList.jsx'
 import { CommunityPoll } from './CommunityPoll.jsx'
 import { CATEGORY_LABELS, errorMessage, formatRelativeTime } from './communityFormat.js'
+import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 
 const COMMENT_MAX_LENGTH = 500
+
+const SHARED_TITLES = {
+  WORLDCUP: '월드컵 우승 상품',
+  COMBO: '공유한 코디',
+  FITTING: '공유한 가상 피팅',
+  PRODUCT: '공유한 상품',
+}
 
 export const CommunityArticlePage = () => {
   const { id } = useParams()
@@ -39,6 +49,7 @@ export const CommunityArticlePage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [comment, setComment] = useState('')
+  const [signInOpen, setSignInOpen] = useState(false)
 
   const loadComments = () => api.get(`/community/posts/${ id }/comments`)
     .then((response) => setComments(response.data))
@@ -65,7 +76,7 @@ export const CommunityArticlePage = () => {
       .catch(() => setMyNickname(null))
   }, [isSignedIn])
 
-  const requireSignIn = () => navigate('/signin')
+  const requireSignIn = () => setSignInOpen(true)
 
   const notifyError = (error, fallback) => toaster.create({ type: 'error', title: errorMessage(error, fallback) })
 
@@ -171,37 +182,32 @@ export const CommunityArticlePage = () => {
     }
   }
 
-  const backButton = (
-    <IconButton rounded="full" variant="ghost" size="sm" aria-label="뒤로" onClick={ () => navigate(-1) }>
-      <LuChevronLeft/>
-    </IconButton>
-  )
-
   if (loading || error) {
     return (
       <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
         <Header/>
         <Container maxWidth="3xl">
-          <Flex align="center" gap="4">
-            { backButton }
+          <Stack gap="4">
+            <CommunityTitleBar/>
             <Text color={ error ? 'fg.error' : 'fg.muted' }>{ error || '불러오는 중...' }</Text>
-          </Flex>
+          </Stack>
         </Container>
       </Stack>
     )
   }
 
   const isAuthor = myNickname !== null && myNickname === post.author?.nickname
-  const sharedItems = post.shared?.items ?? []
+  const shared = post.shared
+  const sharedProduct = shared?.snapshot?.productName ? shared.snapshot : null
+  const sharedItems = shared?.items ?? []
 
   return (
-    <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
+    <Stack direction="column" gap="4" minHeight="100vh" paddingTop="4">
       <Header/>
 
-      <Container maxWidth="3xl" paddingBottom="8">
+      <Container maxWidth="3xl" flex="1">
         <Stack direction="column" gap="4">
-          <Flex align="center" justify="space-between">
-            { backButton }
+          <CommunityTitleBar>
             { isAuthor && (
               <Menu.Root>
                 <Menu.Trigger asChild>
@@ -223,29 +229,47 @@ export const CommunityArticlePage = () => {
                 </Portal>
               </Menu.Root>
             ) }
-          </Flex>
+          </CommunityTitleBar>
 
-          <HStack gap="4">
-            { post.postType === 'VOTE' && <Badge colorPalette="primary">투표</Badge> }
-            <Badge colorPalette="gray">{ CATEGORY_LABELS[post.category] ?? post.category }</Badge>
-          </HStack>
-          <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
-          <Text color="fg.muted" fontSize="sm">
-            { post.author?.nickname } · { formatRelativeTime(post.createdAt) } · 조회 { post.viewCount }
-          </Text>
-
-          { post.imageUrl && (
-            <Image src={ post.imageUrl } alt="" maxHeight="md" width="fit-content" objectFit="contain" rounded="md" bg="bg.muted"/>
-          ) }
+          <Stack gap="0">
+            <HStack gap="4">
+              { post.postType === 'VOTE' && <Badge>투표</Badge> }
+              <Badge>{ CATEGORY_LABELS[post.category] ?? post.category }</Badge>
+            </HStack>
+            <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
+            <Text color="fg.muted" fontSize="sm">
+              { post.author?.nickname } · { formatRelativeTime(post.createdAt) } · 조회 { post.viewCount }
+            </Text>
+          </Stack>
 
           <Text whiteSpace="pre-wrap">{ post.content }</Text>
 
-          { sharedItems.length > 0 && (
+          { shared && (
             <Card.Root variant="subtle" size="sm">
               <Card.Body gap="4">
-                <Text fontWeight="semibold" fontSize="sm">
-                  { post.shared.type === 'FITTING' ? '공유한 가상 피팅' : '공유한 코디' }
-                </Text>
+                <Text fontWeight="semibold" fontSize="sm">{ SHARED_TITLES[shared.type] }</Text>
+                { shared.type === 'FITTING' && shared.snapshot?.imageUrl && (
+                  <Image src={ shared.snapshot.imageUrl } alt="" maxHeight="sm" width="fit-content" rounded="md" bg="bg.muted"/>
+                ) }
+                { sharedProduct && (
+                  <Flex
+                    as="button"
+                    gap="4"
+                    align="center"
+                    textAlign="start"
+                    onClick={ () => navigate(`/products/${ sharedProduct.productId }`) }
+                  >
+                    <Image src={ sharedProduct.imageUrl } alt="" boxSize="16" objectFit="cover" rounded="sm" bg="bg.muted"/>
+                    <Stack gap="0" flex="1" minWidth="0">
+                      <Text fontSize="xs" color="fg.muted">{ sharedProduct.brandName }</Text>
+                      <Text fontSize="sm" lineClamp="1">{ sharedProduct.productName }</Text>
+                    </Stack>
+                    <Text fontSize="sm">{ sharedProduct.price?.toLocaleString() }원</Text>
+                  </Flex>
+                ) }
+                { shared.snapshot?.summary && (
+                  <Text fontSize="sm" color="fg.muted">{ shared.snapshot.summary }</Text>
+                ) }
                 { sharedItems.map((item) => (
                   <Flex
                     key={ item.productId }
@@ -260,6 +284,11 @@ export const CommunityArticlePage = () => {
                     <Text fontSize="sm">{ item.price?.toLocaleString() }원</Text>
                   </Flex>
                 )) }
+                { shared.type === 'COMBO' && shared.snapshot?.price && (
+                  <Text fontSize="sm" fontWeight="bold" alignSelf="flex-end">
+                    합계 { shared.snapshot.price.toLocaleString() }원
+                  </Text>
+                ) }
               </Card.Body>
             </Card.Root>
           ) }
@@ -276,16 +305,16 @@ export const CommunityArticlePage = () => {
 
           <HStack gap="4">
             <Button
-              variant="outline"
+              variant="plain"
               size="sm"
-              rounded="full"
-              colorPalette={ post.liked ? 'primary' : 'gray' }
+              paddingX="0"
+              color={ post.liked ? 'primary.fg' : 'fg' }
               aria-pressed={ post.liked }
               onClick={ togglePostLike }
             >
               <LuThumbsUp/> { post.likeCount }
             </Button>
-            <Badge variant="plain" color="fg.muted" size="md">
+            <Badge variant="plain" size="md" paddingX="0">
               <LuMessageCircle/> { post.commentCount }
             </Badge>
           </HStack>
@@ -302,7 +331,11 @@ export const CommunityArticlePage = () => {
             onUpdate={ updateComment }
             onDelete={ deleteComment }
           />
+        </Stack>
+      </Container>
 
+      <Box position="sticky" bottom="0" bg="bg" paddingY="4" borderTopWidth="sm">
+        <Container maxWidth="3xl">
           <form onSubmit={ submitCommentInput }>
             <HStack gap="4">
               <Input
@@ -312,15 +345,16 @@ export const CommunityArticlePage = () => {
                 value={ comment }
                 onChange={ (e) => setComment(e.target.value) }
               />
-              <Button type="submit" colorPalette="primary" flexShrink="0" disabled={ !comment.trim() }>
+              <Button type="submit" flexShrink="0" disabled={ !comment.trim() }>
                 등록
               </Button>
             </HStack>
           </form>
-        </Stack>
-      </Container>
+        </Container>
+      </Box>
 
       <ScrollToTopButton/>
+      <SignInRequiredDialog open={ signInOpen } onClose={ () => setSignInOpen(false) }/>
       <Toaster/>
     </Stack>
   )

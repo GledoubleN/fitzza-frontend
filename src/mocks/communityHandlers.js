@@ -40,7 +40,6 @@ const toDetail = (post) => ({
   category: post.category,
   postType: post.postType,
   author: post.author,
-  imageUrl: post.imageUrl,
   shared: post.shared,
   likeCount: post.likeCount,
   liked: postLikes.get(post.postId) ?? false,

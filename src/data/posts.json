@@ -73,7 +73,7 @@
     "shared": {
       "type": "COMBO",
       "id": 10,
-      "snapshot": null,
+      "snapshot": { "productId": null, "brandName": null, "productName": null, "price": 98000, "imageUrl": "/product-image.png", "summary": "편안한 데이트룩 · 톤이 잘 어울려요" },
       "items": [
         { "productId": 1, "productName": "코튼 셔츠", "price": 39000, "imageUrl": "/product-image.png" },
         { "productId": 2, "productName": "집업 가디건", "price": 59000, "imageUrl": "/product-image.png" }
