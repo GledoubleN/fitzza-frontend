@@ -39,7 +39,7 @@ const CONTENT_MAX_LENGTH = 5000
 
 const EDITOR_CSS = {
   '--content-padding-x': 'spacing.3',
-  '--content-padding-y': 'spacing.2',
+  '--content-padding-y': 'spacing.3',
   '& .ProseMirror p.is-editor-empty:first-of-type::before': { color: 'fg.muted/80' },
 }
 
