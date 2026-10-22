@@ -97,7 +97,7 @@
   ],
   "combos": [
     {
-      "comboId": "sample-combo-1",
+      "comboId": 101,
       "items": [
         {
           "productId": 1,
@@ -137,7 +137,7 @@
       "budgetExceeded": false
     },
     {
-      "comboId": "sample-combo-2",
+      "comboId": 102,
       "items": [
         {
           "productId": 6,
