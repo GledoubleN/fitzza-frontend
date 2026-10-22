@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Badge, Box, Button, Card, Flex, Grid, Image, Progress, Stack, Text } from '@chakra-ui/react'
+import { Button, Flex, Grid, Image, Stack, Text } from '@chakra-ui/react'
+import { LuCheck } from 'react-icons/lu'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
-import { errorMessage } from './communityFormat.js'
-
-const VOTE_END_FORMAT = { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' }
+import { errorMessage, formatRemaining } from './communityFormat.js'
 
 export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onRequireSignIn }) => {
   const [poll, setPoll] = useState(null)
-  const [selectedId, setSelectedId] = useState(null)
-  const [submitting, setSubmitting] = useState(false)
+  const [submittingId, setSubmittingId] = useState(null)
 
   const loadPoll = () => api.get(`/community/posts/${ postId }/poll`)
     .then((response) => setPoll(response.data))
@@ -26,16 +24,17 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
   const voted = poll.myVoteOptionId !== null && poll.myVoteOptionId !== undefined
   const showResult = voted || poll.closed
   const resultOf = (voteOptionId) => poll.options.find((option) => option.voteOptionId === voteOptionId)
+  const myLabel = voteOptions.find((option) => option.voteOptionId === poll.myVoteOptionId)?.label
 
-  const vote = async () => {
+  const vote = async (voteOptionId) => {
     if (!isSignedIn) {
       onRequireSignIn()
       return
     }
 
-    setSubmitting(true)
+    setSubmittingId(voteOptionId)
     try {
-      await api.post(`/community/posts/${ postId }/poll/votes`, { voteOptionId: selectedId })
+      await api.post(`/community/posts/${ postId }/poll/votes`, { voteOptionId })
       await loadPoll()
     } catch (error) {
       toaster.create({ type: 'error', title: errorMessage(error, '투표하지 못했어요.') })
@@ -43,7 +42,7 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
         await loadPoll()
       }
     } finally {
-      setSubmitting(false)
+      setSubmittingId(null)
     }
   }
 
@@ -61,79 +60,66 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
   }
 
   return (
-    <Card.Root variant="outline">
-      <Card.Body gap="4">
-        <Flex justify="space-between" align="center" gap="4" wrap="wrap">
-          <Text fontWeight="semibold">
-            { poll.closed ? '투표가 마감됐어요' : '투표에 참여해 주세요' }
-          </Text>
-          <Text color="fg.muted" fontSize="sm">
-            { poll.total }명 참여
-            { !poll.closed && poll.voteEndAt && ` · ${ new Date(poll.voteEndAt).toLocaleString('ko-KR', VOTE_END_FORMAT) } 마감` }
-          </Text>
-        </Flex>
+    <Stack gap="4">
+      <Stack gap="0">
+        <Text fontWeight="bold">투표</Text>
+        <Text fontSize="xs" color="fg.muted">총 투표수 { poll.total }</Text>
+      </Stack>
 
-        <Grid templateColumns={ { base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' } } gap="4">
-          { voteOptions.map((option) => {
-            const result = resultOf(option.voteOptionId)
-            const selected = showResult
-              ? poll.myVoteOptionId === option.voteOptionId
-              : selectedId === option.voteOptionId
+      <Grid templateColumns="repeat(2, 1fr)" gap="4">
+        { voteOptions.map((option) => {
+          const result = resultOf(option.voteOptionId)
+          const mine = poll.myVoteOptionId === option.voteOptionId
+          const percent = Math.round((result?.ratio ?? 0) * 100)
 
-            return (
-              <Card.Root
-                key={ option.voteOptionId }
-                as={ showResult ? 'div' : 'button' }
+          return (
+            <Stack key={ option.voteOptionId } gap="4">
+              <Image
+                src={ option.imageUrl }
+                alt={ option.name ?? `선택지 ${ option.label }` }
+                aspectRatio="4/3"
+                width="full"
+                objectFit="cover"
+                rounded="md"
+                bg="bg.muted"
+              />
+              { option.name && (
+                <Text fontSize="xs" color="fg.muted" lineClamp="1">
+                  { option.name }{ option.price !== null && option.price !== undefined && ` · ${ option.price.toLocaleString() }원` }
+                </Text>
+              ) }
+              <Button
                 size="sm"
-                overflow="hidden"
-                textAlign="start"
-                borderColor={ selected ? 'primary.solid' : 'border' }
-                borderWidth={ selected ? 'md' : 'sm' }
-                cursor={ showResult ? 'default' : 'pointer' }
-                aria-pressed={ showResult ? undefined : selected }
-                onClick={ showResult ? undefined : () => setSelectedId(option.voteOptionId) }
+                variant={ mine ? 'solid' : 'outline' }
+                fontWeight="bold"
+                disabled={ (showResult && !mine) || (submittingId !== null && submittingId !== option.voteOptionId) }
+                _disabled={ { opacity: '1', cursor: 'default' } }
+                loading={ submittingId === option.voteOptionId }
+                aria-pressed={ mine }
+                onClick={ showResult ? undefined : () => vote(option.voteOptionId) }
               >
-                <Box position="relative">
-                  <Image src={ option.imageUrl } alt={ option.name ?? `선택지 ${ option.label }` } aspectRatio="square" width="full" objectFit="cover" bg="bg.muted"/>
-                  <Badge position="absolute" top="2" left="2" colorPalette={ selected ? 'primary' : 'gray' } variant="solid">
-                    { option.label }
-                  </Badge>
-                </Box>
-                <Card.Body gap="4">
-                  { option.name && <Text fontSize="sm" lineClamp="1">{ option.name }</Text> }
-                  { option.price !== null && option.price !== undefined && (
-                    <Text fontSize="sm" fontWeight="semibold">{ option.price.toLocaleString() }원</Text>
-                  ) }
-                  { showResult && result && (
-                    <Stack gap="0">
-                      <Progress.Root value={ Math.round(result.ratio * 100) } size="sm" colorPalette={ selected ? 'primary' : 'gray' }>
-                        <Progress.Track>
-                          <Progress.Range/>
-                        </Progress.Track>
-                      </Progress.Root>
-                      <Text fontSize="xs" color="fg.muted">
-                        { Math.round(result.ratio * 100) }% · { result.count }표
-                      </Text>
-                    </Stack>
-                  ) }
-                  { result?.supportCommentCount > 0 && (
-                    <Text fontSize="xs" color="fg.muted">추천 댓글 { result.supportCommentCount }개</Text>
-                  ) }
-                </Card.Body>
-              </Card.Root>
-            )
-          }) }
-        </Grid>
+                { option.label }
+                { showResult && ` ${ percent }% · ${ result?.count ?? 0 }표` }
+                { mine && <LuCheck/> }
+              </Button>
+              { result?.supportCommentCount > 0 && (
+                <Text fontSize="xs" color="fg.muted">추천 댓글 { result.supportCommentCount }개</Text>
+              ) }
+            </Stack>
+          )
+        }) }
+      </Grid>
 
-        { !showResult && (
-          <Button colorPalette="primary" disabled={ !selectedId } loading={ submitting } onClick={ vote }>
-            투표하기
-          </Button>
-        ) }
+      <Flex justify="space-between" align="center" gap="4">
+        <Text fontSize="sm" color="fg.muted">
+          { poll.closed
+            ? `투표 종료 · 총 ${ poll.total }명 참여${ myLabel ? ` · 내 선택 ${ myLabel }` : '' }`
+            : `투표중${ poll.voteEndAt ? ` ${ formatRemaining(poll.voteEndAt) }` : '' }${ myLabel ? ` · 내 선택 ${ myLabel }` : '' }` }
+        </Text>
         { isAuthor && !poll.closed && (
-          <Button variant="outline" onClick={ closePoll }>투표 종료하기</Button>
+          <Button size="xs" variant="outline" onClick={ closePoll }>투표 종료하기</Button>
         ) }
-      </Card.Body>
-    </Card.Root>
+      </Flex>
+    </Stack>
   )
 }

@@ -21,3 +21,11 @@ export const formatRelativeTime = (dateTime) => {
 }
 
 export const errorMessage = (error, fallback) => error.response?.data?.message ?? fallback
+
+export const formatRemaining = (dateTime) => {
+  const left = Date.parse(dateTime) - Date.now()
+
+  if (left < HOUR) return `${ Math.max(1, Math.ceil(left / MINUTE)) }분 남음`
+  if (left < DAY) return `${ Math.floor(left / HOUR) }시간 남음`
+  return `${ Math.floor(left / DAY) }일 남음`
+}
