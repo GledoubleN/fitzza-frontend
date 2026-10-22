@@ -100,7 +100,7 @@ export const CommunityMainPage = () => {
               </InputGroup>
             </form>
 
-            <HStack gap="4" overflowX="auto">
+            <HStack gap="2" overflowX="auto">
               { FILTERS.map((item) => (
                 <Button
                   key={ item.label }
@@ -117,7 +117,7 @@ export const CommunityMainPage = () => {
           </Stack>
         </Container>
 
-        <Container maxWidth="3xl" paddingBottom="40">
+        <Container maxWidth="3xl" paddingBottom="20">
           <Stack direction="column" gap="0" separator={ <Separator/> }>
             { posts.map((post) => (
               <PostItem
@@ -168,7 +168,7 @@ const PostItem = ({ post, onClick }) => {
   return (
     <Flex
       as="button"
-      gap="4"
+      gap="3"
       paddingY="4"
       align="flex-start"
       textAlign="start"
@@ -177,14 +177,14 @@ const PostItem = ({ post, onClick }) => {
       _hover={ { bg: 'bg.subtle' } }
       onClick={ onClick }
     >
-      <Stack direction="column" gap="0" flex="1" minWidth="0">
+      <Stack direction="column" gap="2" flex="1" minWidth="0">
         <Text fontWeight="medium" lineClamp="2">{ title }</Text>
-        <HStack gap="4" paddingY="4">
+        <HStack gap="2">
           { postType === 'VOTE'
             ? <Badge>투표</Badge>
             : <Badge>{ CATEGORY_LABELS[category] ?? category }</Badge> }
         </HStack>
-        <HStack gap="4" color="fg.muted" fontSize="sm">
+        <HStack gap="2" color="fg.muted" fontSize="sm">
           <Avatar.Root size="2xs">
             <Avatar.Fallback name={ nickname }/>
           </Avatar.Root>
@@ -204,7 +204,7 @@ const PostItem = ({ post, onClick }) => {
         <Image
           src={ thumbnailUrl }
           alt=""
-          boxSize={ { base: '16', md: '24' } }
+          boxSize="14"
           flexShrink="0"
           objectFit="cover"
           rounded="md"
