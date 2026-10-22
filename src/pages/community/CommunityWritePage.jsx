@@ -19,7 +19,7 @@ import { RichTextEditor } from '/src/components/ui/rich-text-editor'
 import { Toaster, toaster } from '../../components/ui/toaster.jsx'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { CATEGORIES, MAX_VOTE_OPTIONS, VOTE_LABELS, errorMessage, optionKey } from './communityFormat.js'
@@ -75,6 +75,7 @@ export const CommunityWritePage = () => {
   const [sheetOpen, setSheetOpen] = useState(false)
   const [picker, setPicker] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const [pollStarted, setPollStarted] = useState(null)
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -85,6 +86,17 @@ export const CommunityWritePage = () => {
 
   const isVote = mode === 'VOTE'
   const isEditing = Boolean(editingPost)
+  const canEditOptions = !isEditing || pollStarted === false
+
+  useEffect(() => {
+    if (editingPost?.postType !== 'VOTE') {
+      return
+    }
+
+    api.get(`/community/posts/${ editingPost.postId }/poll`)
+      .then((response) => setPollStarted(response.data.total > 0))
+      .catch(() => setPollStarted(true))
+  }, [editingPost])
   const optionsChanged = options.map(optionKey).join() !== initialOptions.map(optionKey).join()
 
   const toggleOption = (item) => {
@@ -197,19 +209,24 @@ export const CommunityWritePage = () => {
                               <Text fontSize="sm" color="fg.muted">{ option.price.toLocaleString() }원</Text>
                             ) }
                           </Stack>
-                          <IconButton
-                            variant="ghost"
-                            size="sm"
-                            aria-label={ `선택지 ${ VOTE_LABELS[index] } 삭제` }
-                            onClick={ () => toggleOption(option) }
-                          >
-                            <LuTrash2/>
-                          </IconButton>
+                          { canEditOptions && (
+                            <IconButton
+                              variant="ghost"
+                              size="sm"
+                              aria-label={ `선택지 ${ VOTE_LABELS[index] } 삭제` }
+                              onClick={ () => toggleOption(option) }
+                            >
+                              <LuTrash2/>
+                            </IconButton>
+                          ) }
                         </Flex>
                       </Card.Body>
                     </Card.Root>
                   )) }
-                  { options.length < MAX_VOTE_OPTIONS && (
+                  { pollStarted && (
+                    <Text fontSize="sm" color="fg.muted">투표가 시작돼 선택지는 바꿀 수 없어요.</Text>
+                  ) }
+                  { canEditOptions && options.length < MAX_VOTE_OPTIONS && (
                     <Button variant="outline" borderStyle="dashed" onClick={ () => setSheetOpen(true) }>
                       <LuPlus/> 선택지 추가 (최대 { MAX_VOTE_OPTIONS }개)
                     </Button>
