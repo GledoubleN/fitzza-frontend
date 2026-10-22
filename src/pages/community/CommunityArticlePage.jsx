@@ -234,7 +234,7 @@ export const CommunityArticlePage = () => {
             <Text color={ error ? 'fg.error' : 'fg.muted' } textAlign="center">{ error || '불러오는 중...' }</Text>
             { error && (
               <Button onClick={ () => navigate('/community/main', { replace: true }) }>
-                커뮤니티 메인으로 가기
+                커뮤니티로 가기
               </Button>
             ) }
           </Stack>
