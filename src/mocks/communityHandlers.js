@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw/http'
 import postsData from '../data/posts.json'
 import commentsData from '../data/comments.json'
+import products from '../data/products.json'
+import recommendations from '../data/recommendations.json'
 
 const BASE_URL = 'http://localhost:8080/api/v1'
 const ME = { userId: 1, nickname: '핏짜' }
@@ -14,6 +16,54 @@ const postLikes = new Map(posts.map((post) => [post.postId, post.liked]))
 const commentLikes = new Map(comments.map((comment) => [comment.commentId, comment.liked]))
 
 const error = (status, code, message) => HttpResponse.json({ status, code, message }, { status })
+
+const UNAUTHENTICATED = () => error(401, 'UNAUTHENTICATED', '로그인이 필요합니다.')
+const NOT_AUTHOR = () => error(403, 'NOT_AUTHOR', '작성자만 할 수 있습니다.')
+const isSignedOut = (request) => !request.headers.get('Authorization')
+
+const findProduct = (productId) => products.find((product) => product.productId === Number(productId))
+const findCombo = (comboId) => recommendations.combos.find((combo) => String(combo.comboId) === String(comboId))
+
+const toProductSnapshot = (product) => ({
+  productId: product.productId,
+  brandName: product.brandName,
+  productName: product.productName,
+  price: product.price,
+  imageUrl: product.thumbnailUrl,
+  summary: null,
+})
+
+const toSharedItem = ({ productId, productName, price, imageUrl }) => ({ productId, productName, price, imageUrl })
+
+const toShared = (sharedType, sharedId) => {
+  if (sharedType === 'COMBO') {
+    const combo = findCombo(sharedId)
+    return {
+      type: sharedType,
+      id: sharedId,
+      snapshot: {
+        productId: null,
+        brandName: null,
+        productName: null,
+        price: combo?.totalPrice ?? null,
+        imageUrl: combo?.items[0]?.imageUrl ?? null,
+        summary: combo?.feedbackSummary ?? null,
+      },
+      items: (combo?.items ?? []).map(toSharedItem),
+    }
+  }
+  if (sharedType === 'FITTING') {
+    return {
+      type: sharedType,
+      id: sharedId,
+      snapshot: { productId: null, brandName: null, productName: null, price: null, imageUrl: '/product-image.png', summary: null },
+      items: [],
+    }
+  }
+
+  const product = findProduct(sharedId)
+  return { type: sharedType, id: sharedId, snapshot: product ? toProductSnapshot(product) : null, items: [] }
+}
 
 const findPost = (postId) => posts.find((post) => post.postId === Number(postId) && !post.deleted)
 const findComment = (commentId) => comments.find((comment) => comment.commentId === Number(commentId))
@@ -93,25 +143,35 @@ const toCommentTree = (postId, supportedOptionId) => {
 
 const validateComment = (content) => {
   if (!content?.trim()) {
-    return error(400, 'INVALID_INPUT', '댓글 내용을 입력해주세요.')
+    return error(400, 'INVALID_REQUEST', '댓글 내용을 입력해주세요.')
   }
   if (content.length > COMMENT_MAX_LENGTH) {
-    return error(400, 'INVALID_INPUT', '댓글은 500자 이하로 입력해주세요.')
+    return error(400, 'INVALID_REQUEST', '댓글은 500자 이하로 입력해주세요.')
   }
   return null
 }
 
-const toVoteOptions = (options, startId) => options.map((option, index) => ({
-  voteOptionId: startId + index,
-  label: 'ABCD'[index],
-  source: option.source,
-  itemType: option.itemType,
-  itemId: option.itemId ?? null,
-  imageUrl: option.imageUrl,
-  name: option.name ?? null,
-  price: option.price ?? null,
-  count: 0,
-}))
+const toVoteOptions = (options, startId) => options.map((option, index) => {
+  const product = option.itemType === 'PRODUCT' ? findProduct(option.itemId) : null
+  const combo = option.itemType === 'COMBO' ? findCombo(option.itemId) : null
+
+  return {
+    voteOptionId: startId + index,
+    label: 'ABCD'[index],
+    source: option.source,
+    itemType: option.itemType,
+    itemId: option.itemId ?? null,
+    imageUrl: product?.thumbnailUrl || combo?.items[0]?.imageUrl || option.imageUrl,
+    name: product?.productName ?? null,
+    price: product?.price ?? combo?.totalPrice ?? null,
+    count: 0,
+  }
+})
+
+const isValidVoteOptions = (options) => Array.isArray(options)
+  && options.length >= 2
+  && options.length <= 4
+  && options.every((option) => option?.source && option.itemType && option.itemId > 0 && option.imageUrl?.trim())
 
 const nextVoteOptionId = () => Math.max(0, ...posts.flatMap((post) => post.voteOptions.map((option) => option.voteOptionId))) + 1
 
@@ -143,15 +203,22 @@ export const communityHandlers = [
   }),
 
   http.post(`${ BASE_URL }/community/posts`, async ({ request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const body = await request.json()
 
     if (!body.title?.trim() || !body.content?.trim() || !body.category) {
-      return error(400, 'INVALID_INPUT', '제목, 내용, 분류를 확인해주세요.')
+      return error(400, 'INVALID_REQUEST', '입력값을 확인해주세요.')
     }
 
     const isVote = body.postType === 'VOTE'
-    if (isVote && !(body.options?.length >= 2 && body.options.length <= 4)) {
-      return error(400, 'INVALID_INPUT', '투표 선택지는 2~4개여야 합니다.')
+    if (isVote ? !isValidVoteOptions(body.options) : body.options) {
+      return error(400, 'INVALID_VOTE_OPTIONS', '투표 선택지를 확인해주세요.')
+    }
+    if (isVote && body.sharedType) {
+      return error(400, 'INVALID_REQUEST', '투표 글은 공유 글로 쓸 수 없습니다.')
     }
 
     const now = new Date()
@@ -162,8 +229,8 @@ export const communityHandlers = [
       category: body.category,
       postType: isVote ? 'VOTE' : 'NORMAL',
       author: ME,
-      imageUrl: body.imageUrl ?? null,
-      shared: body.sharedType ? { type: body.sharedType, id: body.sharedId, snapshot: null, items: [] } : null,
+      imageUrl: null,
+      shared: body.sharedType ? toShared(body.sharedType, body.sharedId) : null,
       likeCount: 0,
       viewCount: 0,
       createdAt: now.toISOString(),
@@ -190,33 +257,49 @@ export const communityHandlers = [
   }),
 
   http.patch(`${ BASE_URL }/community/posts/:postId`, async ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const post = findPost(params.postId)
     if (!post) {
       return error(404, 'POST_NOT_FOUND', '게시글을 찾을 수 없습니다.')
     }
     if (post.author.userId !== ME.userId) {
-      return error(403, 'FORBIDDEN', '작성자만 수정할 수 있습니다.')
+      return NOT_AUTHOR()
     }
 
-    const { options, ...fields } = await request.json()
+    const { title, content, category, options } = await request.json()
+    if (options !== undefined && (post.postType !== 'VOTE' || !isValidVoteOptions(options))) {
+      return error(400, 'INVALID_VOTE_OPTIONS', '투표 선택지를 확인해주세요.')
+    }
     if (options) {
       if (post.voteOptions.some((option) => option.count > 0)) {
-        return error(409, 'VOTE_ALREADY_STARTED', '투표 참여가 있어 선택지를 수정할 수 없습니다.')
+        return error(409, 'VOTE_OPTIONS_LOCKED', '투표가 시작된 글은 선택지를 바꿀 수 없습니다.')
       }
       post.voteOptions = toVoteOptions(options, nextVoteOptionId())
     }
-    Object.assign(post, fields, { updatedAt: new Date().toISOString() })
+    Object.assign(post, {
+      title: title ?? post.title,
+      content: content ?? post.content,
+      category: category ?? post.category,
+      updatedAt: new Date().toISOString(),
+    })
 
     return new HttpResponse(null, { status: 200 })
   }),
 
-  http.delete(`${ BASE_URL }/community/posts/:postId`, ({ params }) => {
+  http.delete(`${ BASE_URL }/community/posts/:postId`, ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const post = findPost(params.postId)
     if (!post) {
       return error(404, 'POST_NOT_FOUND', '게시글을 찾을 수 없습니다.')
     }
     if (post.author.userId !== ME.userId) {
-      return error(403, 'FORBIDDEN', '작성자만 삭제할 수 있습니다.')
+      return NOT_AUTHOR()
     }
 
     post.deleted = true
@@ -224,7 +307,11 @@ export const communityHandlers = [
     return new HttpResponse(null, { status: 204 })
   }),
 
-  http.post(`${ BASE_URL }/community/posts/:postId/likes`, ({ params }) => {
+  http.post(`${ BASE_URL }/community/posts/:postId/likes`, ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const post = findPost(params.postId)
     if (!post) {
       return error(404, 'POST_NOT_FOUND', '게시글을 찾을 수 없습니다.')
@@ -237,7 +324,11 @@ export const communityHandlers = [
     return HttpResponse.json({ likeCount: post.likeCount })
   }),
 
-  http.delete(`${ BASE_URL }/community/posts/:postId/likes`, ({ params }) => {
+  http.delete(`${ BASE_URL }/community/posts/:postId/likes`, ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const post = findPost(params.postId)
     if (!post) {
       return error(404, 'POST_NOT_FOUND', '게시글을 찾을 수 없습니다.')
@@ -263,6 +354,10 @@ export const communityHandlers = [
   }),
 
   http.post(`${ BASE_URL }/community/posts/:postId/poll/votes`, async ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const post = findPost(params.postId)
     if (!post) {
       return error(404, 'POST_NOT_FOUND', '게시글을 찾을 수 없습니다.')
@@ -270,17 +365,17 @@ export const communityHandlers = [
     if (post.postType !== 'VOTE') {
       return error(400, 'NOT_VOTE_POST', '투표 게시글이 아닙니다.')
     }
-    if (isVoteClosed(post)) {
-      return error(409, 'VOTE_CLOSED', '마감된 투표입니다.')
-    }
     if (post.myVoteOptionId) {
       return HttpResponse.json({ voteOptionId: post.myVoteOptionId })
+    }
+    if (isVoteClosed(post)) {
+      return error(409, 'VOTE_CLOSED', '마감된 투표입니다.')
     }
 
     const { voteOptionId } = await request.json()
     const option = post.voteOptions.find((option) => option.voteOptionId === voteOptionId)
     if (!option) {
-      return error(400, 'INVALID_INPUT', '투표 선택지를 확인해주세요.')
+      return error(400, 'INVALID_VOTE_OPTION', '이 게시글의 선택지가 아닙니다.')
     }
 
     option.count += 1
@@ -289,13 +384,23 @@ export const communityHandlers = [
     return HttpResponse.json({ voteOptionId })
   }),
 
-  http.patch(`${ BASE_URL }/community/posts/:postId/poll`, ({ params }) => {
+  http.patch(`${ BASE_URL }/community/posts/:postId/poll`, async ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const post = findPost(params.postId)
     if (!post) {
       return error(404, 'POST_NOT_FOUND', '게시글을 찾을 수 없습니다.')
     }
+    if (post.postType !== 'VOTE') {
+      return error(400, 'NOT_VOTE_POST', '투표 게시글이 아닙니다.')
+    }
     if (post.author.userId !== ME.userId) {
-      return error(403, 'FORBIDDEN', '작성자만 투표를 종료할 수 있습니다.')
+      return NOT_AUTHOR()
+    }
+    if ((await request.json()).closed !== true) {
+      return error(400, 'INVALID_REQUEST', '종료된 투표는 다시 열 수 없어요.')
     }
 
     post.voteClosed = true
@@ -315,6 +420,10 @@ export const communityHandlers = [
   }),
 
   http.post(`${ BASE_URL }/community/posts/:postId/comments`, async ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const post = findPost(params.postId)
     if (!post) {
       return error(404, 'POST_NOT_FOUND', '게시글을 찾을 수 없습니다.')
@@ -328,7 +437,7 @@ export const communityHandlers = [
 
     const parent = parentCommentId && findComment(parentCommentId)
     if (parentCommentId && (!parent || parent.parentCommentId !== null)) {
-      return error(400, 'INVALID_INPUT', '답글은 1단계까지만 작성할 수 있습니다.')
+      return error(400, 'INVALID_PARENT_COMMENT', '답글을 달 수 없는 댓글입니다.')
     }
 
     const comment = {
@@ -349,12 +458,16 @@ export const communityHandlers = [
   }),
 
   http.patch(`${ BASE_URL }/comments/:commentId`, async ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const comment = findComment(params.commentId)
     if (!comment || comment.isDeleted) {
       return error(404, 'COMMENT_NOT_FOUND', '댓글을 찾을 수 없습니다.')
     }
     if (comment.author.userId !== ME.userId) {
-      return error(403, 'FORBIDDEN', '작성자만 수정할 수 있습니다.')
+      return NOT_AUTHOR()
     }
 
     const { content } = await request.json()
@@ -368,13 +481,17 @@ export const communityHandlers = [
     return new HttpResponse(null, { status: 200 })
   }),
 
-  http.delete(`${ BASE_URL }/comments/:commentId`, ({ params }) => {
+  http.delete(`${ BASE_URL }/comments/:commentId`, ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const comment = findComment(params.commentId)
     if (!comment || comment.isDeleted) {
       return error(404, 'COMMENT_NOT_FOUND', '댓글을 찾을 수 없습니다.')
     }
     if (comment.author.userId !== ME.userId) {
-      return error(403, 'FORBIDDEN', '작성자만 삭제할 수 있습니다.')
+      return NOT_AUTHOR()
     }
 
     comment.isDeleted = true
@@ -383,7 +500,11 @@ export const communityHandlers = [
     return new HttpResponse(null, { status: 204 })
   }),
 
-  http.post(`${ BASE_URL }/comments/:commentId/likes`, ({ params }) => {
+  http.post(`${ BASE_URL }/comments/:commentId/likes`, ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const comment = findComment(params.commentId)
     if (!comment) {
       return error(404, 'COMMENT_NOT_FOUND', '댓글을 찾을 수 없습니다.')
@@ -396,7 +517,11 @@ export const communityHandlers = [
     return HttpResponse.json({ likeCount: comment.likeCount })
   }),
 
-  http.delete(`${ BASE_URL }/comments/:commentId/likes`, ({ params }) => {
+  http.delete(`${ BASE_URL }/comments/:commentId/likes`, ({ params, request }) => {
+    if (isSignedOut(request)) {
+      return UNAUTHENTICATED()
+    }
+
     const comment = findComment(params.commentId)
     if (!comment) {
       return error(404, 'COMMENT_NOT_FOUND', '댓글을 찾을 수 없습니다.')
