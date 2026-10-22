@@ -148,8 +148,11 @@ export const MainPage = () => {
           gap={ 4 }
         >
           {
-            products.map((product, index) => (
-              <ProductItem key={ index } product={ product }></ProductItem>
+            products.map((product) => (
+              <ProductItem
+                key={ product.productId ?? product.itemId }
+                product={ product }
+              />
             ))
           }
         </Grid>

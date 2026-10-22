@@ -5,12 +5,16 @@ import { api } from '../api/axios'
 import { toaster } from '../components/ui/toaster'
 import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import defaultThumbnail from '../assets/hero.png'
 
 export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange }) => {
   const navigate = useNavigate()
   const { isSignedIn } = useAuth()
-  const [isLiked, setIsLiked] = useState(initialIsLiked ?? product.wished ?? false)
+  const [isLiked, setIsLiked] = useState(initialIsLiked ?? product?.wished ?? false)
   const [isLoading, setIsLoading] = useState(false)
+
+  const productId = product?.productId ?? product?.itemId
+  const productName = product?.productName ?? product?.name
 
   const handleWishClick = async (e) => {
     e.stopPropagation()
@@ -23,23 +27,22 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
     if (isLoading) return
 
     const nextLikedState = !isLiked
-    const itemId = product.productId ?? product.itemId
 
     setIsLiked(nextLikedState)
     setIsLoading(true)
 
     try {
       if (!nextLikedState) {
-        await api.delete('/wishlists', { params: { itemId } })
+        await api.delete('/wishlists', { params: { itemId: productId } })
         toaster.create({
           title: '찜 목록에서 제외되었습니다.',
           type: 'success',
         })
         if (onWishlistChange) {
-          onWishlistChange(itemId)
+          onWishlistChange(productId)
         }
       } else {
-        await api.post('/wishlists', { itemId })
+        await api.post('/wishlists', { itemId: productId })
         toaster.create({
           title: '찜 목록에 추가되었습니다.',
           type: 'success',
@@ -66,13 +69,13 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
     <VStack
       align="stretch"
       cursor="pointer"
-      onClick={() => navigate(`/products/${product.productId ?? product.itemId}`)}
+      onClick={() => navigate(`/products/${productId}`)}
       gap={2}
     >
       <Box position="relative" width="100%" paddingTop="100%" bg="gray.100" borderRadius="md" overflow="hidden">
         <Image
-          src={product.thumbnailUrl ?? product.imageUrl ?? '/src/assets/hero.png'}
-          alt={product.productName ?? product.name}
+          src={product?.thumbnailUrl ?? product?.imageUrl ?? defaultThumbnail}
+          alt={productName}
           position="absolute"
           top={0}
           left={0}
@@ -84,7 +87,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           position="absolute"
           top={2}
           right={2}
-          aria-label="Wishlist"
+          aria-label={isLiked ? '찜 해제' : '찜하기'}
           variant="ghost"
           size="sm"
           onClick={handleWishClick}
@@ -95,13 +98,13 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
       </Box>
       <VStack align="start" gap={1}>
         <Text fontSize="xs" color="fg.muted" truncate>
-          {product.brandName}
+          {product?.brandName}
         </Text>
         <Text fontSize="sm" fontWeight="medium" truncate width="100%">
-          {product.productName ?? product.name}
+          {productName}
         </Text>
         <Text fontSize="sm" fontWeight="bold">
-          {Number(product.price).toLocaleString()}원
+          {product?.price != null ? `${Number(product.price).toLocaleString()}원` : '가격 정보 없음'}
         </Text>
       </VStack>
     </VStack>
