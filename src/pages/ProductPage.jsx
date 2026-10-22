@@ -14,11 +14,12 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { LuArrowUp, LuHeart } from 'react-icons/lu'
 import { api } from '../api/axios.js'
 import { useAuth } from '../contexts/AuthContext.js'
 import { Header } from '../components/Header.jsx'
+import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
 import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
 import { ProductOptionSelector } from './product/ProductOptionSelector.jsx'
@@ -42,11 +43,11 @@ function getEstimatedArrivalDate () {
 export const ProductPage = () => {
   const { isSignedIn } = useAuth()
   const { id } = useParams()
-  const navigate = useNavigate()
   const [product, setProduct] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isWished, setIsWished] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isSignInDialogOpen, setIsSignInDialogOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 300)
@@ -70,7 +71,7 @@ export const ProductPage = () => {
 
   const toggleWish = async () => {
     if (!isSignedIn) {
-      navigate('/signin')
+      setIsSignInDialogOpen(true)
       return
     }
 
@@ -209,6 +210,7 @@ export const ProductPage = () => {
       <Box display={ { md: 'none' } }>
         <ScrollToTopButton bottom={ '8' }/>
       </Box>
+      <SignInRequiredDialog open={ isSignInDialogOpen } onClose={ () => setIsSignInDialogOpen(false) }/>
       <Toaster/>
     </Stack>
   )
