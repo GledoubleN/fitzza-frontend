@@ -1,4 +1,3 @@
-import { useAuth } from '../contexts/AuthContext.js'
 import { Badge, Button, Card, Container, Flex, Heading, Image, Spinner, Stack, Text } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
@@ -10,7 +9,6 @@ import { formatPrice, orderStatusLabels } from './OrderDetailPage.jsx'
 const formatDate = (dateTime) => new Date(dateTime).toLocaleDateString('ko-KR')
 
 export const OrderListPage = () => {
-  const { isSignedIn } = useAuth()
   const navigate = useNavigate()
   const [orders, setOrders] = useState([])
   const [page, setPage] = useState(0)
@@ -20,11 +18,6 @@ export const OrderListPage = () => {
   const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
-    if (!isSignedIn) {
-      navigate('/signin')
-      return
-    }
-
     let cancelled = false
     setIsLoading(true)
     setIsLoadFailed(false)
@@ -38,7 +31,7 @@ export const OrderListPage = () => {
       .finally(() => !cancelled && setIsLoading(false))
 
     return () => { cancelled = true }
-  }, [page, attempt, isSignedIn, navigate])
+  }, [page, attempt])
 
   return (
     <Stack gap={ 4 } paddingY={ 4 } paddingBottom={ 28 } minHeight={ 'vh' } bg={ 'bg' }>

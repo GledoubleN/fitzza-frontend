@@ -60,9 +60,7 @@ export const Header = ({ maxWidth = '7xl' }) => {
         return
       }
 
-      api.post('/auth/signout', undefined, {
-        withCredentials: true,
-      }).catch((error) => {
+      api.post('/auth/signout').catch((error) => {
         console.log(error)
       })
 

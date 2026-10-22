@@ -65,7 +65,7 @@ export default function ProfilePage() {
     } catch (err) {
       if (err.response?.status === 401) {
         setAccessToken(null)
-        navigate('/signin');
+        navigate('/signin', { replace: true });
       } else {
         console.warn("백엔드 통신 실패. 기본 프로필 정보를 표시합니다.", err);
       }
