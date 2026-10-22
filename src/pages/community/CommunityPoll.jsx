@@ -96,11 +96,11 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
                 size="sm"
                 variant={ mine ? 'solid' : 'outline' }
                 fontWeight="bold"
-                disabled={ (showResult && !mine) || (submittingId !== null && submittingId !== option.voteOptionId) }
+                disabled={ showResult || (submittingId !== null && submittingId !== option.voteOptionId) }
                 _disabled={ { opacity: '1', cursor: 'default' } }
                 loading={ submittingId === option.voteOptionId }
                 aria-pressed={ mine }
-                onClick={ showResult ? undefined : () => vote(option.voteOptionId) }
+                onClick={ () => vote(option.voteOptionId) }
               >
                 { option.label }
                 { showResult && ` ${ percent }% · ${ result?.count ?? 0 }표` }
