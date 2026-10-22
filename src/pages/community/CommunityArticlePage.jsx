@@ -239,8 +239,9 @@ export const CommunityArticlePage = () => {
 
           <Stack gap="0">
             <HStack gap="4">
-              { post.postType === 'VOTE' && <Badge>투표</Badge> }
-              <Badge>{ CATEGORY_LABELS[post.category] ?? post.category }</Badge>
+              { post.postType === 'VOTE'
+                ? <Badge>투표</Badge>
+                : <Badge>{ CATEGORY_LABELS[post.category] ?? post.category }</Badge> }
             </HStack>
             <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
             <Text color="fg.muted" fontSize="sm">

@@ -32,6 +32,7 @@ const MODES = [
 ]
 
 const MIN_VOTE_OPTIONS = 2
+const VOTE_CATEGORY = 'COORDI_QUESTION'
 const TITLE_MAX_LENGTH = 100
 const CONTENT_MAX_LENGTH = 5000
 
@@ -107,7 +108,8 @@ export const CommunityWritePage = () => {
 
   const content = editor?.getText({ blockSeparator: '\n' }).trim() ?? ''
   const voteReady = !isVote || (options.length >= MIN_VOTE_OPTIONS && options.length <= MAX_VOTE_OPTIONS)
-  const canSubmit = title.trim() && content && category && voteReady && content.length <= CONTENT_MAX_LENGTH
+  const postCategory = isVote ? (editingPost?.category ?? VOTE_CATEGORY) : category
+  const canSubmit = title.trim() && content && postCategory && voteReady && content.length <= CONTENT_MAX_LENGTH
 
   const submit = async () => {
     setSubmitting(true)
@@ -116,7 +118,7 @@ export const CommunityWritePage = () => {
         await api.patch(`/community/posts/${ editingPost.postId }`, {
           title: title.trim(),
           content,
-          category,
+          category: postCategory,
           ...(isVote && optionsChanged ? { options: options.map(toRequestOption) } : {}),
         })
         navigate(`/community/articles/${ editingPost.postId }`, { replace: true })
@@ -126,7 +128,7 @@ export const CommunityWritePage = () => {
       const { data } = await api.post('/community/posts', {
         title: title.trim(),
         content,
-        category,
+        category: postCategory,
         postType: mode,
         ...(isVote ? { options: options.map(toRequestOption) } : {}),
         ...(!isVote && shared?.sharedType ? { sharedType: shared.sharedType, sharedId: shared.sharedId } : {}),
@@ -178,19 +180,21 @@ export const CommunityWritePage = () => {
             />
           ) : (
             <Stack gap="4" flex="1">
-              <NativeSelect.Root>
-                <NativeSelect.Field
-                  placeholder="카테고리 선택"
-                  aria-label="카테고리"
-                  value={ category }
-                  onChange={ (e) => setCategory(e.target.value) }
-                >
-                  { CATEGORIES.map((item) => (
-                    <option key={ item.value } value={ item.value }>{ item.label }</option>
-                  )) }
-                </NativeSelect.Field>
-                <NativeSelect.Indicator/>
-              </NativeSelect.Root>
+              { !isVote && (
+                <NativeSelect.Root>
+                  <NativeSelect.Field
+                    placeholder="카테고리 선택"
+                    aria-label="카테고리"
+                    value={ category }
+                    onChange={ (e) => setCategory(e.target.value) }
+                  >
+                    { CATEGORIES.map((item) => (
+                      <option key={ item.value } value={ item.value }>{ item.label }</option>
+                    )) }
+                  </NativeSelect.Field>
+                  <NativeSelect.Indicator/>
+                </NativeSelect.Root>
+              ) }
 
               { isVote && (
                 <Stack gap="4">

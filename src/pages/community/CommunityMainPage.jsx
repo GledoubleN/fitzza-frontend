@@ -181,8 +181,9 @@ const PostItem = ({ post, onClick }) => {
       <Stack direction="column" gap="0" flex="1" minWidth="0">
         <Text fontWeight="medium" lineClamp="2">{ title }</Text>
         <HStack gap="4" paddingY="4">
-          { postType === 'VOTE' && <Badge>투표</Badge> }
-          <Badge>{ CATEGORY_LABELS[category] ?? category }</Badge>
+          { postType === 'VOTE'
+            ? <Badge>투표</Badge>
+            : <Badge>{ CATEGORY_LABELS[category] ?? category }</Badge> }
         </HStack>
         <HStack gap="4" color="fg.muted" fontSize="sm">
           <Avatar.Root size="2xs">
