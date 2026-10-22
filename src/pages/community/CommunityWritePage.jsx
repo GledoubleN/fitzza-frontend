@@ -1,11 +1,10 @@
 import {
-  Box,
   Button,
   Card,
-  Checkbox,
+  Circle,
   Container,
   Flex,
-  Grid,
+  IconButton,
   Image,
   Input,
   NativeSelect,
@@ -14,15 +13,18 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react'
+import { LuPlus, LuTrash2 } from 'react-icons/lu'
 import { Header } from '../../components/Header.jsx'
 import { RichTextEditor } from '/src/components/ui/rich-text-editor'
 import { Toaster, toaster } from '../../components/ui/toaster.jsx'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
-import { CATEGORIES, errorMessage } from './communityFormat.js'
+import { CATEGORIES, MAX_VOTE_OPTIONS, VOTE_LABELS, errorMessage, optionKey } from './communityFormat.js'
+import { CommunityOptionPicker, CommunityOptionSourceSheet } from './CommunityOptionPicker.jsx'
+import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 
 const MODES = [
   { value: 'NORMAL', label: '기본' },
@@ -30,7 +32,6 @@ const MODES = [
 ]
 
 const MIN_VOTE_OPTIONS = 2
-const MAX_VOTE_OPTIONS = 4
 const TITLE_MAX_LENGTH = 100
 const CONTENT_MAX_LENGTH = 5000
 
@@ -42,24 +43,20 @@ const toEditorContent = (text) => ({
   })),
 })
 
-const fromWishlistItem = (item) => ({
-  key: `WISHLIST-${ item.itemId ?? item.productId }`,
-  source: 'WISHLIST',
-  itemType: 'PRODUCT',
-  itemId: item.itemId ?? item.productId,
-  imageUrl: item.imageUrl ?? item.thumbnailUrl,
-  name: item.name ?? item.productName,
-})
-
 const fromSharedOption = (option) => ({
-  key: `${ option.source }-${ option.itemId }`,
   source: option.source,
   itemType: option.itemType,
   itemId: option.itemId,
   imageUrl: option.imageUrl ?? option.items?.find((item) => item.imageUrl)?.imageUrl,
   name: option.label,
-  items: option.items,
+  price: option.items?.reduce((sum, item) => sum + item.price, 0),
 })
+
+const fromVoteOption = ({ source, itemType, itemId, imageUrl, name, price }) => (
+  { source, itemType, itemId, imageUrl, name, price }
+)
+
+const toRequestOption = ({ source, itemType, itemId, imageUrl }) => ({ source, itemType, itemId, imageUrl })
 
 export const CommunityWritePage = () => {
   const navigate = useNavigate()
@@ -67,11 +64,16 @@ export const CommunityWritePage = () => {
   const editingPost = state?.post
   const shared = editingPost ? null : state
 
+  const initialOptions = editingPost
+    ? editingPost.voteOptions.map(fromVoteOption)
+    : (shared?.voteOptions ?? []).slice(0, MAX_VOTE_OPTIONS).map(fromSharedOption)
+
   const [mode, setMode] = useState(editingPost?.postType ?? 'NORMAL')
   const [category, setCategory] = useState(editingPost?.category ?? '')
   const [title, setTitle] = useState(editingPost?.title ?? '')
-  const [candidates, setCandidates] = useState(() => (shared?.voteOptions ?? []).map(fromSharedOption))
-  const [selectedKeys, setSelectedKeys] = useState(() => candidates.slice(0, MAX_VOTE_OPTIONS).map((option) => option.key))
+  const [options, setOptions] = useState(initialOptions)
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [picker, setPicker] = useState(null)
   const [submitting, setSubmitting] = useState(false)
 
   const editor = useEditor({
@@ -83,49 +85,38 @@ export const CommunityWritePage = () => {
 
   const isVote = mode === 'VOTE'
   const isEditing = Boolean(editingPost)
+  const optionsChanged = options.map(optionKey).join() !== initialOptions.map(optionKey).join()
 
-  useEffect(() => {
-    if (!isVote || isEditing) {
-      return
-    }
-
-    api.get('/wishlists')
-      .then((response) => {
-        const wishlist = response.data.content.map(fromWishlistItem)
-        setCandidates((prev) => [...prev, ...wishlist.filter((item) => !prev.some((option) => option.key === item.key))])
-      })
-      .catch((error) => toaster.create({ type: 'error', title: errorMessage(error, '찜 목록을 불러오지 못했어요.') }))
-  }, [isVote, isEditing])
-
-  const toggleCandidate = (key) => {
-    setSelectedKeys((prev) => prev.includes(key)
-      ? prev.filter((selected) => selected !== key)
-      : [...prev, key])
+  const toggleOption = (item) => {
+    setOptions((prev) => prev.some((option) => optionKey(option) === optionKey(item))
+      ? prev.filter((option) => optionKey(option) !== optionKey(item))
+      : [...prev, item].slice(0, MAX_VOTE_OPTIONS))
   }
 
   const content = editor?.getText({ blockSeparator: '\n' }).trim() ?? ''
-  const voteOptionCount = selectedKeys.length
-  const voteReady = !isVote || isEditing || (voteOptionCount >= MIN_VOTE_OPTIONS && voteOptionCount <= MAX_VOTE_OPTIONS)
+  const voteReady = !isVote || (options.length >= MIN_VOTE_OPTIONS && options.length <= MAX_VOTE_OPTIONS)
   const canSubmit = title.trim() && content && category && voteReady && content.length <= CONTENT_MAX_LENGTH
 
   const submit = async () => {
     setSubmitting(true)
     try {
       if (isEditing) {
-        await api.patch(`/community/posts/${ editingPost.postId }`, { title: title.trim(), content, category })
+        await api.patch(`/community/posts/${ editingPost.postId }`, {
+          title: title.trim(),
+          content,
+          category,
+          ...(isVote && optionsChanged ? { options: options.map(toRequestOption) } : {}),
+        })
         navigate(`/community/articles/${ editingPost.postId }`, { replace: true })
         return
       }
 
-      const options = selectedKeys
-        .map((key) => candidates.find((option) => option.key === key))
-        .map(({ source, itemType, itemId, imageUrl }) => ({ source, itemType, itemId, imageUrl }))
       const { data } = await api.post('/community/posts', {
         title: title.trim(),
         content,
         category,
         postType: mode,
-        ...(isVote ? { options } : {}),
+        ...(isVote ? { options: options.map(toRequestOption) } : {}),
         ...(!isVote && shared?.sharedType ? { sharedType: shared.sharedType, sharedId: shared.sharedId } : {}),
       })
       navigate(`/community/articles/${ data.postId }`, { replace: true })
@@ -136,13 +127,18 @@ export const CommunityWritePage = () => {
     }
   }
 
+  const openPicker = (source) => {
+    setSheetOpen(false)
+    setPicker(source)
+  }
+
   return (
-    <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
+    <Stack direction="column" gap="4" minHeight="100vh" paddingTop="4">
       <Header/>
 
-      <Container maxWidth="3xl" paddingBottom="8">
-        <Stack gap="4">
-          <Text fontSize="lg" fontWeight="bold">{ isEditing ? '게시글 수정' : '글쓰기' }</Text>
+      <Container maxWidth="3xl" flex="1" display="flex" flexDirection="column">
+        <Stack gap="4" flex="1">
+          <CommunityTitleBar title={ isEditing ? '게시글 수정' : '커뮤니티' }/>
 
           { !isEditing && (
             <Tabs.Root fitted variant="plain" value={ mode } onValueChange={ (e) => setMode(e.value) }>
@@ -161,102 +157,113 @@ export const CommunityWritePage = () => {
             </Tabs.Root>
           ) }
 
-          <NativeSelect.Root>
-            <NativeSelect.Field
-              placeholder="카테고리 선택"
-              aria-label="카테고리"
-              value={ category }
-              onChange={ (e) => setCategory(e.target.value) }
-            >
-              { CATEGORIES.map((item) => (
-                <option key={ item.value } value={ item.value }>{ item.label }</option>
-              )) }
-            </NativeSelect.Field>
-            <NativeSelect.Indicator/>
-          </NativeSelect.Root>
+          { picker ? (
+            <CommunityOptionPicker
+              source={ picker }
+              options={ options }
+              onToggle={ toggleOption }
+              onDone={ () => setPicker(null) }
+            />
+          ) : (
+            <Stack gap="4" flex="1">
+              <NativeSelect.Root>
+                <NativeSelect.Field
+                  placeholder="카테고리 선택"
+                  aria-label="카테고리"
+                  value={ category }
+                  onChange={ (e) => setCategory(e.target.value) }
+                >
+                  { CATEGORIES.map((item) => (
+                    <option key={ item.value } value={ item.value }>{ item.label }</option>
+                  )) }
+                </NativeSelect.Field>
+                <NativeSelect.Indicator/>
+              </NativeSelect.Root>
 
-          { isVote && !isEditing && (
-            <Stack gap="4">
-              <Text fontSize="sm" color="fg.muted">
-                투표 선택지를 { MIN_VOTE_OPTIONS }~{ MAX_VOTE_OPTIONS }개 골라주세요. ({ voteOptionCount }개 선택)
-              </Text>
-              { candidates.length === 0 && (
-                <Text fontSize="sm" color="fg.muted">찜한 상품이 없어요. 상품을 찜하면 선택지로 쓸 수 있어요.</Text>
+              { isVote && (
+                <Stack gap="4">
+                  <Text fontWeight="bold">투표 선택지</Text>
+                  { options.map((option, index) => (
+                    <Card.Root key={ optionKey(option) } size="sm" variant="outline">
+                      <Card.Body>
+                        <Flex align="center" gap="4">
+                          <Circle size="6" bg="fg" color="bg" fontSize="xs" fontWeight="bold" flexShrink="0">
+                            { VOTE_LABELS[index] }
+                          </Circle>
+                          <Image src={ option.imageUrl } alt="" boxSize="12" objectFit="cover" rounded="md" bg="bg.muted"/>
+                          <Stack gap="0" flex="1" minWidth="0">
+                            <Text fontWeight="bold" lineClamp="1">{ option.name }</Text>
+                            { option.price !== null && option.price !== undefined && (
+                              <Text fontSize="sm" color="fg.muted">{ option.price.toLocaleString() }원</Text>
+                            ) }
+                          </Stack>
+                          <IconButton
+                            variant="ghost"
+                            size="sm"
+                            aria-label={ `선택지 ${ VOTE_LABELS[index] } 삭제` }
+                            onClick={ () => toggleOption(option) }
+                          >
+                            <LuTrash2/>
+                          </IconButton>
+                        </Flex>
+                      </Card.Body>
+                    </Card.Root>
+                  )) }
+                  { options.length < MAX_VOTE_OPTIONS && (
+                    <Button variant="outline" borderStyle="dashed" onClick={ () => setSheetOpen(true) }>
+                      <LuPlus/> 선택지 추가 (최대 { MAX_VOTE_OPTIONS }개)
+                    </Button>
+                  ) }
+                  { options.length < MIN_VOTE_OPTIONS && (
+                    <Text fontSize="sm" color="fg.muted">선택지를 { MIN_VOTE_OPTIONS }개 이상 골라주세요.</Text>
+                  ) }
+                </Stack>
               ) }
-              <Grid templateColumns={ { base: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)' } } gap="4">
-                { candidates.map((option) => {
-                  const checked = selectedKeys.includes(option.key)
-                  const disabled = !checked && voteOptionCount >= MAX_VOTE_OPTIONS
 
-                  return (
-                    <Checkbox.Root
-                      key={ option.key }
-                      checked={ checked }
-                      disabled={ disabled }
-                      onCheckedChange={ () => toggleCandidate(option.key) }
-                      display="block"
-                    >
-                      <Checkbox.HiddenInput aria-label={ option.name }/>
-                      <Card.Root
-                        size="sm"
-                        overflow="hidden"
-                        cursor={ disabled ? 'not-allowed' : 'pointer' }
-                        opacity={ disabled ? '0.5' : '1' }
-                        borderColor={ checked ? 'primary.solid' : 'border' }
-                      >
-                        <Box position="relative">
-                          <Image src={ option.imageUrl } alt="" aspectRatio="square" width="full" objectFit="cover" bg="bg.muted"/>
-                          <Checkbox.Control position="absolute" top="2" left="2" bg="bg"/>
-                        </Box>
-                        <Card.Body>
-                          <Checkbox.Label fontSize="sm" lineClamp="1">{ option.name }</Checkbox.Label>
-                        </Card.Body>
-                      </Card.Root>
-                    </Checkbox.Root>
-                  )
-                }) }
-              </Grid>
+              <Input
+                placeholder="제목"
+                aria-label="제목"
+                maxLength={ TITLE_MAX_LENGTH }
+                value={ title }
+                onChange={ (e) => setTitle(e.target.value) }
+              />
+
+              <RichTextEditor.Root editor={ editor } minHeight="sm">
+                { shared?.snapshot && !isVote && (
+                  <Stack gap="4" padding="4" paddingBottom="0">
+                    <Text fontWeight="bold">{ shared.sharedType === 'FITTING' ? '공유할 가상 피팅' : '공유할 코디' }</Text>
+                    { shared.snapshot.imageUrl && (
+                      <Image src={ shared.snapshot.imageUrl } alt="공유할 가상 피팅 결과" maxWidth="xs" bg="bg.muted"/>
+                    ) }
+                    { shared.snapshot.items.map((item) => (
+                      <Flex key={ item.productId } justify="space-between" gap="4">
+                        <Text>{ item.productName }</Text>
+                        <Text>{ item.price.toLocaleString() }원</Text>
+                      </Flex>
+                    )) }
+                    <Text fontWeight="bold" alignSelf="flex-end">
+                      합계 { shared.snapshot.totalPrice.toLocaleString() }원
+                    </Text>
+                    <Separator/>
+                  </Stack>
+                ) }
+                <RichTextEditor.Content/>
+              </RichTextEditor.Root>
+              <Text fontSize="xs" color={ content.length > CONTENT_MAX_LENGTH ? 'fg.error' : 'fg.muted' } alignSelf="flex-end">
+                { content.length } / { CONTENT_MAX_LENGTH }
+              </Text>
+
+              <Stack position="sticky" bottom="0" bg="bg" paddingY="4" marginTop="auto">
+                <Button size="lg" disabled={ !canSubmit } loading={ submitting } onClick={ submit }>
+                  { isEditing ? '수정하기' : '작성하기' }
+                </Button>
+              </Stack>
             </Stack>
           ) }
-
-          <Input
-            placeholder="제목"
-            aria-label="제목"
-            maxLength={ TITLE_MAX_LENGTH }
-            value={ title }
-            onChange={ (e) => setTitle(e.target.value) }
-          />
-
-          <RichTextEditor.Root editor={ editor } minHeight="sm">
-            { shared?.snapshot && !isVote && (
-              <Stack gap="4" padding="4" paddingBottom="0">
-                <Text fontWeight="bold">{ shared.sharedType === 'FITTING' ? '공유할 가상 피팅' : '공유할 코디' }</Text>
-                { shared.snapshot.imageUrl && (
-                  <Image src={ shared.snapshot.imageUrl } alt="공유할 가상 피팅 결과" maxWidth="xs" bg="bg.muted"/>
-                ) }
-                { shared.snapshot.items.map((item) => (
-                  <Flex key={ item.productId } justify="space-between" gap="4">
-                    <Text>{ item.productName }</Text>
-                    <Text>{ item.price.toLocaleString() }원</Text>
-                  </Flex>
-                )) }
-                <Text fontWeight="bold" alignSelf="flex-end">
-                  합계 { shared.snapshot.totalPrice.toLocaleString() }원
-                </Text>
-                <Separator/>
-              </Stack>
-            ) }
-            <RichTextEditor.Content/>
-          </RichTextEditor.Root>
-          <Text fontSize="xs" color={ content.length > CONTENT_MAX_LENGTH ? 'fg.error' : 'fg.muted' } alignSelf="flex-end">
-            { content.length } / { CONTENT_MAX_LENGTH }
-          </Text>
-
-          <Button colorPalette="primary" disabled={ !canSubmit } loading={ submitting } onClick={ submit }>
-            { isEditing ? '수정하기' : '작성하기' }
-          </Button>
         </Stack>
       </Container>
+
+      <CommunityOptionSourceSheet open={ sheetOpen } onClose={ () => setSheetOpen(false) } onSelect={ openPicker }/>
       <Toaster/>
     </Stack>
   )

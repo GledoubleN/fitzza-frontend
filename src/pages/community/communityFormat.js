@@ -29,3 +29,9 @@ export const formatRemaining = (dateTime) => {
   if (left < DAY) return `${ Math.floor(left / HOUR) }시간 남음`
   return `${ Math.floor(left / DAY) }일 남음`
 }
+
+export const MAX_VOTE_OPTIONS = 4
+
+export const VOTE_LABELS = 'ABCD'
+
+export const optionKey = ({ source, itemType, itemId }) => `${ source }-${ itemType }-${ itemId }`
