@@ -1,4 +1,4 @@
-import { Box, Image, Text, IconButton, VStack } from '@chakra-ui/react'
+import { Box, Image, Text, Heading, IconButton, VStack } from '@chakra-ui/react'
 import { LuHeart } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios'
@@ -72,7 +72,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
       onClick={() => navigate(`/products/${productId}`)}
       gap={2}
     >
-      <Box position="relative" width="100%" paddingTop="100%" bg="gray.100" borderRadius="md" overflow="hidden">
+      <Box position="relative" width="100%" paddingTop="100%" bg="bg.muted" borderRadius="md" overflow="hidden">
         <Image
           src={product?.thumbnailUrl ?? product?.imageUrl ?? defaultThumbnail}
           alt={productName}
@@ -93,17 +93,17 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           onClick={handleWishClick}
           disabled={isLoading}
         >
-          <LuHeart fill={isLiked ? 'red' : 'none'} color={isLiked ? 'red' : 'currentColor'} />
+          <LuHeart fill={isLiked ? 'fg.error' : 'none'} color={isLiked ? 'fg.error' : 'currentColor'} />
         </IconButton>
       </Box>
       <VStack align="start" gap={1}>
-        <Text fontSize="xs" color="fg.muted" truncate>
+        <Text textStyle="xs" color="fg.muted" truncate>
           {product?.brandName}
         </Text>
-        <Text fontSize="sm" fontWeight="medium" truncate width="100%">
+        <Heading size="sm" truncate width="100%">
           {productName}
-        </Text>
-        <Text fontSize="sm" fontWeight="bold">
+        </Heading>
+        <Text textStyle="sm" fontWeight="bold">
           {product?.price != null ? `${Number(product.price).toLocaleString()}원` : '가격 정보 없음'}
         </Text>
       </VStack>
