@@ -91,7 +91,8 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
               />
               { option.name && (
                 <Text fontSize="xs" color="fg.muted" lineClamp="1">
-                  { option.name }{ option.price !== null && option.price !== undefined && ` · ${ option.price.toLocaleString() }원` }
+                  { option.name }
+                  { option.price !== null && option.price !== undefined && ` · ${ option.price.toLocaleString() }원` }
                 </Text>
               ) }
               <Button
@@ -119,8 +120,9 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
       <Flex justify="space-between" align="center" gap="4">
         <Text fontSize="sm" color="fg.muted">
           { poll.closed
-            ? `투표 종료 · 총 ${ poll.total }명 참여${ myLabel ? ` · 내 선택 ${ myLabel }` : '' }`
-            : `투표중${ poll.voteEndAt ? ` ${ formatRemaining(poll.voteEndAt) }` : '' }${ myLabel ? ` · 내 선택 ${ myLabel }` : '' }` }
+            ? `투표 종료 · 총 ${ poll.total }명 참여`
+            : `투표중${ poll.voteEndAt ? ` ${ formatRemaining(poll.voteEndAt) }` : '' }` }
+          { myLabel && ` · 내 선택 ${ myLabel }` }
         </Text>
         { isAuthor && !poll.closed && (
           <Button size="xs" variant="outline" onClick={ () => setCloseDialogOpen(true) }>투표 종료하기</Button>

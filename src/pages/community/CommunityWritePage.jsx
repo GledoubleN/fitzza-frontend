@@ -202,7 +202,14 @@ export const CommunityWritePage = () => {
                           <Circle size="6" bg="fg" color="bg" fontSize="xs" fontWeight="bold" flexShrink="0">
                             { VOTE_LABELS[index] }
                           </Circle>
-                          <Image src={ option.imageUrl } alt="" boxSize="12" objectFit="cover" rounded="md" bg="bg.muted"/>
+                          <Image
+                            src={ option.imageUrl }
+                            alt=""
+                            boxSize="12"
+                            objectFit="cover"
+                            rounded="md"
+                            bg="bg.muted"
+                          />
                           <Stack gap="0" flex="1" minWidth="0">
                             <Text fontWeight="bold" lineClamp="1">{ option.name }</Text>
                             { option.price !== null && option.price !== undefined && (
@@ -271,7 +278,11 @@ export const CommunityWritePage = () => {
                 ) }
                 <RichTextEditor.Content/>
               </RichTextEditor.Root>
-              <Text fontSize="xs" color={ content.length > CONTENT_MAX_LENGTH ? 'fg.error' : 'fg.muted' } alignSelf="flex-end">
+              <Text
+                fontSize="xs"
+                color={ content.length > CONTENT_MAX_LENGTH ? 'fg.error' : 'fg.muted' }
+                alignSelf="flex-end"
+              >
                 { content.length } / { CONTENT_MAX_LENGTH }
               </Text>
 

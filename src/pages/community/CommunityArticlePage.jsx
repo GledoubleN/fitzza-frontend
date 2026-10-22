@@ -285,7 +285,8 @@ export const CommunityArticlePage = () => {
             </HStack>
             <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
             <Text color="fg.muted" fontSize="sm">
-              { displayNickname(post.author?.nickname) } · { formatRelativeTime(post.createdAt) } · 조회 { post.viewCount }
+              { displayNickname(post.author?.nickname) } · { formatRelativeTime(post.createdAt) }
+              { ` · 조회 ${ post.viewCount }` }
             </Text>
           </Stack>
 
@@ -296,7 +297,14 @@ export const CommunityArticlePage = () => {
               <Card.Body gap="4">
                 <Text fontWeight="semibold" fontSize="sm">{ SHARED_TITLES[shared.type] }</Text>
                 { shared.type === 'FITTING' && shared.snapshot?.imageUrl && (
-                  <Image src={ shared.snapshot.imageUrl } alt="" maxHeight="sm" width="fit-content" rounded="md" bg="bg.muted"/>
+                  <Image
+                    src={ shared.snapshot.imageUrl }
+                    alt=""
+                    maxHeight="sm"
+                    width="fit-content"
+                    rounded="md"
+                    bg="bg.muted"
+                  />
                 ) }
                 { sharedProduct && (
                   <Flex
@@ -306,7 +314,14 @@ export const CommunityArticlePage = () => {
                     textAlign="start"
                     onClick={ () => navigate(`/products/${ sharedProduct.productId }`) }
                   >
-                    <Image src={ sharedProduct.imageUrl } alt="" boxSize="16" objectFit="cover" rounded="sm" bg="bg.muted"/>
+                    <Image
+                      src={ sharedProduct.imageUrl }
+                      alt=""
+                      boxSize="16"
+                      objectFit="cover"
+                      rounded="sm"
+                      bg="bg.muted"
+                    />
                     <Stack gap="0" flex="1" minWidth="0">
                       <Text fontSize="xs" color="fg.muted">{ sharedProduct.brandName }</Text>
                       <Text fontSize="sm" lineClamp="1">{ sharedProduct.productName }</Text>

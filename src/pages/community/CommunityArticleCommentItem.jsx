@@ -16,7 +16,17 @@ export const CommunityArticleCommentItem = ({
   onUpdate,
   onDelete,
 }) => {
-  const { commentId, author, content, createdAt, likeCount, liked, isDeleted, supportedOptionId, replies = [] } = comment
+  const {
+    commentId,
+    author,
+    content,
+    createdAt,
+    likeCount,
+    liked,
+    isDeleted,
+    supportedOptionId,
+    replies = [],
+  } = comment
   const [replying, setReplying] = useState(false)
   const [replyText, setReplyText] = useState('')
   const [editing, setEditing] = useState(false)

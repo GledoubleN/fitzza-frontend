@@ -57,7 +57,14 @@ const toShared = (sharedType, sharedId) => {
     return {
       type: sharedType,
       id: sharedId,
-      snapshot: { productId: null, brandName: null, productName: null, price: null, imageUrl: '/product-image.png', summary: null },
+      snapshot: {
+        productId: null,
+        brandName: null,
+        productName: null,
+        price: null,
+        imageUrl: '/product-image.png',
+        summary: null,
+      },
       items: [],
     }
   }
@@ -174,7 +181,10 @@ const isValidVoteOptions = (options) => Array.isArray(options)
   && options.length <= 4
   && options.every((option) => option?.source && option.itemType && option.itemId > 0 && option.imageUrl?.trim())
 
-const nextVoteOptionId = () => Math.max(0, ...posts.flatMap((post) => post.voteOptions.map((option) => option.voteOptionId))) + 1
+const nextVoteOptionId = () => Math.max(
+  0,
+  ...posts.flatMap((post) => post.voteOptions.map((option) => option.voteOptionId)),
+) + 1
 
 export const communityHandlers = [
   http.get(`${ BASE_URL }/community/posts`, ({ request }) => {
