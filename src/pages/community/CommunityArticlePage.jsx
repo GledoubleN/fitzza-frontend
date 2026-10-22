@@ -78,7 +78,13 @@ export const CommunityArticlePage = () => {
 
   const requireSignIn = () => setSignInOpen(true)
 
-  const notifyError = (error, fallback) => toaster.create({ type: 'error', title: errorMessage(error, fallback) })
+  const notifyError = (error, fallback) => {
+    if (error.response?.status === 401) {
+      requireSignIn()
+      return
+    }
+    toaster.create({ type: 'error', title: errorMessage(error, fallback) })
+  }
 
   const togglePostLike = async () => {
     if (!isSignedIn) {

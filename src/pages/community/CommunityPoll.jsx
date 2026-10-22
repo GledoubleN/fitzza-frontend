@@ -37,6 +37,10 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
       await api.post(`/community/posts/${ postId }/poll/votes`, { voteOptionId })
       await loadPoll()
     } catch (error) {
+      if (error.response?.status === 401) {
+        onRequireSignIn()
+        return
+      }
       toaster.create({ type: 'error', title: errorMessage(error, '투표하지 못했어요.') })
       if (error.response?.status === 409) {
         await loadPoll()
