@@ -192,10 +192,15 @@ export const CommunityArticlePage = () => {
     return (
       <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
         <Header/>
-        <Container maxWidth="3xl">
-          <Stack gap="4">
-            <CommunityTitleBar/>
-            <Text color={ error ? 'fg.error' : 'fg.muted' }>{ error || '불러오는 중...' }</Text>
+        <Container maxWidth="3xl" flex="1" display="flex" flexDirection="column" gap="4">
+          <CommunityTitleBar/>
+          <Stack flex="1" align="center" justify="center" gap="4">
+            <Text color={ error ? 'fg.error' : 'fg.muted' } textAlign="center">{ error || '불러오는 중...' }</Text>
+            { error && (
+              <Button onClick={ () => navigate('/community/main', { replace: true }) }>
+                커뮤니티 메인으로 가기
+              </Button>
+            ) }
           </Stack>
         </Container>
       </Stack>
