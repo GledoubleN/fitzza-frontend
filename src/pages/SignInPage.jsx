@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Box,
   Button,
@@ -23,6 +23,7 @@ export const SignInPage = () => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const navigate = useNavigate()
+  const location = useLocation()
   const { setAccessToken } = useAuth()
 
   const changeHandler = async (e) => {
@@ -32,13 +33,11 @@ export const SignInPage = () => {
     setErrorMessage('')
 
     try {
-      const response = await api.post('/auth/signin', { email, password }, {
-        withCredentials: true,
-      })
+      const response = await api.post('/auth/signin', { email, password })
       const token = response.data?.accessToken
 
       setAccessToken(token)
-      navigate('/')
+      navigate(location.state?.from ?? '/', { replace: true })
 
     } catch (err) {
       setErrorMessage(err.response?.data?.message || '로그인 중 오류가 발생했습니다. 다시 시도해 주세요.')
