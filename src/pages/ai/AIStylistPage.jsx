@@ -5,6 +5,7 @@ import {
   CloseButton,
   Container,
   Dialog,
+  FileUpload,
   Flex,
   IconButton,
   Image,
@@ -12,9 +13,10 @@ import {
   Spinner,
   Stack,
   Text,
+  useFileUpload,
 } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
-import { LuClock } from 'react-icons/lu'
+import { LuClock, LuUpload } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { Header } from '../../components/Header.jsx'
@@ -22,16 +24,32 @@ import { Toaster } from '../../components/ui/toaster.jsx'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
+import { toFittingImageUrl } from '../profile/toFittingImageUrl.js'
+import { listenForPush } from './listenForPush.js'
 
 const FAIL_MESSAGE = '추천을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
 const TIMEOUT = { timeout: 10000 }
-// 추천 요청은 응답에 결과가 담겨 올 때까지 기다리므로 더 길게 잡습니다. 추천 처리 시간이 정해지면 맞춰야 하는 임시 값입니다.
-const RECOMMEND_TIMEOUT = { timeout: 60000 }
 // 응답을 기다리던 중 새로고침된 추천 요청을 알아보기 위한 표시입니다. (sessionStorage 키)
 const PENDING_KEY = 'ai-recommendation-pending'
-// 가상 피팅은 결과 이미지가 응답에 담겨 올 때까지 기다리므로 더 길게 잡습니다. 생성 시간이 정해지면 맞춰야 하는 임시 값입니다.
-const FITTING_TIMEOUT = { timeout: 120000 }
+const RECOMMENDATION_WAIT_LIMIT = 120000
+const RECOMMENDATION_TIMEOUT_MESSAGE = '추천이 오래 걸리고 있어요. 잠시 후 다시 확인해주세요.'
+const FITTING_WAIT_LIMIT = 120000
+const FITTING_TIMEOUT_MESSAGE = '가상 피팅이 오래 걸리고 있어요. 완성되면 프로필의 가상 피팅 갤러리에서 볼 수 있어요.'
+const NOTIFICATION_HINT = '알림을 허용하면 결과가 나오는 즉시 알려드려요.'
+const PHOTO_TYPES = ['image/png', 'image/jpeg', 'image/webp']
+const PHOTO_MAX_SIZE = 15 * 1024 * 1024
+const PHOTO_ERRORS = {
+  FILE_INVALID_TYPE: 'PNG, JPG, WEBP 이미지만 올릴 수 있어요.',
+  FILE_TOO_LARGE: '사진은 15MB 이하로 올려 주세요.',
+}
+
+const isNotificationGranted = () => !('Notification' in window) || Notification.permission === 'granted'
+
+const NotificationHint = () => (
+  !isNotificationGranted() &&
+  <Text fontSize={ 'sm' } color={ 'fg.muted' }>{ NOTIFICATION_HINT }</Text>
+)
 
 export const AIStylistPage = () => {
   const { requestId } = useParams()
@@ -66,7 +84,6 @@ export const AIStylistPage = () => {
     setStatus('done')
   }
 
-  // 추천을 요청합니다. 결과는 이 요청의 응답에 바로 담겨 옵니다.
   const request = async (text) => {
     setQuery(text)
     setResult(null)
@@ -74,17 +91,16 @@ export const AIStylistPage = () => {
     const key = location.key
     sessionStorage.setItem(PENDING_KEY, key)
     try {
-      const { data } = await api.post('/recommendations', { query: text }, RECOMMEND_TIMEOUT)
+      const { data } = await api.post('/recommendations', { query: text }, TIMEOUT)
       sessionStorage.removeItem(PENDING_KEY)
       // 응답을 기다리는 사이 다른 화면으로 옮겼으면 결과화면으로 강제로 이동시키지 않습니다.
       if (activeKey.current !== key) return
       if (data.status === 'FAILED') {
         fail(data.message, true)
       } else if (data.requestId) {
-        // 받은 결과를 함께 넘겨서, 주소를 바꾼 뒤 같은 추천을 다시 조회하지 않게 합니다.
-        navigate(`/ai/${ data.requestId }`, { replace: true, state: { query: text, result: data } })
+        navigate(`/ai/${ data.requestId }`, { replace: true, state: { query: text } })
       } else {
-        show(data)
+        fail()
       }
     } catch (err) {
       sessionStorage.removeItem(PENDING_KEY)
@@ -128,25 +144,36 @@ export const AIStylistPage = () => {
         .catch(() => {})
     }
 
-    if (location.state?.result) {
-      // 방금 추천 요청의 응답으로 받은 결과입니다.
-      show(location.state.result)
-    } else {
-      // 대화 내역이나 주소로 들어온 지난 추천은 조회해서 보여줍니다.
-      setResult(null)
-      setStatus('loading')
-      api.get(`/recommendations/${ encodeURIComponent(requestId) }`, TIMEOUT)
-        .then(({ data }) => {
-          if (cancelled) return
-          if (data.status === 'FAILED') fail(data.message, true)
-          else show(data)
-        })
-        .catch(() => {
-          if (!cancelled) fail()
-        })
+    setResult(null)
+    setStatus('loading')
+    const push = listenForPush(['RECOMMENDATION_DONE'], requestId)
+    const fetchRecommendation = async () => (
+      await api.get(`/recommendations/${ encodeURIComponent(requestId) }`, TIMEOUT)
+    ).data
+    const deadline = Date.now() + RECOMMENDATION_WAIT_LIMIT
+    const load = async () => {
+      let data = await fetchRecommendation()
+      while (data.status === 'PROCESSING') {
+        const shouldCheck = await push.wait(deadline - Date.now())
+        if (cancelled) return
+        data = await fetchRecommendation()
+        if (cancelled) return
+        if (!shouldCheck && data.status === 'PROCESSING') return fail(RECOMMENDATION_TIMEOUT_MESSAGE)
+      }
+      if (cancelled) return
+      if (data.status === 'FAILED') fail(data.message, true)
+      else show(data)
     }
+    load()
+      .catch(() => {
+        if (!cancelled) fail()
+      })
+      .finally(() => push.close())
 
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+      push.close()
+    }
   }, [requestId, location.key, attempt])
 
   // 추천 요청 자체가 실패했거나 서버가 추천 실패를 돌려준 경우에만 새로 요청합니다.
@@ -158,9 +185,12 @@ export const AIStylistPage = () => {
     else setAttempt((attempt) => attempt + 1)
   }
 
-  // 이 화면에서 입어본 가상 피팅들. { id, label, items, status, fittingId, imageUrl, message, retryable }
+  // 이 화면에서 입어본 가상 피팅들. { id, label, items, photo, status, fittingId, imageUrl, message, timedOut }
   const [fittings, setFittings] = useState([])
-  const [isPhotoDialogOpen, setIsPhotoDialogOpen] = useState(false)
+  const [pendingTryOn, setPendingTryOn] = useState(null)
+  const photoUpload = useFileUpload({ accept: PHOTO_TYPES, maxFileSize: PHOTO_MAX_SIZE })
+  const photo = photoUpload.acceptedFiles[0] ?? null
+  const photoErrorCode = photo ? null : photoUpload.rejectedFiles[0]?.errors[0]
   const fittingsEnd = useRef(null)
   const tryingOn = fittings.some((fitting) => fitting.status === 'loading')
 
@@ -169,43 +199,72 @@ export const AIStylistPage = () => {
     if (fittings.length) fittingsEnd.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }, [fittings])
 
-  // 프로필에 올려둔 전신 사진으로 바로 입어봅니다. 사진이 없으면 프로필로 안내합니다.
-  // isWithoutPhoto: 프로필 사진이 없는 경우를 개발 중에 확인하기 위한 값
-  const runFitting = async (fitting, isWithoutPhoto = false) => {
-    const update = (patch) => setFittings((fittings) => [
-      ...fittings.filter((other) => other.id !== fitting.id),
-      { ...fitting, ...patch },
-    ])
-    update({ status: 'loading' })
-    try {
-      // TODO API 필요: 프로필 전신 사진 ID(photoId)는 명세의 /users/me 응답에 없는 가정 필드입니다.
-      const { data: me } = await api.get('/users/me', TIMEOUT)
-      if (isWithoutPhoto || !me.photoId) {
-        setFittings((fittings) => fittings.filter((other) => other.id !== fitting.id))
-        setIsPhotoDialogOpen(true)
-        return
-      }
+  const createFitting = ({ items, photo }) => {
+    const productIds = items.map((item) => item.productId)
+    if (!photo) {
+      return api.post('/vton', { productIds }, TIMEOUT)
+    }
 
-      // 결과는 이 요청의 응답에 바로 담겨 옵니다. (조회·폴링 없음)
-      const { data } = await api.post('/fittings', {
-        photoId: me.photoId,
-        productIds: fitting.items.map((item) => item.productId),
-      }, FITTING_TIMEOUT)
-      if (data.status === 'COMPLETED' && data.resultImageUrl) {
-        update({ status: 'done', fittingId: data.fittingId, imageUrl: data.resultImageUrl })
+    const form = new FormData()
+    form.append('productIds', JSON.stringify(productIds))
+    form.append('userImage', photo)
+    return api.post('/vton', form, {
+      ...TIMEOUT,
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  }
+
+  const waitForFitting = async (fittingId) => {
+    const push = listenForPush(['FITTING_DONE', 'FITTING_FAILED'], fittingId)
+    const fetchFitting = async () => (await api.get(`/vton/${ fittingId }`, TIMEOUT)).data
+    const deadline = Date.now() + FITTING_WAIT_LIMIT
+    try {
+      let detail = await fetchFitting()
+      while (detail.status === 'PENDING') {
+        const shouldCheck = await push.wait(deadline - Date.now())
+        detail = await fetchFitting()
+        if (!shouldCheck && detail.status === 'PENDING') return null
+      }
+      return detail
+    } finally {
+      push.close()
+    }
+  }
+
+  const runFitting = async (fitting) => {
+    const update = (patch) => setFittings((fittings) => fittings.map(
+      (other) => other.id === fitting.id ? { ...other, ...patch } : other,
+    ))
+    setFittings((fittings) => [...fittings, { ...fitting, status: 'loading', message: '' }])
+    try {
+      const { data: created } = await createFitting(fitting)
+      const detail = await waitForFitting(created.fittingId)
+
+      if (!detail) {
+        update({ status: 'failed', message: FITTING_TIMEOUT_MESSAGE, timedOut: true })
+      } else if (detail.status === 'COMPLETED' && detail.resultImageUrl) {
+        update({ status: 'done', fittingId: detail.fittingId, imageUrl: toFittingImageUrl(detail.resultImageUrl) })
       } else {
-        update({ status: 'failed', message: data.failReason, retryable: data.retryable !== false })
+        update({ status: 'failed', message: detail.errorMessage })
       }
     } catch (err) {
       update({
         status: 'failed',
-        message: err.response?.status === 400 ? '사진이나 상품을 확인한 뒤 다시 시도해주세요.' : '',
-        retryable: true,
+        message: err.response?.data?.message ?? '',
       })
     }
   }
 
-  const tryOn = (label, items) => runFitting({ id: crypto.randomUUID(), label, items })
+  const tryOn = (label, items) => {
+    photoUpload.clearFiles()
+    photoUpload.clearRejectedFiles()
+    setPendingTryOn({ label, items })
+  }
+
+  const startTryOn = () => {
+    runFitting({ id: crypto.randomUUID(), ...pendingTryOn, photo })
+    setPendingTryOn(null)
+  }
 
   const shareFitting = (fitting) => {
     // 작성 화면에 보여줄 피팅 결과.
@@ -254,11 +313,12 @@ export const AIStylistPage = () => {
           {
             status === 'loading' &&
             <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
-              <Card.Body>
+              <Card.Body gap={ 4 }>
                 <Flex align={ 'center' } gap={ 3 }>
                   <Spinner size={ 'sm' }></Spinner>
                   <Text>고객님에게 맞는 제품을 찾고 있어요</Text>
                 </Flex>
+                <NotificationHint></NotificationHint>
               </Card.Body>
             </Card.Root>
           }
@@ -337,22 +397,23 @@ export const AIStylistPage = () => {
                       <Text fontWeight={ 'bold' }>{ fitting.label } 가상 피팅</Text>
                       {
                         fitting.status === 'loading' &&
-                        <Flex align={ 'center' } gap={ 3 }>
-                          <Spinner size={ 'sm' }></Spinner>
-                          <Text>고객님 사진에 입혀보고 있어요</Text>
-                        </Flex>
+                        <>
+                          <Flex align={ 'center' } gap={ 3 }>
+                            <Spinner size={ 'sm' }></Spinner>
+                            <Text>{ fitting.photo ? '고객님 사진에 입혀보고 있어요' : '기본 모델에 입혀보고 있어요' }</Text>
+                          </Flex>
+                          <NotificationHint></NotificationHint>
+                        </>
                       }
                       {
                         fitting.status === 'failed' &&
                         <>
                           <Text color={ 'fg.error' }>
-                            { fitting.message || '가상 피팅을 만들지 못했어요. 잠시 후 다시 시도해주세요.' }
+                            { fitting.message || '가상 피팅을 만들지 못했어요.' }
                           </Text>
                           {
-                            fitting.retryable &&
-                            <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ () => runFitting(fitting) }>
-                              다시 시도
-                            </Button>
+                            !fitting.timedOut &&
+                            <Text fontSize={ 'sm' } color={ 'fg.muted' }>실패한 가상 피팅은 다시 시도할 수 없어요.</Text>
                           }
                         </>
                       }
@@ -370,16 +431,6 @@ export const AIStylistPage = () => {
                   </Card.Root>
                 ))
               }
-              { import.meta.env.DEV && (
-                <Button
-                  variant={ 'outline' }
-                  alignSelf={ 'flex-start' }
-                  disabled={ tryingOn }
-                  onClick={ () => runFitting({ id: crypto.randomUUID(), label: '개발용', items: [] }, true) }
-                >
-                  사진 없이 입은 경우 (개발용)
-                </Button>
-              ) }
               <Box ref={ fittingsEnd }></Box>
             </>
           }
@@ -387,8 +438,8 @@ export const AIStylistPage = () => {
       </Container>
 
       <Dialog.Root
-        open={ isPhotoDialogOpen }
-        onOpenChange={ (event) => setIsPhotoDialogOpen(event.open) }
+        open={ !!pendingTryOn }
+        onOpenChange={ (event) => !event.open && setPendingTryOn(null) }
         placement={ 'center' }
       >
         <Portal>
@@ -396,16 +447,49 @@ export const AIStylistPage = () => {
           <Dialog.Positioner>
             <Dialog.Content marginX={ 4 }>
               <Dialog.Header>
-                <Dialog.Title>사용자님의 사진이 필요합니다.</Dialog.Title>
+                <Dialog.Title>{ pendingTryOn?.label } 입어보기</Dialog.Title>
               </Dialog.Header>
               <Dialog.Body>
-                <Text color={ 'fg.muted' }>가상 피팅을 하려면 프로필에 전신 사진을 올려 주세요.</Text>
+                <Stack gap={ 4 }>
+                  <Text color={ 'fg.muted' }>
+                    얼굴이 나온 사진을 올리면 맞춰서 입혀드려요. 사진 없이도 기본 모델로 입어볼 수 있어요.
+                  </Text>
+                  <FileUpload.RootProvider value={ photoUpload }>
+                    <FileUpload.HiddenInput/>
+                    <FileUpload.Trigger asChild>
+                      <Button variant={ 'outline' } size={ 'sm' }>
+                        <LuUpload></LuUpload> 사진 선택
+                      </Button>
+                    </FileUpload.Trigger>
+                    <FileUpload.ItemGroup>
+                      <FileUpload.Context>
+                        {
+                          ({ acceptedFiles }) => acceptedFiles.map((file) => (
+                            <FileUpload.Item key={ file.name } file={ file }>
+                              <FileUpload.ItemPreviewImage width={ 24 } aspectRatio={ 3 / 4 } objectFit={ 'cover' }/>
+                              <FileUpload.ItemContent>
+                                <FileUpload.ItemName/>
+                                <FileUpload.ItemSizeText/>
+                              </FileUpload.ItemContent>
+                              <FileUpload.ItemDeleteTrigger/>
+                            </FileUpload.Item>
+                          ))
+                        }
+                      </FileUpload.Context>
+                    </FileUpload.ItemGroup>
+                  </FileUpload.RootProvider>
+                  {
+                    photoErrorCode &&
+                    <Text fontSize={ 'sm' } color={ 'fg.error' }>{ PHOTO_ERRORS[photoErrorCode] ?? '이 사진은 올릴 수 없어요.' }</Text>
+                  }
+                  <Text fontSize={ 'sm' } color={ 'fg.muted' }>PNG, JPG, WEBP · 최대 15MB</Text>
+                </Stack>
               </Dialog.Body>
               <Dialog.Footer>
                 <Dialog.ActionTrigger asChild>
                   <Button variant={ 'outline' }>취소</Button>
                 </Dialog.ActionTrigger>
-                <Button onClick={ () => navigate('/profile') }>프로필로 이동</Button>
+                <Button onClick={ startTryOn }>{ photo ? '이 사진으로 입어보기' : '사진 없이 입어보기' }</Button>
               </Dialog.Footer>
               <Dialog.CloseTrigger asChild>
                 <CloseButton size={ 'sm' }/>

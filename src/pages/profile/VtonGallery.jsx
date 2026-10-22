@@ -1,0 +1,306 @@
+import {
+  AspectRatio,
+  Box,
+  Button,
+  CloseButton,
+  Dialog,
+  Flex,
+  Grid,
+  Image,
+  Portal,
+  Spinner,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
+import { useEffect, useRef, useState } from 'react'
+import { LuChevronRight } from 'react-icons/lu'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { api } from '../../api/axios.js'
+import { toaster } from '../../components/ui/toaster.jsx'
+import { FailureTestButtons } from '../../mocks/FailureTestButtons.jsx'
+import { toFittingImageUrl } from './toFittingImageUrl.js'
+
+const PAGE_SIZE = 20
+const PREVIEW_PAGE_SIZE = 8
+const PREVIEW_ROWS = 2
+
+const isSuccessful = (fitting) => fitting.status !== 'FAILED'
+
+const formatDate = (value) => new Date(value).toLocaleDateString('ko-KR')
+
+const formatDateTime = (value) => new Date(value).toLocaleString('ko-KR', {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+})
+
+const toFittingTitle = ({ products = [] }) => {
+  if (!products.length) return '가상 피팅'
+  const [first, ...rest] = products
+  return rest.length ? `${ first.productName } 외 ${ rest.length }개` : first.productName
+}
+
+const FittingThumbnail = ({ fitting }) => {
+  if (fitting.status === 'COMPLETED' && fitting.resultImageUrl) {
+    return <Image src={ toFittingImageUrl(fitting.resultImageUrl) } alt={ '가상 피팅 결과' } objectFit={ 'cover' }></Image>
+  }
+
+  return (
+    <Flex direction={ 'column' } align={ 'center' } justify={ 'center' } gap={ 4 } bg={ 'bg.muted' }>
+      <Spinner size={ 'sm' }></Spinner>
+      <Text textStyle={ 'xs' } color={ 'fg.muted' }>만드는 중</Text>
+    </Flex>
+  )
+}
+
+export const VtonGallery = ({ preview = false }) => {
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const linkedFittingId = searchParams.get('fittingId')
+  const [fittings, setFittings] = useState([])
+  const [totalCount, setTotalCount] = useState(0)
+  const [status, setStatus] = useState('loading')
+  const [selected, setSelected] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const loadMoreTrigger = useRef(null)
+  const grid = useRef(null)
+  const [columnCount, setColumnCount] = useState(0)
+  const successfulFittings = fittings.filter(isSuccessful)
+  const visibleFittings = preview ? successfulFittings.slice(0, columnCount * PREVIEW_ROWS) : successfulFittings
+
+  const fetchPreview = async () => {
+    const items = []
+    let totalCount = Infinity
+    while (items.filter(isSuccessful).length < PREVIEW_PAGE_SIZE && items.length < totalCount) {
+      const { data } = await api.get('/vton', { params: { limit: PREVIEW_PAGE_SIZE, offset: items.length } })
+      if (!data.items.length) break
+      items.push(...data.items)
+      totalCount = data.totalCount
+    }
+    return items
+  }
+
+  const load = async (offset = 0) => {
+    setStatus('loading')
+    try {
+      if (preview) {
+        setFittings(await fetchPreview())
+      } else {
+        const { data } = await api.get('/vton', { params: { limit: PAGE_SIZE, offset } })
+        setFittings((fittings) => offset ? [...fittings, ...data.items] : data.items)
+        setTotalCount(data.totalCount)
+      }
+      setStatus('done')
+    } catch {
+      setStatus('failed')
+    }
+  }
+
+  const hasMore = !preview && fittings.length < totalCount
+
+  useEffect(() => {
+    if (!hasMore || status !== 'done') return
+    const observer = new IntersectionObserver(
+      ([entry]) => entry.isIntersecting && load(fittings.length),
+      { rootMargin: '200px' },
+    )
+    observer.observe(loadMoreTrigger.current)
+    return () => observer.disconnect()
+  }, [hasMore, status, fittings.length])
+
+  useEffect(() => {
+    load()
+  }, [])
+
+  useEffect(() => {
+    if (!linkedFittingId) return
+    let cancelled = false
+    api.get(`/vton/${ encodeURIComponent(linkedFittingId) }`)
+      .then(({ data }) => {
+        if (!cancelled) setSelected(data)
+      })
+      .catch(() => {
+        if (!cancelled) toaster.create({ type: 'error', title: '가상 피팅을 찾지 못했어요.' })
+      })
+    return () => { cancelled = true }
+  }, [linkedFittingId])
+
+  const closeDialog = () => {
+    setSelected(null)
+    if (linkedFittingId) setSearchParams({}, { replace: true })
+  }
+
+  useEffect(() => {
+    if (!preview) return
+    const measure = () => setColumnCount(getComputedStyle(grid.current).gridTemplateColumns.split(' ').length)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(grid.current)
+    return () => observer.disconnect()
+  }, [preview])
+
+  const deleteFitting = async () => {
+    setIsDeleting(true)
+    try {
+      await api.delete(`/vton/${ selected.fittingId }`)
+      setFittings((fittings) => fittings.filter((fitting) => fitting.fittingId !== selected.fittingId))
+      setTotalCount((count) => count - 1)
+      closeDialog()
+    } catch {
+      toaster.create({ type: 'error', title: '가상 피팅을 삭제하지 못했어요. 다시 시도해 주세요.' })
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  return (
+    <Stack gap={ 4 }>
+      {
+        preview &&
+        <Button
+          variant={ 'plain' }
+          alignSelf={ 'flex-start' }
+          padding={ 0 }
+          height={ 'auto' }
+          onClick={ () => navigate('/profile/fittings') }
+        >
+          <Text as={ 'span' } textStyle={ 'md' } fontWeight={ '700' }>가상 피팅 갤러리</Text>
+          <LuChevronRight></LuChevronRight>
+        </Button>
+      }
+
+      {
+        status === 'done' && !successfulFittings.length &&
+        <Stack align={ 'center' } gap={ 4 } paddingY={ 8 }>
+          <Text color={ 'fg.muted' } textAlign={ 'center' }>
+            아직 입어본 옷이 없어요. 메인 화면에서 AI 스타일리스트에게 추천받은 상품으로 입어볼 수 있어요.
+          </Text>
+          <Button variant={ 'outline' } size={ 'sm' } onClick={ () => navigate('/') }>추천받기</Button>
+        </Stack>
+      }
+
+      <Grid
+        ref={ grid }
+        templateColumns={ preview
+          ? 'repeat(auto-fill, minmax(max({sizes.24}, calc((100% - 3 * {spacing.4}) / 4)), 1fr))'
+          : 'repeat(auto-fill, minmax(max({sizes.28}, calc((100% - 5 * {spacing.4}) / 6)), 1fr))' }
+        gap={ 4 }
+      >
+        {
+          visibleFittings.map((fitting) => (
+            <Button
+              key={ fitting.fittingId }
+              variant={ 'plain' }
+              height={ 'auto' }
+              padding={ 0 }
+              display={ 'block' }
+              textAlign={ 'start' }
+              onClick={ () => setSelected(fitting) }
+            >
+              <AspectRatio ratio={ 3 / 4 } borderRadius={ 'xl' } overflow={ 'hidden' } borderWidth={ 'thin' } borderColor={ 'border.subtle' }>
+                <FittingThumbnail fitting={ fitting }></FittingThumbnail>
+              </AspectRatio>
+              <Text textStyle={ 'xs' } color={ 'fg.muted' } marginTop={ 4 } truncate>
+                { fitting.products?.map((product) => product.productName).join(', ') }
+              </Text>
+              <Text textStyle={ 'xs' } color={ 'fg.subtle' }>{ formatDate(fitting.createdAt) }</Text>
+            </Button>
+          ))
+        }
+      </Grid>
+
+      { hasMore && <Box ref={ loadMoreTrigger }></Box> }
+      { status === 'loading' && <Flex justify={ 'center' } paddingY={ 4 }><Spinner></Spinner></Flex> }
+      {
+        status === 'failed' &&
+        <Stack align={ 'center' } gap={ 4 }>
+          <Text color={ 'fg.error' }>가상 피팅 기록을 불러오지 못했어요.</Text>
+          <Button variant={ 'outline' } size={ 'sm' } onClick={ () => load(fittings.length) }>다시 시도</Button>
+        </Stack>
+      }
+
+      {
+        import.meta.env.DEV &&
+        <FailureTestButtons tests={ [
+          {
+            label: '빈 갤러리',
+            method: 'get',
+            path: '/vton',
+            respond: (HttpResponse) => HttpResponse.json({ items: [], totalCount: 0 }),
+            onReady: () => load(),
+          },
+          { label: '다음 목록 불러오기', method: 'get', path: '/vton' },
+          { label: '삭제 실패', method: 'delete', path: '/vton/:fittingId' },
+        ] }/>
+      }
+
+      <Dialog.Root
+        open={ !!selected }
+        onOpenChange={ (event) => !event.open && closeDialog() }
+        placement={ 'center' }
+        scrollBehavior={ 'inside' }
+        size={ 'xl' }
+      >
+        <Portal>
+          <Dialog.Backdrop/>
+          <Dialog.Positioner>
+            <Dialog.Content marginX={ 4 }>
+              <Dialog.Header flexWrap={ 'wrap' } alignItems={ 'center' } columnGap={ 4 } paddingEnd={ 12 }>
+                <Dialog.Title>{ selected && toFittingTitle(selected) }</Dialog.Title>
+                <Stack gap={ 0 }>
+                  <Text textStyle={ 'xs' } color={ 'fg.muted' }>{ selected && formatDateTime(selected.createdAt) }</Text>
+                  <Text textStyle={ 'xs' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
+                </Stack>
+              </Dialog.Header>
+              <Dialog.Body>
+                {
+                  selected &&
+                  <Grid templateColumns={ { base: '1fr', md: '3fr 2fr' } } gap={ 4 } alignItems={ 'start' }>
+                    <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } borderRadius={ 'xl' } overflow={ 'hidden' }>
+                      <FittingThumbnail fitting={ selected }></FittingThumbnail>
+                    </AspectRatio>
+                    <Stack gap={ 4 }>
+                      {
+                        selected.products?.map((product) => (
+                          <Flex
+                            key={ product.productId }
+                            as={ 'button' }
+                            align={ 'center' }
+                            gap={ 4 }
+                            textAlign={ 'start' }
+                            cursor={ 'pointer' }
+                            onClick={ () => navigate(`/products/${ product.productId }`) }
+                          >
+                            <Box width={ 12 } flexShrink={ 0 }>
+                              <AspectRatio ratio={ 1 } borderRadius={ 'md' } overflow={ 'hidden' } bg={ 'bg.muted' }>
+                                <Image src={ product.imageUrl } alt={ product.productName }></Image>
+                              </AspectRatio>
+                            </Box>
+                            <Stack gap={ 0 } minWidth={ 0 }>
+                              <Text textStyle={ 'sm' } truncate>{ product.productName }</Text>
+                              <Text textStyle={ 'xs' } color={ 'fg.muted' }>{ product.price.toLocaleString() }원</Text>
+                            </Stack>
+                          </Flex>
+                        ))
+                      }
+                    </Stack>
+                  </Grid>
+                }
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Button variant={ 'outline' } loading={ isDeleting } onClick={ deleteFitting }>
+                  삭제
+                </Button>
+              </Dialog.Footer>
+              <Dialog.CloseTrigger asChild>
+                <CloseButton size={ 'sm' }/>
+              </Dialog.CloseTrigger>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
+    </Stack>
+  )
+}

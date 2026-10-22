@@ -20,10 +20,11 @@ import {
   LuGift,
   LuMessageSquare,
   LuSettings,
-  LuChevronRight,
 } from 'react-icons/lu';
 import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
+import { Toaster } from '../components/ui/toaster.jsx';
+import { VtonGallery } from './profile/VtonGallery.jsx';
 import { api } from '../api/axios.js';
 import { useAuth } from '../contexts/AuthContext.js'
 import preferredFits from '/src/data/preferred-fits.json'
@@ -64,7 +65,7 @@ export default function ProfilePage() {
     } catch (err) {
       if (err.response?.status === 401) {
         setAccessToken(null)
-        navigate('/signin');
+        navigate('/signin', { replace: true });
       } else {
         console.warn("백엔드 통신 실패. 기본 프로필 정보를 표시합니다.", err);
       }
@@ -281,7 +282,7 @@ export default function ProfilePage() {
 
             <Grid templateColumns="repeat(4, 1fr)" gap={2}>
               {[
-                { label: '주문', icon: LuPackage },
+                { label: '주문', icon: LuPackage, path: '/orders' },
                 { label: '이벤트', icon: LuGift },
                 { label: '커뮤니티', icon: LuMessageSquare },
                 { label: '설정', icon: LuSettings },
@@ -303,6 +304,7 @@ export default function ProfilePage() {
                     justifyContent="center"
                     bg="bg.muted"
                     _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
+                    onClick={() => item.path && navigate(item.path)}
                   >
                     <Box mb={1} color="fg">
                       <IconComponent size={20} />
@@ -323,33 +325,7 @@ export default function ProfilePage() {
             display="flex"
             flexDirection="column"
           >
-            <Flex justify="space-between" align="center" mb={6}>
-              <Heading textStyle="md" fontWeight="700">
-                나의 스냅
-              </Heading>
-              <Button variant="ghost" size="sm" color="fg.muted">
-                전체보기 <LuChevronRight size={16} />
-              </Button>
-            </Flex>
-
-            <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-              {['1', '2', '3', '4'].map((num) => (
-                <Box
-                  key={num}
-                  overflow="hidden"
-                  borderRadius="xl"
-                  borderWidth="thin"
-                  borderColor="border.subtle"
-                  minH="13rem"
-                  bg="bg.muted"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Text textStyle="sm" fontWeight="semibold" color="fg.muted">스냅 {num}</Text>
-                </Box>
-              ))}
-            </Grid>
+            <VtonGallery preview />
           </Box>
         </Grid>
       </Container>
@@ -357,6 +333,7 @@ export default function ProfilePage() {
       <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
         <TabBar />
       </Box>
+      <Toaster />
     </Box>
   );
 }
