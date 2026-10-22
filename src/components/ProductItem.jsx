@@ -1,4 +1,4 @@
-import { Box, Image, Text, Heading, IconButton, VStack } from '@chakra-ui/react'
+import { Box, Image, Text, Heading, IconButton, Stack } from '@chakra-ui/react'
 import { LuHeart } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios'
@@ -18,11 +18,15 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
     setIsLiked(initialIsLiked ?? product?.wished ?? false)
   }, [initialIsLiked, product?.wished])
 
-  const productId = product?.productId ?? product?.itemId
-  const productName = product?.productName ?? product?.name
+  const productId = product?.productId
+  const productName = product?.productName
 
-  const handleWishClick = async (e) => {
-    e.stopPropagation()
+  const handleProductClick = () => {
+    navigate(`/products/${ productId }`)
+  }
+
+  const handleWishClick = async (event) => {
+    event.stopPropagation()
 
     if (!isSignedIn) {
       navigate('/signin')
@@ -43,6 +47,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           title: '찜 목록에서 제외되었습니다.',
           type: 'success',
         })
+
         if (onWishlistChange) {
           onWishlistChange(productId)
         }
@@ -52,9 +57,6 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           title: '찜 목록에 추가되었습니다.',
           type: 'success',
         })
-        if (onWishlistChange) {
-          onWishlistChange(productId)
-        }
       }
     } catch (error) {
       console.warn('찜 상태 변경 실패:', error)
@@ -74,50 +76,57 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
   }
 
   return (
-    <VStack
-      align="stretch"
-      cursor="pointer"
-      onClick={() => navigate(`/products/${productId}`)}
-      gap={2}
-    >
-      <Box position="relative" width="100%" paddingTop="100%" bg="bg.muted" borderRadius="md" overflow="hidden">
+    <Stack gap={ 4 }>
+      <Box
+        position="relative"
+        gap={ 4 }
+      >
         <Image
-          src={product?.thumbnailUrl ?? product?.imageUrl ?? defaultThumbnail}
-          alt={productName}
-          position="absolute"
-          top={0}
-          left={0}
           width="100%"
-          height="100%"
-          objectFit="cover"
+          aspectRatio={ 1 }
+          objectFit="contain"
+          src={ product?.thumbnailUrl || defaultThumbnail }
+          alt={ productName }
+          onClick={ handleProductClick }
+          cursor="pointer"
         />
         <IconButton
           position="absolute"
-          top={2}
-          right={2}
-          aria-label={isLiked ? '찜 해제' : '찜하기'}
+          top={ 0 }
+          right={ 0 }
+          rounded="full"
           variant="ghost"
-          size="sm"
-          onClick={handleWishClick}
-          disabled={isLoading}
+          aria-label={ isLiked ? '찜 해제' : '찜하기' }
+          aria-pressed={ isLiked }
+          color={ isLiked ? 'fg.error' : 'fg.muted' }
+          onClick={ handleWishClick }
+          disabled={ isLoading }
         >
-          <LuHeart
-            fill={isLiked ? 'red' : 'none'}
-            color={isLiked ? 'red' : 'black'}
-          />
+          <LuHeart fill={ isLiked ? 'currentColor' : 'none' } />
         </IconButton>
       </Box>
-      <VStack align="start" gap={1}>
-        <Text textStyle="xs" color="fg.muted" truncate>
-          {product?.brandName}
+
+      <Stack gap={ 0 }>
+        <Text
+          textStyle="xs"
+          color="fg.muted"
+          truncate
+        >
+          { product?.brandName }
         </Text>
-        <Heading size="sm" truncate width="100%">
-          {productName}
+        <Heading
+          size={ { base: 'sm', md: 'md' } }
+          truncate
+        >
+          { productName }
         </Heading>
-        <Text textStyle="sm" fontWeight="bold">
-          {product?.price != null ? `${Number(product.price).toLocaleString()}원` : '가격 정보 없음'}
+        <Text
+          textStyle={ { base: 'xs', md: 'sm' } }
+          fontWeight="bold"
+        >
+          { product?.price?.toLocaleString() } 원
         </Text>
-      </VStack>
-    </VStack>
+      </Stack>
+    </Stack>
   )
 }
