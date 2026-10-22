@@ -1,19 +1,20 @@
 import { Box, Image, Text, IconButton, VStack } from '@chakra-ui/react'
-import { Heart } from 'lucide-react'
+import { LuHeart } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios'
 import { toaster } from '../components/ui/toaster'
 import { useState } from 'react'
+import { useAuth } from '../contexts/AuthContext'
 
 export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange }) => {
   const navigate = useNavigate()
+  const { isSignedIn } = useAuth()
   const [isLiked, setIsLiked] = useState(initialIsLiked ?? product.wished ?? false)
 
   const handleWishClick = async (e) => {
     e.stopPropagation()
 
-    const token = localStorage.getItem('accessToken')
-    if (!token) {
+    if (!isSignedIn) {
       navigate('/signin')
       return
     }
@@ -77,7 +78,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           size="sm"
           onClick={handleWishClick}
         >
-          <Heart fill={isLiked ? 'red' : 'none'} color={isLiked ? 'red' : 'currentColor'} />
+          <LuHeart fill={isLiked ? 'red' : 'none'} color={isLiked ? 'red' : 'currentColor'} />
         </IconButton>
       </Box>
       <VStack align="start" gap={1}>
