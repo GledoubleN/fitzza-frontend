@@ -84,7 +84,7 @@ const toSummary = (post) => ({
   commentCount: countComments(post.postId),
 })
 
-const toDetail = (post) => ({
+const toDetail = (post, signedIn) => ({
   postId: post.postId,
   title: post.title,
   content: post.content,
@@ -93,7 +93,7 @@ const toDetail = (post) => ({
   author: post.author,
   shared: post.shared,
   likeCount: post.likeCount,
-  liked: postLikes.get(post.postId) ?? false,
+  liked: signedIn && (postLikes.get(post.postId) ?? false),
   commentCount: countComments(post.postId),
   viewCount: post.viewCount,
   createdAt: post.createdAt,
@@ -103,7 +103,7 @@ const toDetail = (post) => ({
   voteOptions: post.voteOptions.map(({ count, ...option }) => option),
 })
 
-const toPoll = (post) => {
+const toPoll = (post, signedIn) => {
   const total = post.voteOptions.reduce((sum, option) => sum + option.count, 0)
 
   return {
@@ -118,14 +118,14 @@ const toPoll = (post) => {
     total,
     voteEndAt: post.voteEndAt,
     closed: isVoteClosed(post),
-    myVoteOptionId: post.myVoteOptionId ?? null,
+    myVoteOptionId: signedIn ? post.myVoteOptionId ?? null : null,
   }
 }
 
-const toCommentTree = (postId, supportedOptionId) => {
+const toCommentTree = (postId, supportedOptionId, signedIn) => {
   const toResponse = ({ postId, parentCommentId, ...comment }) => ({
     ...comment,
-    liked: commentLikes.get(comment.commentId) ?? false,
+    liked: signedIn && (commentLikes.get(comment.commentId) ?? false),
     replies: [],
   })
   const roots = comments
@@ -246,7 +246,7 @@ export const communityHandlers = [
     return HttpResponse.json({ postId: post.postId }, { status: 201 })
   }),
 
-  http.get(`${ BASE_URL }/community/posts/:postId`, ({ params }) => {
+  http.get(`${ BASE_URL }/community/posts/:postId`, ({ params, request }) => {
     const post = findPost(params.postId)
     if (!post) {
       return error(404, 'POST_NOT_FOUND', '게시글을 찾을 수 없습니다.')
@@ -254,7 +254,7 @@ export const communityHandlers = [
 
     post.viewCount += 1
 
-    return HttpResponse.json(toDetail(post))
+    return HttpResponse.json(toDetail(post, !isSignedOut(request)))
   }),
 
   http.patch(`${ BASE_URL }/community/posts/:postId`, async ({ params, request }) => {
@@ -342,7 +342,7 @@ export const communityHandlers = [
     return HttpResponse.json({ likeCount: post.likeCount })
   }),
 
-  http.get(`${ BASE_URL }/community/posts/:postId/poll`, ({ params }) => {
+  http.get(`${ BASE_URL }/community/posts/:postId/poll`, ({ params, request }) => {
     const post = findPost(params.postId)
     if (!post) {
       return error(404, 'POST_NOT_FOUND', '게시글을 찾을 수 없습니다.')
@@ -351,7 +351,7 @@ export const communityHandlers = [
       return error(400, 'NOT_VOTE_POST', '투표 게시글이 아닙니다.')
     }
 
-    return HttpResponse.json(toPoll(post))
+    return HttpResponse.json(toPoll(post, !isSignedOut(request)))
   }),
 
   http.post(`${ BASE_URL }/community/posts/:postId/poll/votes`, async ({ params, request }) => {
@@ -417,7 +417,7 @@ export const communityHandlers = [
 
     const supportedOptionId = Number(new URL(request.url).searchParams.get('supportedOptionId')) || null
 
-    return HttpResponse.json(toCommentTree(post.postId, supportedOptionId))
+    return HttpResponse.json(toCommentTree(post.postId, supportedOptionId, !isSignedOut(request)))
   }),
 
   http.post(`${ BASE_URL }/community/posts/:postId/comments`, async ({ params, request }) => {
