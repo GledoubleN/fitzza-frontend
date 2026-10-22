@@ -108,7 +108,6 @@ export const CommunityMainPage = () => {
                   rounded="full"
                   flexShrink="0"
                   variant={ filter === item ? 'solid' : 'outline' }
-                  colorPalette="gray"
                   onClick={ () => selectFilter(item) }
                 >
                   { item.label }
