@@ -26,9 +26,9 @@ const PLACEHOLDER_IMAGE = '/product-image.png'
 const fromWishlistItem = (item) => ({
   source: 'WISHLIST',
   itemType: 'PRODUCT',
-  itemId: item.productId,
-  imageUrl: item.thumbnailUrl ?? item.imageUrl,
-  name: item.productName ?? item.name,
+  itemId: item.itemId ?? item.productId,
+  imageUrl: item.imageUrl ?? item.thumbnailUrl,
+  name: item.name ?? item.productName,
   price: item.price,
 })
 
