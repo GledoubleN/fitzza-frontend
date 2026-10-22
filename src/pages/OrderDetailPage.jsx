@@ -109,7 +109,7 @@ export const OrderDetail = () => {
 
   useEffect(() => {
     if (!isSignedIn) {
-      navigate('/signin')
+      navigate('/signin', { replace: true })
       return
     }
 

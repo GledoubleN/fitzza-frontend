@@ -21,7 +21,7 @@ export const OrderListPage = () => {
 
   useEffect(() => {
     if (!isSignedIn) {
-      navigate('/signin')
+      navigate('/signin', { replace: true })
       return
     }
 

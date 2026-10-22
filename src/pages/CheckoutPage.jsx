@@ -193,7 +193,7 @@ export const CheckoutPage = () => {
 
   useEffect(() => {
     if (!isSignedIn) {
-      navigate('/signin')
+      navigate('/signin', { replace: true })
       return
     }
     if (cartIds.length === 0) {

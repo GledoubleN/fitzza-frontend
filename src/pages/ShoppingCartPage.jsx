@@ -66,7 +66,7 @@ export const ShoppingCartPage = () => {
 
   useEffect(() => {
     if (!isSignedIn) {
-      navigate('/signin')
+      navigate('/signin', { replace: true })
       return
     }
 
