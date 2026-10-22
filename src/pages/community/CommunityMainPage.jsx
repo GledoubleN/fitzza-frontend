@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
+  Avatar,
   Badge,
   Box,
   Button,
@@ -20,6 +21,7 @@ import { api } from '../../api/axios.js'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { CATEGORIES, CATEGORY_LABELS, errorMessage, formatRelativeTime } from './communityFormat.js'
+import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 
 const PAGE_SIZE = 20
 
@@ -82,7 +84,7 @@ export const CommunityMainPage = () => {
 
         <Container maxWidth="3xl">
           <Stack direction="column" gap="4">
-            <Text fontSize="lg" fontWeight="semibold">커뮤니티</Text>
+            <CommunityTitleBar fallback="/"/>
 
             <form onSubmit={ search }>
               <InputGroup startElement={ <LuSearch/> }>
@@ -176,20 +178,23 @@ const PostItem = ({ post, onClick }) => {
       _hover={ { bg: 'bg.subtle' } }
       onClick={ onClick }
     >
-      <Stack direction="column" gap="4" flex="1" minWidth="0">
-        <HStack gap="4">
-          { postType === 'VOTE' && <Badge colorPalette="primary">투표</Badge> }
-          <Badge colorPalette="gray">{ CATEGORY_LABELS[category] ?? category }</Badge>
+      <Stack direction="column" gap="0" flex="1" minWidth="0">
+        <Text fontWeight="medium" lineClamp="2">{ title }</Text>
+        <HStack gap="4" paddingY="4">
+          { postType === 'VOTE' && <Badge>투표</Badge> }
+          <Badge>{ CATEGORY_LABELS[category] ?? category }</Badge>
         </HStack>
-        <Text fontWeight="semibold" lineClamp="2">{ title }</Text>
-        <Text color="fg.muted" fontSize="sm">
-          { nickname } · { formatRelativeTime(createdAt) }
-        </Text>
+        <HStack gap="4" color="fg.muted" fontSize="sm">
+          <Avatar.Root size="2xs">
+            <Avatar.Fallback name={ nickname }/>
+          </Avatar.Root>
+          <Text>{ nickname } · { formatRelativeTime(createdAt) }</Text>
+        </HStack>
         <HStack gap="4">
-          <Badge variant="plain" color="fg.muted" size="md">
+          <Badge variant="plain" color="fg.muted" size="md" paddingX="0">
             <LuThumbsUp/> { likeCount }
           </Badge>
-          <Badge variant="plain" color="fg.muted" size="md">
+          <Badge variant="plain" color="fg.muted" size="md" paddingX="0">
             <LuMessageCircle/> { commentCount }
           </Badge>
         </HStack>
@@ -199,7 +204,7 @@ const PostItem = ({ post, onClick }) => {
         <Image
           src={ thumbnailUrl }
           alt=""
-          boxSize={ { base: '20', md: '28' } }
+          boxSize={ { base: '16', md: '24' } }
           flexShrink="0"
           objectFit="cover"
           rounded="md"
