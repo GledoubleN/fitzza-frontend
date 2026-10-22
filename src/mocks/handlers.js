@@ -271,10 +271,19 @@ export const handlers = [
       const start = page * size
       const end = start + size
 
-      const paginatedContent = sortedProducts.slice(start, end).map(product => ({
-        ...product,
-        wished: product.wished ?? false,
-      }))
+      const userId = getRequestUserId(request)
+
+      const paginatedContent = sortedProducts.slice(start, end).map(product => {
+        if (!userId) {
+          const { wished, ...rest } = product
+          return rest
+        }
+
+        return {
+          ...product,
+          wished: product.wished ?? false,
+        }
+      })
 
       const hasNext = end < sortedProducts.length
 
@@ -292,7 +301,7 @@ export const handlers = [
 
   http.get(
     `${ api.defaults.baseURL }/products/:id`,
-    ({ params }) => {
+    ({ params, request }) => {
       const product = products.find(
         product => product.productId === Number(params.id),
       )
@@ -302,8 +311,9 @@ export const handlers = [
       }
 
       const options = getProductOptions(product)
+      const userId = getRequestUserId(request)
 
-      return HttpResponse.json({
+      const productDetail = {
         productId: product.productId,
         productName: product.productName,
         brandName: product.brandName,
@@ -317,8 +327,13 @@ export const handlers = [
         images: ['/src/assets/hero.png'],
         options,
         status: 'ON_SALE',
-        wished: product.wished ?? false,
-      })
+      }
+
+      if (userId) {
+        productDetail.wished = product.wished ?? false
+      }
+
+      return HttpResponse.json(productDetail)
     },
   ),
 
@@ -601,23 +616,32 @@ export const handlers = [
 
       const url = new URL(request.url)
       const page = Number(url.searchParams.get('page') || 0)
+      const size = Number(url.searchParams.get('size') || 20)
 
-      const mockWishlists = products.filter(p => p.wished).map((product) => ({
+      const allWishedProducts = products.filter(product => product.wished)
+      const start = page * size
+      const end = start + size
+
+      const content = allWishedProducts.slice(start, end).map((product, index) => ({
+        wishlistId: product.productId,
         itemId: product.productId,
-        name: product.productName,
-        brandName: product.brandName,
+        brandName: product.brandName || '',
+        name: product.productName || product.name || '',
         price: product.price,
         imageUrl: product.thumbnailUrl || '/src/assets/hero.png',
-        status: product.status || 'ON_SALE'
+        categoryL1: product.categoryL1 || 'TOP',
+        createdAt: new Date(2026, 9, 1 + index).toISOString(),
       }))
 
+      const hasNext = end < allWishedProducts.length
+
       return HttpResponse.json({
-        content: mockWishlists,
-        page: page,
-        size: mockWishlists.length,
-        totalElements: mockWishlists.length,
-        totalPages: 1,
-        hasNext: false
+        content,
+        page,
+        size,
+        totalElements: allWishedProducts.length,
+        totalPages: Math.ceil(allWishedProducts.length / size),
+        hasNext,
       })
     },
   ),
@@ -789,6 +813,7 @@ export const handlers = [
     },
   ),
 
+  // 내 추천 대화 목록
   http.get(
     `${ api.defaults.baseURL }/recommendations`,
     ({ request }) => {
@@ -802,6 +827,7 @@ export const handlers = [
     },
   ),
 
+  // 지난 추천 결과 조회. 목업에서는 어떤 requestId든 같은 결과를 돌려줍니다.
   http.get(
     `${ api.defaults.baseURL }/recommendations/:requestId`,
     ({ params }) => {
