@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
-import { CATEGORIES, CATEGORY_LABELS, errorMessage, formatRelativeTime } from './communityFormat.js'
+import { CATEGORIES, CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } from './communityFormat.js'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 
 const PAGE_SIZE = 20
@@ -188,7 +188,7 @@ const PostItem = ({ post, onClick }) => {
           <Avatar.Root size="2xs">
             <Avatar.Fallback name={ nickname }/>
           </Avatar.Root>
-          <Text>{ nickname } · { formatRelativeTime(createdAt) }</Text>
+          <Text>{ displayNickname(nickname) } · { formatRelativeTime(createdAt) }</Text>
         </HStack>
         <HStack gap="4">
           <Badge variant="plain" color="fg.muted" size="md" paddingX="0">

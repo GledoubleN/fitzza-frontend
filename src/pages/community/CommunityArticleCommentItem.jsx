@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Badge, Button, HStack, Input, Stack, Text } from '@chakra-ui/react'
 import { LuThumbsUp } from 'react-icons/lu'
-import { formatRelativeTime } from './communityFormat.js'
+import { displayNickname, formatRelativeTime } from './communityFormat.js'
 
 const COMMENT_MAX_LENGTH = 500
 
@@ -49,8 +49,8 @@ export const CommunityArticleCommentItem = ({
       ) : (
         <Stack direction="column" gap="0">
           <HStack gap="4" fontSize="sm" wrap="wrap">
-            <Text fontWeight="bold">{ author?.nickname }</Text>
-            { author?.nickname === postAuthorNickname && <Badge size="sm">작성자</Badge> }
+            <Text fontWeight="bold">{ displayNickname(author?.nickname) }</Text>
+            { author?.nickname && author.nickname === postAuthorNickname && <Badge size="sm">작성자</Badge> }
             { supportedOption && <Badge size="sm">{ supportedOption.label } 추천</Badge> }
             <Text color="fg.muted" fontSize="xs">· { formatRelativeTime(createdAt) }</Text>
           </HStack>

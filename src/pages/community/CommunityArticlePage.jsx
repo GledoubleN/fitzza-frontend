@@ -26,7 +26,7 @@ import { useAuth } from '../../contexts/AuthContext.js'
 import { api } from '../../api/axios.js'
 import { CommunityArticleCommentList } from './CommunityArticleCommentList.jsx'
 import { CommunityPoll } from './CommunityPoll.jsx'
-import { CATEGORY_LABELS, errorMessage, formatRelativeTime } from './communityFormat.js'
+import { CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } from './communityFormat.js'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 
 const COMMENT_MAX_LENGTH = 500
@@ -261,7 +261,7 @@ export const CommunityArticlePage = () => {
             </HStack>
             <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
             <Text color="fg.muted" fontSize="sm">
-              { post.author?.nickname } · { formatRelativeTime(post.createdAt) } · 조회 { post.viewCount }
+              { displayNickname(post.author?.nickname) } · { formatRelativeTime(post.createdAt) } · 조회 { post.viewCount }
             </Text>
           </Stack>
 

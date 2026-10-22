@@ -22,6 +22,8 @@ export const formatRelativeTime = (dateTime) => {
 
 export const errorMessage = (error, fallback) => error.response?.data?.message ?? fallback
 
+export const displayNickname = (nickname) => nickname ?? '알 수 없음'
+
 export const formatRemaining = (dateTime) => {
   const left = Date.parse(dateTime) - Date.now()
 
