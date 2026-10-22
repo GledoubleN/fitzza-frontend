@@ -28,8 +28,14 @@ import { CommunityArticleCommentList } from './CommunityArticleCommentList.jsx'
 import { CommunityPoll } from './CommunityPoll.jsx'
 import { CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } from './communityFormat.js'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
+import { CommunityConfirmDialog } from './CommunityConfirmDialog.jsx'
 
 const COMMENT_MAX_LENGTH = 500
+
+const DELETE_TITLES = {
+  post: '게시글을 삭제할까요?',
+  comment: '댓글을 삭제할까요?',
+}
 
 const SHARED_TITLES = {
   WORLDCUP: '월드컵 우승 상품',
@@ -51,6 +57,9 @@ export const CommunityArticlePage = () => {
   const [comment, setComment] = useState('')
   const [signInOpen, setSignInOpen] = useState(false)
   const savingComment = useRef(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   const loadComments = () => api.get(`/community/posts/${ id }/comments`)
     .then((response) => setComments(response.data))
@@ -111,10 +120,6 @@ export const CommunityArticlePage = () => {
   }
 
   const deletePost = async () => {
-    if (!window.confirm('게시글을 삭제할까요?')) {
-      return
-    }
-
     try {
       await api.delete(`/community/posts/${ id }`)
       navigate('/community/main', { replace: true })
@@ -174,10 +179,6 @@ export const CommunityArticlePage = () => {
   }
 
   const deleteComment = async (commentId) => {
-    if (!window.confirm('댓글을 삭제할까요?')) {
-      return
-    }
-
     try {
       await api.delete(`/comments/${ commentId }`)
       await loadComments()
@@ -185,6 +186,22 @@ export const CommunityArticlePage = () => {
     } catch (error) {
       notifyError(error, '댓글을 삭제하지 못했어요.')
     }
+  }
+
+  const confirmDelete = async () => {
+    setDeleting(true)
+    if (deleteTarget.type === 'post') {
+      await deletePost()
+    } else {
+      await deleteComment(deleteTarget.commentId)
+    }
+    setDeleting(false)
+    setDeleteOpen(false)
+  }
+
+  const askDelete = (target) => {
+    setDeleteTarget(target)
+    setDeleteOpen(true)
   }
 
   const toggleCommentLike = async (target) => {
@@ -250,7 +267,7 @@ export const CommunityArticlePage = () => {
                       <Menu.Item value="edit" onClick={ () => navigate('/community/write', { state: { post } }) }>
                         수정
                       </Menu.Item>
-                      <Menu.Item value="delete" color="fg.error" onClick={ deletePost }>
+                      <Menu.Item value="delete" color="fg.error" onClick={ () => askDelete({ type: 'post' }) }>
                         삭제
                       </Menu.Item>
                     </Menu.Content>
@@ -359,7 +376,7 @@ export const CommunityArticlePage = () => {
             onLike={ toggleCommentLike }
             onReply={ submitComment }
             onUpdate={ updateComment }
-            onDelete={ deleteComment }
+            onDelete={ (commentId) => askDelete({ type: 'comment', commentId }) }
           />
         </Stack>
       </Container>
@@ -385,6 +402,15 @@ export const CommunityArticlePage = () => {
 
       <ScrollToTopButton/>
       <SignInRequiredDialog open={ signInOpen } onClose={ () => setSignInOpen(false) }/>
+      <CommunityConfirmDialog
+        open={ deleteOpen }
+        title={ DELETE_TITLES[deleteTarget?.type] }
+        description="삭제한 뒤에는 되돌릴 수 없어요."
+        confirmLabel="삭제하기"
+        loading={ deleting }
+        onConfirm={ confirmDelete }
+        onClose={ () => setDeleteOpen(false) }
+      />
       <Toaster/>
     </Stack>
   )
