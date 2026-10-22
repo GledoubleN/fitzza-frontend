@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { MAX_VOTE_OPTIONS, errorMessage, formatRelativeTime, optionKey } from './communityFormat.js'
+import { CommunityConfirmDialog } from './CommunityConfirmDialog.jsx'
 
 const RECOMMENDATION_PAGE_SIZE = 10
 
@@ -161,6 +162,8 @@ const WishlistGrid = ({ options, onToggle }) => {
 const RecommendationGroups = ({ options, onToggle }) => {
   const navigate = useNavigate()
   const [groups, setGroups] = useState(null)
+  const [conversation, setConversation] = useState(null)
+  const [conversationOpen, setConversationOpen] = useState(false)
 
   useEffect(() => {
     api.get('/recommendations', { params: { page: 0, size: RECOMMENDATION_PAGE_SIZE } })
@@ -183,10 +186,13 @@ const RecommendationGroups = ({ options, onToggle }) => {
       })
   }, [])
 
-  const openConversation = (group) => {
-    if (window.confirm('대화를 보러 가면 작성 중인 내용이 사라져요. 이동할까요?')) {
-      navigate(`/ai/${ group.requestId }`, { state: { query: group.queryText } })
-    }
+  const askOpenConversation = (group) => {
+    setConversation(group)
+    setConversationOpen(true)
+  }
+
+  const openConversation = () => {
+    navigate(`/ai/${ conversation.requestId }`, { state: { query: conversation.queryText } })
   }
 
   if (!groups) {
@@ -211,7 +217,7 @@ const RecommendationGroups = ({ options, onToggle }) => {
               color="fg.muted"
               marginStart="auto"
               paddingX="0"
-              onClick={ () => openConversation(group) }
+              onClick={ () => askOpenConversation(group) }
             >
               대화 보기 <LuChevronRight/>
             </Button>
@@ -220,6 +226,15 @@ const RecommendationGroups = ({ options, onToggle }) => {
           <OptionGrid items={ group.items } options={ options } onToggle={ onToggle }/>
         </Stack>
       )) }
+
+      <CommunityConfirmDialog
+        open={ conversationOpen }
+        title="대화를 보러 갈까요?"
+        description="이동하면 작성 중인 내용이 사라져요."
+        confirmLabel="이동하기"
+        onConfirm={ openConversation }
+        onClose={ () => setConversationOpen(false) }
+      />
     </Stack>
   )
 }
