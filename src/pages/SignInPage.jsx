@@ -32,9 +32,7 @@ export const SignInPage = () => {
     setErrorMessage('')
 
     try {
-      const response = await api.post('/auth/signin', { email, password }, {
-        withCredentials: true,
-      })
+      const response = await api.post('/auth/signin', { email, password })
       const token = response.data?.accessToken
 
       setAccessToken(token)
