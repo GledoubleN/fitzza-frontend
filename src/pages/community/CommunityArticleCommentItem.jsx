@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Badge, Button, HStack, Input, Stack, Text } from '@chakra-ui/react'
+import { LuThumbsUp } from 'react-icons/lu'
 import { formatRelativeTime } from './communityFormat.js'
 
 const COMMENT_MAX_LENGTH = 500
@@ -83,7 +84,7 @@ export const CommunityArticleCommentItem = ({
               aria-pressed={ liked }
               onClick={ () => onLike(comment) }
             >
-              좋아요 { likeCount }
+              <LuThumbsUp/> 좋아요 { likeCount }
             </Button>
             { !isReply && (
               <Button { ...actionProps } fontWeight="bold" onClick={ () => setReplying((value) => !value) }>답글</Button>
