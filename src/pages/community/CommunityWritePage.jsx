@@ -239,7 +239,7 @@ export const CommunityWritePage = () => {
                 onChange={ (e) => setTitle(e.target.value) }
               />
 
-              <RichTextEditor.Root editor={ editor } minHeight="sm">
+              <RichTextEditor.Root editor={ editor } minHeight="sm" fontSize="sm">
                 { shared?.snapshot && !isVote && (
                   <Stack gap="4" padding="4" paddingBottom="0">
                     <Text fontWeight="bold">{ shared.sharedType === 'FITTING' ? '공유할 가상 피팅' : '공유할 코디' }</Text>
