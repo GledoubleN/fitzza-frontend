@@ -5,6 +5,7 @@ import { api } from '../api/axios'
 import { toaster } from '../components/ui/toaster'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { SignInRequiredDialog } from './SignInRequiredDialog.jsx'
 import defaultThumbnail from '../assets/hero.png'
 
 export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange }) => {
@@ -13,6 +14,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
 
   const [isLiked, setIsLiked] = useState(initialIsLiked ?? product?.wished ?? false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isSignInDialogOpen, setIsSignInDialogOpen] = useState(false)
 
   useEffect(() => {
     setIsLiked(initialIsLiked ?? product?.wished ?? false)
@@ -29,7 +31,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
     event.stopPropagation()
 
     if (!isSignedIn) {
-      navigate('/signin')
+      setIsSignInDialogOpen(true)
       return
     }
 
@@ -127,6 +129,11 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           { product?.price?.toLocaleString() } 원
         </Text>
       </Stack>
+
+      <SignInRequiredDialog
+        open={ isSignInDialogOpen }
+        onClose={ () => setIsSignInDialogOpen(false) }
+      />
     </Stack>
   )
 }
