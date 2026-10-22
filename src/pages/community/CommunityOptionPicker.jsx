@@ -183,6 +183,12 @@ const RecommendationGroups = ({ options, onToggle }) => {
       })
   }, [])
 
+  const openConversation = (group) => {
+    if (window.confirm('대화를 보러 가면 작성 중인 내용이 사라져요. 이동할까요?')) {
+      navigate(`/ai/${ group.requestId }`, { state: { query: group.queryText } })
+    }
+  }
+
   if (!groups) {
     return <Text color="fg.muted">불러오는 중...</Text>
   }
@@ -205,7 +211,7 @@ const RecommendationGroups = ({ options, onToggle }) => {
               color="fg.muted"
               marginStart="auto"
               paddingX="0"
-              onClick={ () => navigate(`/ai/${ group.requestId }`, { state: { query: group.queryText } }) }
+              onClick={ () => openConversation(group) }
             >
               대화 보기 <LuChevronRight/>
             </Button>
