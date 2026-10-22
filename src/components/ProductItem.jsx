@@ -3,15 +3,20 @@ import { LuHeart } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios'
 import { toaster } from '../components/ui/toaster'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import defaultThumbnail from '../assets/hero.png'
 
 export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange }) => {
   const navigate = useNavigate()
   const { isSignedIn } = useAuth()
+
   const [isLiked, setIsLiked] = useState(initialIsLiked ?? product?.wished ?? false)
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    setIsLiked(initialIsLiked ?? product?.wished ?? false)
+  }, [initialIsLiked, product?.wished])
 
   const productId = product?.productId ?? product?.itemId
   const productName = product?.productName ?? product?.name
@@ -47,6 +52,9 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           title: '찜 목록에 추가되었습니다.',
           type: 'success',
         })
+        if (onWishlistChange) {
+          onWishlistChange(productId)
+        }
       }
     } catch (error) {
       console.warn('찜 상태 변경 실패:', error)
@@ -93,7 +101,10 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           onClick={handleWishClick}
           disabled={isLoading}
         >
-          <LuHeart fill={isLiked ? 'fg.error' : 'none'} color={isLiked ? 'fg.error' : 'currentColor'} />
+          <LuHeart
+            fill={isLiked ? 'red' : 'none'}
+            color={isLiked ? 'red' : 'black'}
+          />
         </IconButton>
       </Box>
       <VStack align="start" gap={1}>
