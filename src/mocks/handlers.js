@@ -644,7 +644,7 @@ export const handlers = [
         name: product.productName || product.name || '',
         price: product.price,
         imageUrl: product.thumbnailUrl || '/src/assets/hero.png',
-        categoryL1: product.categoryL1 || 'TOP',
+        categoryL1: product.categoryL1 || '001',
         createdAt: new Date(2026, 9, 1 + index).toISOString(),
       }))
 
