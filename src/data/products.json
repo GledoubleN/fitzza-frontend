@@ -5,7 +5,8 @@
     "brandName": "Celine",
     "price": 750000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 2,
@@ -13,7 +14,8 @@
     "brandName": "Loewe",
     "price": 1250000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": true
   },
   {
     "productId": 3,
@@ -21,7 +23,8 @@
     "brandName": "Balenciaga",
     "price": 1450000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 4,
@@ -29,7 +32,8 @@
     "brandName": "Dior",
     "price": 1850000,
     "thumbnailUrl": "/product-image.png",
-    "status": "HIDDEN"
+    "status": "HIDDEN",
+    "wished": false
   },
   {
     "productId": 5,
@@ -37,7 +41,8 @@
     "brandName": "Saint Laurent",
     "price": 2300000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": true
   },
   {
     "productId": 6,
@@ -45,7 +50,8 @@
     "brandName": "Prada",
     "price": 1350000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 7,
@@ -53,7 +59,8 @@
     "brandName": "Tom Ford",
     "price": 1680000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 8,
@@ -61,7 +68,8 @@
     "brandName": "Moncler",
     "price": 1950000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": false
   },
   {
     "productId": 9,
@@ -69,7 +77,8 @@
     "brandName": "Burberry",
     "price": 590000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 10,
@@ -77,7 +86,8 @@
     "brandName": "Brunello Cucinelli",
     "price": 1100000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 11,
@@ -85,7 +95,8 @@
     "brandName": "Gucci",
     "price": 620000,
     "thumbnailUrl": "/product-image.png",
-    "status": "HIDDEN"
+    "status": "HIDDEN",
+    "wished": false
   },
   {
     "productId": 12,
@@ -93,7 +104,8 @@
     "brandName": "Valentino",
     "price": 980000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": true
   },
   {
     "productId": 13,
@@ -101,7 +113,8 @@
     "brandName": "Prada",
     "price": 3400000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": false
   },
   {
     "productId": 14,
@@ -109,7 +122,8 @@
     "brandName": "Palm Angels",
     "price": 680000,
     "thumbnailUrl": "/product-image.png",
-    "status": "HIDDEN"
+    "status": "HIDDEN",
+    "wished": false
   },
   {
     "productId": 15,
@@ -117,7 +131,8 @@
     "brandName": "Off-White",
     "price": 890000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 16,
@@ -125,7 +140,8 @@
     "brandName": "Moncler",
     "price": 2950000,
     "thumbnailUrl": "/product-image.png",
-    "status": "HIDDEN"
+    "status": "HIDDEN",
+    "wished": false
   },
   {
     "productId": 17,
@@ -133,7 +149,8 @@
     "brandName": "Jacquemus",
     "price": 820000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": false
   },
   {
     "productId": 18,
@@ -141,7 +158,8 @@
     "brandName": "Lemaire",
     "price": 920000,
     "thumbnailUrl": "/product-image.png",
-    "status": "HIDDEN"
+    "status": "HIDDEN",
+    "wished": false
   },
   {
     "productId": 19,
@@ -149,7 +167,8 @@
     "brandName": "Acne Studios",
     "price": 240000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": true
   },
   {
     "productId": 20,
@@ -157,7 +176,8 @@
     "brandName": "Maison Margiela",
     "price": 850000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": false
   },
   {
     "productId": 21,
@@ -165,7 +185,8 @@
     "brandName": "Rick Owens",
     "price": 430000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": false
   },
   {
     "productId": 22,
@@ -173,7 +194,8 @@
     "brandName": "Fendi",
     "price": 950000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": false
   },
   {
     "productId": 23,
@@ -181,7 +203,8 @@
     "brandName": "Stone Island",
     "price": 1280000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 24,
@@ -189,7 +212,8 @@
     "brandName": "Saint Laurent",
     "price": 3800000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": false
   },
   {
     "productId": 25,
@@ -197,7 +221,8 @@
     "brandName": "Givenchy",
     "price": 980000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 26,
@@ -205,7 +230,8 @@
     "brandName": "Prada",
     "price": 720000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 27,
@@ -213,7 +239,8 @@
     "brandName": "Brunello Cucinelli",
     "price": 1850000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 28,
@@ -221,7 +248,8 @@
     "brandName": "Tod's",
     "price": 1150000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": false
   },
   {
     "productId": 29,
@@ -229,7 +257,8 @@
     "brandName": "Wales Bonner",
     "price": 760000,
     "thumbnailUrl": "/product-image.png",
-    "status": "SOLD_OUT"
+    "status": "SOLD_OUT",
+    "wished": false
   },
   {
     "productId": 30,
@@ -237,6 +266,7 @@
     "brandName": "Kiko Kostadinov",
     "price": 1420000,
     "thumbnailUrl": "/product-image.png",
-    "status": "ON_SALE"
+    "status": "ON_SALE",
+    "wished": false
   }
 ]

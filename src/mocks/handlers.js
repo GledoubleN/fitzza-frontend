@@ -184,7 +184,7 @@ export const handlers = [
     `${ api.defaults.baseURL }/auth/signin`,
     () => {
       return HttpResponse.json({
-        accessToken:  "fitzza-access-token",
+        accessToken: "fitzza-access-token",
         userId: 1,
         nickname: "CoffeeSlayer",
       }, {
@@ -210,7 +210,7 @@ export const handlers = [
 
   http.post(
     `${ api.defaults.baseURL }/auth/signup`,
-    ({ params }) => {
+    () => {
       return HttpResponse.json({
         userId: 1
       })
@@ -270,7 +270,21 @@ export const handlers = [
 
       const start = page * size
       const end = start + size
-      const paginatedContent = sortedProducts.slice(start, end)
+
+      const userId = getRequestUserId(request)
+
+      const paginatedContent = sortedProducts.slice(start, end).map(product => {
+        if (!userId) {
+          const { wished, ...rest } = product
+          return rest
+        }
+
+        return {
+          ...product,
+          wished: product.wished ?? false,
+        }
+      })
+
       const hasNext = end < sortedProducts.length
 
       return HttpResponse.json({
@@ -286,23 +300,8 @@ export const handlers = [
   ),
 
   http.get(
-    `${ api.defaults.baseURL }/products`,
-    () => {
-      return HttpResponse.json({
-        content: products,
-        page: 1,
-        size: 1,
-        totalElements: 1,
-        totalPages: 1,
-        hasNext: true,
-        sort: "PRICE_ASC"
-      })
-    },
-  ),
-
-  http.get(
     `${ api.defaults.baseURL }/products/:id`,
-    ({ params }) => {
+    ({ params, request }) => {
       const product = products.find(
         product => product.productId === Number(params.id),
       )
@@ -312,8 +311,9 @@ export const handlers = [
       }
 
       const options = getProductOptions(product)
+      const userId = getRequestUserId(request)
 
-      return HttpResponse.json({
+      const productDetail = {
         productId: product.productId,
         productName: product.productName,
         brandName: product.brandName,
@@ -327,8 +327,13 @@ export const handlers = [
         images: ['/src/assets/hero.png'],
         options,
         status: 'ON_SALE',
-        wished: false,
-      })
+      }
+
+      if (userId) {
+        productDetail.wished = product.wished ?? false
+      }
+
+      return HttpResponse.json(productDetail)
     },
   ),
 
@@ -346,7 +351,7 @@ export const handlers = [
         3: '별로입니다. 사지 마세요.',
       }
       const content = Array.from({ length: TOTAL }, (_, index) => {
-        const rating = 5 - (index % 3);
+        const rating = 5 - (index % 3)
         return {
           reviewId: index + 1,
           productId: Number(query.get('productId')),
@@ -355,7 +360,7 @@ export const handlers = [
           content: contents[rating] || '좋아요!',
           imageUrl: index % 2 === 0 ? '/src/assets/hero.png' : null,
           createdAt: new Date(2026, 8, 30 + index).toISOString(),
-        };
+        }
       })
       .sort((a, b) => (
         sort === 'RATING_DESC' ? b.rating - a.rating : sort === 'RATING_ASC' ? a.rating - b.rating : 0
@@ -501,17 +506,17 @@ export const handlers = [
       const size = Number(query.get('size') ?? 10)
       const myOrders = orders.filter((order) => order.userId === userId)
       const content = myOrders
-        .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.orderId - a.orderId)
-        .slice(page * size, (page + 1) * size)
-        .map((order) => ({
-          orderId: order.orderId,
-          orderNum: order.orderNum,
-          totalPrice: getTotalPrice(order),
-          orderStatus: order.orderStatus,
-          createdAt: order.createdAt,
-          itemCount: order.items.length,
-          thumbnailUrl: order.items[0]?.thumbnailUrl ?? null,
-        }))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.orderId - a.orderId)
+      .slice(page * size, (page + 1) * size)
+      .map((order) => ({
+        orderId: order.orderId,
+        orderNum: order.orderNum,
+        totalPrice: getTotalPrice(order),
+        orderStatus: order.orderStatus,
+        createdAt: order.createdAt,
+        itemCount: order.items.length,
+        thumbnailUrl: order.items[0]?.thumbnailUrl ?? null,
+      }))
 
       return HttpResponse.json({ content, page, totalPages: Math.ceil(myOrders.length / size) })
     },
@@ -554,17 +559,17 @@ export const handlers = [
       }
 
       const orderItemIds = (new URL(request.url).searchParams.get('orderItemIds') ?? '')
-        .split(',')
-        .filter(Boolean)
-        .map(Number)
+      .split(',')
+      .filter(Boolean)
+      .map(Number)
       if (orderItemIds.length === 0 || orderItemIds.length > 100) {
         return cartError(400, 'INVALID_REQUEST', '입력값을 확인해주세요.')
       }
 
       return HttpResponse.json(surveys
-        .filter((survey) => survey.userId === userId && orderItemIds.includes(survey.orderItemId))
-        .sort((a, b) => a.orderItemId - b.orderItemId)
-        .map(toSurveyResponse))
+      .filter((survey) => survey.userId === userId && orderItemIds.includes(survey.orderItemId))
+      .sort((a, b) => a.orderItemId - b.orderItemId)
+      .map(toSurveyResponse))
     },
   ),
 
@@ -604,13 +609,39 @@ export const handlers = [
   http.get(
     `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const url = new URL(request.url)
+      const page = Number(url.searchParams.get('page') || 0)
+      const size = Number(url.searchParams.get('size') || 20)
+
+      const allWishedProducts = products.filter(product => product.wished)
+      const start = page * size
+      const end = start + size
+
+      const content = allWishedProducts.slice(start, end).map((product, index) => ({
+        wishlistId: product.productId,
+        itemId: product.productId,
+        brandName: product.brandName || '',
+        name: product.productName || product.name || '',
+        price: product.price,
+        imageUrl: product.thumbnailUrl || '/src/assets/hero.png',
+        categoryL1: product.categoryL1 || 'TOP',
+        createdAt: new Date(2026, 9, 1 + index).toISOString(),
+      }))
+
+      const hasNext = end < allWishedProducts.length
+
       return HttpResponse.json({
-        content: products,
-        page: 1,
-        size: products.length,
-        totalElements: 1,
-        totalPages: 1,
-        hasNext: 1
+        content,
+        page,
+        size,
+        totalElements: allWishedProducts.length,
+        totalPages: Math.ceil(allWishedProducts.length / size),
+        hasNext,
       })
     },
   ),
@@ -618,7 +649,14 @@ export const handlers = [
   http.post(
     `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
       const { itemId } = await request.json()
+      const target = products.find(p => p.productId === itemId)
+      if (target) target.wished = true
 
       return HttpResponse.json({ wishlistId: itemId })
     },
@@ -626,7 +664,23 @@ export const handlers = [
 
   http.delete(
     `${ api.defaults.baseURL }/wishlists`,
-    () => new HttpResponse(null, { status: 204 }),
+    async ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const url = new URL(request.url)
+      const itemIdParam = url.searchParams.get('itemId')
+      const itemId = itemIdParam ? Number(itemIdParam) : null
+
+      if (itemId) {
+        const target = products.find(p => p.productId === itemId)
+        if (target) target.wished = false
+      }
+
+      return new HttpResponse(null, { status: 204 })
+    },
   ),
 
   http.post(
