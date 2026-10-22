@@ -96,7 +96,7 @@ export const CommunityArticlePage = () => {
       const response = post.liked
         ? await api.delete(`/community/posts/${ id }/likes`)
         : await api.post(`/community/posts/${ id }/likes`)
-      setPost((prev) => ({ ...prev, liked: !prev.liked, likeCount: response.data.likeCount }))
+      setPost((prev) => ({ ...prev, liked: !post.liked, likeCount: response.data.likeCount }))
     } catch (error) {
       notifyError(error, '좋아요를 반영하지 못했어요.')
     }
