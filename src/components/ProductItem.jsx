@@ -5,6 +5,7 @@ import { api } from '../api/axios'
 import { toaster } from '../components/ui/toaster'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { SignInRequiredDialog } from './SignInRequiredDialog.jsx'
 import defaultThumbnail from '../assets/hero.png'
 
 export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange }) => {
@@ -13,6 +14,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
 
   const [isLiked, setIsLiked] = useState(initialIsLiked ?? product?.wished ?? false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isSignInDialogOpen, setIsSignInDialogOpen] = useState(false)
 
   useEffect(() => {
     setIsLiked(initialIsLiked ?? product?.wished ?? false)
@@ -29,7 +31,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
     event.stopPropagation()
 
     if (!isSignedIn) {
-      navigate('/signin')
+      setIsSignInDialogOpen(true)
       return
     }
 
@@ -61,15 +63,10 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
     } catch (error) {
       console.warn('찜 상태 변경 실패:', error)
       setIsLiked(isLiked)
-
-      if (error.response?.status === 401) {
-        navigate('/signin')
-      } else {
-        toaster.create({
-          title: '요청을 처리하지 못했습니다.',
-          type: 'error',
-        })
-      }
+      toaster.create({
+        title: '요청을 처리하지 못했습니다.',
+        type: 'error',
+      })
     } finally {
       setIsLoading(false)
     }
@@ -127,6 +124,11 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           { product?.price?.toLocaleString() } 원
         </Text>
       </Stack>
+
+      <SignInRequiredDialog
+        open={ isSignInDialogOpen }
+        onClose={ () => setIsSignInDialogOpen(false) }
+      />
     </Stack>
   )
 }
