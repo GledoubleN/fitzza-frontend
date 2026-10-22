@@ -63,15 +63,10 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
     } catch (error) {
       console.warn('찜 상태 변경 실패:', error)
       setIsLiked(isLiked)
-
-      if (error.response?.status === 401) {
-        navigate('/signin')
-      } else {
-        toaster.create({
-          title: '요청을 처리하지 못했습니다.',
-          type: 'error',
-        })
-      }
+      toaster.create({
+        title: '요청을 처리하지 못했습니다.',
+        type: 'error',
+      })
     } finally {
       setIsLoading(false)
     }
