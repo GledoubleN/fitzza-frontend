@@ -382,7 +382,6 @@ export const AIStylistPage = () => {
                   <ComboCard
                     key={ combo.comboId }
                     combo={ combo }
-                    combos={ combos }
                     index={ index }
                     tryingOn={ tryingOn }
                     onTryOn={ () => tryOn(`코디 ${ index + 1 }`, combo.items) }

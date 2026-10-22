@@ -44,15 +44,6 @@ const toEditorContent = (text) => ({
   })),
 })
 
-const fromSharedOption = (option) => ({
-  source: option.source,
-  itemType: option.itemType,
-  itemId: option.itemId,
-  imageUrl: option.imageUrl ?? option.items?.find((item) => item.imageUrl)?.imageUrl,
-  name: option.label,
-  price: option.items?.reduce((sum, item) => sum + item.price, 0),
-})
-
 const fromVoteOption = ({ source, itemType, itemId, imageUrl, name, price }) => (
   { source, itemType, itemId, imageUrl, name, price }
 )
@@ -65,9 +56,7 @@ export const CommunityWritePage = () => {
   const editingPost = state?.post
   const shared = editingPost ? null : state
 
-  const initialOptions = editingPost
-    ? editingPost.voteOptions.map(fromVoteOption)
-    : (shared?.voteOptions ?? []).slice(0, MAX_VOTE_OPTIONS).map(fromSharedOption)
+  const initialOptions = editingPost?.voteOptions.map(fromVoteOption) ?? []
 
   const [mode, setMode] = useState(editingPost?.postType ?? 'NORMAL')
   const [category, setCategory] = useState(editingPost?.category ?? '')
