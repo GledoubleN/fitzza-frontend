@@ -41,6 +41,17 @@ const fromRecommendedItem = (item) => ({
   price: item.price,
 })
 
+const recommendedProducts = (recommendation) => {
+  const products = [
+    ...(recommendation.items ?? []),
+    ...(recommendation.combos ?? []).flatMap((combo) => combo.items ?? []),
+  ]
+
+  return products
+    .filter((product, index) => products.findIndex((other) => other.productId === product.productId) === index)
+    .map(fromRecommendedItem)
+}
+
 const SOURCES = [
   { value: 'AI', icon: LuSparkles, title: 'AI 추천에서 가져오기', description: 'AI 스타일리스트가 추천했던 상품' },
   { value: 'WISHLIST', icon: LuHeart, title: '찜에서 가져오기', description: '찜한 상품' },
@@ -153,11 +164,19 @@ const RecommendationGroups = ({ options, onToggle }) => {
 
   useEffect(() => {
     api.get('/recommendations', { params: { page: 0, size: RECOMMENDATION_PAGE_SIZE } })
-      .then((response) => Promise.all(response.data.content.map(async (history) => {
+      .then((response) => Promise.allSettled(response.data.content.map(async (history) => {
         const { data } = await api.get(`/recommendations/${ encodeURIComponent(history.requestId) }`)
-        return { ...history, items: (data.items ?? []).map(fromRecommendedItem) }
+        return { ...history, items: recommendedProducts(data) }
       })))
-      .then((loaded) => setGroups(loaded.filter((group) => group.items.length > 0)))
+      .then((results) => {
+        if (results.some((result) => result.status === 'rejected')) {
+          toaster.create({ type: 'error', title: '일부 AI 추천 내역을 불러오지 못했어요.' })
+        }
+        setGroups(results
+          .filter((result) => result.status === 'fulfilled')
+          .map((result) => result.value)
+          .filter((group) => group.items.length > 0))
+      })
       .catch((error) => {
         setGroups([])
         toaster.create({ type: 'error', title: errorMessage(error, 'AI 추천 내역을 불러오지 못했어요.') })
