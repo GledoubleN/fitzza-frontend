@@ -232,7 +232,7 @@ export const CommunityWritePage = () => {
                     </Button>
                   ) }
                   { options.length > 0 && options.length < MIN_VOTE_OPTIONS && (
-                    <Text fontSize="sm" color="fg.muted">선택지를 { MIN_VOTE_OPTIONS }개 이상 골라주세요.</Text>
+                    <Text fontSize="sm" color="fg.error">선택지를 { MIN_VOTE_OPTIONS }개 이상 골라주세요.</Text>
                   ) }
                 </Stack>
               ) }
