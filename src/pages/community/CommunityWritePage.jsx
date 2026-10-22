@@ -37,6 +37,12 @@ const VOTE_CATEGORY = 'COORDI_QUESTION'
 const TITLE_MAX_LENGTH = 100
 const CONTENT_MAX_LENGTH = 5000
 
+const EDITOR_CSS = {
+  '--content-padding-x': 'spacing.3',
+  '--content-padding-y': 'spacing.2',
+  '& .ProseMirror p.is-editor-empty:first-of-type::before': { color: 'fg.muted/80' },
+}
+
 const toEditorContent = (text) => ({
   type: 'doc',
   content: text.split('\n').map((line) => ({
@@ -239,7 +245,12 @@ export const CommunityWritePage = () => {
                 onChange={ (e) => setTitle(e.target.value) }
               />
 
-              <RichTextEditor.Root editor={ editor } minHeight="sm" fontSize="sm">
+              <RichTextEditor.Root
+                editor={ editor }
+                minHeight="sm"
+                fontSize="sm"
+                css={ EDITOR_CSS }
+              >
                 { shared?.snapshot && !isVote && (
                   <Stack gap="4" padding="4" paddingBottom="0">
                     <Text fontWeight="bold">{ shared.sharedType === 'FITTING' ? '공유할 가상 피팅' : '공유할 코디' }</Text>
