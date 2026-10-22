@@ -46,7 +46,7 @@ function App() {
         <Route path="/orders" element={ <RequireSignIn><OrderListPage/></RequireSignIn> }/>
         <Route path="/orders/:orderId" element={ <RequireSignIn><OrderDetail/></RequireSignIn> }/>
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
-        <Route path="/ai/history" element={ <AIHistoryPage/> }/>
+        <Route path="/ai/history" element={ <RequireSignIn><AIHistoryPage/></RequireSignIn> }/>
         <Route path="/ai/:requestId?" element={ <AIStylistPage/> }/>
         <Route path="/onboarding" element={<OnboardingPage />} />
       </Routes>
