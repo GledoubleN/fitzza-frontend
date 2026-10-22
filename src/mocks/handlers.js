@@ -186,7 +186,7 @@ export const handlers = [
     `${ api.defaults.baseURL }/auth/signin`,
     () => {
       return HttpResponse.json({
-        accessToken:  "fitzza-access-token",
+        accessToken: "fitzza-access-token",
         userId: 1,
         nickname: "CoffeeSlayer",
       }, {
@@ -596,9 +596,9 @@ export const handlers = [
   http.get(
     `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
-      const authHeader = request.headers.get('Authorization')
-      if (!authHeader) {
-        return new HttpResponse(null, { status: 401 })
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
       }
 
       const url = new URL(request.url)
@@ -627,9 +627,9 @@ export const handlers = [
   http.post(
     `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
-      const authHeader = request.headers.get('Authorization')
-      if (!authHeader) {
-        return new HttpResponse(null, { status: 401 })
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
       }
 
       const { itemId } = await request.json()
@@ -643,13 +643,15 @@ export const handlers = [
   http.delete(
     `${ api.defaults.baseURL }/wishlists`,
     async ({ request }) => {
-      const authHeader = request.headers.get('Authorization')
-      if (!authHeader) {
-        return new HttpResponse(null, { status: 401 })
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
       }
 
-      const body = await request.json().catch(() => ({}))
-      const itemId = body.itemId
+      const url = new URL(request.url)
+      const itemIdParam = url.searchParams.get('itemId')
+      const itemId = itemIdParam ? Number(itemIdParam) : null
+
       if (itemId) {
         const target = products.find(p => p.productId === itemId)
         if (target) target.wished = false
