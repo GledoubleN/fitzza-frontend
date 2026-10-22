@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import {
   Box,
+  Circle,
   Container,
+  Float,
   Grid,
   GridItem,
   IconButton,
@@ -15,14 +17,34 @@ import { LuBell, LuShoppingBag, LuLogIn, LuLogOut } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { useAuth } from '../contexts/AuthContext.js'
+import { toNotificationPath, toNotificationText, useNotifications } from '../hooks/useNotifications.js'
 import { usePushNotifications } from '../hooks/usePushNotifications.js'
 import { disablePush } from '../services/pushNotifications.js'
+
+const isNotificationDenied = () => 'Notification' in window && Notification.permission === 'denied'
+
+const formatNotificationTime = (value) => new Date(value).toLocaleString('ko-KR', {
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+})
 
 export const Header = ({ maxWidth = '7xl' }) => {
   const navigate = useNavigate()
   const { isSignedIn, setAccessToken } = useAuth()
   const [isSigningOut, setIsSigningOut] = useState(false)
-  const { notifications, error, isConfigured, requestPushPermission } = usePushNotifications(isSignedIn && !isSigningOut)
+  const { error, isConfigured, requestPushPermission } = usePushNotifications(isSignedIn && !isSigningOut)
+  const { notifications, status: notificationStatus, hasUnread, reload, markAsRead } = useNotifications(isSignedIn && !isSigningOut)
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false)
+
+  const openNotification = (notification) => {
+    if (!notification.isRead) markAsRead(notification.notificationId)
+    const path = toNotificationPath(notification)
+    if (!path) return
+    setIsNotificationOpen(false)
+    navigate(path)
+  }
 
   const handleSignOutButtonClick = async () => {
     if (isSigningOut) return
@@ -38,9 +60,7 @@ export const Header = ({ maxWidth = '7xl' }) => {
         return
       }
 
-      api.post('/auth/signout', undefined, {
-        withCredentials: true,
-      }).catch((error) => {
+      api.post('/auth/signout').catch((error) => {
         console.log(error)
       })
 
@@ -75,14 +95,26 @@ export const Header = ({ maxWidth = '7xl' }) => {
         <GridItem></GridItem>
         <GridItem alignContent={ 'center' }>
           <Stack direction={ 'row' } gap={ 4 } align="center">
-            <Popover.Root>
+            <Popover.Root
+              open={ isNotificationOpen }
+              onOpenChange={ (event) => {
+                setIsNotificationOpen(event.open)
+                if (event.open && isSignedIn) reload()
+              } }
+            >
               <Popover.Trigger asChild>
                 <IconButton
                   { ...buttonProps }
+                  position="relative"
                   onClick={ requestPushPermission }
-                  title="알림"
+                  title={ hasUnread ? '새 알림 있음' : '알림' }
                 >
                   <LuBell/>
+                  { hasUnread && (
+                    <Float placement="top-end" offset="2">
+                      <Circle size="2" bg="fg.error"/>
+                    </Float>
+                  ) }
                 </IconButton>
               </Popover.Trigger>
               <Portal>
@@ -98,6 +130,8 @@ export const Header = ({ maxWidth = '7xl' }) => {
                           <>
                             { !isConfigured &&
                               <Text color="fg.muted">푸시 알림 설정이 필요합니다.</Text> }
+                            { isConfigured && isNotificationDenied() &&
+                              <Text color="fg.muted">브라우저 설정에서 알림을 허용하면 결과를 바로 받을 수 있어요.</Text> }
                             { error && (
                               <Text role="alert" color="fg.error">{ error }</Text>
                             ) }
@@ -108,21 +142,34 @@ export const Header = ({ maxWidth = '7xl' }) => {
                               overflowY="auto"
                               aria-live="polite"
                             >
-                              { notifications.length === 0 ? (
-                                <Text color="fg.muted">받은 알림이 없습니다.</Text>
+                              { notificationStatus === 'failed' ? (
+                                <Text color="fg.error">알림을 불러오지 못했습니다.</Text>
+                              ) : notifications.length === 0 ? (
+                                <Text color="fg.muted">
+                                  { notificationStatus === 'loading' ? '알림을 불러오는 중입니다.' : '받은 알림이 없습니다.' }
+                                </Text>
                               ) : notifications.map((notification) => (
                                 <Box
-                                  key={ notification.id }
+                                  key={ notification.notificationId }
+                                  as="button"
+                                  textAlign="start"
+                                  cursor="pointer"
                                   overflowWrap="anywhere"
+                                  onClick={ () => openNotification(notification) }
                                 >
-                                  <Text fontWeight="semibold">
-                                    { notification.title }
-                                  </Text>
-                                  { notification.body && (
-                                    <Text color="fg.muted">
-                                      { notification.body }
+                                  <Stack direction="row" gap={ 4 } align="center">
+                                    <Text
+                                      flex="1"
+                                      fontWeight={ notification.isRead ? 'normal' : 'semibold' }
+                                      color={ notification.isRead ? 'fg.muted' : 'fg' }
+                                    >
+                                      { toNotificationText(notification) }
                                     </Text>
-                                  ) }
+                                    { !notification.isRead && <Circle size="2" bg="fg.error" flexShrink={ 0 }/> }
+                                  </Stack>
+                                  <Text textStyle="xs" color="fg.subtle">
+                                    { formatNotificationTime(notification.createdAt) }
+                                  </Text>
                                 </Box>
                               )) }
                             </Stack>

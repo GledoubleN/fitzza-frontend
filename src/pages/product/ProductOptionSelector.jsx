@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Button, Flex, IconButton, Portal, Select, Stack, Text, createListCollection } from '@chakra-ui/react'
 import { LuMinus, LuPlus, LuX } from 'react-icons/lu'
-import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { useAuth } from '../../contexts/AuthContext.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
+import { SignInRequiredDialog } from '../../components/SignInRequiredDialog.jsx'
 
 // 옵션 구조는 명세에 열려 있어 { optionId, color, size, available }로 가정한다.
 const getOptionLabel = (option) => [option.color, option.size].filter(Boolean).join(' / ')
@@ -62,12 +62,12 @@ export const QuantityStepper = ({ quantity, onChange, disabled }) => (
 
 export const ProductOptionSelector = ({ product }) => {
   const { isSignedIn } = useAuth()
-  const navigate = useNavigate()
   const [color, setColor] = useState('')
   // { [optionId]: 수량 }
   const [quantities, setQuantities] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isAddedDialogOpen, setIsAddedDialogOpen] = useState(false)
+  const [isSignInDialogOpen, setIsSignInDialogOpen] = useState(false)
 
   const options = product.options ?? []
   const colors = [...new Set(options.map((option) => option.color).filter(Boolean))]
@@ -97,7 +97,7 @@ export const ProductOptionSelector = ({ product }) => {
 
   const addToCart = async () => {
     if (!isSignedIn) {
-      navigate('/signin')
+      setIsSignInDialogOpen(true)
       return
     }
 
@@ -187,6 +187,7 @@ export const ProductOptionSelector = ({ product }) => {
       </Button>
 
       <CartAddedDialog open={ isAddedDialogOpen } onClose={ () => setIsAddedDialogOpen(false) }/>
+      <SignInRequiredDialog open={ isSignInDialogOpen } onClose={ () => setIsSignInDialogOpen(false) }/>
     </Stack>
   )
 }

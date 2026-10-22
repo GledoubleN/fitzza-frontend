@@ -1,15 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
-import {
-  enablePush,
-  isPushConfigured,
-  subscribeToPush,
-} from '../services/pushNotifications.js'
-
-const notificationLimit = 50
+import { enablePush, isPushConfigured } from '../services/pushNotifications.js'
 
 export const usePushNotifications = (isSignedIn) => {
-  const [notifications, setNotifications] = useState([])
   const [error, setError] = useState('')
   const [previousSignedIn, setPreviousSignedIn] = useState(isSignedIn)
   const session = useRef(0)
@@ -17,7 +10,6 @@ export const usePushNotifications = (isSignedIn) => {
 
   if (previousSignedIn !== isSignedIn) {
     setPreviousSignedIn(isSignedIn)
-    setNotifications([])
     setError('')
   }
 
@@ -26,7 +18,6 @@ export const usePushNotifications = (isSignedIn) => {
 
     if (!isSignedIn || !isPushConfigured) return
 
-    let unsubscribe
     let registering = false
     let registeredToken
 
@@ -60,50 +51,17 @@ export const usePushNotifications = (isSignedIn) => {
       if ('Notification' in window && Notification.permission === 'granted') void registerPushToken()
     }
 
-    const handleMessage = (payload) => {
-      if (session.current !== currentSession) return
-
-      const title = payload.notification?.title || payload.data?.title
-      const body = payload.notification?.body || payload.data?.body
-
-      if (!title && !body) return
-
-      const notification = {
-        id: payload.messageId || crypto.randomUUID(),
-        title: title || '알림',
-        body,
-      }
-
-      setNotifications((previous) => {
-        const isDuplicate = previous.some((item) => item.id === notification.id)
-
-        if (isDuplicate) return previous
-
-        return [notification, ...previous].slice(0, notificationLimit)
-      })
-    }
-
-    subscribeToPush(handleMessage).then((cleanup) => {
-      if (session.current !== currentSession) cleanup()
-      else {
-        unsubscribe = cleanup
-        window.addEventListener('focus', handleFocus)
-        handleFocus()
-      }
-    }).catch(() => {
-      if (session.current === currentSession) setError('푸시 알림을 연결하지 못했습니다.')
-    })
+    window.addEventListener('focus', handleFocus)
+    handleFocus()
 
     return () => {
       registerPush.current = null
       session.current = currentSession + 1
-      unsubscribe?.()
       window.removeEventListener('focus', handleFocus)
     }
   }, [isSignedIn])
 
   return {
-    notifications,
     requestPushPermission: () => registerPush.current?.(true),
     error,
     isConfigured: isPushConfigured,

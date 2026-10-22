@@ -1,5 +1,4 @@
 import { api } from '../api/axios.js'
-import { delay } from 'msw'
 import { http, HttpResponse } from 'msw/http'
 import users from '../data/users.json'
 import categories from '../data/categories.json'
@@ -14,11 +13,11 @@ import userProfile from '../data/user-profile.json'
 import recommendations from '../data/recommendations.json'
 import recommendationHistory from '../data/recommendation-history.json'
 import recommendationMessages from '../data/recommendation-messages.json'
+import notifications from '../data/notifications.json'
 import fittingResultImage from '../assets/hero.png'
 
-const RECOMMENDATION_PROCESSING_MS = 3000
+let lastRecommendationId = 0
 
-const FITTING_DURATION = 3000
 const fittingResultImageUrl = new URL(fittingResultImage, location.origin).href
 const fittings = Array.from({ length: 30 }, (_, index) => ({
   fittingId: index + 1,
@@ -43,8 +42,7 @@ const toVtonProduct = (productId) => {
 const vtonError = (status, code, message) => HttpResponse.json({ status, code, message }, { status })
 
 const toVtonDetail = (fitting) => {
-  const isDone = Date.now() - fitting.createdAt >= FITTING_DURATION
-  const status = fitting.isFailed ? 'FAILED' : isDone ? 'COMPLETED' : 'PENDING'
+  const status = fitting.isFailed ? 'FAILED' : 'COMPLETED'
   const timestamp = new Date(fitting.createdAt).toISOString()
 
   return {
@@ -787,9 +785,7 @@ export const handlers = [
         return new HttpResponse(null, { status: 400 })
       }
 
-      await delay(RECOMMENDATION_PROCESSING_MS)
-
-      return HttpResponse.json({ requestId: 'sample', ...recommendations })
+      return HttpResponse.json({ requestId: ++lastRecommendationId, status: 'PROCESSING' }, { status: 202 })
     },
   ),
 
@@ -810,6 +806,24 @@ export const handlers = [
     `${ api.defaults.baseURL }/recommendations/:requestId`,
     ({ params }) => {
       return HttpResponse.json({ requestId: params.requestId, ...recommendations })
+    },
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/notifications`,
+    ({ request }) => {
+      const size = Number(new URL(request.url).searchParams.get('size') ?? 20)
+      return HttpResponse.json({ content: notifications.slice(0, size), page: 0, totalPages: Math.ceil(notifications.length / size) })
+    },
+  ),
+
+  http.patch(
+    `${ api.defaults.baseURL }/notifications/:notificationId`,
+    ({ params }) => {
+      const notification = notifications.find((notification) => notification.notificationId === Number(params.notificationId))
+      if (!notification) return new HttpResponse(null, { status: 404 })
+      notification.isRead = true
+      return new HttpResponse(null, { status: 200 })
     },
   ),
 

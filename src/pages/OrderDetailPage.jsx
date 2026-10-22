@@ -1,4 +1,3 @@
-import { useAuth } from '../contexts/AuthContext.js'
 import {
   Badge,
   Box,
@@ -19,7 +18,7 @@ import {
 } from '@chakra-ui/react'
 import { LuFileText, LuPackage } from 'react-icons/lu'
 import { useEffect, useState } from 'react'
-import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom'
+import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { Toaster } from '../components/ui/toaster.jsx'
@@ -96,8 +95,6 @@ const PanelCard = ({ title, children }) => (
 )
 
 export const OrderDetail = () => {
-  const { isSignedIn } = useAuth()
-  const navigate = useNavigate()
   const { orderId } = useParams()
   const [order, setOrder] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
@@ -108,11 +105,6 @@ export const OrderDetail = () => {
   const [isSurveySaving, setIsSurveySaving] = useState(false)
 
   useEffect(() => {
-    if (!isSignedIn) {
-      navigate('/signin')
-      return
-    }
-
     let cancelled = false
     setOrder(null)
     setErrorMessage('')
@@ -131,7 +123,7 @@ export const OrderDetail = () => {
       .catch((error) => !cancelled && setErrorMessage(error.response?.data?.message ?? '주문 정보를 불러오지 못했어요.'))
 
     return () => { cancelled = true }
-  }, [orderId, attempt, isSignedIn, navigate])
+  }, [orderId, attempt])
 
   const mergeSurveys = (loaded) => setSurveys((current) => ({ ...loaded, ...current }))
 

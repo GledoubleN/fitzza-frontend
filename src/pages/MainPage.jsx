@@ -24,6 +24,8 @@ import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
 import { ProductItem } from '../components/ProductItem.jsx'
+import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
+import { useAuth } from '../contexts/AuthContext.js'
 
 // AI 버튼(LuSparkle)으로 펼쳤을 때의 줄 수이자 자동으로 늘어나는 최대 줄 수.
 const MAX_PROMPT_ROWS = 4
@@ -33,7 +35,9 @@ const MAX_QUERY_LENGTH = 500
 
 export const MainPage = () => {
   const navigate = useNavigate()
+  const { isSignedIn } = useAuth()
   const [products, setProducts] = useState([])
+  const [isSignInDialogOpen, setIsSignInDialogOpen] = useState(false)
 
   const [prompt, setPrompt] = useState('')
 
@@ -41,6 +45,10 @@ export const MainPage = () => {
     e.preventDefault()
     const query = prompt.trim()
     if (!query) return
+    if (!isSignedIn) {
+      setIsSignInDialogOpen(true)
+      return
+    }
     navigate('/ai', { state: { query } })
   }
 
@@ -161,6 +169,8 @@ export const MainPage = () => {
       <TabBar></TabBar>
 
       <Footer></Footer>
+
+      <SignInRequiredDialog open={ isSignInDialogOpen } onClose={ () => setIsSignInDialogOpen(false) }/>
     </Stack>
   )
 }
