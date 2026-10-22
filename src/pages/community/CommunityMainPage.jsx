@@ -84,7 +84,7 @@ export const CommunityMainPage = () => {
 
         <Container maxWidth="3xl">
           <Stack direction="column" gap="4">
-            <CommunityTitleBar fallback="/"/>
+            <CommunityTitleBar/>
 
             <form onSubmit={ search }>
               <InputGroup startElement={ <LuSearch/> }>
