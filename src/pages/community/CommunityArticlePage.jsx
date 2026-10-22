@@ -55,6 +55,7 @@ export const CommunityArticlePage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [comment, setComment] = useState('')
+  const [commentsFailed, setCommentsFailed] = useState(false)
   const [signInOpen, setSignInOpen] = useState(false)
   const savingComment = useRef(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
@@ -62,7 +63,10 @@ export const CommunityArticlePage = () => {
   const [deleting, setDeleting] = useState(false)
 
   const loadComments = () => api.get(`/community/posts/${ id }/comments`)
-    .then((response) => setComments(response.data))
+    .then((response) => {
+      setComments(response.data)
+      setCommentsFailed(false)
+    })
 
   useEffect(() => {
     setLoading(true)
@@ -75,11 +79,8 @@ export const CommunityArticlePage = () => {
       .finally(() => setLoading(false))
 
     setComments([])
-    loadComments().catch((error) => {
-      if (error.response?.status !== 404) {
-        toaster.create({ type: 'error', title: errorMessage(error, '댓글을 불러오지 못했어요.') })
-      }
-    })
+    setCommentsFailed(false)
+    loadComments().catch(() => setCommentsFailed(true))
   }, [id])
 
   useEffect(() => {
@@ -385,6 +386,7 @@ export const CommunityArticlePage = () => {
 
           <CommunityArticleCommentList
             comments={ comments }
+            failed={ commentsFailed }
             postAuthorNickname={ post.author?.nickname }
             myNickname={ myNickname }
             voteOptions={ post.voteOptions }
