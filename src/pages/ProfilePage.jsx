@@ -31,7 +31,7 @@ import preferredFits from '/src/data/preferred-fits.json'
 import preferredStyles from '/src/data/preferred-styles.json'
 
 export default function ProfilePage() {
-  const { isSignedIn, setAccessToken } = useAuth()
+  const { setAccessToken } = useAuth()
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
     nickname: '테스트사용자',
@@ -45,13 +45,8 @@ export default function ProfilePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isSignedIn) {
-      navigate('/signin', { replace: true });
-      return;
-    }
-
     fetchProfile();
-  }, [isSignedIn, navigate]);
+  }, []);
 
   const fetchProfile = async () => {
     try {

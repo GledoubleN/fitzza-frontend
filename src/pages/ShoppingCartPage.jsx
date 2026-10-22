@@ -1,4 +1,3 @@
-import { useAuth } from '../contexts/AuthContext.js'
 import {
   Button,
   Card,
@@ -44,7 +43,6 @@ const failureTests = [
 ]
 
 export const ShoppingCartPage = () => {
-  const { isSignedIn } = useAuth()
   const navigate = useNavigate()
   const [items, setItems] = useState(null)
   const [isLoadFailed, setIsLoadFailed] = useState(false)
@@ -65,13 +63,8 @@ export const ShoppingCartPage = () => {
     })
 
   useEffect(() => {
-    if (!isSignedIn) {
-      navigate('/signin', { replace: true })
-      return
-    }
-
     loadCart()
-  }, [isSignedIn, navigate])
+  }, [])
 
   const updateCart = async (request, failureTitle) => {
     setIsUpdating(true)
