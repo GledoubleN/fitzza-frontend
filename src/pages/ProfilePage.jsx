@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   LuUser,
   LuPackage,
-  LuGift,
+  LuHistory,
   LuMessageSquare,
   LuSettings,
 } from 'react-icons/lu';
@@ -283,7 +283,7 @@ export default function ProfilePage() {
             <Grid templateColumns="repeat(4, 1fr)" gap={2}>
               {[
                 { label: '주문', icon: LuPackage, path: '/orders' },
-                { label: '이벤트', icon: LuGift },
+                { label: '추천내역', icon: LuHistory, path: '/ai/history' },
                 { label: '커뮤니티', icon: LuMessageSquare },
                 { label: '설정', icon: LuSettings },
               ].map((item) => {
