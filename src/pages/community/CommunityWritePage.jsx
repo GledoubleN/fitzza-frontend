@@ -220,7 +220,9 @@ export const CommunityWritePage = () => {
                             bg="bg.muted"
                           />
                           <Stack gap="0" flex="1" minWidth="0">
-                            <Badge size="sm" width="fit-content">{ SOURCE_LABELS[option.source] }</Badge>
+                            { SOURCE_LABELS[option.source] && (
+                              <Badge size="sm" width="fit-content">{ SOURCE_LABELS[option.source] }</Badge>
+                            ) }
                             <Text fontWeight="bold" lineClamp="1">{ option.name }</Text>
                             { option.price !== null && option.price !== undefined && (
                               <Text fontSize="sm" color="fg.muted">{ option.price.toLocaleString() }원</Text>
