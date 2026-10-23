@@ -4,6 +4,11 @@ export const CATEGORY_LABELS = {
   DAILY: '일상',
 }
 
+export const SOURCE_LABELS = {
+  AI_RECOMMEND: 'AI 추천',
+  WISHLIST: '찜',
+}
+
 export const CATEGORIES = Object.entries(CATEGORY_LABELS).map(([value, label]) => ({ value, label }))
 
 const MINUTE = 60 * 1000

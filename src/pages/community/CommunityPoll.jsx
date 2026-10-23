@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Button, Dialog, Flex, Grid, Image, Portal, Stack, Text } from '@chakra-ui/react'
+import { Badge, Button, Dialog, Flex, Grid, Image, Portal, Stack, Text } from '@chakra-ui/react'
 import { LuCheck } from 'react-icons/lu'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
-import { errorMessage, formatRemaining } from './communityFormat.js'
+import { SOURCE_LABELS, errorMessage, formatRemaining } from './communityFormat.js'
 
 export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onRequireSignIn }) => {
   const [poll, setPoll] = useState(null)
@@ -89,6 +89,9 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
                 rounded="md"
                 bg="bg.muted"
               />
+              { SOURCE_LABELS[option.source] && (
+                <Badge size="sm" width="fit-content">{ SOURCE_LABELS[option.source] }</Badge>
+              ) }
               { option.name && (
                 <Text fontSize="xs" color="fg.muted" lineClamp="1">
                   { option.name }

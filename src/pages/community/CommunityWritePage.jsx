@@ -24,7 +24,7 @@ import { Placeholder } from '@tiptap/extensions'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
-import { CATEGORIES, MAX_VOTE_OPTIONS, VOTE_LABELS, errorMessage, optionKey } from './communityFormat.js'
+import { CATEGORIES, MAX_VOTE_OPTIONS, SOURCE_LABELS, VOTE_LABELS, errorMessage, optionKey } from './communityFormat.js'
 import { CommunityOptionPicker, CommunityOptionSourceSheet } from './CommunityOptionPicker.jsx'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 
@@ -36,11 +36,6 @@ const MODES = [
 const MIN_VOTE_OPTIONS = 2
 const VOTE_CATEGORY = 'COORDI_QUESTION'
 const VOTE_DURATION_HOURS = 6
-
-const SOURCE_LABELS = {
-  AI_RECOMMEND: 'AI 추천',
-  WISHLIST: '찜',
-}
 const TITLE_MAX_LENGTH = 100
 const CONTENT_MAX_LENGTH = 5000
 
