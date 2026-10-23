@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Card,
   Circle,
@@ -35,6 +36,11 @@ const MODES = [
 const MIN_VOTE_OPTIONS = 2
 const VOTE_CATEGORY = 'COORDI_QUESTION'
 const VOTE_DURATION_HOURS = 6
+
+const SOURCE_LABELS = {
+  AI_RECOMMEND: 'AI 추천',
+  WISHLIST: '찜',
+}
 const TITLE_MAX_LENGTH = 100
 const CONTENT_MAX_LENGTH = 5000
 
@@ -219,6 +225,7 @@ export const CommunityWritePage = () => {
                             bg="bg.muted"
                           />
                           <Stack gap="0" flex="1" minWidth="0">
+                            <Badge size="sm" width="fit-content">{ SOURCE_LABELS[option.source] }</Badge>
                             <Text fontWeight="bold" lineClamp="1">{ option.name }</Text>
                             { option.price !== null && option.price !== undefined && (
                               <Text fontSize="sm" color="fg.muted">{ option.price.toLocaleString() }원</Text>
