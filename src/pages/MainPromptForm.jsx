@@ -1,14 +1,15 @@
 import { Grid, IconButton, Textarea } from '@chakra-ui/react'
 import { LuArrowUp, LuSparkle } from 'react-icons/lu'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const MAX_PROMPT_ROWS = 4
 
 const MAX_QUERY_LENGTH = 500
 
 export const MainPromptForm = ({ onSubmitQuery }) => {
+  const navigate = useNavigate()
   const [prompt, setPrompt] = useState('')
-  const [isLongPrompt, setIsLongPrompt] = useState(false)
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -34,9 +35,8 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
       <IconButton
         type={ 'button' }
         rounded={ 'full' }
-        aria-label={ '입력창 펼치기' }
-        aria-pressed={ isLongPrompt }
-        onClick={ () => setIsLongPrompt((isLongPrompt) => !isLongPrompt) }
+        aria-label={ '대화 내역' }
+        onClick={ () => navigate('/ai/history') }
       >
         <LuSparkle/>
       </IconButton>
@@ -45,8 +45,8 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
         variant={ 'none' }
         aria-label={ 'AI에게 추천받을 내용' }
         maxLength={ MAX_QUERY_LENGTH }
-        rows={ isLongPrompt ? MAX_PROMPT_ROWS : 1 }
-        fieldSizing={ isLongPrompt ? 'fixed' : 'content' }
+        rows={ 1 }
+        fieldSizing={ 'content' }
         maxHeight={ `calc(${ MAX_PROMPT_ROWS }lh + {spacing.4})` }
         value={ prompt }
         onChange={ (e) => setPrompt(e.target.value) }
