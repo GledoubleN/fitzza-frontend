@@ -94,12 +94,20 @@ export const DashboardPage = () => {
   const maxTokens = Math.max(...data.usage.map((item) => item.input + item.output))
 
   return (
-    <Stack minHeight="vh" gap={ 0 } bg="bg" color="fg">
-      <Box as="header" paddingY={ 4 } borderBottomWidth="thin" borderColor="border">
-        <Header/>
-      </Box>
+    <Stack
+      gap={ 4 }
+      paddingY={ 4 }
+      minHeight="vh"
+      bg="bg"
+      color="fg"
+    >
+      <Header/>
 
-      <Container as="main" maxWidth="7xl" flex={ 1 } paddingY={ 8 }>
+      <Container
+        as="main"
+        maxWidth="5xl"
+        flex={ 1 }
+      >
         <Stack gap={ 8 }>
           <Stack gap={ 4 }>
             <Flex align="center" gap={ 4 } wrap="wrap">
@@ -221,9 +229,12 @@ export const DashboardPage = () => {
         </Stack>
       </Container>
 
-      <Box as="footer" padding={ 8 } borderTopWidth="thin" borderColor="border">
+      <Container
+        as="footer"
+        maxWidth="5xl"
+      >
         <Footer/>
-      </Box>
+      </Container>
     </Stack>
   )
 }
