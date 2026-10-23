@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Badge,
   Box,
+  Button,
   Card,
   Container,
   Flex,
   Heading,
   SimpleGrid,
+  Spinner,
   Stack,
   Tabs,
   Text,
@@ -14,7 +16,14 @@ import {
 import { LuChartColumn, LuMessageSquare, LuShoppingBag } from 'react-icons/lu'
 import { Header } from '../components/Header.jsx'
 import { Footer } from '../components/Footer.jsx'
-import dashboardPeriods from '../data/dashboard.json'
+import { api } from '../api/axios.js'
+
+const periods = [
+  { value: 'daily', label: '일간' },
+  { value: 'weekly', label: '주간' },
+  { value: 'monthly', label: '월간' },
+  { value: 'yearly', label: '연간' },
+]
 
 const formatNumber = (value) => value.toLocaleString('ko-KR')
 const sumCounts = (items) => items.reduce((total, item) => total + item.count, 0)
@@ -88,10 +97,28 @@ const RankingCard = ({ title, description, items, unit }) => (
 
 export const DashboardPage = () => {
   const [period, setPeriod] = useState('daily')
-  const data = dashboardPeriods[period]
+  const [result, setResult] = useState(null)
+  const [attempt, setAttempt] = useState(0)
+  const status = result?.period === period && result?.attempt === attempt ? result.status : 'loading'
+  const data = status === 'success' ? result.data : { usage: [], keywords: [], products: [] }
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    api.get('/analytics', { params: { period }, signal: controller.signal })
+      .then(({ data }) => {
+        if (!controller.signal.aborted) setResult({ period, attempt, status: 'success', data })
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setResult({ period, attempt, status: 'error' })
+      })
+
+    return () => controller.abort()
+  }, [period, attempt])
+
   const inputTokens = data.usage.reduce((total, item) => total + item.input, 0)
   const outputTokens = data.usage.reduce((total, item) => total + item.output, 0)
-  const maxTokens = Math.max(...data.usage.map((item) => item.input + item.output))
+  const maxTokens = Math.max(1, ...data.usage.map((item) => item.input + item.output))
 
   return (
     <Stack
@@ -112,7 +139,9 @@ export const DashboardPage = () => {
           <Stack gap={ 4 }>
             <Flex align="center" gap={ 4 } wrap="wrap">
               <Badge bg="primary.subtle" color="primary.fg">ADMIN</Badge>
-              <Badge bg="bg.muted" color="fg.muted">예시 데이터</Badge>
+              { import.meta.env.VITE_ENABLE_MOCKING === 'true' && (
+                <Badge bg="bg.muted" color="fg.muted">예시 데이터</Badge>
+              ) }
             </Flex>
             <Heading as="h1" size="3xl">관리자 대시보드</Heading>
             <Text color="fg.muted">AI 사용 현황과 사용자 관심사, 상품 추천 추이를 확인하세요.</Text>
@@ -120,109 +149,127 @@ export const DashboardPage = () => {
 
           <Tabs.Root value={ period } onValueChange={ ({ value }) => setPeriod(value) } variant="outline">
             <Tabs.List aria-label="통계 조회 기간">
-              { Object.entries(dashboardPeriods).map(([value, { label }]) => (
+              { periods.map(({ value, label }) => (
                 <Tabs.Trigger key={ value } value={ value } flex={ 1 } paddingX={ 4 }>
                   { label }
                 </Tabs.Trigger>
               )) }
             </Tabs.List>
-            { Object.entries(dashboardPeriods).map(([value, periodData]) => (
+            { periods.map(({ value }) => (
               <Tabs.Content key={ value } value={ value } paddingTop={ 8 } paddingBottom={ 0 }>
-                <Stack gap={ 8 }>
-                  <Flex justify="space-between" gap={ 4 } wrap="wrap" color="fg.muted" fontSize="sm">
-                    <Text>{ periodData.description }</Text>
-                    <Text>실제 운영 통계가 아닌 화면 확인용 예시입니다.</Text>
-                  </Flex>
+                { status === 'loading' && (
+                  <Stack align="center" gap={ 4 } paddingY={ 8 } role="status">
+                    <Spinner/>
+                    <Text color="fg.muted">통계를 불러오는 중입니다.</Text>
+                  </Stack>
+                ) }
+                { status === 'error' && (
+                  <Stack align="center" gap={ 4 } paddingY={ 8 } role="alert">
+                    <Text color="fg.error">통계를 불러오지 못했습니다.</Text>
+                    <Button variant="outline" onClick={ () => setAttempt((value) => value + 1) }>
+                      다시 시도
+                    </Button>
+                  </Stack>
+                ) }
+                { status === 'success' && (
+                  <Stack gap={ 8 }>
+                    <Flex justify="space-between" gap={ 4 } wrap="wrap" color="fg.muted" fontSize="sm">
+                      <Text>{ data.description }</Text>
+                      { import.meta.env.VITE_ENABLE_MOCKING === 'true' && (
+                        <Text>실제 운영 통계가 아닌 화면 확인용 예시입니다.</Text>
+                      ) }
+                    </Flex>
 
-                  <SimpleGrid columns={ { base: 1, md: 3 } } gap={ 4 }>
-                    <SummaryCard
-                      icon={ <LuChartColumn/> }
-                      label="총 토큰 사용량"
-                      value={ inputTokens + outputTokens }
-                      unit="토큰"
-                      detail={ `입력 ${ formatNumber(inputTokens) } · 출력 ${ formatNumber(outputTokens) }` }
-                    />
-                    <SummaryCard
-                      icon={ <LuMessageSquare/> }
-                      label="인기 프롬프트 키워드"
-                      value={ sumCounts(data.keywords) }
-                      unit="회"
-                      detail={ `상위 ${ data.keywords.length }개 키워드 입력 횟수 합계` }
-                    />
-                    <SummaryCard
-                      icon={ <LuShoppingBag/> }
-                      label="인기 상품 추천"
-                      value={ sumCounts(data.products) }
-                      unit="회"
-                      detail={ `상위 ${ data.products.length }개 상품 추천 횟수 합계` }
-                    />
-                  </SimpleGrid>
+                    <SimpleGrid columns={ { base: 1, md: 3 } } gap={ 4 }>
+                      <SummaryCard
+                        icon={ <LuChartColumn/> }
+                        label="총 토큰 사용량"
+                        value={ inputTokens + outputTokens }
+                        unit="토큰"
+                        detail={ `입력 ${ formatNumber(inputTokens) } · 출력 ${ formatNumber(outputTokens) }` }
+                      />
+                      <SummaryCard
+                        icon={ <LuMessageSquare/> }
+                        label="인기 프롬프트 키워드"
+                        value={ sumCounts(data.keywords) }
+                        unit="회"
+                        detail={ `상위 ${ data.keywords.length }개 키워드 입력 횟수 합계` }
+                      />
+                      <SummaryCard
+                        icon={ <LuShoppingBag/> }
+                        label="인기 상품 추천"
+                        value={ sumCounts(data.products) }
+                        unit="회"
+                        detail={ `상위 ${ data.products.length }개 상품 추천 횟수 합계` }
+                      />
+                    </SimpleGrid>
 
-                  <Card.Root as="section" bg="bg.panel" borderColor="border">
-                    <Card.Header padding={ 8 }>
-                      <Heading size="lg">토큰 사용량 추이</Heading>
-                      <Flex gap={ 4 } wrap="wrap" fontSize="sm" color="fg.muted">
-                        <Text>입력 토큰 { formatNumber(inputTokens) }</Text>
-                        <Text>출력 토큰 { formatNumber(outputTokens) }</Text>
-                      </Flex>
-                    </Card.Header>
-                    <Card.Body padding={ 8 } paddingTop={ 0 }>
-                      <Box overflowX="auto">
-                        <Flex align="end" gap={ 4 } minWidth={ data.usage.length > 7 ? '2xl' : 'md' }>
-                          { data.usage.map((item) => (
-                            <Stack key={ item.label } flex={ 1 } align="center" gap={ 4 }>
-                              <Text fontSize="xs" color="fg.muted">
-                                { formatNumber((item.input + item.output) / 1000) }천
-                              </Text>
-                              <Flex height={ 48 } width="full" align="end" justify="center" gap={ 0 }>
-                                <Stack
-                                  width="full"
-                                  maxWidth={ 12 }
-                                  height={ `${ (item.input + item.output) / maxTokens * 100 }%` }
-                                  gap={ 0 }
-                                  overflow="hidden"
-                                  borderTopRadius="md"
-                                  role="img"
-                                  aria-label={ `${ item.label }: 입력 ${ formatNumber(item.input) }, 출력 ${ formatNumber(item.output) } 토큰` }
-                                  title={ `입력 ${ formatNumber(item.input) } / 출력 ${ formatNumber(item.output) }` }
-                                >
-                                  <Box flex={ item.output } bg="secondary.emphasized"/>
-                                  <Box flex={ item.input } bg="primary.solid"/>
-                                </Stack>
-                              </Flex>
-                              <Text fontSize="xs" color="fg.muted">{ item.label }</Text>
-                            </Stack>
-                          )) }
+                    <Card.Root as="section" bg="bg.panel" borderColor="border">
+                      <Card.Header padding={ 8 }>
+                        <Heading size="lg">토큰 사용량 추이</Heading>
+                        <Flex gap={ 4 } wrap="wrap" fontSize="sm" color="fg.muted">
+                          <Text>입력 토큰 { formatNumber(inputTokens) }</Text>
+                          <Text>출력 토큰 { formatNumber(outputTokens) }</Text>
                         </Flex>
-                      </Box>
-                      <Flex justify="center" gap={ 8 } marginTop={ 8 } fontSize="sm">
-                        <Flex align="center" gap={ 4 }>
-                          <Box boxSize={ 4 } bg="primary.solid" borderRadius="sm"/>
-                          <Text>입력 토큰</Text>
+                      </Card.Header>
+                      <Card.Body padding={ 8 } paddingTop={ 0 }>
+                        <Box overflowX="auto">
+                          <Flex align="end" gap={ 4 } minWidth={ data.usage.length > 7 ? '2xl' : 'md' }>
+                            { data.usage.map((item) => (
+                              <Stack key={ item.label } flex={ 1 } align="center" gap={ 4 }>
+                                <Text fontSize="xs" color="fg.muted">
+                                  { formatNumber((item.input + item.output) / 1000) }천
+                                </Text>
+                                <Flex height={ 48 } width="full" align="end" justify="center" gap={ 0 }>
+                                  <Stack
+                                    width="full"
+                                    maxWidth={ 12 }
+                                    height={ `${ (item.input + item.output) / maxTokens * 100 }%` }
+                                    gap={ 0 }
+                                    overflow="hidden"
+                                    borderTopRadius="md"
+                                    role="img"
+                                    aria-label={ `${ item.label }: 입력 ${ formatNumber(item.input) }, 출력 ${ formatNumber(item.output) } 토큰` }
+                                    title={ `입력 ${ formatNumber(item.input) } / 출력 ${ formatNumber(item.output) }` }
+                                  >
+                                    <Box flex={ item.output } bg="secondary.emphasized"/>
+                                    <Box flex={ item.input } bg="primary.solid"/>
+                                  </Stack>
+                                </Flex>
+                                <Text fontSize="xs" color="fg.muted">{ item.label }</Text>
+                              </Stack>
+                            )) }
+                          </Flex>
+                        </Box>
+                        <Flex justify="center" gap={ 8 } marginTop={ 8 } fontSize="sm">
+                          <Flex align="center" gap={ 4 }>
+                            <Box boxSize={ 4 } bg="primary.solid" borderRadius="sm"/>
+                            <Text>입력 토큰</Text>
+                          </Flex>
+                          <Flex align="center" gap={ 4 }>
+                            <Box boxSize={ 4 } bg="secondary.emphasized" borderRadius="sm"/>
+                            <Text>출력 토큰</Text>
+                          </Flex>
                         </Flex>
-                        <Flex align="center" gap={ 4 }>
-                          <Box boxSize={ 4 } bg="secondary.emphasized" borderRadius="sm"/>
-                          <Text>출력 토큰</Text>
-                        </Flex>
-                      </Flex>
-                    </Card.Body>
-                  </Card.Root>
+                      </Card.Body>
+                    </Card.Root>
 
-                  <SimpleGrid columns={ { base: 1, lg: 2 } } gap={ 8 }>
-                    <RankingCard
-                      title="프롬프트 키워드 순위"
-                      description="사용자가 입력한 키워드를 횟수순으로 정렬했습니다."
-                      items={ data.keywords }
-                      unit="회"
-                    />
-                    <RankingCard
-                      title="추천 상품 순위"
-                      description="AI가 추천한 상품을 추천 횟수순으로 정렬했습니다."
-                      items={ data.products }
-                      unit="회"
-                    />
-                  </SimpleGrid>
-                </Stack>
+                    <SimpleGrid columns={ { base: 1, lg: 2 } } gap={ 8 }>
+                      <RankingCard
+                        title="프롬프트 키워드 순위"
+                        description="사용자가 입력한 키워드를 횟수순으로 정렬했습니다."
+                        items={ data.keywords }
+                        unit="회"
+                      />
+                      <RankingCard
+                        title="추천 상품 순위"
+                        description="AI가 추천한 상품을 추천 횟수순으로 정렬했습니다."
+                        items={ data.products }
+                        unit="회"
+                      />
+                    </SimpleGrid>
+                  </Stack>
+                ) }
               </Tabs.Content>
             )) }
           </Tabs.Root>

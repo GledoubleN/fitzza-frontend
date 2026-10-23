@@ -14,6 +14,7 @@ import recommendationMessages from '../data/recommendation-messages.json'
 import notifications from '../data/notifications.json'
 import fittingResultImage from '../assets/hero.png'
 import { communityHandlers } from './communityHandlers.js'
+import { analyticsHandlers } from './analyticsHandlers.js'
 
 let lastRecommendationId = 0
 
@@ -167,6 +168,7 @@ const createOrderNum = () => {
 }
 
 export const handlers = [
+  ...analyticsHandlers,
   http.get(`${ api.defaults.baseURL }/users/me`, () => {
     return HttpResponse.json(userProfile)
   }),
