@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Card,
   Circle,
@@ -23,7 +24,7 @@ import { Placeholder } from '@tiptap/extensions'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
-import { CATEGORIES, MAX_VOTE_OPTIONS, VOTE_LABELS, errorMessage, optionKey } from './communityFormat.js'
+import { CATEGORIES, MAX_VOTE_OPTIONS, SOURCE_LABELS, VOTE_LABELS, errorMessage, optionKey } from './communityFormat.js'
 import { CommunityOptionPicker, CommunityOptionSourceSheet } from './CommunityOptionPicker.jsx'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 
@@ -34,6 +35,7 @@ const MODES = [
 
 const MIN_VOTE_OPTIONS = 2
 const VOTE_CATEGORY = 'COORDI_QUESTION'
+const VOTE_DURATION_HOURS = 6
 const TITLE_MAX_LENGTH = 100
 const CONTENT_MAX_LENGTH = 5000
 
@@ -194,7 +196,14 @@ export const CommunityWritePage = () => {
 
               { isVote && (
                 <Stack gap="4">
-                  <Text fontWeight="bold">투표 선택지</Text>
+                  <Stack gap="0">
+                    <Text fontWeight="bold">투표 선택지</Text>
+                    { !isEditing && (
+                      <Text fontSize="sm" color="fg.muted">
+                        투표는 글을 올린 뒤 { VOTE_DURATION_HOURS }시간 동안 진행돼요.
+                      </Text>
+                    ) }
+                  </Stack>
                   { options.map((option, index) => (
                     <Card.Root key={ optionKey(option) } size="sm" variant="outline">
                       <Card.Body>
@@ -211,6 +220,9 @@ export const CommunityWritePage = () => {
                             bg="bg.muted"
                           />
                           <Stack gap="0" flex="1" minWidth="0">
+                            { SOURCE_LABELS[option.source] && (
+                              <Badge size="sm" width="fit-content">{ SOURCE_LABELS[option.source] }</Badge>
+                            ) }
                             <Text fontWeight="bold" lineClamp="1">{ option.name }</Text>
                             { option.price !== null && option.price !== undefined && (
                               <Text fontSize="sm" color="fg.muted">{ option.price.toLocaleString() }원</Text>

@@ -446,6 +446,7 @@ export const CommunityArticlePage = () => {
             myNickname={ myNickname }
             voteOptions={ post.voteOptions }
             onLike={ toggleCommentLike }
+            canReply={ supportFilter === null }
             onReply={ submitComment }
             onUpdate={ updateComment }
             onDelete={ (commentId) => askDelete({ type: 'comment', commentId }) }

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Button, Dialog, Flex, Grid, Image, Portal, Stack, Text } from '@chakra-ui/react'
+import { Badge, Box, Button, Dialog, Flex, Grid, Image, Portal, Stack, Text } from '@chakra-ui/react'
 import { LuCheck } from 'react-icons/lu'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
-import { errorMessage, formatRemaining } from './communityFormat.js'
+import { SOURCE_LABELS, errorMessage, formatRemaining } from './communityFormat.js'
 
 export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onRequireSignIn }) => {
   const [poll, setPoll] = useState(null)
@@ -80,15 +80,28 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
 
           return (
             <Stack key={ option.voteOptionId } gap="4">
-              <Image
-                src={ option.imageUrl }
-                alt={ option.name ?? `선택지 ${ option.label }` }
-                aspectRatio="4/3"
-                width="full"
-                objectFit="cover"
-                rounded="md"
-                bg="bg.muted"
-              />
+              <Box position="relative">
+                <Image
+                  src={ option.imageUrl }
+                  alt={ option.name ?? `선택지 ${ option.label }` }
+                  aspectRatio="4/3"
+                  width="full"
+                  objectFit="cover"
+                  rounded="md"
+                  bg="bg.muted"
+                />
+                { SOURCE_LABELS[option.source] && (
+                  <Badge
+                    size="sm"
+                    variant="subtle"
+                    position="absolute"
+                    top="2"
+                    left="2"
+                  >
+                    { SOURCE_LABELS[option.source] }
+                  </Badge>
+                ) }
+              </Box>
               { option.name && (
                 <Text fontSize="xs" color="fg.muted" lineClamp="1">
                   { option.name }

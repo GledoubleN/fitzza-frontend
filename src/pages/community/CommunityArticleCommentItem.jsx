@@ -8,6 +8,7 @@ const COMMENT_MAX_LENGTH = 500
 export const CommunityArticleCommentItem = ({
   comment,
   isReply = false,
+  canReply = true,
   postAuthorNickname,
   myNickname,
   voteOptions,
@@ -96,7 +97,7 @@ export const CommunityArticleCommentItem = ({
             >
               <LuThumbsUp/> 좋아요 { likeCount }
             </Button>
-            { !isReply && (
+            { !isReply && canReply && (
               <Button { ...actionProps } fontWeight="bold" onClick={ () => setReplying((value) => !value) }>답글</Button>
             ) }
             { isMine && !editing && (
@@ -112,7 +113,7 @@ export const CommunityArticleCommentItem = ({
         </Stack>
       ) }
 
-      { replying && (
+      { replying && canReply && (
         <form onSubmit={ submitReply }>
           <HStack gap="4" paddingLeft="8">
             <Input

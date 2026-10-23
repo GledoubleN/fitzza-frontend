@@ -7,7 +7,7 @@ import recommendations from '../data/recommendations.json'
 
 const BASE_URL = api.defaults.baseURL
 const ME = { userId: 1, nickname: '핏짜' }
-const VOTE_DURATION_MS = 7 * 24 * 60 * 60 * 1000
+const VOTE_DURATION_MS = 6 * 60 * 60 * 1000
 const COMMENT_MAX_LENGTH = 500
 const DELETED_COMMENT = '삭제된 댓글입니다'
 
@@ -135,18 +135,34 @@ const toCommentTree = (postId, supportedOptionId, signedIn) => {
     liked: signedIn && (commentLikes.get(comment.commentId) ?? false),
     replies: [],
   })
-  const roots = comments
-    .filter((comment) => comment.postId === postId && comment.parentCommentId === null)
-    .filter((comment) => !supportedOptionId || comment.supportedOptionId === supportedOptionId)
+  if (supportedOptionId) {
+    return comments
+      .filter((comment) => comment.postId === postId && !comment.isDeleted)
+      .filter((comment) => comment.supportedOptionId === supportedOptionId)
+      .sort((a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt))
+      .map(toResponse)
+  }
+
+  const toDeletedResponse = (comment, replies) => ({
+    commentId: comment.commentId,
+    content: DELETED_COMMENT,
+    author: null,
+    likeCount: 0,
+    liked: false,
+    isDeleted: true,
+    supportedOptionId: null,
+    createdAt: comment.createdAt,
+    replies,
+  })
+  const activeReplies = (rootId) => comments
+    .filter((comment) => comment.parentCommentId === rootId && !comment.isDeleted)
     .map(toResponse)
 
-  roots.forEach((root) => {
-    root.replies = comments
-      .filter((comment) => comment.parentCommentId === root.commentId)
-      .map(toResponse)
-  })
-
-  return roots
+  return comments
+    .filter((comment) => comment.postId === postId && comment.parentCommentId === null)
+    .map((root) => ({ root, replies: activeReplies(root.commentId) }))
+    .filter(({ root, replies }) => !root.isDeleted || replies.length > 0)
+    .map(({ root, replies }) => root.isDeleted ? toDeletedResponse(root, replies) : { ...toResponse(root), replies })
 }
 
 const validateComment = (content) => {
