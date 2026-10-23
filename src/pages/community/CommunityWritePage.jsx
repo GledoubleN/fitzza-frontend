@@ -237,11 +237,6 @@ export const CommunityWritePage = () => {
                   { pollStarted && (
                     <Text fontSize="sm" color="fg.muted">투표가 시작돼 선택지는 바꿀 수 없어요.</Text>
                   ) }
-                  { canEditOptions && options.length < MAX_VOTE_OPTIONS && (
-                    <Button variant="outline" borderStyle="dashed" onClick={ () => setSheetOpen(true) }>
-                      <LuPlus/> 선택지 추가 (최대 { MAX_VOTE_OPTIONS }개)
-                    </Button>
-                  ) }
                   <Stack gap="0">
                     { options.length < MIN_VOTE_OPTIONS && (
                       <Text fontSize="sm" color="fg.error">선택지를 { MIN_VOTE_OPTIONS }개 이상 골라주세요.</Text>
@@ -252,6 +247,11 @@ export const CommunityWritePage = () => {
                       </Text>
                     ) }
                   </Stack>
+                  { canEditOptions && options.length < MAX_VOTE_OPTIONS && (
+                    <Button variant="outline" borderStyle="dashed" onClick={ () => setSheetOpen(true) }>
+                      <LuPlus/> 선택지 추가 (최대 { MAX_VOTE_OPTIONS }개)
+                    </Button>
+                  ) }
                 </Stack>
               ) }
 
