@@ -34,7 +34,7 @@ export const Header = ({ maxWidth = '7xl' }) => {
   const navigate = useNavigate()
   const { isSignedIn, setAccessToken } = useAuth()
   const [isSigningOut, setIsSigningOut] = useState(false)
-  const { error, isConfigured, requestPushPermission } = usePushNotifications(isSignedIn && !isSigningOut)
+  const { error, isConfigured } = usePushNotifications(isSignedIn && !isSigningOut)
   const { notifications, status: notificationStatus, hasUnread, reload, markAsRead } = useNotifications(isSignedIn && !isSigningOut)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
 
@@ -106,7 +106,6 @@ export const Header = ({ maxWidth = '7xl' }) => {
                 <IconButton
                   { ...buttonProps }
                   position="relative"
-                  onClick={ requestPushPermission }
                   title={ hasUnread ? '새 알림 있음' : '알림' }
                 >
                   <LuBell/>

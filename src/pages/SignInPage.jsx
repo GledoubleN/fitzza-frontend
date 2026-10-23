@@ -16,6 +16,7 @@ import { LuMail, LuLockKeyhole } from 'react-icons/lu'
 import { api } from '../api/axios.js'
 import { Header } from '../components/Header.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
+import { requestPushPermission } from '../services/pushNotifications.js'
 
 export const SignInPage = () => {
   const [email, setEmail] = useState('')
@@ -35,6 +36,8 @@ export const SignInPage = () => {
     try {
       const response = await api.post('/auth/signin', { email, password })
       const token = response.data?.accessToken
+
+      await requestPushPermission().catch(() => {})
 
       setAccessToken(token)
       navigate(location.state?.from ?? '/', { replace: true })

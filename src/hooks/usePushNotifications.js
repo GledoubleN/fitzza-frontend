@@ -6,7 +6,6 @@ export const usePushNotifications = (isSignedIn) => {
   const [error, setError] = useState('')
   const [previousSignedIn, setPreviousSignedIn] = useState(isSignedIn)
   const session = useRef(0)
-  const registerPush = useRef(null)
 
   if (previousSignedIn !== isSignedIn) {
     setPreviousSignedIn(isSignedIn)
@@ -21,13 +20,13 @@ export const usePushNotifications = (isSignedIn) => {
     let registering = false
     let registeredToken
 
-    const registerPushToken = async (requestPermission = false) => {
+    const registerPushToken = async () => {
       if (registering || session.current !== currentSession) return
 
       registering = true
 
       try {
-        const token = await enablePush({ requestPermission })
+        const token = await enablePush()
 
         if (!token || session.current !== currentSession) return
         if (token === registeredToken) return
@@ -45,8 +44,6 @@ export const usePushNotifications = (isSignedIn) => {
       }
     }
 
-    registerPush.current = registerPushToken
-
     const handleFocus = () => {
       if ('Notification' in window && Notification.permission === 'granted') void registerPushToken()
     }
@@ -55,14 +52,12 @@ export const usePushNotifications = (isSignedIn) => {
     handleFocus()
 
     return () => {
-      registerPush.current = null
       session.current = currentSession + 1
       window.removeEventListener('focus', handleFocus)
     }
   }, [isSignedIn])
 
   return {
-    requestPushPermission: () => registerPush.current?.(true),
     error,
     isConfigured: isPushConfigured,
   }
