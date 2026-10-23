@@ -61,8 +61,10 @@ export const CommunityArticlePage = () => {
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [supportFilter, setSupportFilter] = useState(null)
 
-  const loadComments = () => api.get(`/community/posts/${ id }/comments`)
+  const loadComments = (supportedOptionId = supportFilter) => api
+    .get(`/community/posts/${ id }/comments`, { params: { supportedOptionId: supportedOptionId ?? undefined } })
     .then((response) => {
       setComments(response.data)
       setCommentsFailed(false)
@@ -80,8 +82,14 @@ export const CommunityArticlePage = () => {
 
     setComments([])
     setCommentsFailed(false)
-    loadComments().catch(() => setCommentsFailed(true))
+    setSupportFilter(null)
+    loadComments(null).catch(() => setCommentsFailed(true))
   }, [id])
+
+  const selectSupportFilter = (voteOptionId) => {
+    setSupportFilter(voteOptionId)
+    loadComments(voteOptionId).catch(() => setCommentsFailed(true))
+  }
 
   useEffect(() => {
     if (!isSignedIn) {
@@ -143,7 +151,8 @@ export const CommunityArticlePage = () => {
     savingComment.current = true
     try {
       await api.post(`/community/posts/${ id }/comments`, { content: trimmed, parentCommentId })
-      await loadComments()
+      setSupportFilter(null)
+      await loadComments(null)
       setPost((prev) => ({ ...prev, commentCount: prev.commentCount + 1 }))
       return true
     } catch (error) {
@@ -384,9 +393,28 @@ export const CommunityArticlePage = () => {
 
           <Separator/>
 
+          { post.postType === 'VOTE' && (
+            <HStack gap="2" overflowX="auto">
+              { [{ voteOptionId: null, label: '전체' }, ...post.voteOptions].map((option) => (
+                <Button
+                  key={ option.voteOptionId ?? 'all' }
+                  size="xs"
+                  rounded="full"
+                  flexShrink="0"
+                  variant={ supportFilter === option.voteOptionId ? 'solid' : 'outline' }
+                  aria-pressed={ supportFilter === option.voteOptionId }
+                  onClick={ () => selectSupportFilter(option.voteOptionId) }
+                >
+                  { option.voteOptionId === null ? option.label : `${ option.label } 지지` }
+                </Button>
+              )) }
+            </HStack>
+          ) }
+
           <CommunityArticleCommentList
             comments={ comments }
             failed={ commentsFailed }
+            emptyText={ supportFilter === null ? undefined : '이 선택지를 지지하는 댓글이 아직 없어요.' }
             postAuthorNickname={ post.author?.nickname }
             myNickname={ myNickname }
             voteOptions={ post.voteOptions }
