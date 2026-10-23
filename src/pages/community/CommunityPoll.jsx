@@ -93,7 +93,7 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
                 { SOURCE_LABELS[option.source] && (
                   <Badge
                     size="sm"
-                    variant="solid"
+                    variant="subtle"
                     position="absolute"
                     top="2"
                     left="2"
