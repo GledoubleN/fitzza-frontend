@@ -28,7 +28,11 @@ export const formatRemaining = (dateTime) => {
   const left = Date.parse(dateTime) - Date.now()
 
   if (left < HOUR) return `${ Math.max(1, Math.ceil(left / MINUTE)) }분 남음`
-  if (left < DAY) return `${ Math.floor(left / HOUR) }시간 남음`
+  if (left < DAY) {
+    const hours = Math.floor(left / HOUR)
+    const minutes = Math.floor((left % HOUR) / MINUTE)
+    return minutes ? `${ hours }시간 ${ minutes }분 남음` : `${ hours }시간 남음`
+  }
   return `${ Math.floor(left / DAY) }일 남음`
 }
 
