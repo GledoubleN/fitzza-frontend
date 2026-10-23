@@ -135,9 +135,16 @@ const toCommentTree = (postId, supportedOptionId, signedIn) => {
     liked: signedIn && (commentLikes.get(comment.commentId) ?? false),
     replies: [],
   })
+  if (supportedOptionId) {
+    return comments
+      .filter((comment) => comment.postId === postId && !comment.isDeleted)
+      .filter((comment) => comment.supportedOptionId === supportedOptionId)
+      .sort((a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt))
+      .map(toResponse)
+  }
+
   const roots = comments
     .filter((comment) => comment.postId === postId && comment.parentCommentId === null)
-    .filter((comment) => !supportedOptionId || comment.supportedOptionId === supportedOptionId)
     .map(toResponse)
 
   roots.forEach((root) => {
