@@ -53,7 +53,7 @@ export const MainPage = () => {
     >
       <Header></Header>
 
-      <Container maxWidth={ '3xl' }>
+      <Container maxWidth={ '5xl' }>
         <Card.Root
           height={ '100%' }
           rounded={ '3xl' }
