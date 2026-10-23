@@ -143,17 +143,26 @@ const toCommentTree = (postId, supportedOptionId, signedIn) => {
       .map(toResponse)
   }
 
-  const roots = comments
-    .filter((comment) => comment.postId === postId && comment.parentCommentId === null)
+  const toDeletedResponse = (comment, replies) => ({
+    commentId: comment.commentId,
+    content: DELETED_COMMENT,
+    author: null,
+    likeCount: 0,
+    liked: false,
+    isDeleted: true,
+    supportedOptionId: null,
+    createdAt: comment.createdAt,
+    replies,
+  })
+  const activeReplies = (rootId) => comments
+    .filter((comment) => comment.parentCommentId === rootId && !comment.isDeleted)
     .map(toResponse)
 
-  roots.forEach((root) => {
-    root.replies = comments
-      .filter((comment) => comment.parentCommentId === root.commentId)
-      .map(toResponse)
-  })
-
-  return roots
+  return comments
+    .filter((comment) => comment.postId === postId && comment.parentCommentId === null)
+    .map((root) => ({ root, replies: activeReplies(root.commentId) }))
+    .filter(({ root, replies }) => !root.isDeleted || replies.length > 0)
+    .map(({ root, replies }) => root.isDeleted ? toDeletedResponse(root, replies) : { ...toResponse(root), replies })
 }
 
 const validateComment = (content) => {
