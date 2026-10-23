@@ -4,8 +4,6 @@ import users from '../data/users.json'
 import categories from '../data/categories.json'
 import products from '../data/products.json'
 import likes from '../data/wishlist.json'
-import articles from '../data/articles.json'
-import comments from '../data/comments.json'
 import carts from '../data/carts.json'
 import orders from '../data/orders.json'
 import surveys from '../data/surveys.json'
@@ -15,6 +13,7 @@ import recommendationHistory from '../data/recommendation-history.json'
 import recommendationMessages from '../data/recommendation-messages.json'
 import notifications from '../data/notifications.json'
 import fittingResultImage from '../assets/hero.png'
+import { communityHandlers } from './communityHandlers.js'
 
 let lastRecommendationId = 0
 
@@ -786,34 +785,7 @@ export const handlers = [
     },
   ),
 
-  http.get(
-    `${ api.defaults.baseURL }/community/articles/:id/comments`,
-    () => {
-      return HttpResponse.json(comments)
-    },
-  ),
-
-  http.get(
-    `${ api.defaults.baseURL }/community/articles`,
-    () => {
-      return HttpResponse.json(articles)
-    },
-  ),
-
-  http.get(
-    `${ api.defaults.baseURL }/community/articles/:id`,
-    ({ params }) => {
-      const article = articles.find(
-        product => product.id === Number(params.id),
-      )
-
-      if (!article) {
-        return new HttpResponse(null, { status: 404 })
-      }
-
-      return HttpResponse.json(article)
-    },
-  ),
+  ...communityHandlers,
 
   http.post(
     `${ api.defaults.baseURL }/recommendations`,

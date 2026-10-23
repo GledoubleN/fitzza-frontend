@@ -36,7 +36,7 @@ function App() {
         <Route path="/checkout" element={ <RequireSignIn><CheckoutPage/></RequireSignIn> }/>
         <Route path="/community/main" element={ <CommunityMainPage/> }/>
         <Route path="/community/articles/:id" element={ <CommunityArticlePage/> }/>
-        <Route path="/community/write" element={ <CommunityWritePage/> }/>
+        <Route path="/community/write" element={ <RequireSignIn><CommunityWritePage/></RequireSignIn> }/>
         <Route path="/profile" element={ <RequireSignIn><ProfilePage/></RequireSignIn> }/>
         <Route path="/profile/fittings" element={ <RequireSignIn><VtonGalleryPage/></RequireSignIn> }/>
         <Route path="/worldcup" element={ <WorldCupPage/> }/>
@@ -47,7 +47,7 @@ function App() {
         <Route path="/orders/:orderId" element={ <RequireSignIn><OrderDetail/></RequireSignIn> }/>
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
         <Route path="/ai/history" element={ <RequireSignIn><AIHistoryPage/></RequireSignIn> }/>
-        <Route path="/ai/:requestId?" element={ <AIStylistPage/> }/>
+        <Route path="/ai/:requestId?" element={ <RequireSignIn><AIStylistPage/></RequireSignIn> }/>
         <Route path="/onboarding" element={<OnboardingPage />} />
       </Routes>
     </BrowserRouter>

@@ -1,231 +1,303 @@
 import {
-  Box,
   Button,
-  ButtonGroup,
   Card,
+  Circle,
   Container,
   Flex,
-  Grid,
-  Group,
   IconButton,
   Image,
-  Input, InputGroup,
+  Input,
   NativeSelect,
   Separator,
   Stack,
   Tabs,
   Text,
 } from '@chakra-ui/react'
+import { LuPlus, LuTrash2 } from 'react-icons/lu'
 import { Header } from '../../components/Header.jsx'
 import { RichTextEditor } from '/src/components/ui/rich-text-editor'
+import { Toaster, toaster } from '../../components/ui/toaster.jsx'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useState } from 'react'
+import { Placeholder } from '@tiptap/extensions'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { LuChevronLeft, LuCircle, LuPlus, LuTrash } from 'react-icons/lu'
-import exampleProductImage from '/src/assets/hero.png'
-
-// 게시글 분류. 값은 게시글 작성 API의 category를 따릅니다.
-const CATEGORIES = [
-  { value: 'FASHION', label: '패션' },
-  { value: 'COORDI_QUESTION', label: '코디 질문' },
-  { value: 'DAILY', label: '일상' },
-]
+import { api } from '../../api/axios.js'
+import { CATEGORIES, MAX_VOTE_OPTIONS, VOTE_LABELS, errorMessage, optionKey } from './communityFormat.js'
+import { CommunityOptionPicker, CommunityOptionSourceSheet } from './CommunityOptionPicker.jsx'
+import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 
 const MODES = [
-  { value: 'default', label: '기본' },
-  { value: 'vote', label: '투표' },
+  { value: 'NORMAL', label: '기본' },
+  { value: 'VOTE', label: '투표' },
 ]
 
 const MIN_VOTE_OPTIONS = 2
-const MAX_VOTE_OPTIONS = 4
+const VOTE_CATEGORY = 'COORDI_QUESTION'
+const TITLE_MAX_LENGTH = 100
+const CONTENT_MAX_LENGTH = 5000
+
+const EDITOR_CSS = {
+  '--content-padding-x': 'spacing.3',
+  '--content-padding-y': 'spacing.3',
+  '& .ProseMirror p.is-editor-empty:first-of-type::before': { color: 'fg.muted/80' },
+}
+
+const toEditorContent = (text) => ({
+  type: 'doc',
+  content: text.split('\n').map((line) => ({
+    type: 'paragraph',
+    content: line ? [{ type: 'text', text: line }] : [],
+  })),
+})
+
+const fromVoteOption = ({ source, itemType, itemId, imageUrl, name, price }) => (
+  { source, itemType, itemId, imageUrl, name, price }
+)
+
+const toRequestOption = ({ source, itemType, itemId, imageUrl }) => ({ source, itemType, itemId, imageUrl })
 
 export const CommunityWritePage = () => {
-  const [editable, setEditable] = useState(true)
-  const [mode, setMode] = useState('default')
-  const [category, setCategory] = useState('')
-  const [title, setTitle] = useState('')
   const navigate = useNavigate()
-  // AI 추천 화면에서 공유하기로 넘어온 코디 또는 가상 피팅 결과. 게시글 작성 API 연동 시 sharedType, sharedId를 함께 보냅니다.
-  const shared = useLocation().state
+  const { state } = useLocation()
+  const editingPost = state?.post
+  const shared = editingPost ? null : state
 
-  // 투표 선택지. 공유로 넘어온 코디가 있으면 미리 채우고, 모자라면 빈 선택지로 최소 개수를 맞춰줍니다.
-  const [voteOptions, setVoteOptions] = useState(() => {
-    const options = (shared?.voteOptions ?? []).slice(0, MAX_VOTE_OPTIONS)
-    while (options.length < MIN_VOTE_OPTIONS) options.push({ text: '' })
-    return options
-  })
+  const initialOptions = editingPost?.voteOptions.map(fromVoteOption) ?? []
 
-  const changeVoteOptionText = (index, text) => {
-    setVoteOptions(voteOptions.map((option, i) => i === index ? { text } : option))
-  }
+  const [mode, setMode] = useState(editingPost?.postType ?? 'NORMAL')
+  const [category, setCategory] = useState(editingPost?.category ?? '')
+  const [title, setTitle] = useState(editingPost?.title ?? '')
+  const [options, setOptions] = useState(initialOptions)
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [picker, setPicker] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [pollStarted, setPollStarted] = useState(null)
 
   const editor = useEditor({
-    extensions: [StarterKit],
-    content: `<p>Edit this text...</p>`,
-    editable,
+    extensions: [StarterKit, Placeholder.configure({ placeholder: '내용을 입력해주세요' })],
+    content: toEditorContent(editingPost?.content ?? ''),
     shouldRerenderOnTransaction: true,
     immediatelyRender: false,
   })
 
-  function getAdditionalInput () {
-    switch (mode) {
-      case 'default':
-        return (
-          <></>
-        )
+  const isVote = mode === 'VOTE'
+  const isEditing = Boolean(editingPost)
+  const canEditOptions = !isEditing || pollStarted === false
 
-      case 'vote':
-        return (
-          <Stack direction={ 'column' } gap={ '2' }>
-            {
-              voteOptions.map((option, index) => (
-                <Group attached key={ index }>
-                  {
-                    option.items
-                      ? (
-                        <Card.Root flex={ '1' } minWidth={ '0' } size={ 'sm' }>
-                          <Card.Body gap={ '2' }>
-                            <Text fontSize={ 'sm' }>{ option.label }</Text>
-                            <Flex gap={ '2' } overflowX={ 'auto' }>
-                              {
-                                option.items.map((item) => (
-                                  <Image
-                                    key={ item.productId }
-                                    src={ item.imageUrl || exampleProductImage }
-                                    alt={ item.productName }
-                                    boxSize={ '16' }
-                                    flexShrink={ '0' }
-                                    objectFit={ 'cover' }
-                                    rounded={ 'sm' }
-                                    bg={ 'bg.muted' }
-                                  ></Image>
-                                ))
-                              }
-                            </Flex>
-                          </Card.Body>
-                        </Card.Root>
-                      )
-                      : (
-                        <Input
-                          placeholder={ `선택지 ${ index + 1 }` }
-                          value={ option.text }
-                          onChange={ (e) => changeVoteOptionText(index, e.target.value) }
-                        ></Input>
-                      )
-                  }
-                  <IconButton
-                    variant={ 'outline' }
-                    height={ 'auto' }
-                    aria-label={ `선택지 ${ index + 1 } 삭제` }
-                    disabled={ voteOptions.length <= MIN_VOTE_OPTIONS }
-                    onClick={ () => setVoteOptions(voteOptions.filter((_, i) => i !== index)) }
-                  >
-                    <LuTrash></LuTrash>
-                  </IconButton>
-                </Group>
-              ))
-            }
-            <Button
-              variant={ 'outline' }
-              disabled={ voteOptions.length >= MAX_VOTE_OPTIONS }
-              onClick={ () => setVoteOptions([...voteOptions, { text: '' }]) }
-            >
-              <LuPlus></LuPlus> 선택지 추가 (최대 { MAX_VOTE_OPTIONS }개)
-            </Button>
-          </Stack>
-        )
+  useEffect(() => {
+    if (editingPost?.postType !== 'VOTE') {
+      return
+    }
 
-      default:
-        throw Error
+    api.get(`/community/posts/${ editingPost.postId }/poll`)
+      .then((response) => setPollStarted(response.data.total > 0))
+      .catch(() => setPollStarted(true))
+  }, [editingPost])
+  const optionsChanged = options.map(optionKey).join() !== initialOptions.map(optionKey).join()
+
+  const toggleOption = (item) => {
+    setOptions((prev) => prev.some((option) => optionKey(option) === optionKey(item))
+      ? prev.filter((option) => optionKey(option) !== optionKey(item))
+      : [...prev, item].slice(0, MAX_VOTE_OPTIONS))
+  }
+
+  const content = editor?.getText({ blockSeparator: '\n' }).trim() ?? ''
+  const voteReady = !isVote || (options.length >= MIN_VOTE_OPTIONS && options.length <= MAX_VOTE_OPTIONS)
+  const postCategory = isVote ? (editingPost?.category ?? VOTE_CATEGORY) : category
+  const canSubmit = title.trim() && content && postCategory && voteReady && content.length <= CONTENT_MAX_LENGTH
+
+  const submit = async () => {
+    setSubmitting(true)
+    try {
+      if (isEditing) {
+        await api.patch(`/community/posts/${ editingPost.postId }`, {
+          title: title.trim(),
+          content,
+          category: postCategory,
+          ...(isVote && optionsChanged ? { options: options.map(toRequestOption) } : {}),
+        })
+        navigate(`/community/articles/${ editingPost.postId }`, { replace: true })
+        return
+      }
+
+      const { data } = await api.post('/community/posts', {
+        title: title.trim(),
+        content,
+        category: postCategory,
+        postType: mode,
+        ...(isVote ? { options: options.map(toRequestOption) } : {}),
+        ...(!isVote && shared?.sharedType ? { sharedType: shared.sharedType, sharedId: shared.sharedId } : {}),
+      })
+      navigate(`/community/articles/${ data.postId }`, { replace: true })
+    } catch (error) {
+      toaster.create({ type: 'error', title: errorMessage(error, '게시글을 저장하지 못했어요.') })
+    } finally {
+      setSubmitting(false)
     }
   }
 
+  const openPicker = (source) => {
+    setSheetOpen(false)
+    setPicker(source)
+  }
+
   return (
-    <Container maxWidth={ 'xl' } height={ '100vh' }>
-      <Stack paddingY={ '4' } gap={ '4' }>
-        <Header></Header>
+    <Stack direction="column" gap="4" minHeight="100vh" paddingTop="4">
+      <Header/>
 
-        <Flex align={ 'center' } gap={ '1' }>
-          <Text fontSize={ 'lg' } fontWeight={ 'bold' }>커뮤니티</Text>
-        </Flex>
+      <Container maxWidth="3xl" flex="1" display="flex" flexDirection="column">
+        <Stack gap="4" flex="1">
+          <CommunityTitleBar title={ isEditing ? '게시글 수정' : '커뮤니티' }/>
 
-        <Tabs.Root fitted variant={ 'plain' } value={ mode } onValueChange={ (e) => setMode(e.value) }>
-          <Tabs.List>
-            {
-              MODES.map((mode) => (
-                <Tabs.Trigger
-                  key={ mode.value }
-                  value={ mode.value }
-                  color={ 'fg.muted' }
-                  _selected={ { color: 'fg', fontWeight: 'bold' } }
-                >
-                  { mode.label }
-                </Tabs.Trigger>
-              ))
-            }
-          </Tabs.List>
-        </Tabs.Root>
+          { !isEditing && (
+            <Tabs.Root fitted variant="plain" value={ mode } onValueChange={ (e) => setMode(e.value) }>
+              <Tabs.List>
+                { MODES.map((item) => (
+                  <Tabs.Trigger
+                    key={ item.value }
+                    value={ item.value }
+                    color="fg.muted"
+                    _selected={ { color: 'fg', fontWeight: 'bold' } }
+                  >
+                    { item.label }
+                  </Tabs.Trigger>
+                )) }
+              </Tabs.List>
+            </Tabs.Root>
+          ) }
 
-        {
-          mode !== 'vote' &&
-          <NativeSelect.Root>
-            <NativeSelect.Field
-              placeholder={ '카테고리 선택' }
-              aria-label={ '카테고리' }
-              value={ category }
-              onChange={ (e) => setCategory(e.target.value) }
-            >
-              {
-                CATEGORIES.map((category) => (
-                  <option key={ category.value } value={ category.value }>{ category.label }</option>
-                ))
-              }
-            </NativeSelect.Field>
-            <NativeSelect.Indicator/>
-          </NativeSelect.Root>
-        }
+          { picker ? (
+            <CommunityOptionPicker
+              source={ picker }
+              options={ options }
+              onToggle={ toggleOption }
+              onDone={ () => setPicker(null) }
+            />
+          ) : (
+            <Stack gap="4" flex="1">
+              { !isVote && (
+                <NativeSelect.Root>
+                  <NativeSelect.Field
+                    placeholder="카테고리 선택"
+                    aria-label="카테고리"
+                    value={ category }
+                    onChange={ (e) => setCategory(e.target.value) }
+                  >
+                    { CATEGORIES.map((item) => (
+                      <option key={ item.value } value={ item.value }>{ item.label }</option>
+                    )) }
+                  </NativeSelect.Field>
+                  <NativeSelect.Indicator/>
+                </NativeSelect.Root>
+              ) }
 
-        {
-          getAdditionalInput()
-        }
+              { isVote && (
+                <Stack gap="4">
+                  <Text fontWeight="bold">투표 선택지</Text>
+                  { options.map((option, index) => (
+                    <Card.Root key={ optionKey(option) } size="sm" variant="outline">
+                      <Card.Body>
+                        <Flex align="center" gap="4">
+                          <Circle size="6" bg="fg" color="bg" fontSize="xs" fontWeight="bold" flexShrink="0">
+                            { VOTE_LABELS[index] }
+                          </Circle>
+                          <Image
+                            src={ option.imageUrl }
+                            alt=""
+                            boxSize="12"
+                            objectFit="cover"
+                            rounded="md"
+                            bg="bg.muted"
+                          />
+                          <Stack gap="0" flex="1" minWidth="0">
+                            <Text fontWeight="bold" lineClamp="1">{ option.name }</Text>
+                            { option.price !== null && option.price !== undefined && (
+                              <Text fontSize="sm" color="fg.muted">{ option.price.toLocaleString() }원</Text>
+                            ) }
+                          </Stack>
+                          { canEditOptions && (
+                            <IconButton
+                              variant="ghost"
+                              size="sm"
+                              aria-label={ `선택지 ${ VOTE_LABELS[index] } 삭제` }
+                              onClick={ () => toggleOption(option) }
+                            >
+                              <LuTrash2/>
+                            </IconButton>
+                          ) }
+                        </Flex>
+                      </Card.Body>
+                    </Card.Root>
+                  )) }
+                  { pollStarted && (
+                    <Text fontSize="sm" color="fg.muted">투표가 시작돼 선택지는 바꿀 수 없어요.</Text>
+                  ) }
+                  { canEditOptions && options.length < MAX_VOTE_OPTIONS && (
+                    <Button variant="outline" borderStyle="dashed" onClick={ () => setSheetOpen(true) }>
+                      <LuPlus/> 선택지 추가 (최대 { MAX_VOTE_OPTIONS }개)
+                    </Button>
+                  ) }
+                  { options.length > 0 && options.length < MIN_VOTE_OPTIONS && (
+                    <Text fontSize="sm" color="fg.error">선택지를 { MIN_VOTE_OPTIONS }개 이상 골라주세요.</Text>
+                  ) }
+                </Stack>
+              ) }
 
-        <Input
-          placeholder={ '제목' }
-          aria-label={ '제목' }
-          value={ title }
-          onChange={ (e) => setTitle(e.target.value) }
-        ></Input>
+              <Input
+                placeholder="제목"
+                aria-label="제목"
+                maxLength={ TITLE_MAX_LENGTH }
+                value={ title }
+                onChange={ (e) => setTitle(e.target.value) }
+              />
 
-        <RichTextEditor.Root editor={ editor } minHeight={ 'sm' }>
-          {
-            // 공유할 코디 부분. 일단 본문 상자 안에 임의로 넣었습니다.
-            shared?.snapshot && mode !== 'vote' &&
-            <Stack gap={ '2' } padding={ '5' } paddingBottom={ '0' }>
-              <Text fontWeight={ 'bold' }>{ shared.sharedType === 'FITTING' ? '공유할 가상 피팅' : '공유할 코디' }</Text>
-              {
-                shared.snapshot.imageUrl &&
-                <Image src={ shared.snapshot.imageUrl } alt={ '공유할 가상 피팅 결과' } maxWidth={ 'xs' } bg={ 'bg.muted' }></Image>
-              }
-              {
-                shared.snapshot.items.map((item) => (
-                  <Flex key={ item.productId } justify={ 'space-between' } gap={ '2' }>
-                    <Text>{ item.productName }</Text>
-                    <Text>{ item.price.toLocaleString() }원</Text>
-                  </Flex>
-                ))
-              }
-              <Text fontWeight={ 'bold' } alignSelf={ 'flex-end' }>
-                합계 { shared.snapshot.totalPrice.toLocaleString() }원
+              <RichTextEditor.Root
+                editor={ editor }
+                minHeight="sm"
+                fontSize="sm"
+                css={ EDITOR_CSS }
+              >
+                { shared?.snapshot && !isVote && (
+                  <Stack gap="4" padding="4" paddingBottom="0">
+                    <Text fontWeight="bold">{ shared.sharedType === 'FITTING' ? '공유할 가상 피팅' : '공유할 코디' }</Text>
+                    { shared.snapshot.imageUrl && (
+                      <Image src={ shared.snapshot.imageUrl } alt="공유할 가상 피팅 결과" maxWidth="xs" bg="bg.muted"/>
+                    ) }
+                    { shared.snapshot.items.map((item) => (
+                      <Flex key={ item.productId } justify="space-between" gap="4">
+                        <Text>{ item.productName }</Text>
+                        <Text>{ item.price.toLocaleString() }원</Text>
+                      </Flex>
+                    )) }
+                    <Text fontWeight="bold" alignSelf="flex-end">
+                      합계 { shared.snapshot.totalPrice.toLocaleString() }원
+                    </Text>
+                    <Separator/>
+                  </Stack>
+                ) }
+                <RichTextEditor.Content/>
+              </RichTextEditor.Root>
+              <Text
+                fontSize="xs"
+                color={ content.length > CONTENT_MAX_LENGTH ? 'fg.error' : 'fg.muted' }
+                alignSelf="flex-end"
+              >
+                { content.length } / { CONTENT_MAX_LENGTH }
               </Text>
-              <Separator></Separator>
-            </Stack>
-          }
-          <RichTextEditor.Content/>
-        </RichTextEditor.Root>
 
-        <Button>작성하기</Button>
-      </Stack>
-    </Container>
+              <Stack position="sticky" bottom="0" bg="bg" paddingY="4" marginTop="auto">
+                <Button size="lg" disabled={ !canSubmit } loading={ submitting } onClick={ submit }>
+                  { isEditing ? '수정하기' : '작성하기' }
+                </Button>
+              </Stack>
+            </Stack>
+          ) }
+        </Stack>
+      </Container>
+
+      <CommunityOptionSourceSheet open={ sheetOpen } onClose={ () => setSheetOpen(false) } onSelect={ openPicker }/>
+      <Toaster/>
+    </Stack>
   )
 }

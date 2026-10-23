@@ -11,7 +11,7 @@ import { ProductRow } from './ProductRow.jsx'
 const TIMEOUT = { timeout: 10000 }
 
 // onTryOn: 이 코디의 상품들로 가상 피팅을 시작합니다. tryingOn: 다른 가상 피팅이 진행 중인지.
-export const ComboCard = ({ combo, combos, index, onTryOn, tryingOn }) => {
+export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
   const navigate = useNavigate()
   const [selected, setSelected] = useState({})
   const [saving, setSaving] = useState(false)
@@ -47,15 +47,6 @@ export const ComboCard = ({ combo, combos, index, onTryOn, tryingOn }) => {
         sharedType: 'COMBO',
         sharedId: combo.comboId,
         snapshot: { items: combo.items, totalPrice: combo.totalPrice },
-        // 작성 화면에서 투표를 고르면 추천받은 코디들이 선택지로 들어갑니다.
-        // 투표 게시글 작성 API의 options 형태
-        voteOptions: combos.map((combo, index) => ({
-          source: 'AI_RECOMMEND',
-          itemType: 'COMBO',
-          itemId: combo.comboId,
-          label: `코디 ${ index + 1 }`,
-          items: combo.items,
-        })),
       },
     })
   }
