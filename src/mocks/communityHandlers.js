@@ -7,7 +7,7 @@ import recommendations from '../data/recommendations.json'
 
 const BASE_URL = api.defaults.baseURL
 const ME = { userId: 1, nickname: '핏짜' }
-const VOTE_DURATION_MS = 7 * 24 * 60 * 60 * 1000
+const VOTE_DURATION_MS = 6 * 60 * 60 * 1000
 const COMMENT_MAX_LENGTH = 500
 const DELETED_COMMENT = '삭제된 댓글입니다'
 
