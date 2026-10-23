@@ -49,6 +49,7 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
         rows={ 1 }
         fieldSizing={ 'content' }
         maxHeight={ `calc(${ MAX_PROMPT_ROWS }lh + {spacing.4})` }
+        textStyle={'md'}
         value={ prompt }
         onChange={ (e) => setPrompt(e.target.value) }
         onKeyDown={ onKeyDown }
