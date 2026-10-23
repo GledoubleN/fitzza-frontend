@@ -197,7 +197,6 @@ export const CommunityWritePage = () => {
               { isVote && (
                 <Stack gap="4">
                   <Stack gap="0">
-                    <Text fontWeight="bold">투표 선택지</Text>
                     { !isEditing && (
                       <Text fontSize="sm" color="fg.muted">
                         투표는 글을 올린 뒤 { VOTE_DURATION_HOURS }시간 동안 진행돼요.
