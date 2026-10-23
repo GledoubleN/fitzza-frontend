@@ -196,14 +196,6 @@ export const CommunityWritePage = () => {
 
               { isVote && (
                 <Stack gap="4">
-                  <Stack gap="0">
-                    <Text fontWeight="bold">투표 선택지</Text>
-                    { !isEditing && (
-                      <Text fontSize="sm" color="fg.muted">
-                        투표는 글을 올린 뒤 { VOTE_DURATION_HOURS }시간 동안 진행돼요.
-                      </Text>
-                    ) }
-                  </Stack>
                   { options.map((option, index) => (
                     <Card.Root key={ optionKey(option) } size="sm" variant="outline">
                       <Card.Body>
@@ -245,13 +237,20 @@ export const CommunityWritePage = () => {
                   { pollStarted && (
                     <Text fontSize="sm" color="fg.muted">투표가 시작돼 선택지는 바꿀 수 없어요.</Text>
                   ) }
+                  <Stack gap="0">
+                    { options.length < MIN_VOTE_OPTIONS && (
+                      <Text fontSize="sm" color="fg.error">선택지를 { MIN_VOTE_OPTIONS }개 이상 골라주세요.</Text>
+                    ) }
+                    { !isEditing && (
+                      <Text fontSize="sm" color="fg.muted">
+                        투표는 글을 올린 뒤 { VOTE_DURATION_HOURS }시간 동안 진행돼요.
+                      </Text>
+                    ) }
+                  </Stack>
                   { canEditOptions && options.length < MAX_VOTE_OPTIONS && (
                     <Button variant="outline" borderStyle="dashed" onClick={ () => setSheetOpen(true) }>
                       <LuPlus/> 선택지 추가 (최대 { MAX_VOTE_OPTIONS }개)
                     </Button>
-                  ) }
-                  { options.length > 0 && options.length < MIN_VOTE_OPTIONS && (
-                    <Text fontSize="sm" color="fg.error">선택지를 { MIN_VOTE_OPTIONS }개 이상 골라주세요.</Text>
                   ) }
                 </Stack>
               ) }
