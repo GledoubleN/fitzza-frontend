@@ -62,13 +62,27 @@ export const CommunityArticlePage = () => {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [supportFilter, setSupportFilter] = useState(null)
+  const latestCommentsRequest = useRef(0)
 
-  const loadComments = (supportedOptionId = supportFilter) => api
-    .get(`/community/posts/${ id }/comments`, { params: { supportedOptionId: supportedOptionId ?? undefined } })
-    .then((response) => {
-      setComments(response.data)
-      setCommentsFailed(false)
-    })
+  const loadComments = (supportedOptionId = supportFilter) => {
+    const request = ++latestCommentsRequest.current
+    const isLatest = () => request === latestCommentsRequest.current
+
+    return api
+      .get(`/community/posts/${ id }/comments`, { params: { supportedOptionId: supportedOptionId ?? undefined } })
+      .then((response) => {
+        if (!isLatest()) {
+          return
+        }
+        setComments(response.data)
+        setCommentsFailed(false)
+      })
+      .catch((error) => {
+        if (isLatest()) {
+          throw error
+        }
+      })
+  }
 
   useEffect(() => {
     setLoading(true)
