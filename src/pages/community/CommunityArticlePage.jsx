@@ -405,7 +405,7 @@ export const CommunityArticlePage = () => {
                   aria-pressed={ supportFilter === option.voteOptionId }
                   onClick={ () => selectSupportFilter(option.voteOptionId) }
                 >
-                  { option.voteOptionId === null ? option.label : `${ option.label } 지지` }
+                  { option.voteOptionId === null ? option.label : `${ option.label } 추천` }
                 </Button>
               )) }
             </HStack>
