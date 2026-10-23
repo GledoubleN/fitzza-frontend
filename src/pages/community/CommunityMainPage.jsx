@@ -28,7 +28,7 @@ const PAGE_SIZE = 20
 const FILTERS = [
   { label: '전체', params: {} },
   { label: '투표', params: { postType: 'VOTE' } },
-  ...CATEGORIES.map(({ value, label }) => ({ label, params: { category: value } })),
+  ...CATEGORIES.map(({ value, label }) => ({ label, params: { category: value, postType: 'NORMAL' } })),
 ]
 
 export const CommunityMainPage = () => {
