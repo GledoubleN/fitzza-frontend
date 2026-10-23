@@ -29,6 +29,7 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
     <Grid
       as={ 'form' }
       templateColumns={ 'auto 1fr auto' }
+      alignItems={ 'end' }
       gap={ 2 }
       onSubmit={ onSubmit }
     >

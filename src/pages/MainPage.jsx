@@ -56,7 +56,7 @@ export const MainPage = () => {
       <Container maxWidth={ '5xl' }>
         <Card.Root
           height={ '100%' }
-          rounded={ '3xl' }
+          rounded={ '4xl' }
         >
           <Card.Body padding={ 2 }>
             <Stack height={ '100%' } gap={ 2 } position="relative">
