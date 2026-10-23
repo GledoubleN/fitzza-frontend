@@ -19,11 +19,18 @@ import { Footer } from '../components/Footer.jsx'
 import { api } from '../api/axios.js'
 
 const periods = [
-  { value: 'daily', label: '일간' },
-  { value: 'weekly', label: '주간' },
-  { value: 'monthly', label: '월간' },
-  { value: 'yearly', label: '연간' },
+  { value: 'daily', label: '일간', intervalLabel: '시간대별' },
+  { value: 'weekly', label: '주간', intervalLabel: '요일별' },
+  { value: 'monthly', label: '월간', intervalLabel: '주차별' },
+  { value: 'yearly', label: '연간', intervalLabel: '월별' },
 ]
+
+const formatDateRange = (startDate, endDate) => {
+  const start = startDate.replaceAll('-', '.')
+  const end = endDate.replaceAll('-', '.')
+
+  return startDate === endDate ? start : `${ start } – ${ end }`
+}
 
 const formatNumber = (value) => value.toLocaleString('ko-KR')
 const sumCounts = (items) => items.reduce((total, item) => total + item.count, 0)
@@ -155,7 +162,7 @@ export const DashboardPage = () => {
                 </Tabs.Trigger>
               )) }
             </Tabs.List>
-            { periods.map(({ value }) => (
+            { periods.map(({ value, intervalLabel }) => (
               <Tabs.Content key={ value } value={ value } paddingTop={ 8 } paddingBottom={ 0 }>
                 { status === 'loading' && (
                   <Stack align="center" gap={ 4 } paddingY={ 8 } role="status">
@@ -174,7 +181,7 @@ export const DashboardPage = () => {
                 { status === 'success' && (
                   <Stack gap={ 8 }>
                     <Flex justify="space-between" gap={ 4 } wrap="wrap" color="fg.muted" fontSize="sm">
-                      <Text>{ data.description }</Text>
+                      <Text>{ formatDateRange(data.startDate, data.endDate) } · { intervalLabel }</Text>
                       { import.meta.env.VITE_ENABLE_MOCKING === 'true' && (
                         <Text>실제 운영 통계가 아닌 화면 확인용 예시입니다.</Text>
                       ) }

@@ -1,7 +1,8 @@
 {
   "daily": {
     "label": "일간",
-    "description": "2026.10.23 · 시간대별",
+    "startDate": "2026-10-23",
+    "endDate": "2026-10-23",
     "usage": [
       {
         "label": "00시",
@@ -90,7 +91,8 @@
   },
   "weekly": {
     "label": "주간",
-    "description": "2026.10.19 – 2026.10.25 · 요일별",
+    "startDate": "2026-10-19",
+    "endDate": "2026-10-25",
     "usage": [
       {
         "label": "월",
@@ -184,7 +186,8 @@
   },
   "monthly": {
     "label": "월간",
-    "description": "2026.10.01 – 2026.10.31 · 주차별",
+    "startDate": "2026-10-01",
+    "endDate": "2026-10-31",
     "usage": [
       {
         "label": "1주",
@@ -268,7 +271,8 @@
   },
   "yearly": {
     "label": "연간",
-    "description": "2026.01.01 – 2026.12.31 · 월별",
+    "startDate": "2026-01-01",
+    "endDate": "2026-12-31",
     "usage": [
       {
         "label": "1월",
