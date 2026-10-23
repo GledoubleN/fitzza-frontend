@@ -85,19 +85,32 @@ export const CommunityArticlePage = () => {
   }
 
   useEffect(() => {
+    let ignore = false
+
     setLoading(true)
     setError('')
     api.get(`/community/posts/${ id }`)
-      .then((response) => setPost(response.data))
-      .catch((error) => setError(error.response?.status === 404
-        ? '삭제되었거나 없는 게시글이에요.'
-        : errorMessage(error, '게시글을 불러오지 못했어요.')))
-      .finally(() => setLoading(false))
+      .then((response) => {
+        if (!ignore) setPost(response.data)
+      })
+      .catch((error) => {
+        if (ignore) return
+        setError(error.response?.status === 404
+          ? '삭제되었거나 없는 게시글이에요.'
+          : errorMessage(error, '게시글을 불러오지 못했어요.'))
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false)
+      })
 
     setComments([])
     setCommentsFailed(false)
     setSupportFilter(null)
     loadComments(null).catch(() => setCommentsFailed(true))
+
+    return () => {
+      ignore = true
+    }
   }, [id])
 
   const selectSupportFilter = (voteOptionId) => {
