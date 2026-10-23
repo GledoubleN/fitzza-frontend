@@ -14,7 +14,6 @@ import { HttpStatusCode } from 'axios'
 import { ProductItem } from '../components/ProductItem.jsx'
 import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
-import { Toaster } from '../components/ui/toaster.jsx'
 import { MainPromptForm } from './MainPromptForm.jsx'
 
 export const MainPage = () => {
@@ -88,7 +87,6 @@ export const MainPage = () => {
 
       <SignInRequiredDialog open={ isSignInDialogOpen } onClose={ () => setIsSignInDialogOpen(false) }/>
 
-      <Toaster />
     </Stack>
   )
 }

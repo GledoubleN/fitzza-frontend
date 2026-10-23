@@ -12,7 +12,7 @@ import { ProductItem } from '../components/ProductItem.jsx'
 import { useEffect, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
-import { Toaster, toaster } from '../components/ui/toaster.jsx'
+import { toaster } from '../components/ui/toaster.jsx'
 
 export const WishlistPage = () => {
   const [products, setProducts] = useState([])
@@ -124,7 +124,6 @@ export const WishlistPage = () => {
 
       <TabBar />
 
-      <Toaster />
     </Stack>
   )
 }

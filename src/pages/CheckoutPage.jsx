@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { Footer } from '../components/Footer.jsx'
-import { Toaster, toaster } from '../components/ui/toaster.jsx'
+import { toaster } from '../components/ui/toaster.jsx'
 import { api } from '../api/axios.js'
 import { FailureTestButtons } from '../mocks/FailureTestButtons.jsx'
 
@@ -417,7 +417,6 @@ export const CheckoutPage = () => {
           </Dialog.Positioner>
         </Portal>
       </Dialog.Root>
-      <Toaster/>
     </Grid>
   )
 }

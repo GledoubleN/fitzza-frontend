@@ -21,7 +21,6 @@ import { useEffect, useState } from 'react'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import { Toaster } from '../components/ui/toaster.jsx'
 import { api } from '../api/axios.js'
 import { FailureTestButtons } from '../mocks/FailureTestButtons.jsx'
 
@@ -316,7 +315,6 @@ export const OrderDetail = () => {
         </Portal>
       </Dialog.Root>
       <TabBar/>
-      <Toaster/>
     </Box>
   )
 }

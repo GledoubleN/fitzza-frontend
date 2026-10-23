@@ -23,7 +23,6 @@ import {
 } from 'react-icons/lu';
 import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
-import { Toaster } from '../components/ui/toaster.jsx';
 import { VtonGallery } from './profile/VtonGallery.jsx';
 import { api } from '../api/axios.js';
 import { useAuth } from '../contexts/AuthContext.js'
@@ -333,7 +332,6 @@ export default function ProfilePage() {
       <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
         <TabBar />
       </Box>
-      <Toaster />
     </Box>
   );
 }
