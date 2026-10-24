@@ -210,6 +210,8 @@ export const SelectPage = () => {
                       transition="all 0.2s"
                     >
                       <Box
+                        as="span"
+                        display="block"
                         w="100%"
                         h="48"
                         position="relative"
@@ -225,6 +227,8 @@ export const SelectPage = () => {
 
                         { isSelected && (
                           <Box
+                            as="span"
+                            display="block"
                             position="absolute"
                             inset={ 0 }
                             bg="bg.emphasized"
@@ -234,6 +238,7 @@ export const SelectPage = () => {
                         ) }
 
                         <Flex
+                          as="span"
                           position="absolute"
                           top={ 4 }
                           right={ 4 }
@@ -256,9 +261,12 @@ export const SelectPage = () => {
                       </Box>
 
                       <Stack
+                        as="span"
                         p={ 4 }
                       >
                         <Text
+                          as="span"
+                          display="block"
                           textStyle="xs"
                           color="fg.muted"
                           truncate
@@ -266,6 +274,8 @@ export const SelectPage = () => {
                           { product.brandName }
                         </Text>
                         <Text
+                          as="span"
+                          display="block"
                           textStyle="sm"
                           fontWeight="medium"
                           truncate
@@ -273,6 +283,8 @@ export const SelectPage = () => {
                           { name }
                         </Text>
                         <Text
+                          as="span"
+                          display="block"
                           textStyle="sm"
                           fontWeight="bold"
                         >
