@@ -43,7 +43,7 @@ export default function WorldCupPage () {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [roundTitle, setRoundTitle] = useState('월드컵')
   const [winnerProduct, setWinnerProduct] = useState(null)
-  const [savedHistoryId, setSavedHistoryId] = useState(null)
+  const [savedResult, setSavedResult] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
   const [isSaveFailed, setIsSaveFailed] = useState(false)
 
@@ -104,9 +104,7 @@ export default function WorldCupPage () {
         candidateProductIds: candidateIds,
       })
 
-      if (response.data?.worldcupHistoryId) {
-        setSavedHistoryId(response.data.worldcupHistoryId)
-      }
+      setSavedResult(response.data)
     } catch (error) {
       console.warn('월드컵 결과 저장 실패:', error)
       setIsSaveFailed(true)
@@ -174,26 +172,20 @@ export default function WorldCupPage () {
     setNextRoundList([])
     setCurrentIndex(0)
     setWinnerProduct(null)
-    setSavedHistoryId(null)
+    setSavedResult(null)
     setIsSaveFailed(false)
     setViewMode('tournament')
     updateRoundTitle(shuffled.length)
   }
 
   const handleShareToCommunity = () => {
-    if (!savedHistoryId || !winnerProduct) return
+    if (!savedResult) return
 
     navigate('/community/write', {
       state: {
         sharedType: 'WORLDCUP',
-        sharedId: savedHistoryId,
-        snapshot: {
-          productId: winnerProduct.productId,
-          brandName: winnerProduct.brandName,
-          productName: winnerProduct.productName,
-          price: winnerProduct.price,
-          imageUrl: winnerProduct.thumbnailUrl || winnerProduct.imageUrl || defaultHeroImage,
-        },
+        sharedId: savedResult.worldcupHistoryId,
+        snapshot: savedResult.winnerProduct,
       },
     })
   }
@@ -565,7 +557,7 @@ export default function WorldCupPage () {
               </Table.Root>
             </GridItem>
 
-            { isSaveFailed && !savedHistoryId && (
+            { isSaveFailed && !savedResult && (
               <GridItem textAlign="center">
                 <Flex
                   direction="column"
@@ -613,7 +605,7 @@ export default function WorldCupPage () {
                   bg="fg"
                   color="bg"
                   borderRadius="xl"
-                  disabled={ !savedHistoryId || isSaving }
+                  disabled={ !savedResult || isSaving }
                   _hover={ { opacity: 0.9 } }
                   onClick={ handleShareToCommunity }
                 >
