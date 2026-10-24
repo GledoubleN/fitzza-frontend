@@ -184,7 +184,7 @@ export const handlers = [
     `${ api.defaults.baseURL }/auth/signin`,
     () => {
       return HttpResponse.json({
-        accessToken: "fitzza-access-token",
+        accessToken:  "fitzza-access-token",
         userId: 1,
         nickname: "CoffeeSlayer",
       }, {
@@ -210,7 +210,7 @@ export const handlers = [
 
   http.post(
     `${ api.defaults.baseURL }/auth/signup`,
-    () => {
+    ({ params }) => {
       return HttpResponse.json({
         userId: 1
       })
@@ -366,7 +366,7 @@ export const handlers = [
         3: '별로입니다. 사지 마세요.',
       }
       const content = Array.from({ length: TOTAL }, (_, index) => {
-        const rating = 5 - (index % 3)
+        const rating = 5 - (index % 3);
         return {
           reviewId: index + 1,
           productId: Number(query.get('productId')),
@@ -375,7 +375,7 @@ export const handlers = [
           content: contents[rating] || '좋아요!',
           imageUrl: index % 2 === 0 ? '/src/assets/hero.png' : null,
           createdAt: new Date(2026, 8, 30 + index).toISOString(),
-        }
+        };
       })
       .sort((a, b) => (
         sort === 'RATING_DESC' ? b.rating - a.rating : sort === 'RATING_ASC' ? a.rating - b.rating : 0
@@ -521,17 +521,17 @@ export const handlers = [
       const size = Number(query.get('size') ?? 10)
       const myOrders = orders.filter((order) => order.userId === userId)
       const content = myOrders
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.orderId - a.orderId)
-      .slice(page * size, (page + 1) * size)
-      .map((order) => ({
-        orderId: order.orderId,
-        orderNum: order.orderNum,
-        totalPrice: getTotalPrice(order),
-        orderStatus: order.orderStatus,
-        createdAt: order.createdAt,
-        itemCount: order.items.length,
-        thumbnailUrl: order.items[0]?.thumbnailUrl ?? null,
-      }))
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.orderId - a.orderId)
+        .slice(page * size, (page + 1) * size)
+        .map((order) => ({
+          orderId: order.orderId,
+          orderNum: order.orderNum,
+          totalPrice: getTotalPrice(order),
+          orderStatus: order.orderStatus,
+          createdAt: order.createdAt,
+          itemCount: order.items.length,
+          thumbnailUrl: order.items[0]?.thumbnailUrl ?? null,
+        }))
 
       return HttpResponse.json({ content, page, totalPages: Math.ceil(myOrders.length / size) })
     },
@@ -574,17 +574,17 @@ export const handlers = [
       }
 
       const orderItemIds = (new URL(request.url).searchParams.get('orderItemIds') ?? '')
-      .split(',')
-      .filter(Boolean)
-      .map(Number)
+        .split(',')
+        .filter(Boolean)
+        .map(Number)
       if (orderItemIds.length === 0 || orderItemIds.length > 100) {
         return cartError(400, 'INVALID_REQUEST', '입력값을 확인해주세요.')
       }
 
       return HttpResponse.json(surveys
-      .filter((survey) => survey.userId === userId && orderItemIds.includes(survey.orderItemId))
-      .sort((a, b) => a.orderItemId - b.orderItemId)
-      .map(toSurveyResponse))
+        .filter((survey) => survey.userId === userId && orderItemIds.includes(survey.orderItemId))
+        .sort((a, b) => a.orderItemId - b.orderItemId)
+        .map(toSurveyResponse))
     },
   ),
 
@@ -801,6 +801,7 @@ export const handlers = [
     },
   ),
 
+  // 내 추천 대화 목록
   http.get(
     `${ api.defaults.baseURL }/recommendations`,
     ({ request }) => {
@@ -814,6 +815,7 @@ export const handlers = [
     },
   ),
 
+  // 지난 추천 결과 조회. 목업에서는 어떤 requestId든 같은 결과를 돌려줍니다.
   http.get(
     `${ api.defaults.baseURL }/recommendations/:requestId`,
     ({ params }) => {
