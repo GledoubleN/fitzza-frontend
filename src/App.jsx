@@ -19,8 +19,8 @@ import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { OrderListPage } from './pages/OrderListPage.jsx'
 import { ThemePreviewPage } from './pages/ThemePreviewPage.jsx'
-import { AIStylistPage } from './pages/ai/AIStylistPage.jsx'
-import { AIHistoryPage } from './pages/ai/AIHistoryPage.jsx'
+import { AIStylistPage } from './pages/ai-stylist/AIStylistPage.jsx'
+import { AIHistoryPage } from './pages/ai-stylist/AIHistoryPage.jsx'
 import OnboardingPage from './pages/OnboardingPage.jsx';
 import { RequireSignIn } from './components/RequireSignIn.jsx'
 

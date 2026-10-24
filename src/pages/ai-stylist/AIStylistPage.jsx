@@ -31,7 +31,7 @@ const FAIL_MESSAGE = '추천을 불러오지 못했어요. 잠시 후 다시 시
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
 const TIMEOUT = { timeout: 10000 }
 // 응답을 기다리던 중 새로고침된 추천 요청을 알아보기 위한 표시입니다. (sessionStorage 키)
-const PENDING_KEY = 'ai-recommendation-pending'
+const PENDING_KEY = 'ai-stylist-recommendation-pending'
 const RECOMMENDATION_WAIT_LIMIT = 120000
 const RECOMMENDATION_TIMEOUT_MESSAGE = '추천이 오래 걸리고 있어요. 잠시 후 다시 확인해주세요.'
 const FITTING_WAIT_LIMIT = 120000
@@ -111,7 +111,7 @@ export const AIStylistPage = () => {
 
   useEffect(() => {
     // 질의도 결과도 없이 들어오면 보여줄 것이 없으므로 메인 화면으로 돌려보냅니다.
-    // 개발시에는 /ai/sample Route 사용 필요
+    // 개발시에는 /ai-stylist/sample Route 사용 필요
     if (!requestId && !location.state?.query) {
       navigate('/', { replace: true })
       return
