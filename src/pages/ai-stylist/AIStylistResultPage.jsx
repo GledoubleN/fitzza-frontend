@@ -98,7 +98,7 @@ export const AIStylistResultPage = () => {
       if (data.status === 'FAILED') {
         fail(data.message, true)
       } else if (data.requestId) {
-        navigate(`/ai/${ data.requestId }`, { replace: true, state: { query: text } })
+        navigate(`/ai-stylist/${ data.requestId }`, { replace: true, state: { query: text } })
       } else {
         fail()
       }
@@ -296,7 +296,7 @@ export const AIStylistResultPage = () => {
               variant={ 'outline' }
               rounded={ 'full' }
               aria-label={ '대화 내역' }
-              onClick={ () => navigate('/ai/history') }
+              onClick={ () => navigate('/ai-stylist/history') }
             >
               <LuClock></LuClock>
             </IconButton>

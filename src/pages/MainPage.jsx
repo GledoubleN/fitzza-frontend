@@ -27,7 +27,7 @@ export const MainPage = () => {
       setIsSignInDialogOpen(true)
       return
     }
-    navigate('/ai', { state: { query } })
+    navigate('/ai-stylist', { state: { query } })
   }
 
   async function loadRecommendedProducts () {

@@ -103,7 +103,7 @@ export const AIStylistHistoryPage = () => {
                   borderRadius="md"
                   _hover={ { bg: 'bg.subtle' } }
                 >
-                  <RouterLink to={ `/ai/${ item.requestId }` } state={ { query: item.queryText } }>
+                  <RouterLink to={ `/ai-stylist/${ item.requestId }` } state={ { query: item.queryText } }>
                     <Stack gap={ 4 }>
                       <Text truncate>{ item.queryText }</Text>
                       <Text fontSize="sm" color="fg.muted">
