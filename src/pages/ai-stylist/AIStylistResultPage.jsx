@@ -51,7 +51,7 @@ const NotificationHint = () => (
   <Text fontSize={ 'sm' } color={ 'fg.muted' }>{ NOTIFICATION_HINT }</Text>
 )
 
-export const AIStylistPage = () => {
+export const AIStylistResultPage = () => {
   const { requestId } = useParams()
   const location = useLocation()
   const navigate = useNavigate()

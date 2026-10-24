@@ -19,7 +19,7 @@ import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { OrderListPage } from './pages/OrderListPage.jsx'
 import { ThemePreviewPage } from './pages/ThemePreviewPage.jsx'
-import { AIStylistPage } from './pages/ai-stylist/AIStylistPage.jsx'
+import { AIStylistResultPage } from './pages/ai-stylist/AIStylistResultPage.jsx'
 import { AIStylistHistoryPage } from './pages/ai-stylist/AIStylistHistoryPage.jsx'
 import OnboardingPage from './pages/OnboardingPage.jsx';
 import { RequireSignIn } from './components/RequireSignIn.jsx'
@@ -49,7 +49,7 @@ function App() {
         <Route path="/orders/:orderId" element={ <RequireSignIn><OrderDetail/></RequireSignIn> }/>
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
         <Route path="/ai/history" element={ <RequireSignIn><AIStylistHistoryPage/></RequireSignIn> }/>
-        <Route path="/ai/:requestId?" element={ <RequireSignIn><AIStylistPage/></RequireSignIn> }/>
+        <Route path="/ai/:requestId?" element={ <RequireSignIn><AIStylistResultPage/></RequireSignIn> }/>
         <Route path="/onboarding" element={<OnboardingPage />} />
       </Routes>
     </BrowserRouter>
