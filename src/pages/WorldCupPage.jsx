@@ -11,6 +11,7 @@ import {
   Grid,
   GridItem,
   Spinner,
+  Table,
 } from '@chakra-ui/react'
 import { LuChevronLeft, LuRotateCcw, LuShare2, LuHistory } from 'react-icons/lu'
 import { Header } from '../components/Header.jsx'
@@ -36,6 +37,7 @@ export default function WorldCupPage () {
   const rawSelectedProducts = location.state?.selectedProducts || []
 
   const [viewMode, setViewMode] = useState('tournament')
+  const [previousViewMode, setPreviousViewMode] = useState('tournament')
   const [matchList, setMatchList] = useState([])
   const [nextRoundList, setNextRoundList] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -43,19 +45,12 @@ export default function WorldCupPage () {
   const [winnerProduct, setWinnerProduct] = useState(null)
   const [savedHistoryId, setSavedHistoryId] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [isSaveFailed, setIsSaveFailed] = useState(false)
 
   const [historyList, setHistoryList] = useState([])
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
 
-  const searchParams = new URLSearchParams(location.search)
-  const sharedHistoryId = searchParams.get('historyId')
-
   useEffect(() => {
-    if (sharedHistoryId) {
-      loadSharedResult(sharedHistoryId)
-      return
-    }
-
     if (rawSelectedProducts.length < 2) {
       navigate('/select')
       return
@@ -64,34 +59,15 @@ export default function WorldCupPage () {
     const shuffled = shuffle(rawSelectedProducts)
     setMatchList(shuffled)
     updateRoundTitle(shuffled.length)
-  }, [location.state, location.search])
-
-  const loadSharedResult = async (historyId) => {
-    try {
-      const response = await api.get(`/worldcups/${ historyId }`)
-      if (response.data?.winnerProduct) {
-        setWinnerProduct(response.data.winnerProduct)
-        setSavedHistoryId(Number(historyId))
-        setViewMode('result')
-      }
-    } catch (error) {
-      console.warn('공유된 월드컵 결과 조회 실패:', error)
-      toaster.create({
-        title: '결과를 불러오지 못했습니다.',
-        type: 'error',
-        closable: true,
-      })
-      navigate('/select')
-    }
-  }
+  }, [location.state])
 
   const updateRoundTitle = (length) => {
-    if (length === 2) setRoundTitle('결승')
-    else if (length === 3) setRoundTitle('준결승 (3강)')
+    if (length <= 2) setRoundTitle('결승')
     else if (length <= 4) setRoundTitle('4강')
     else if (length <= 8) setRoundTitle('8강')
     else if (length <= 16) setRoundTitle('16강')
-    else setRoundTitle(`${ length }강`)
+    else if (length <= 32) setRoundTitle('32강')
+    else setRoundTitle('64강')
   }
 
   const hasBye = matchList.length % 2 !== 0 && currentIndex === matchList.length - 1
@@ -117,6 +93,8 @@ export default function WorldCupPage () {
 
   const saveWorldCupResult = async (winner, candidates) => {
     setIsSaving(true)
+    setIsSaveFailed(false)
+
     try {
       const winnerId = winner.productId ?? winner.itemId
       const candidateIds = candidates.map(item => item.productId ?? item.itemId)
@@ -131,6 +109,7 @@ export default function WorldCupPage () {
       }
     } catch (error) {
       console.warn('월드컵 결과 저장 실패:', error)
+      setIsSaveFailed(true)
       toaster.create({
         title: '월드컵 결과를 저장하지 못했습니다.',
         type: 'error',
@@ -196,21 +175,33 @@ export default function WorldCupPage () {
     setCurrentIndex(0)
     setWinnerProduct(null)
     setSavedHistoryId(null)
+    setIsSaveFailed(false)
     setViewMode('tournament')
     updateRoundTitle(shuffled.length)
   }
 
-  const handleShareResult = async () => {
-    const shareUrl = savedHistoryId
-      ? `${ window.location.origin }/worldcup?historyId=${ savedHistoryId }`
-      : window.location.href
+  const handleShareToCommunity = () => {
+    if (!savedHistoryId || !winnerProduct) return
 
-    await navigator.clipboard.writeText(shareUrl)
-    toaster.create({
-      title: '결과 링크가 복사되었습니다.',
-      type: 'info',
-      closable: true,
+    navigate('/community/write', {
+      state: {
+        sharedType: 'WORLDCUP',
+        sharedId: savedHistoryId,
+        snapshot: {
+          productId: winnerProduct.productId,
+          brandName: winnerProduct.brandName,
+          productName: winnerProduct.productName,
+          price: winnerProduct.price,
+          imageUrl: winnerProduct.thumbnailUrl || winnerProduct.imageUrl || defaultHeroImage,
+        },
+      },
     })
+  }
+
+  const handleOpenHistory = () => {
+    setPreviousViewMode(viewMode)
+    fetchHistoryList()
+    setViewMode('history')
   }
 
   if (viewMode === 'tournament' && (!leftProduct || !rightProduct)) {
@@ -258,8 +249,8 @@ export default function WorldCupPage () {
               >
                 <IconButton
                   variant="ghost"
-                  aria-label="뒤로 가기"
-                  onClick={ () => setViewMode('result') }
+                  aria-label="이전 화면으로 돌아가기"
+                  onClick={ () => setViewMode(previousViewMode) }
                 >
                   <Box
                     as={ LuChevronLeft }
@@ -441,7 +432,7 @@ export default function WorldCupPage () {
                 >
                   <IconButton
                     variant="ghost"
-                    aria-label="뒤로 가기"
+                    aria-label="후보 선택 화면으로 돌아가기"
                     onClick={ () => navigate('/select') }
                   >
                     <Box
@@ -460,10 +451,7 @@ export default function WorldCupPage () {
                   size="sm"
                   variant="outline"
                   borderRadius="xl"
-                  onClick={ () => {
-                    fetchHistoryList()
-                    setViewMode('history')
-                  } }
+                  onClick={ handleOpenHistory }
                 >
                   <Box
                     as={ LuHistory }
@@ -544,59 +532,63 @@ export default function WorldCupPage () {
               >
                 우승 상품 정보
               </Text>
-              <Box
-                as="table"
-                w="100%"
-              >
-                <Box as="tbody">
-                  <Box as="tr">
-                    <Box
-                      as="th"
+
+              <Table.Root size="sm">
+                <Table.Body>
+                  <Table.Row>
+                    <Table.Cell
                       fontWeight="medium"
                       w="30%"
-                      textAlign="left"
-                      py={ 2.5 }
-                      pl={ 2 }
-                      textStyle="sm"
+                      color="fg.muted"
                     >
                       가격
-                    </Box>
-                    <Box
-                      as="td"
+                    </Table.Cell>
+                    <Table.Cell
                       textAlign="right"
-                      textStyle="sm"
-                      fontWeight="medium"
-                      py={ 2.5 }
-                      pr={ 2 }
+                      fontWeight="bold"
                     >
                       { winnerProduct.price ? `${ winnerProduct.price.toLocaleString() }원` : '정보 없음' }
-                    </Box>
-                  </Box>
-                  <Box as="tr">
-                    <Box
-                      as="th"
+                    </Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                    <Table.Cell
                       fontWeight="medium"
-                      textAlign="left"
-                      py={ 2.5 }
-                      pl={ 2 }
-                      textStyle="sm"
+                      color="fg.muted"
                     >
                       브랜드
-                    </Box>
-                    <Box
-                      as="td"
-                      textAlign="right"
-                      textStyle="sm"
-                      fontWeight="medium"
-                      py={ 2.5 }
-                      pr={ 2 }
-                    >
+                    </Table.Cell>
+                    <Table.Cell textAlign="right">
                       { winnerProduct.brandName || '정보 없음' }
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
+                    </Table.Cell>
+                  </Table.Row>
+                </Table.Body>
+              </Table.Root>
             </GridItem>
+
+            { isSaveFailed && !savedHistoryId && (
+              <GridItem textAlign="center">
+                <Flex
+                  direction="column"
+                  align="center"
+                  gap={ 2 }
+                >
+                  <Text
+                    textStyle="xs"
+                    color="fg.error"
+                  >
+                    결과 저장에 실패하여 커뮤니티에 공유할 수 없습니다.
+                  </Text>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    loading={ isSaving }
+                    onClick={ () => saveWorldCupResult(winnerProduct, rawSelectedProducts) }
+                  >
+                    결과 저장 다시 시도
+                  </Button>
+                </Flex>
+              </GridItem>
+            ) }
 
             <GridItem>
               <Grid
@@ -621,15 +613,16 @@ export default function WorldCupPage () {
                   bg="fg"
                   color="bg"
                   borderRadius="xl"
+                  disabled={ !savedHistoryId || isSaving }
                   _hover={ { opacity: 0.9 } }
-                  onClick={ handleShareResult }
+                  onClick={ handleShareToCommunity }
                 >
                   <Box
                     as={ LuShare2 }
                     boxSize={ 4 }
                     mr={ 2 }
                   />
-                  결과 공유
+                  커뮤니티에 공유
                 </Button>
               </Grid>
             </GridItem>
@@ -696,7 +689,7 @@ export default function WorldCupPage () {
               >
                 <IconButton
                   variant="ghost"
-                  aria-label="뒤로 가기"
+                  aria-label="후보 선택 화면으로 돌아가기"
                   onClick={ () => navigate('/select') }
                 >
                   <Box
@@ -715,10 +708,7 @@ export default function WorldCupPage () {
                 size="sm"
                 variant="outline"
                 borderRadius="xl"
-                onClick={ () => {
-                  fetchHistoryList()
-                  setViewMode('history')
-                } }
+                onClick={ handleOpenHistory }
               >
                 <Box
                   as={ LuHistory }

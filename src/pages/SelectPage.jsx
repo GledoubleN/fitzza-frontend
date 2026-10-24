@@ -14,8 +14,11 @@ import { TabBar } from '../components/TabBar.jsx'
 import { useEffect, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { LuCheck, LuChevronLeft } from 'react-icons/lu'
+import { Toaster, toaster } from '../components/ui/toaster.jsx'
+
+const MAX_CANDIDATES = 64
 
 export const SelectPage = () => {
   const [products, setProducts] = useState([])
@@ -23,7 +26,6 @@ export const SelectPage = () => {
   const [isError, setIsError] = useState(false)
   const [selectedProductIds, setSelectedProductIds] = useState([])
   const navigate = useNavigate()
-  const location = useLocation()
 
   async function loadWishlist (page = 0, size = 100) {
     setIsLoading(true)
@@ -35,21 +37,17 @@ export const SelectPage = () => {
       })
 
       if (response.status === HttpStatusCode.Ok) {
-        const rawData = response.data.content || response.data
-
-        const formattedData = Array.isArray(rawData)
-          ? rawData.map(item => ({
-            ...item,
-            productId: item.productId ?? item.itemId,
-            productName: item.productName ?? item.name,
-            thumbnailUrl: item.thumbnailUrl ?? item.imageUrl,
-            brandName: item.brandName ?? ''
-          }))
-          : []
+        const formattedData = response.data.content.map(item => ({
+          productId: item.itemId,
+          productName: item.name,
+          thumbnailUrl: item.imageUrl,
+          brandName: item.brandName,
+          price: item.price,
+        }))
 
         setProducts(formattedData)
 
-        const validIds = formattedData.map(p => p.productId ?? p.itemId ?? p.wishlistId)
+        const validIds = formattedData.map(p => p.productId)
         setSelectedProductIds(prev => prev.filter(id => validIds.includes(id)))
       } else {
         setIsError(true)
@@ -63,6 +61,15 @@ export const SelectPage = () => {
   }
 
   const handleToggleSelect = (productId) => {
+    if (!selectedProductIds.includes(productId) && selectedProductIds.length >= MAX_CANDIDATES) {
+      toaster.create({
+        title: `후보는 최대 ${ MAX_CANDIDATES }개까지만 선택할 수 있습니다.`,
+        type: 'warning',
+        closable: true,
+      })
+      return
+    }
+
     setSelectedProductIds((prev) =>
       prev.includes(productId)
         ? prev.filter((id) => id !== productId)
@@ -72,9 +79,9 @@ export const SelectPage = () => {
 
   const handleStartWorldCup = () => {
     const selectedProducts = products.filter((p) =>
-      selectedProductIds.includes(p.productId ?? p.itemId)
+      selectedProductIds.includes(p.productId)
     )
-    const candidateProductIds = selectedProducts.map((p) => p.productId ?? p.itemId)
+    const candidateProductIds = selectedProducts.map((p) => p.productId)
 
     navigate('/worldcup', {
       state: {
@@ -86,7 +93,7 @@ export const SelectPage = () => {
 
   useEffect(() => {
     loadWishlist()
-  }, [location.pathname])
+  }, [])
 
   return (
     <Stack
@@ -109,6 +116,7 @@ export const SelectPage = () => {
           <Button
             variant="ghost"
             size="sm"
+            aria-label="찜 목록으로 돌아가기"
             onClick={ () => navigate('/wishlist') }
           >
             <LuChevronLeft size={ 20 } />
@@ -160,11 +168,12 @@ export const SelectPage = () => {
                 textStyle="sm"
                 color="fg.muted"
               >
-                후보로 선택된 상품: { selectedProductIds.length }개
+                선택된 후보: { selectedProductIds.length } / { MAX_CANDIDATES }개
               </Text>
               <Button
-                colorPalette="purple"
                 size="sm"
+                bg="fg"
+                color="bg"
                 disabled={ selectedProductIds.length < 2 }
                 onClick={ handleStartWorldCup }
               >
@@ -178,14 +187,21 @@ export const SelectPage = () => {
             >
               {
                 products.map((product) => {
-                  const id = product.productId ?? product.itemId
+                  const id = product.productId
                   const isSelected = selectedProductIds.includes(id)
-                  const name = product.productName ?? product.name
-                  const imageUrl = product.thumbnailUrl ?? product.imageUrl
+                  const name = product.productName
+                  const imageUrl = product.thumbnailUrl
 
                   return (
                     <Box
                       key={ id }
+                      as="button"
+                      type="button"
+                      role="button"
+                      aria-label={ `${ product.brandName } ${ name }` }
+                      aria-pressed={ isSelected }
+                      tabIndex={ 0 }
+                      textAlign="left"
                       position="relative"
                       borderWidth="1px"
                       borderColor={ isSelected ? 'border.emphasized' : 'border.subtle' }
@@ -193,6 +209,12 @@ export const SelectPage = () => {
                       overflow="hidden"
                       cursor="pointer"
                       onClick={ () => handleToggleSelect(id) }
+                      onKeyDown={ (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          handleToggleSelect(id)
+                        }
+                      } }
                       transition="all 0.2s"
                     >
                       <Box
@@ -276,6 +298,8 @@ export const SelectPage = () => {
       </Container>
 
       <TabBar />
+
+      <Toaster />
     </Stack>
   )
 }
