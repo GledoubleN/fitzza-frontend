@@ -197,10 +197,8 @@ export const SelectPage = () => {
                       key={ id }
                       as="button"
                       type="button"
-                      role="button"
                       aria-label={ `${ product.brandName } ${ name }` }
                       aria-pressed={ isSelected }
-                      tabIndex={ 0 }
                       textAlign="left"
                       position="relative"
                       borderWidth="1px"
@@ -209,12 +207,6 @@ export const SelectPage = () => {
                       overflow="hidden"
                       cursor="pointer"
                       onClick={ () => handleToggleSelect(id) }
-                      onKeyDown={ (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          handleToggleSelect(id)
-                        }
-                      } }
                       transition="all 0.2s"
                     >
                       <Box
