@@ -110,7 +110,7 @@ export const SelectPage = () => {
       >
         <Flex
           align="center"
-          gap={ 2 }
+          gap={ 4 }
           mb={ 4 }
         >
           <Button
@@ -119,7 +119,7 @@ export const SelectPage = () => {
             aria-label="찜 목록으로 돌아가기"
             onClick={ () => navigate('/wishlist') }
           >
-            <LuChevronLeft size={ 20 } />
+            <LuChevronLeft />
           </Button>
           <Text
             textStyle="lg"
@@ -201,7 +201,7 @@ export const SelectPage = () => {
                       aria-pressed={ isSelected }
                       textAlign="left"
                       position="relative"
-                      borderWidth="1px"
+                      borderWidth="thin"
                       borderColor={ isSelected ? 'border.emphasized' : 'border.subtle' }
                       borderRadius="xl"
                       overflow="hidden"
@@ -235,8 +235,8 @@ export const SelectPage = () => {
 
                         <Flex
                           position="absolute"
-                          top={ 2.5 }
-                          right={ 2.5 }
+                          top={ 4 }
+                          right={ 4 }
                           boxSize={ 6 }
                           borderRadius="full"
                           bg={ isSelected ? 'fg' : 'bg' }
@@ -256,8 +256,7 @@ export const SelectPage = () => {
                       </Box>
 
                       <Stack
-                        p={ 3 }
-                        gap={ 1 }
+                        p={ 4 }
                       >
                         <Text
                           textStyle="xs"

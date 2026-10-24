@@ -216,7 +216,7 @@ export default function WorldCupPage () {
           right={ 0 }
           zIndex={ 10 }
           bg="bg"
-          px={ 5 }
+          px={ 4 }
           py={ 4 }
         >
           <Container
@@ -231,13 +231,13 @@ export default function WorldCupPage () {
         <Container
           maxW="3xl"
           mx="auto"
-          px={ 5 }
+          px={ 4 }
         >
-          <Grid gap={ 6 }>
+          <Grid gap={ 8 }>
             <GridItem>
               <Flex
                 align="center"
-                gap={ 2 }
+                gap={ 4 }
               >
                 <IconButton
                   variant="ghost"
@@ -266,7 +266,7 @@ export default function WorldCupPage () {
               <Center
                 py={ 20 }
                 flexDirection="column"
-                gap={ 3 }
+                gap={ 4 }
               >
                 <Text
                   textStyle="md"
@@ -301,7 +301,7 @@ export default function WorldCupPage () {
                         alignItems="center"
                         gap={ 4 }
                         cursor="pointer"
-                        _hover={ { borderColor: 'border.emphasized', transform: 'translateY(-2px)' } }
+                        _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
                         transition="all 0.2s"
                         onClick={ () => productId && navigate(`/products/${ productId }`) }
                       >
@@ -332,7 +332,6 @@ export default function WorldCupPage () {
                           <Text
                             textStyle="xs"
                             color="fg.muted"
-                            mb={ 0.5 }
                             truncate
                           >
                             { product?.brandName }
@@ -341,7 +340,6 @@ export default function WorldCupPage () {
                             textStyle="sm"
                             fontWeight="bold"
                             truncate
-                            mb={ 1 }
                           >
                             { product?.productName || product?.name }
                           </Text>
@@ -395,7 +393,7 @@ export default function WorldCupPage () {
           right={ 0 }
           zIndex={ 10 }
           bg="bg"
-          px={ 5 }
+          px={ 4 }
           py={ 4 }
         >
           <Container
@@ -410,9 +408,9 @@ export default function WorldCupPage () {
         <Container
           maxW="3xl"
           mx="auto"
-          px={ 5 }
+          px={ 4 }
         >
-          <Grid gap={ 6 }>
+          <Grid gap={ 8 }>
             <GridItem>
               <Flex
                 align="center"
@@ -420,7 +418,7 @@ export default function WorldCupPage () {
               >
                 <Flex
                   align="center"
-                  gap={ 2 }
+                  gap={ 4 }
                 >
                   <IconButton
                     variant="ghost"
@@ -448,7 +446,6 @@ export default function WorldCupPage () {
                   <Box
                     as={ LuHistory }
                     boxSize={ 4 }
-                    mr={ 1.5 }
                   />
                   우승 이력 보기
                 </Button>
@@ -502,7 +499,6 @@ export default function WorldCupPage () {
               <Text
                 textStyle="sm"
                 color="fg.muted"
-                mt={ 1 }
               >
                 { winnerProduct.brandName }
               </Text>
@@ -512,7 +508,7 @@ export default function WorldCupPage () {
               borderWidth="thin"
               borderColor="border.subtle"
               borderRadius="2xl"
-              p={ 5 }
+              p={ 4 }
               bg="bg.panel"
             >
               <Text
@@ -562,7 +558,7 @@ export default function WorldCupPage () {
                 <Flex
                   direction="column"
                   align="center"
-                  gap={ 2 }
+                  gap={ 4 }
                 >
                   <Text
                     textStyle="xs"
@@ -596,7 +592,6 @@ export default function WorldCupPage () {
                   <Box
                     as={ LuRotateCcw }
                     boxSize={ 4 }
-                    mr={ 2 }
                   />
                   다시 하기
                 </Button>
@@ -612,7 +607,6 @@ export default function WorldCupPage () {
                   <Box
                     as={ LuShare2 }
                     boxSize={ 4 }
-                    mr={ 2 }
                   />
                   커뮤니티에 공유
                 </Button>
@@ -652,7 +646,7 @@ export default function WorldCupPage () {
         right={ 0 }
         zIndex={ 10 }
         bg="bg"
-        px={ 5 }
+        px={ 4 }
         py={ 4 }
       >
         <Container
@@ -667,9 +661,9 @@ export default function WorldCupPage () {
       <Container
         maxW="3xl"
         mx="auto"
-        px={ 5 }
+        px={ 4 }
       >
-        <Grid gap={ 6 }>
+        <Grid gap={ 8 }>
           <GridItem>
             <Flex
               align="center"
@@ -677,7 +671,7 @@ export default function WorldCupPage () {
             >
               <Flex
                 align="center"
-                gap={ 2 }
+                gap={ 4 }
               >
                 <IconButton
                   variant="ghost"
@@ -705,7 +699,6 @@ export default function WorldCupPage () {
                 <Box
                   as={ LuHistory }
                   boxSize={ 4 }
-                  mr={ 1.5 }
                 />
                 우승 이력 보기
               </Button>
@@ -725,7 +718,7 @@ export default function WorldCupPage () {
           <GridItem>
             <Grid
               templateColumns="1fr auto 1fr"
-              gap={ { base: 3, md: 4 } }
+              gap={ 4 }
               alignItems="center"
               position="relative"
             >
@@ -733,10 +726,10 @@ export default function WorldCupPage () {
                 borderWidth="thin"
                 borderColor="border.subtle"
                 borderRadius="2xl"
-                p={ { base: 3, md: 4 } }
+                p={ 4 }
                 cursor={ isSaving ? 'not-allowed' : 'pointer' }
                 bg="bg.panel"
-                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(-2px)' } }
+                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
                 transition="all 0.2s"
                 onClick={ () => handleSelect(leftProduct) }
               >
@@ -745,7 +738,7 @@ export default function WorldCupPage () {
                   h={ { base: '40', md: '60' } }
                   borderRadius="xl"
                   overflow="hidden"
-                  mb={ 3 }
+                  mb={ 4 }
                   bg="bg.subtle"
                   display="flex"
                   alignItems="center"
@@ -763,7 +756,6 @@ export default function WorldCupPage () {
                   textStyle="xs"
                   color="fg.muted"
                   truncate
-                  mb={ 1 }
                 >
                   { leftProduct?.brandName }
                 </Text>
@@ -799,10 +791,10 @@ export default function WorldCupPage () {
                 borderWidth="thin"
                 borderColor="border.subtle"
                 borderRadius="2xl"
-                p={ { base: 3, md: 4 } }
+                p={ 4 }
                 cursor={ isSaving ? 'not-allowed' : 'pointer' }
                 bg="bg.panel"
-                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(-2px)' } }
+                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
                 transition="all 0.2s"
                 onClick={ () => handleSelect(rightProduct) }
               >
@@ -811,7 +803,7 @@ export default function WorldCupPage () {
                   h={ { base: '40', md: '60' } }
                   borderRadius="xl"
                   overflow="hidden"
-                  mb={ 3 }
+                  mb={ 4 }
                   bg="bg.subtle"
                   display="flex"
                   alignItems="center"
@@ -829,7 +821,6 @@ export default function WorldCupPage () {
                   textStyle="xs"
                   color="fg.muted"
                   truncate
-                  mb={ 1 }
                 >
                   { rightProduct?.brandName }
                 </Text>
@@ -847,7 +838,7 @@ export default function WorldCupPage () {
 
           <GridItem
             textAlign="center"
-            pt={ 2 }
+            pt={ 4 }
           >
             <Text
               textStyle="xs"
