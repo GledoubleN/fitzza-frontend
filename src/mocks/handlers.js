@@ -908,19 +908,4 @@ export const handlers = [
       })
     },
   ),
-
-  http.get(
-    `${ api.defaults.baseURL }/worldcups/:historyId`,
-    ({ params }) => {
-      const history = worldcupHistories.find(
-        h => h.worldcupHistoryId === Number(params.historyId)
-      )
-
-      if (!history) {
-        return new HttpResponse(null, { status: 404 })
-      }
-
-      return HttpResponse.json(history)
-    },
-  ),
 ]
