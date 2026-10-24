@@ -4,7 +4,6 @@ import {
   Flex,
   Text,
   IconButton,
-  Image,
   Center,
   Button,
   Container,
@@ -19,7 +18,7 @@ import { TabBar } from '../components/TabBar.jsx'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
-import defaultHeroImage from '../assets/hero.png'
+import { ProductImage } from '../components/ProductImage.jsx'
 
 const shuffle = (array) => {
   const result = [...array]
@@ -192,7 +191,7 @@ export default function WorldCupPage () {
           brandName: winnerProduct.brandName,
           productName: winnerProduct.productName,
           price: winnerProduct.price,
-          imageUrl: winnerProduct.thumbnailUrl || winnerProduct.imageUrl || defaultHeroImage,
+          imageUrl: winnerProduct.thumbnailUrl || winnerProduct.imageUrl,
         },
       },
     })
@@ -324,8 +323,8 @@ export default function WorldCupPage () {
                           alignItems="center"
                           justifyContent="center"
                         >
-                          <Image
-                            src={ product?.thumbnailUrl || product?.imageUrl || defaultHeroImage }
+                          <ProductImage
+                            src={ product?.thumbnailUrl || product?.imageUrl }
                             alt={ product?.productName || product?.name }
                             w="100%"
                             h="100%"
@@ -492,8 +491,8 @@ export default function WorldCupPage () {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Image
-                  src={ winnerProduct.thumbnailUrl || winnerProduct.imageUrl || defaultHeroImage }
+                <ProductImage
+                  src={ winnerProduct.thumbnailUrl || winnerProduct.imageUrl }
                   alt={ winnerProduct.productName || winnerProduct.name }
                   w="100%"
                   h="100%"
@@ -759,8 +758,8 @@ export default function WorldCupPage () {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <Image
-                    src={ leftProduct?.thumbnailUrl || leftProduct?.imageUrl || defaultHeroImage }
+                  <ProductImage
+                    src={ leftProduct?.thumbnailUrl || leftProduct?.imageUrl }
                     alt={ leftProduct?.productName || leftProduct?.name }
                     w="100%"
                     h="100%"
@@ -825,8 +824,8 @@ export default function WorldCupPage () {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <Image
-                    src={ rightProduct?.thumbnailUrl || rightProduct?.imageUrl || defaultHeroImage }
+                  <ProductImage
+                    src={ rightProduct?.thumbnailUrl || rightProduct?.imageUrl }
                     alt={ rightProduct?.productName || rightProduct?.name }
                     w="100%"
                     h="100%"

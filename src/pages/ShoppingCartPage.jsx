@@ -8,7 +8,6 @@ import {
   Grid,
   Heading,
   IconButton,
-  Image,
   Portal,
   Separator,
   Spinner,
@@ -21,6 +20,7 @@ import { useNavigate } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { Footer } from '../components/Footer.jsx'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
+import { ProductImage } from '../components/ProductImage.jsx'
 import { api } from '../api/axios.js'
 import { QuantityStepper } from './product/ProductOptionSelector.jsx'
 import { CartOptionDialog } from './CartOptionDialog.jsx'
@@ -217,7 +217,7 @@ export const ShoppingCartPage = () => {
                                 <Checkbox.HiddenInput aria-label={ `${ item.productName ?? '상품' } 선택` }/>
                                 <Checkbox.Control/>
                               </Checkbox.Root>
-                              <Image
+                              <ProductImage
                                 boxSize={ '20' }
                                 objectFit={ 'contain' }
                                 rounded={ 'l2' }

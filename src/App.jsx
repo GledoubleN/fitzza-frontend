@@ -23,6 +23,7 @@ import { AIStylistPage } from './pages/ai/AIStylistPage.jsx'
 import { AIHistoryPage } from './pages/ai/AIHistoryPage.jsx'
 import OnboardingPage from './pages/OnboardingPage.jsx';
 import { RequireSignIn } from './components/RequireSignIn.jsx'
+import { ProductImageTestToggle } from './components/ProductImageTestToggle.jsx'
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
         <Route path="/ai/:requestId?" element={ <RequireSignIn><AIStylistPage/></RequireSignIn> }/>
         <Route path="/onboarding" element={<OnboardingPage />} />
       </Routes>
+      <ProductImageTestToggle />
     </BrowserRouter>
   )
 }
