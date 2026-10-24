@@ -14,8 +14,7 @@ import recommendationMessages from '../data/recommendation-messages.json'
 import notifications from '../data/notifications.json'
 import fittingResultImage from '../assets/hero.png'
 import { communityHandlers } from './communityHandlers.js'
-
-let worldcupHistories = []
+import { worldcupHistories } from './worldcupHistories.js'
 
 let lastRecommendationId = 0
 

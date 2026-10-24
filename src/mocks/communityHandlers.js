@@ -4,6 +4,7 @@ import postsData from '../data/posts.json'
 import commentsData from '../data/comments.json'
 import products from '../data/products.json'
 import recommendations from '../data/recommendations.json'
+import { worldcupHistories } from './worldcupHistories.js'
 
 const BASE_URL = api.defaults.baseURL
 const ME = { userId: 1, nickname: '핏짜' }
@@ -65,6 +66,25 @@ const toShared = (sharedType, sharedId) => {
         imageUrl: '/product-image.png',
         summary: null,
       },
+      items: [],
+    }
+  }
+
+  if (sharedType === 'WORLDCUP') {
+    const winner = worldcupHistories.find((history) => history.worldcupHistoryId === Number(sharedId))?.winnerProduct
+    return {
+      type: sharedType,
+      id: sharedId,
+      snapshot: winner
+        ? {
+          productId: winner.productId,
+          brandName: winner.brandName,
+          productName: winner.productName,
+          price: winner.price,
+          imageUrl: winner.imageUrl,
+          summary: null,
+        }
+        : null,
       items: [],
     }
   }
