@@ -132,7 +132,7 @@ export const WishlistPage = () => {
         <Box
           position="fixed"
           bottom={ 24 }
-          right={ { base: 6, lg: 'calc((100vw - 64rem) / 2 + 2.5rem)' } }
+          right={ { base: 4, lg: 'calc((100vw - {sizes.5xl}) / 2 + {spacing.8})' } }
           zIndex={ 30 }
         >
           <IconButton
@@ -140,7 +140,7 @@ export const WishlistPage = () => {
             rounded="full"
             bg="bg.panel"
             color="fg"
-            borderWidth="1px"
+            borderWidth="thin"
             borderColor="border.subtle"
             boxShadow="lg"
             _hover={ { bg: 'bg.subtle', transform: 'scale(1.05)' } }

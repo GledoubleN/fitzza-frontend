@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Box,
   Flex,
@@ -18,8 +18,10 @@ import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
-import { Toaster, toaster } from '../components/ui/toaster.jsx'
+import { toaster } from '../components/ui/toaster.jsx'
 import defaultHeroImage from '../assets/hero.png'
+
+const HISTORY_PAGE_SIZE = 20
 
 const shuffle = (array) => {
   const result = [...array]
@@ -43,14 +45,31 @@ export default function WorldCupPage () {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [roundTitle, setRoundTitle] = useState('월드컵')
   const [winnerProduct, setWinnerProduct] = useState(null)
-  const [savedHistoryId, setSavedHistoryId] = useState(null)
+  const [savedResult, setSavedResult] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
   const [isSaveFailed, setIsSaveFailed] = useState(false)
 
   const [historyList, setHistoryList] = useState([])
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+  const [historyPage, setHistoryPage] = useState(0)
+  const [hasNextHistory, setHasNextHistory] = useState(false)
+  const [isLoadingMoreHistory, setIsLoadingMoreHistory] = useState(false)
+
+  const latestSaveIdRef = useRef(0)
+
+  useEffect(() => () => {
+    latestSaveIdRef.current += 1
+  }, [])
 
   useEffect(() => {
+    if (location.state?.winnerProduct) {
+      setWinnerProduct(location.state.winnerProduct)
+      setSavedResult(location.state.savedResult)
+      setIsSaveFailed(!location.state.savedResult)
+      setViewMode('result')
+      return
+    }
+
     if (rawSelectedProducts.length < 2) {
       navigate('/select')
       return
@@ -58,6 +77,12 @@ export default function WorldCupPage () {
 
     const shuffled = shuffle(rawSelectedProducts)
     setMatchList(shuffled)
+    setNextRoundList([])
+    setCurrentIndex(0)
+    setWinnerProduct(null)
+    setSavedResult(null)
+    setIsSaveFailed(false)
+    setViewMode('tournament')
     updateRoundTitle(shuffled.length)
   }, [location.state])
 
@@ -92,8 +117,13 @@ export default function WorldCupPage () {
   const rightProduct = !hasBye ? matchList[currentIndex + 1] : null
 
   const saveWorldCupResult = async (winner, candidates) => {
+    const saveId = latestSaveIdRef.current + 1
+    latestSaveIdRef.current = saveId
+
     setIsSaving(true)
     setIsSaveFailed(false)
+
+    let result = null
 
     try {
       const winnerId = winner.productId ?? winner.itemId
@@ -104,32 +134,45 @@ export default function WorldCupPage () {
         candidateProductIds: candidateIds,
       })
 
-      if (response.data?.worldcupHistoryId) {
-        setSavedHistoryId(response.data.worldcupHistoryId)
-      }
+      result = response.data
     } catch (error) {
       console.warn('월드컵 결과 저장 실패:', error)
-      setIsSaveFailed(true)
+    } finally {
+      setIsSaving(false)
+    }
+
+    if (saveId !== latestSaveIdRef.current) return
+
+    if (!result) {
       toaster.create({
         title: '월드컵 결과를 저장하지 못했습니다.',
         type: 'error',
         closable: true,
       })
-    } finally {
-      setIsSaving(false)
     }
+
+    navigate(location.pathname, {
+      replace: true,
+      state: {
+        selectedProducts: rawSelectedProducts,
+        winnerProduct: winner,
+        savedResult: result,
+      },
+    })
   }
 
-  const fetchHistoryList = async () => {
-    setIsLoadingHistory(true)
+  const fetchHistoryList = async (page = 0) => {
+    const setLoading = page === 0 ? setIsLoadingHistory : setIsLoadingMoreHistory
+    setLoading(true)
     try {
       const response = await api.get('/worldcups/history', {
-        params: { page: 0, size: 20 },
+        params: { page, size: HISTORY_PAGE_SIZE },
       })
 
-      if (response.data && response.data.content) {
-        setHistoryList(response.data.content)
-      }
+      const { content, hasNext } = response.data
+      setHistoryList((previousList) => (page === 0 ? content : [...previousList, ...content]))
+      setHistoryPage(page)
+      setHasNextHistory(hasNext)
     } catch (error) {
       console.warn('월드컵 이력 조회 실패:', error)
       toaster.create({
@@ -138,7 +181,7 @@ export default function WorldCupPage () {
         closable: true,
       })
     } finally {
-      setIsLoadingHistory(false)
+      setLoading(false)
     }
   }
 
@@ -169,31 +212,20 @@ export default function WorldCupPage () {
   }
 
   const handleRestart = () => {
-    const shuffled = shuffle(rawSelectedProducts)
-    setMatchList(shuffled)
-    setNextRoundList([])
-    setCurrentIndex(0)
-    setWinnerProduct(null)
-    setSavedHistoryId(null)
-    setIsSaveFailed(false)
-    setViewMode('tournament')
-    updateRoundTitle(shuffled.length)
+    navigate(location.pathname, {
+      replace: true,
+      state: { selectedProducts: rawSelectedProducts },
+    })
   }
 
   const handleShareToCommunity = () => {
-    if (!savedHistoryId || !winnerProduct) return
+    if (!savedResult) return
 
     navigate('/community/write', {
       state: {
         sharedType: 'WORLDCUP',
-        sharedId: savedHistoryId,
-        snapshot: {
-          productId: winnerProduct.productId,
-          brandName: winnerProduct.brandName,
-          productName: winnerProduct.productName,
-          price: winnerProduct.price,
-          imageUrl: winnerProduct.thumbnailUrl || winnerProduct.imageUrl || defaultHeroImage,
-        },
+        sharedId: savedResult.worldcupHistoryId,
+        snapshot: savedResult.winnerProduct,
       },
     })
   }
@@ -224,7 +256,7 @@ export default function WorldCupPage () {
           right={ 0 }
           zIndex={ 10 }
           bg="bg"
-          px={ 5 }
+          px={ 4 }
           py={ 4 }
         >
           <Container
@@ -239,13 +271,13 @@ export default function WorldCupPage () {
         <Container
           maxW="3xl"
           mx="auto"
-          px={ 5 }
+          px={ 4 }
         >
-          <Grid gap={ 6 }>
+          <Grid gap={ 8 }>
             <GridItem>
               <Flex
                 align="center"
-                gap={ 2 }
+                gap={ 4 }
               >
                 <IconButton
                   variant="ghost"
@@ -274,7 +306,7 @@ export default function WorldCupPage () {
               <Center
                 py={ 20 }
                 flexDirection="column"
-                gap={ 3 }
+                gap={ 4 }
               >
                 <Text
                   textStyle="md"
@@ -309,7 +341,7 @@ export default function WorldCupPage () {
                         alignItems="center"
                         gap={ 4 }
                         cursor="pointer"
-                        _hover={ { borderColor: 'border.emphasized', transform: 'translateY(-2px)' } }
+                        _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
                         transition="all 0.2s"
                         onClick={ () => productId && navigate(`/products/${ productId }`) }
                       >
@@ -340,7 +372,6 @@ export default function WorldCupPage () {
                           <Text
                             textStyle="xs"
                             color="fg.muted"
-                            mb={ 0.5 }
                             truncate
                           >
                             { product?.brandName }
@@ -349,7 +380,6 @@ export default function WorldCupPage () {
                             textStyle="sm"
                             fontWeight="bold"
                             truncate
-                            mb={ 1 }
                           >
                             { product?.productName || product?.name }
                           </Text>
@@ -364,6 +394,17 @@ export default function WorldCupPage () {
                     )
                   })
                 }
+
+                { hasNextHistory && (
+                  <Button
+                    variant="outline"
+                    borderRadius="xl"
+                    loading={ isLoadingMoreHistory }
+                    onClick={ () => fetchHistoryList(historyPage + 1) }
+                  >
+                    더 보기
+                  </Button>
+                ) }
               </Grid>
             ) }
           </Grid>
@@ -379,8 +420,6 @@ export default function WorldCupPage () {
         >
           <TabBar />
         </Box>
-
-        <Toaster />
       </Box>
     )
   }
@@ -403,7 +442,7 @@ export default function WorldCupPage () {
           right={ 0 }
           zIndex={ 10 }
           bg="bg"
-          px={ 5 }
+          px={ 4 }
           py={ 4 }
         >
           <Container
@@ -418,9 +457,9 @@ export default function WorldCupPage () {
         <Container
           maxW="3xl"
           mx="auto"
-          px={ 5 }
+          px={ 4 }
         >
-          <Grid gap={ 6 }>
+          <Grid gap={ 8 }>
             <GridItem>
               <Flex
                 align="center"
@@ -428,7 +467,7 @@ export default function WorldCupPage () {
               >
                 <Flex
                   align="center"
-                  gap={ 2 }
+                  gap={ 4 }
                 >
                   <IconButton
                     variant="ghost"
@@ -451,12 +490,12 @@ export default function WorldCupPage () {
                   size="sm"
                   variant="outline"
                   borderRadius="xl"
+                  disabled={ isSaving }
                   onClick={ handleOpenHistory }
                 >
                   <Box
                     as={ LuHistory }
                     boxSize={ 4 }
-                    mr={ 1.5 }
                   />
                   우승 이력 보기
                 </Button>
@@ -510,7 +549,6 @@ export default function WorldCupPage () {
               <Text
                 textStyle="sm"
                 color="fg.muted"
-                mt={ 1 }
               >
                 { winnerProduct.brandName }
               </Text>
@@ -520,7 +558,7 @@ export default function WorldCupPage () {
               borderWidth="thin"
               borderColor="border.subtle"
               borderRadius="2xl"
-              p={ 5 }
+              p={ 4 }
               bg="bg.panel"
             >
               <Text
@@ -565,12 +603,12 @@ export default function WorldCupPage () {
               </Table.Root>
             </GridItem>
 
-            { isSaveFailed && !savedHistoryId && (
+            { isSaveFailed && !savedResult && (
               <GridItem textAlign="center">
                 <Flex
                   direction="column"
                   align="center"
-                  gap={ 2 }
+                  gap={ 4 }
                 >
                   <Text
                     textStyle="xs"
@@ -599,12 +637,12 @@ export default function WorldCupPage () {
                   size="lg"
                   variant="outline"
                   borderRadius="xl"
+                  disabled={ isSaving }
                   onClick={ handleRestart }
                 >
                   <Box
                     as={ LuRotateCcw }
                     boxSize={ 4 }
-                    mr={ 2 }
                   />
                   다시 하기
                 </Button>
@@ -613,14 +651,13 @@ export default function WorldCupPage () {
                   bg="fg"
                   color="bg"
                   borderRadius="xl"
-                  disabled={ !savedHistoryId || isSaving }
+                  disabled={ !savedResult || isSaving }
                   _hover={ { opacity: 0.9 } }
                   onClick={ handleShareToCommunity }
                 >
                   <Box
                     as={ LuShare2 }
                     boxSize={ 4 }
-                    mr={ 2 }
                   />
                   커뮤니티에 공유
                 </Button>
@@ -639,8 +676,6 @@ export default function WorldCupPage () {
         >
           <TabBar />
         </Box>
-
-        <Toaster />
       </Box>
     )
   }
@@ -660,7 +695,7 @@ export default function WorldCupPage () {
         right={ 0 }
         zIndex={ 10 }
         bg="bg"
-        px={ 5 }
+        px={ 4 }
         py={ 4 }
       >
         <Container
@@ -675,9 +710,9 @@ export default function WorldCupPage () {
       <Container
         maxW="3xl"
         mx="auto"
-        px={ 5 }
+        px={ 4 }
       >
-        <Grid gap={ 6 }>
+        <Grid gap={ 8 }>
           <GridItem>
             <Flex
               align="center"
@@ -685,7 +720,7 @@ export default function WorldCupPage () {
             >
               <Flex
                 align="center"
-                gap={ 2 }
+                gap={ 4 }
               >
                 <IconButton
                   variant="ghost"
@@ -713,7 +748,6 @@ export default function WorldCupPage () {
                 <Box
                   as={ LuHistory }
                   boxSize={ 4 }
-                  mr={ 1.5 }
                 />
                 우승 이력 보기
               </Button>
@@ -733,7 +767,7 @@ export default function WorldCupPage () {
           <GridItem>
             <Grid
               templateColumns="1fr auto 1fr"
-              gap={ { base: 3, md: 4 } }
+              gap={ 4 }
               alignItems="center"
               position="relative"
             >
@@ -741,10 +775,10 @@ export default function WorldCupPage () {
                 borderWidth="thin"
                 borderColor="border.subtle"
                 borderRadius="2xl"
-                p={ { base: 3, md: 4 } }
+                p={ 4 }
                 cursor={ isSaving ? 'not-allowed' : 'pointer' }
                 bg="bg.panel"
-                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(-2px)' } }
+                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
                 transition="all 0.2s"
                 onClick={ () => handleSelect(leftProduct) }
               >
@@ -753,7 +787,7 @@ export default function WorldCupPage () {
                   h={ { base: '40', md: '60' } }
                   borderRadius="xl"
                   overflow="hidden"
-                  mb={ 3 }
+                  mb={ 4 }
                   bg="bg.subtle"
                   display="flex"
                   alignItems="center"
@@ -771,7 +805,6 @@ export default function WorldCupPage () {
                   textStyle="xs"
                   color="fg.muted"
                   truncate
-                  mb={ 1 }
                 >
                   { leftProduct?.brandName }
                 </Text>
@@ -807,10 +840,10 @@ export default function WorldCupPage () {
                 borderWidth="thin"
                 borderColor="border.subtle"
                 borderRadius="2xl"
-                p={ { base: 3, md: 4 } }
+                p={ 4 }
                 cursor={ isSaving ? 'not-allowed' : 'pointer' }
                 bg="bg.panel"
-                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(-2px)' } }
+                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
                 transition="all 0.2s"
                 onClick={ () => handleSelect(rightProduct) }
               >
@@ -819,7 +852,7 @@ export default function WorldCupPage () {
                   h={ { base: '40', md: '60' } }
                   borderRadius="xl"
                   overflow="hidden"
-                  mb={ 3 }
+                  mb={ 4 }
                   bg="bg.subtle"
                   display="flex"
                   alignItems="center"
@@ -837,7 +870,6 @@ export default function WorldCupPage () {
                   textStyle="xs"
                   color="fg.muted"
                   truncate
-                  mb={ 1 }
                 >
                   { rightProduct?.brandName }
                 </Text>
@@ -855,7 +887,7 @@ export default function WorldCupPage () {
 
           <GridItem
             textAlign="center"
-            pt={ 2 }
+            pt={ 4 }
           >
             <Text
               textStyle="xs"
@@ -877,8 +909,6 @@ export default function WorldCupPage () {
       >
         <TabBar />
       </Box>
-
-      <Toaster />
     </Box>
   )
 }

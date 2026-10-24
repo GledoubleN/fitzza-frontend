@@ -16,7 +16,7 @@ import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { LuCheck, LuChevronLeft } from 'react-icons/lu'
-import { Toaster, toaster } from '../components/ui/toaster.jsx'
+import { toaster } from '../components/ui/toaster.jsx'
 
 const MAX_CANDIDATES = 64
 
@@ -110,7 +110,7 @@ export const SelectPage = () => {
       >
         <Flex
           align="center"
-          gap={ 2 }
+          gap={ 4 }
           mb={ 4 }
         >
           <Button
@@ -119,7 +119,7 @@ export const SelectPage = () => {
             aria-label="찜 목록으로 돌아가기"
             onClick={ () => navigate('/wishlist') }
           >
-            <LuChevronLeft size={ 20 } />
+            <LuChevronLeft />
           </Button>
           <Text
             textStyle="lg"
@@ -197,27 +197,21 @@ export const SelectPage = () => {
                       key={ id }
                       as="button"
                       type="button"
-                      role="button"
                       aria-label={ `${ product.brandName } ${ name }` }
                       aria-pressed={ isSelected }
-                      tabIndex={ 0 }
                       textAlign="left"
                       position="relative"
-                      borderWidth="1px"
+                      borderWidth="thin"
                       borderColor={ isSelected ? 'border.emphasized' : 'border.subtle' }
                       borderRadius="xl"
                       overflow="hidden"
                       cursor="pointer"
                       onClick={ () => handleToggleSelect(id) }
-                      onKeyDown={ (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          handleToggleSelect(id)
-                        }
-                      } }
                       transition="all 0.2s"
                     >
                       <Box
+                        as="span"
+                        display="block"
                         w="100%"
                         h="48"
                         position="relative"
@@ -233,6 +227,8 @@ export const SelectPage = () => {
 
                         { isSelected && (
                           <Box
+                            as="span"
+                            display="block"
                             position="absolute"
                             inset={ 0 }
                             bg="bg.emphasized"
@@ -242,9 +238,10 @@ export const SelectPage = () => {
                         ) }
 
                         <Flex
+                          as="span"
                           position="absolute"
-                          top={ 2.5 }
-                          right={ 2.5 }
+                          top={ 4 }
+                          right={ 4 }
                           boxSize={ 6 }
                           borderRadius="full"
                           bg={ isSelected ? 'fg' : 'bg' }
@@ -264,10 +261,12 @@ export const SelectPage = () => {
                       </Box>
 
                       <Stack
-                        p={ 3 }
-                        gap={ 1 }
+                        as="span"
+                        p={ 4 }
                       >
                         <Text
+                          as="span"
+                          display="block"
                           textStyle="xs"
                           color="fg.muted"
                           truncate
@@ -275,6 +274,8 @@ export const SelectPage = () => {
                           { product.brandName }
                         </Text>
                         <Text
+                          as="span"
+                          display="block"
                           textStyle="sm"
                           fontWeight="medium"
                           truncate
@@ -282,6 +283,8 @@ export const SelectPage = () => {
                           { name }
                         </Text>
                         <Text
+                          as="span"
+                          display="block"
                           textStyle="sm"
                           fontWeight="bold"
                         >
@@ -298,8 +301,6 @@ export const SelectPage = () => {
       </Container>
 
       <TabBar />
-
-      <Toaster />
     </Stack>
   )
 }
