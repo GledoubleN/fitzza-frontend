@@ -16,7 +16,7 @@ import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { LuCheck, LuChevronLeft } from 'react-icons/lu'
-import { Toaster, toaster } from '../components/ui/toaster.jsx'
+import { toaster } from '../components/ui/toaster.jsx'
 
 const MAX_CANDIDATES = 64
 
@@ -301,8 +301,6 @@ export const SelectPage = () => {
       </Container>
 
       <TabBar />
-
-      <Toaster />
     </Stack>
   )
 }

@@ -18,7 +18,7 @@ import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
-import { Toaster, toaster } from '../components/ui/toaster.jsx'
+import { toaster } from '../components/ui/toaster.jsx'
 import defaultHeroImage from '../assets/hero.png'
 
 const HISTORY_PAGE_SIZE = 20
@@ -420,8 +420,6 @@ export default function WorldCupPage () {
         >
           <TabBar />
         </Box>
-
-        <Toaster />
       </Box>
     )
   }
@@ -678,8 +676,6 @@ export default function WorldCupPage () {
         >
           <TabBar />
         </Box>
-
-        <Toaster />
       </Box>
     )
   }
@@ -913,8 +909,6 @@ export default function WorldCupPage () {
       >
         <TabBar />
       </Box>
-
-      <Toaster />
     </Box>
   )
 }
