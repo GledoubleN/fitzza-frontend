@@ -14,7 +14,7 @@ import { TabBar } from '../../components/TabBar.jsx'
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
 const TIMEOUT = { timeout: 10000 }
 
-export const AIHistoryPage = () => {
+export const AIStylistHistoryPage = () => {
   const navigate = useNavigate()
 
   const [items, setItems] = useState([])
