@@ -51,6 +51,14 @@ export default function WorldCupPage () {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
 
   useEffect(() => {
+    if (location.state?.winnerProduct) {
+      setWinnerProduct(location.state.winnerProduct)
+      setSavedResult(location.state.savedResult)
+      setIsSaveFailed(!location.state.savedResult)
+      setViewMode('result')
+      return
+    }
+
     if (rawSelectedProducts.length < 2) {
       navigate('/select')
       return
@@ -58,6 +66,12 @@ export default function WorldCupPage () {
 
     const shuffled = shuffle(rawSelectedProducts)
     setMatchList(shuffled)
+    setNextRoundList([])
+    setCurrentIndex(0)
+    setWinnerProduct(null)
+    setSavedResult(null)
+    setIsSaveFailed(false)
+    setViewMode('tournament')
     updateRoundTitle(shuffled.length)
   }, [location.state])
 
@@ -95,6 +109,8 @@ export default function WorldCupPage () {
     setIsSaving(true)
     setIsSaveFailed(false)
 
+    let result = null
+
     try {
       const winnerId = winner.productId ?? winner.itemId
       const candidateIds = candidates.map(item => item.productId ?? item.itemId)
@@ -104,10 +120,9 @@ export default function WorldCupPage () {
         candidateProductIds: candidateIds,
       })
 
-      setSavedResult(response.data)
+      result = response.data
     } catch (error) {
       console.warn('월드컵 결과 저장 실패:', error)
-      setIsSaveFailed(true)
       toaster.create({
         title: '월드컵 결과를 저장하지 못했습니다.',
         type: 'error',
@@ -116,6 +131,15 @@ export default function WorldCupPage () {
     } finally {
       setIsSaving(false)
     }
+
+    navigate(location.pathname, {
+      replace: true,
+      state: {
+        selectedProducts: rawSelectedProducts,
+        winnerProduct: winner,
+        savedResult: result,
+      },
+    })
   }
 
   const fetchHistoryList = async () => {
@@ -167,15 +191,10 @@ export default function WorldCupPage () {
   }
 
   const handleRestart = () => {
-    const shuffled = shuffle(rawSelectedProducts)
-    setMatchList(shuffled)
-    setNextRoundList([])
-    setCurrentIndex(0)
-    setWinnerProduct(null)
-    setSavedResult(null)
-    setIsSaveFailed(false)
-    setViewMode('tournament')
-    updateRoundTitle(shuffled.length)
+    navigate(location.pathname, {
+      replace: true,
+      state: { selectedProducts: rawSelectedProducts },
+    })
   }
 
   const handleShareToCommunity = () => {
