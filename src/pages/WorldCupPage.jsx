@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Box,
   Flex,
@@ -49,6 +49,12 @@ export default function WorldCupPage () {
 
   const [historyList, setHistoryList] = useState([])
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+
+  const latestSaveIdRef = useRef(0)
+
+  useEffect(() => () => {
+    latestSaveIdRef.current += 1
+  }, [])
 
   useEffect(() => {
     if (location.state?.winnerProduct) {
@@ -106,6 +112,9 @@ export default function WorldCupPage () {
   const rightProduct = !hasBye ? matchList[currentIndex + 1] : null
 
   const saveWorldCupResult = async (winner, candidates) => {
+    const saveId = latestSaveIdRef.current + 1
+    latestSaveIdRef.current = saveId
+
     setIsSaving(true)
     setIsSaveFailed(false)
 
@@ -123,13 +132,18 @@ export default function WorldCupPage () {
       result = response.data
     } catch (error) {
       console.warn('월드컵 결과 저장 실패:', error)
+    } finally {
+      setIsSaving(false)
+    }
+
+    if (saveId !== latestSaveIdRef.current) return
+
+    if (!result) {
       toaster.create({
         title: '월드컵 결과를 저장하지 못했습니다.',
         type: 'error',
         closable: true,
       })
-    } finally {
-      setIsSaving(false)
     }
 
     navigate(location.pathname, {
@@ -460,6 +474,7 @@ export default function WorldCupPage () {
                   size="sm"
                   variant="outline"
                   borderRadius="xl"
+                  disabled={ isSaving }
                   onClick={ handleOpenHistory }
                 >
                   <Box
@@ -606,6 +621,7 @@ export default function WorldCupPage () {
                   size="lg"
                   variant="outline"
                   borderRadius="xl"
+                  disabled={ isSaving }
                   onClick={ handleRestart }
                 >
                   <Box
