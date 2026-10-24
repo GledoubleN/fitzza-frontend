@@ -21,7 +21,7 @@ import { LuEllipsisVertical, LuMessageCircle, LuThumbsUp } from 'react-icons/lu'
 import { Header } from '../../components/Header.jsx'
 import { ScrollToTopButton } from '../../components/ScrollToTopButton.jsx'
 import { SignInRequiredDialog } from '../../components/SignInRequiredDialog.jsx'
-import { Toaster, toaster } from '../../components/ui/toaster.jsx'
+import { toaster } from '../../components/ui/toaster.jsx'
 import { useAuth } from '../../contexts/AuthContext.js'
 import { api } from '../../api/axios.js'
 import { CommunityArticleCommentList } from './CommunityArticleCommentList.jsx'
@@ -484,7 +484,6 @@ export const CommunityArticlePage = () => {
         onConfirm={ confirmDelete }
         onClose={ () => setDeleteOpen(false) }
       />
-      <Toaster/>
     </Stack>
   )
 }

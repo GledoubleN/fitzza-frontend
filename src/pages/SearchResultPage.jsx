@@ -17,7 +17,6 @@ import { LuChevronDown, LuChevronRight, LuHeart } from 'react-icons/lu'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { ProductItem } from '../components/ProductItem.jsx'
-import { Toaster } from '../components/ui/toaster.jsx'
 
 const sortCollection = createListCollection({
   items: [
@@ -305,7 +304,6 @@ export const SearchResultPage = () => {
 
       <TabBar/>
 
-      <Toaster />
     </Stack>
   )
 }

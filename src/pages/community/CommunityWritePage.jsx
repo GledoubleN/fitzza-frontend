@@ -17,7 +17,7 @@ import {
 import { LuPlus, LuTrash2 } from 'react-icons/lu'
 import { Header } from '../../components/Header.jsx'
 import { RichTextEditor } from '/src/components/ui/rich-text-editor'
-import { Toaster, toaster } from '../../components/ui/toaster.jsx'
+import { toaster } from '../../components/ui/toaster.jsx'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Placeholder } from '@tiptap/extensions'
@@ -308,7 +308,6 @@ export const CommunityWritePage = () => {
       </Container>
 
       <CommunityOptionSourceSheet open={ sheetOpen } onClose={ () => setSheetOpen(false) } onSelect={ openPicker }/>
-      <Toaster/>
     </Stack>
   )
 }

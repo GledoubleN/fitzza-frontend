@@ -14,9 +14,9 @@ import { ProductItem } from '../components/ProductItem.jsx'
 import { useEffect, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
+import { toaster } from '../components/ui/toaster.jsx'
 import { useNavigate } from 'react-router-dom'
 import { LuTrophy } from 'react-icons/lu'
-import { Toaster, toaster } from '../components/ui/toaster.jsx'
 
 export const WishlistPage = () => {
   const [products, setProducts] = useState([])
@@ -155,7 +155,6 @@ export const WishlistPage = () => {
 
       <TabBar />
 
-      <Toaster />
     </Stack>
   )
 }
