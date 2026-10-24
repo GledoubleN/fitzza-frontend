@@ -39,6 +39,12 @@ const VOTE_DURATION_HOURS = 6
 const TITLE_MAX_LENGTH = 100
 const CONTENT_MAX_LENGTH = 5000
 
+const SHARED_PREVIEW_TITLES = {
+  WORLDCUP: '공유할 월드컵 우승 상품',
+  COMBO: '공유할 코디',
+  FITTING: '공유할 가상 피팅',
+}
+
 const EDITOR_CSS = {
   '--content-padding-x': 'spacing.3',
   '--content-padding-y': 'spacing.3',
@@ -271,19 +277,39 @@ export const CommunityWritePage = () => {
               >
                 { shared?.snapshot && !isVote && (
                   <Stack gap="4" padding="4" paddingBottom="0">
-                    <Text fontWeight="bold">{ shared.sharedType === 'FITTING' ? '공유할 가상 피팅' : '공유할 코디' }</Text>
-                    { shared.snapshot.imageUrl && (
-                      <Image src={ shared.snapshot.imageUrl } alt="공유할 가상 피팅 결과" maxWidth="xs" bg="bg.muted"/>
-                    ) }
-                    { shared.snapshot.items.map((item) => (
-                      <Flex key={ item.productId } justify="space-between" gap="4">
-                        <Text>{ item.productName }</Text>
-                        <Text>{ item.price.toLocaleString() }원</Text>
+                    <Text fontWeight="bold">{ SHARED_PREVIEW_TITLES[shared.sharedType] }</Text>
+                    { shared.sharedType === 'WORLDCUP' ? (
+                      <Flex gap="4" align="center">
+                        <Image
+                          src={ shared.snapshot.imageUrl }
+                          alt=""
+                          boxSize="16"
+                          objectFit="cover"
+                          rounded="sm"
+                          bg="bg.muted"
+                        />
+                        <Stack gap="0" flex="1" minWidth="0">
+                          <Text fontSize="xs" color="fg.muted">{ shared.snapshot.brandName }</Text>
+                          <Text fontSize="sm" lineClamp="1">{ shared.snapshot.productName }</Text>
+                        </Stack>
+                        <Text fontSize="sm">{ shared.snapshot.price?.toLocaleString() }원</Text>
                       </Flex>
-                    )) }
-                    <Text fontWeight="bold" alignSelf="flex-end">
-                      합계 { shared.snapshot.totalPrice.toLocaleString() }원
-                    </Text>
+                    ) : (
+                      <>
+                        { shared.snapshot.imageUrl && (
+                          <Image src={ shared.snapshot.imageUrl } alt="공유할 가상 피팅 결과" maxWidth="xs" bg="bg.muted"/>
+                        ) }
+                        { shared.snapshot.items.map((item) => (
+                          <Flex key={ item.productId } justify="space-between" gap="4">
+                            <Text>{ item.productName }</Text>
+                            <Text>{ item.price.toLocaleString() }원</Text>
+                          </Flex>
+                        )) }
+                        <Text fontWeight="bold" alignSelf="flex-end">
+                          합계 { shared.snapshot.totalPrice.toLocaleString() }원
+                        </Text>
+                      </>
+                    ) }
                     <Separator/>
                   </Stack>
                 ) }
