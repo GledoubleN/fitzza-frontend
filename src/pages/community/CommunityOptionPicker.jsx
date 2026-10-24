@@ -192,7 +192,7 @@ const RecommendationGroups = ({ options, onToggle }) => {
   }
 
   const openConversation = () => {
-    navigate(`/ai/${ conversation.requestId }`, { state: { query: conversation.queryText } })
+    navigate(`/ai-stylist/${ conversation.requestId }`, { state: { query: conversation.queryText } })
   }
 
   if (!groups) {

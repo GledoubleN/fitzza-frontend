@@ -25,12 +25,13 @@ import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
 import { toFittingImageUrl } from '../profile/toFittingImageUrl.js'
 import { listenForPush } from './listenForPush.js'
+import { TabBar } from '../../components/TabBar.jsx'
 
 const FAIL_MESSAGE = '추천을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
 const TIMEOUT = { timeout: 10000 }
 // 응답을 기다리던 중 새로고침된 추천 요청을 알아보기 위한 표시입니다. (sessionStorage 키)
-const PENDING_KEY = 'ai-recommendation-pending'
+const PENDING_KEY = 'ai-stylist-recommendation-pending'
 const RECOMMENDATION_WAIT_LIMIT = 120000
 const RECOMMENDATION_TIMEOUT_MESSAGE = '추천이 오래 걸리고 있어요. 잠시 후 다시 확인해주세요.'
 const FITTING_WAIT_LIMIT = 120000
@@ -50,7 +51,7 @@ const NotificationHint = () => (
   <Text fontSize={ 'sm' } color={ 'fg.muted' }>{ NOTIFICATION_HINT }</Text>
 )
 
-export const AIStylistPage = () => {
+export const AIStylistResultPage = () => {
   const { requestId } = useParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -97,7 +98,7 @@ export const AIStylistPage = () => {
       if (data.status === 'FAILED') {
         fail(data.message, true)
       } else if (data.requestId) {
-        navigate(`/ai/${ data.requestId }`, { replace: true, state: { query: text } })
+        navigate(`/ai-stylist/${ data.requestId }`, { replace: true, state: { query: text } })
       } else {
         fail()
       }
@@ -110,7 +111,7 @@ export const AIStylistPage = () => {
 
   useEffect(() => {
     // 질의도 결과도 없이 들어오면 보여줄 것이 없으므로 메인 화면으로 돌려보냅니다.
-    // 개발시에는 /ai/sample Route 사용 필요
+    // 개발시에는 /ai-stylist/sample Route 사용 필요
     if (!requestId && !location.state?.query) {
       navigate('/', { replace: true })
       return
@@ -295,7 +296,7 @@ export const AIStylistPage = () => {
               variant={ 'outline' }
               rounded={ 'full' }
               aria-label={ '대화 내역' }
-              onClick={ () => navigate('/ai/history') }
+              onClick={ () => navigate('/ai-stylist/history') }
             >
               <LuClock></LuClock>
             </IconButton>
@@ -434,6 +435,8 @@ export const AIStylistPage = () => {
           }
         </Stack>
       </Container>
+
+      <TabBar></TabBar>
 
       <Dialog.Root
         open={ !!pendingTryOn }

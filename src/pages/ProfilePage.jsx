@@ -282,7 +282,7 @@ export default function ProfilePage() {
             <Grid templateColumns="repeat(4, 1fr)" gap={2}>
               {[
                 { label: '주문', icon: LuPackage, path: '/orders' },
-                { label: '추천내역', icon: LuHistory, path: '/ai/history' },
+                { label: '추천내역', icon: LuHistory, path: '/ai-stylist/history' },
                 { label: '커뮤니티', icon: LuMessageSquare },
                 { label: '설정', icon: LuSettings },
               ].map((item) => {
