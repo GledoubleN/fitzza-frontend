@@ -21,6 +21,8 @@ import { api } from '../api/axios.js'
 import { Toaster, toaster } from '../components/ui/toaster.jsx'
 import defaultHeroImage from '../assets/hero.png'
 
+const HISTORY_PAGE_SIZE = 20
+
 const shuffle = (array) => {
   const result = [...array]
   for (let i = result.length - 1; i > 0; i--) {
@@ -49,6 +51,9 @@ export default function WorldCupPage () {
 
   const [historyList, setHistoryList] = useState([])
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+  const [historyPage, setHistoryPage] = useState(0)
+  const [hasNextHistory, setHasNextHistory] = useState(false)
+  const [isLoadingMoreHistory, setIsLoadingMoreHistory] = useState(false)
 
   const latestSaveIdRef = useRef(0)
 
@@ -156,16 +161,18 @@ export default function WorldCupPage () {
     })
   }
 
-  const fetchHistoryList = async () => {
-    setIsLoadingHistory(true)
+  const fetchHistoryList = async (page = 0) => {
+    const setLoading = page === 0 ? setIsLoadingHistory : setIsLoadingMoreHistory
+    setLoading(true)
     try {
       const response = await api.get('/worldcups/history', {
-        params: { page: 0, size: 20 },
+        params: { page, size: HISTORY_PAGE_SIZE },
       })
 
-      if (response.data && response.data.content) {
-        setHistoryList(response.data.content)
-      }
+      const { content, hasNext } = response.data
+      setHistoryList((previousList) => (page === 0 ? content : [...previousList, ...content]))
+      setHistoryPage(page)
+      setHasNextHistory(hasNext)
     } catch (error) {
       console.warn('월드컵 이력 조회 실패:', error)
       toaster.create({
@@ -174,7 +181,7 @@ export default function WorldCupPage () {
         closable: true,
       })
     } finally {
-      setIsLoadingHistory(false)
+      setLoading(false)
     }
   }
 
@@ -387,6 +394,17 @@ export default function WorldCupPage () {
                     )
                   })
                 }
+
+                { hasNextHistory && (
+                  <Button
+                    variant="outline"
+                    borderRadius="xl"
+                    loading={ isLoadingMoreHistory }
+                    onClick={ () => fetchHistoryList(historyPage + 1) }
+                  >
+                    더 보기
+                  </Button>
+                ) }
               </Grid>
             ) }
           </Grid>

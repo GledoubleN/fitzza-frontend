@@ -898,13 +898,16 @@ export const handlers = [
       const page = Number(url.searchParams.get('page') || 0)
       const size = Number(url.searchParams.get('size') || 20)
 
+      const start = page * size
+      const end = start + size
+
       return HttpResponse.json({
-        content: worldcupHistories,
+        content: worldcupHistories.slice(start, end),
         page: page,
         size: size,
         totalElements: worldcupHistories.length,
-        totalPages: Math.ceil(worldcupHistories.length / size) || 1,
-        hasNext: false,
+        totalPages: Math.ceil(worldcupHistories.length / size),
+        hasNext: end < worldcupHistories.length,
       })
     },
   ),
