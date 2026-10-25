@@ -13,21 +13,72 @@ import {
   Stack,
 } from '@chakra-ui/react'
 import { LuChevronLeft } from 'react-icons/lu'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { api } from '../../api/axios.js'
+import { toaster } from '../../components/ui/toaster.jsx'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { Footer } from '../../components/Footer.jsx'
 import defaultHeroImage from '../../assets/hero.png'
 
-export const WorldcupHistoryPage = ({
-  historyList,
-  isLoadingHistory,
-  hasNextHistory,
-  isLoadingMoreHistory,
-  onBack,
-  onLoadMore,
-}) => {
+const HISTORY_PAGE_SIZE = 20
+
+export const WorldcupHistoryPage = () => {
+  const location = useLocation()
   const navigate = useNavigate()
+  const [historyList, setHistoryList] = useState([])
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true)
+  const [historyPage, setHistoryPage] = useState(0)
+  const [hasNextHistory, setHasNextHistory] = useState(false)
+  const [isLoadingMoreHistory, setIsLoadingMoreHistory] = useState(false)
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    api.get('/worldcups/history', {
+      params: { page: 0, size: HISTORY_PAGE_SIZE },
+      signal: controller.signal,
+    }).then(({ data }) => {
+      if (controller.signal.aborted) return
+      setHistoryList(data.content)
+      setHasNextHistory(data.hasNext)
+    }).catch(() => {
+      if (controller.signal.aborted) return
+      toaster.create({ title: '우승 이력을 불러오지 못했습니다.', type: 'error', closable: true })
+    }).finally(() => {
+      if (!controller.signal.aborted) setIsLoadingHistory(false)
+    })
+
+    return () => controller.abort()
+  }, [])
+
+  const loadMore = async () => {
+    if (isLoadingMoreHistory || !hasNextHistory) return
+    setIsLoadingMoreHistory(true)
+
+    try {
+      const page = historyPage + 1
+      const { data } = await api.get('/worldcups/history', {
+        params: { page, size: HISTORY_PAGE_SIZE },
+      })
+      setHistoryList(previous => [...previous, ...data.content])
+      setHistoryPage(page)
+      setHasNextHistory(data.hasNext)
+    } catch {
+      toaster.create({ title: '우승 이력을 불러오지 못했습니다.', type: 'error', closable: true })
+    } finally {
+      setIsLoadingMoreHistory(false)
+    }
+  }
+
+  const goBack = () => {
+    if (location.state?.fromWorldcup) {
+      navigate(-1)
+      return
+    }
+    navigate('/worldcup/setup', { replace: true })
+  }
 
   return (
     <Stack
@@ -49,7 +100,7 @@ export const WorldcupHistoryPage = ({
               <IconButton
                 variant="ghost"
                 aria-label="이전 화면으로 돌아가기"
-                onClick={ onBack }
+                onClick={ goBack }
               >
                 <Box
                   as={ LuChevronLeft }
@@ -167,7 +218,7 @@ export const WorldcupHistoryPage = ({
                   variant="outline"
                   borderRadius="xl"
                   loading={ isLoadingMoreHistory }
-                  onClick={ onLoadMore }
+                  onClick={ loadMore }
                 >
                   더 보기
                 </Button>

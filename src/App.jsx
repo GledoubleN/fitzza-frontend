@@ -15,6 +15,7 @@ import WorldcupPage from './pages/worldcup/WorldcupPage.jsx'
 import { ShortcutPage } from './pages/ShortcutPage.jsx'
 import { WishlistPage } from './pages/WishlistPage.jsx'
 import { WorldcupSetupPage } from './pages/worldcup/WorldcupSetupPage.jsx'
+import { WorldcupHistoryPage } from './pages/worldcup/WorldcupHistoryPage.jsx'
 import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { OrderListPage } from './pages/OrderListPage.jsx'
@@ -44,6 +45,7 @@ function App() {
         <Route path="/wishlist" element={ <RequireSignIn><WishlistPage/></RequireSignIn> }/>
         <Route path="/worldcup" element={ <RequireSignIn><WorldcupPage/></RequireSignIn> }/>
         <Route path="/worldcup/setup" element={ <RequireSignIn><WorldcupSetupPage/></RequireSignIn> }/>
+        <Route path="/worldcup/history" element={ <RequireSignIn><WorldcupHistoryPage/></RequireSignIn> }/>
         <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orders" element={ <RequireSignIn><OrderListPage/></RequireSignIn> }/>
         <Route path="/orders/:orderId" element={ <RequireSignIn><OrderDetail/></RequireSignIn> }/>

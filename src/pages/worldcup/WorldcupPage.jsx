@@ -2,11 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
-import { WorldcupHistoryPage } from './WorldcupHistoryPage.jsx'
 import { WorldcupResultPage } from './WorldcupResultPage.jsx'
 import { WorldcupTournamentPage } from './WorldcupTournamentPage.jsx'
-
-const HISTORY_PAGE_SIZE = 20
 
 const shuffle = (array) => {
   const result = [...array]
@@ -24,7 +21,6 @@ export default function WorldcupPage () {
   const rawSelectedProducts = location.state?.selectedProducts || []
 
   const [viewMode, setViewMode] = useState('tournament')
-  const [previousViewMode, setPreviousViewMode] = useState('tournament')
   const [matchList, setMatchList] = useState([])
   const [nextRoundList, setNextRoundList] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -33,12 +29,6 @@ export default function WorldcupPage () {
   const [savedResult, setSavedResult] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
   const [isSaveFailed, setIsSaveFailed] = useState(false)
-
-  const [historyList, setHistoryList] = useState([])
-  const [isLoadingHistory, setIsLoadingHistory] = useState(false)
-  const [historyPage, setHistoryPage] = useState(0)
-  const [hasNextHistory, setHasNextHistory] = useState(false)
-  const [isLoadingMoreHistory, setIsLoadingMoreHistory] = useState(false)
 
   const latestSaveIdRef = useRef(0)
 
@@ -60,10 +50,11 @@ export default function WorldcupPage () {
       return
     }
 
-    const shuffled = shuffle(rawSelectedProducts)
+    const tournamentState = location.state?.tournamentState
+    const shuffled = tournamentState?.matchList ?? shuffle(rawSelectedProducts)
     setMatchList(shuffled)
-    setNextRoundList([])
-    setCurrentIndex(0)
+    setNextRoundList(tournamentState?.nextRoundList ?? [])
+    setCurrentIndex(tournamentState?.currentIndex ?? 0)
     setWinnerProduct(null)
     setSavedResult(null)
     setIsSaveFailed(false)
@@ -146,30 +137,6 @@ export default function WorldcupPage () {
     })
   }
 
-  const fetchHistoryList = async (page = 0) => {
-    const setLoading = page === 0 ? setIsLoadingHistory : setIsLoadingMoreHistory
-    setLoading(true)
-    try {
-      const response = await api.get('/worldcups/history', {
-        params: { page, size: HISTORY_PAGE_SIZE },
-      })
-
-      const { content, hasNext } = response.data
-      setHistoryList((previousList) => (page === 0 ? content : [...previousList, ...content]))
-      setHistoryPage(page)
-      setHasNextHistory(hasNext)
-    } catch (error) {
-      console.warn('월드컵 이력 조회 실패:', error)
-      toaster.create({
-        title: '우승 이력을 불러오지 못했습니다.',
-        type: 'error',
-        closable: true,
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const handleSelect = async (selected) => {
     if (isSaving) return
 
@@ -216,26 +183,18 @@ export default function WorldcupPage () {
   }
 
   const handleOpenHistory = () => {
-    setPreviousViewMode(viewMode)
-    fetchHistoryList()
-    setViewMode('history')
+    navigate(location.pathname, {
+      replace: true,
+      state: {
+        ...location.state,
+        tournamentState: { matchList, nextRoundList, currentIndex },
+      },
+    })
+    navigate('/worldcup/history', { state: { fromWorldcup: true } })
   }
 
   if (viewMode === 'tournament' && (!leftProduct || !rightProduct)) {
     return null
-  }
-
-  if (viewMode === 'history') {
-    return (
-      <WorldcupHistoryPage
-        historyList={ historyList }
-        isLoadingHistory={ isLoadingHistory }
-        hasNextHistory={ hasNextHistory }
-        isLoadingMoreHistory={ isLoadingMoreHistory }
-        onBack={ () => setViewMode(previousViewMode) }
-        onLoadMore={ () => fetchHistoryList(historyPage + 1) }
-      />
-    )
   }
 
   if (viewMode === 'result' && winnerProduct) {
