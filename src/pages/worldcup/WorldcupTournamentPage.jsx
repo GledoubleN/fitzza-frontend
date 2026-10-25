@@ -95,12 +95,13 @@ export const WorldcupTournamentPage = ({
 
           <GridItem>
             <Grid
-              templateColumns="1fr auto 1fr"
+              templateColumns="minmax(0, 1fr) auto minmax(0, 1fr)"
               gap={ 4 }
               alignItems="center"
               position="relative"
             >
               <GridItem
+                minWidth={ 0 }
                 borderWidth="thin"
                 borderColor="border.subtle"
                 borderRadius="2xl"
@@ -166,6 +167,7 @@ export const WorldcupTournamentPage = ({
               </GridItem>
 
               <GridItem
+                minWidth={ 0 }
                 borderWidth="thin"
                 borderColor="border.subtle"
                 borderRadius="2xl"
