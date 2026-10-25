@@ -1,289 +1,229 @@
-import { useState, useEffect } from 'react'
-import {
-  Card,
-  Box,
-  Flex,
-  Heading,
-  Button,
-  Text,
-  Grid,
-  Input,
-  Stack,
-  HStack,
-  createListCollection,
-  Select,
-} from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { Avatar, Badge, Box, Button, Card, Flex, Grid, Heading, Separator, Skeleton, Stack, Text } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
-import {
-  LuUser,
-  LuPackage,
-  LuMessageSquare,
-  LuSettings,
-  LuSparkle,
-} from 'react-icons/lu'
 import { api } from '../api/axios.js'
 import { useAuth } from '../contexts/AuthContext.js'
 import preferredFits from '/src/data/preferred-fits.json'
 import preferredStyles from '/src/data/preferred-styles.json'
+import { ProfileFieldEditor } from './ProfileFieldEditor.jsx'
 
 export const ProfileSummaryCard = ({ height }) => {
   const { setAccessToken } = useAuth()
-  const [isEditing, setIsEditing] = useState(false)
+  const navigate = useNavigate()
   const [profileData, setProfileData] = useState({
-    nickname: '테스트사용자',
-    email: 'test@fitzza.com',
+    nickname: '내 프로필',
+    email: '',
     height: '',
     weight: '',
     preferredFit: '',
     style: '',
   })
-  const [message, setMessage] = useState('')
-  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
+  const [retryCount, setRetryCount] = useState(0)
+  const completedFields = ['height', 'weight', 'preferredFit', 'style']
+    .filter(field => profileData[field] !== '' && profileData[field] !== null).length
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await api.get('/users/me')
-        if (response.data) {
-          setProfileData((prev) => ({
-            ...prev,
-            nickname: response.data.nickname || prev.nickname,
-            email: response.data.email || prev.email,
-            height: response.data.height ?? '',
-            weight: response.data.weight ?? '',
-            preferredFit: response.data.preferredFit || '',
-            style: response.data.preferredStyles?.[0] || '',
-          }))
-        }
-      } catch (err) {
-        if (err.response?.status === 401) {
-          setAccessToken(null)
-          navigate('/signin', { replace: true })
-        } else {
-          console.warn("백엔드 통신 실패. 기본 프로필 정보를 표시합니다.", err)
-        }
+    const controller = new AbortController()
+
+    api.get('/users/me', { signal: controller.signal }).then(({ data }) => {
+      if (controller.signal.aborted) return
+      setProfileData({
+        nickname: data.nickname || '내 프로필',
+        email: data.email || '',
+        height: data.height ?? '',
+        weight: data.weight ?? '',
+        preferredFit: data.preferredFit || '',
+        style: data.preferredStyles?.[0] || '',
+      })
+    }).catch(error => {
+      if (controller.signal.aborted) return
+      if (error.response?.status === 401) {
+        setAccessToken(null)
+        navigate('/signin', { replace: true })
+        return
       }
-    }
-
-    fetchProfile()
-  }, [navigate, setAccessToken])
-
-  const handleNumberChange = (e) => {
-    const { name, value } = e.target
-    const numericValue = value.replace(/[^0-9]/g, '')
-    setProfileData({
-      ...profileData,
-      [name]: numericValue,
+      setLoadError('프로필을 불러오지 못했어요. 다시 시도해주세요.')
+    }).finally(() => {
+      if (!controller.signal.aborted) setIsLoading(false)
     })
+
+    return () => controller.abort()
+  }, [navigate, setAccessToken, retryCount])
+
+  const saveField = async (field, value) => {
+    const savedValue = field === 'height' || field === 'weight'
+      ? value ? Number(value) : null
+      : value || null
+    const payload = field === 'style'
+      ? { preferredStyles: value ? [value] : [] }
+      : { [field]: savedValue }
+
+    await api.patch('/users/me', payload)
+    setProfileData(previous => ({ ...previous, [field]: savedValue ?? '' }))
   }
 
-  const handleKeyDown = (e) => {
-    if (['-', '+', 'e', 'E', '.'].includes(e.key)) {
-      e.preventDefault()
-    }
-  }
-
-  const handleSkipField = (fieldName) => {
-    setProfileData({
-      ...profileData,
-      [fieldName]: '',
-    })
-  }
-
-  const handleSave = async (e) => {
-    e.preventDefault()
-    setMessage('')
-
-    const payload = {
-      height: profileData.height ? Number(profileData.height) : null,
-      weight: profileData.weight ? Number(profileData.weight) : null,
-      gender: null,
-      preferredFit: profileData.preferredFit || null,
-      preferredStyles: profileData.style ? [profileData.style] : [],
-      shoeSize: null,
-    }
-
-    try {
-      await api.patch('/users/me', payload)
-      setMessage('프로필이 성공적으로 저장되었습니다.')
-      setIsEditing(false)
-    } catch (err) {
-      if (err.response?.status === 400) {
-        setMessage('입력한 데이터의 단위나 범위를 확인해주세요.')
-      } else {
-        setMessage('프로필이 저장되었습니다 (테스트 모드).')
-        setIsEditing(false)
-      }
-    }
+  const retry = () => {
+    setIsLoading(true)
+    setLoadError('')
+    setRetryCount(count => count + 1)
   }
 
   return (
-    <Card.Root rounded={ '4xl' } height={ height }>
+    <Card.Root
+      as="section"
+      rounded="3xl"
+      height={ height }
+      borderColor="border.subtle"
+      overflow="hidden"
+    >
       <Card.Body
-        gap={ 4 }
-        padding={ 8 }
+        padding={ { base: 4, md: 8 } }
+        gap={ 8 }
       >
-      <Flex direction="column" align="center" pt={ 4 } pb={ 4 }>
-        <Box
-          boxSize={20}
-          borderWidth="thin"
-          borderColor="border.subtle"
-          borderRadius="full"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          bg="bg.muted"
-          color="fg.muted"
-          mb={ 4 }
+        <Flex
+          align="center"
+          gap={ 4 }
+          minWidth={ 0 }
         >
-          <LuUser size={36} strokeWidth={1.5} />
-        </Box>
-        <Heading textStyle="lg" mt={ 4 } fontWeight="600">
-          {profileData.nickname}
-        </Heading>
-        <Text textStyle="sm" mt={ 4 } color="fg.muted">
-          {profileData.email}
-        </Text>
-      </Flex>
-
-      {!isEditing ? (
-        <Box w="100%">
-          <Stack gap={ 4 } p={ 4 } borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted">
-            <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력 (건너뜀)'}</Text></Flex>
-            <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력 (건너뜀)'}</Text></Flex>
-            <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit || '미입력 (건너뜀)'}</Text></Flex>
-            <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style || '미입력 (건너뜀)'}</Text></Flex>
-          </Stack>
-          <Button mt={ 4 } width="full" variant="outline" size="sm" onClick={() => setIsEditing(true)}>
-            신체 정보 및 스타일 수정
-          </Button>
-        </Box>
-      ) : (
-        <Box as="form" onSubmit={handleSave} w="100%">
-          <Stack gap={ 4 }>
-            <HStack>
-              <Text textStyle="xs" w="28%" color="fg.muted">키(cm)</Text>
-              <Input
-                name="height"
-                value={profileData.height}
-                onChange={handleNumberChange}
-                onKeyDown={handleKeyDown}
-                placeholder="숫자 입력"
-                size="xs"
-                maxLength={3}
-                autoComplete="off"
-              />
-              <Button size="xs" variant="ghost" onClick={() => handleSkipField('height')}>건너뛰기</Button>
-            </HStack>
-
-            <HStack>
-              <Text textStyle="xs" w="28%" color="fg.muted">체중(kg)</Text>
-              <Input
-                name="weight"
-                value={profileData.weight}
-                onChange={handleNumberChange}
-                onKeyDown={handleKeyDown}
-                placeholder="숫자 입력"
-                size="xs"
-                maxLength={3}
-                autoComplete="off"
-              />
-              <Button size="xs" variant="ghost" onClick={() => handleSkipField('weight')}>건너뛰기</Button>
-            </HStack>
-
-            <HStack position="relative" zIndex={2}>
-              <Text textStyle="xs" w="28%" color="fg.muted">선호 핏</Text>
-              <Select.Root
-                collection={createListCollection({ items: preferredFits })}
-                size="xs"
-                width="full"
-                value={profileData.preferredFit ? [profileData.preferredFit] : ['']}
-                onValueChange={(e) => setProfileData({ ...profileData, preferredFit: e.value[0] || '' })}
-              >
-                <Select.Trigger>
-                  <Select.ValueText placeholder="선호 핏 선택" />
-                </Select.Trigger>
-                <Select.Content position="absolute" maxH={ 48 } overflowY="auto" zIndex={99}>
-                  {preferredFits.map((item) => (
-                    <Select.Item key={item.value} item={item}>
-                      {item.label}
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Root>
-              <Button size="xs" variant="ghost" onClick={() => handleSkipField('preferredFit')}>비우기</Button>
-            </HStack>
-
-            <HStack position="relative" zIndex={1}>
-              <Text textStyle="xs" w="28%" color="fg.muted">스타일</Text>
-              <Select.Root
-                collection={createListCollection({ items: preferredStyles })}
-                size="xs"
-                width="full"
-                value={profileData.style ? [profileData.style] : ['']}
-                onValueChange={(e) => setProfileData({ ...profileData, style: e.value[0] || '' })}
-              >
-                <Select.Trigger>
-                  <Select.ValueText placeholder="선호 스타일 선택" />
-                </Select.Trigger>
-                <Select.Content position="absolute" maxH={ 48 } overflowY="auto" zIndex={99}>
-                  {preferredStyles.map((item) => (
-                    <Select.Item key={item.value} item={item}>
-                      {item.label}
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Root>
-              <Button size="xs" variant="ghost" onClick={() => handleSkipField('style')}>비우기</Button>
-            </HStack>
-
-            {message && <Text color="fg.muted" textStyle="xs" textAlign="center">{message}</Text>}
-
-            <HStack mt={ 4 }>
-              <Button type="submit" size="xs" flex="1">저장</Button>
-              <Button size="xs" variant="outline" flex="1" onClick={() => setIsEditing(false)}>취소</Button>
-            </HStack>
-          </Stack>
-        </Box>
-      )}
-
-      <Grid
-        templateColumns="repeat(2, 1fr)"
-        gap={ 4 }
-      >
-        {[
-          { label: '주문', icon: LuPackage, path: '/orders' },
-          { label: '추천내역', icon: LuSparkle, path: '/ai/history' },
-          { label: '커뮤니티', icon: LuMessageSquare },
-          { label: '설정', icon: LuSettings },
-        ].map((item) => {
-          const IconComponent = item.icon
-          return (
-            <Button
-              key={item.label}
-              variant="outline"
-              borderWidth="thin"
-              borderColor="border.subtle"
-              borderRadius="xl"
-              height="auto"
-              py={ 4 }
-              px={ 4 }
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              bg="bg.muted"
-              _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
-              onClick={() => item.path && navigate(item.path)}
+          <Avatar.Root
+            size="2xl"
+            bg="primary.subtle"
+            color="primary.fg"
+            flexShrink={ 0 }
+          >
+            <Avatar.Fallback name={ profileData.nickname }/>
+          </Avatar.Root>
+          <Stack
+            gap={ 4 }
+            minWidth={ 0 }
+          >
+            <Text
+              textStyle="xs"
+              fontWeight="700"
+              letterSpacing="widest"
+              color="fg.muted"
             >
-              <Box mb={ 4 } color="fg">
-                <IconComponent size={20} />
-              </Box>
-              <Text textStyle="xs" fontWeight="600" color="fg">{item.label}</Text>
+              MY PROFILE
+            </Text>
+            <Skeleton loading={ isLoading }>
+              <Heading
+                as="h2"
+                textStyle="xl"
+                truncate
+              >
+                { profileData.nickname }
+              </Heading>
+              <Text
+                textStyle="sm"
+                color="fg.muted"
+                truncate
+              >
+                { profileData.email || '나만의 스타일을 찾아가는 중' }
+              </Text>
+            </Skeleton>
+          </Stack>
+        </Flex>
+        <Separator/>
+        <Stack gap={ 4 }>
+          <Flex
+            justify="space-between"
+            align="center"
+            gap={ 4 }
+          >
+            <Heading
+              as="h3"
+              textStyle="md"
+            >
+              추천을 위한 내 정보
+            </Heading>
+            <Badge
+              variant="subtle"
+              colorPalette="primary"
+              rounded="full"
+              paddingX={ 4 }
+            >
+              { completedFields } / 4
+            </Badge>
+          </Flex>
+          <Text
+            textStyle="sm"
+            color="fg.muted"
+          >
+            나에게 맞는 핏과 스타일을 위해, 한 항목씩 편하게 수정하세요.
+          </Text>
+          <Flex
+            role="progressbar"
+            aria-label="프로필 입력 현황"
+            aria-valuemin={ 0 }
+            aria-valuemax={ 4 }
+            aria-valuenow={ completedFields }
+            gap={ 4 }
+          >
+            { [0, 1, 2, 3].map(index => (
+              <Box
+                key={ index }
+                flex={ 1 }
+                height={ 1 }
+                rounded="full"
+                bg={ index < completedFields ? 'primary.solid' : 'bg.muted' }
+              />
+            )) }
+          </Flex>
+        </Stack>
+        { loadError && (
+          <Stack gap={ 4 }>
+            <Text
+              role="alert"
+              textStyle="sm"
+              color="fg.error"
+            >
+              { loadError }
+            </Text>
+            <Button
+              size="sm"
+              variant="outline"
+              alignSelf="start"
+              onClick={ retry }
+            >
+              다시 불러오기
             </Button>
-          )
-        })}
-      </Grid>
+          </Stack>
+        ) }
+        <Grid
+          templateColumns="repeat(auto-fit, minmax(min(100%, {sizes.36}), 1fr))"
+          gap={ 4 }
+        >
+          <ProfileFieldEditor
+            label="키"
+            value={ profileData.height }
+            unit="cm"
+            disabled={ isLoading || !!loadError }
+            onSave={ value => saveField('height', value) }
+          />
+          <ProfileFieldEditor
+            label="체중"
+            value={ profileData.weight }
+            unit="kg"
+            disabled={ isLoading || !!loadError }
+            onSave={ value => saveField('weight', value) }
+          />
+          <ProfileFieldEditor
+            label="선호 핏"
+            value={ profileData.preferredFit }
+            options={ preferredFits }
+            disabled={ isLoading || !!loadError }
+            onSave={ value => saveField('preferredFit', value) }
+          />
+          <ProfileFieldEditor
+            label="선호 스타일"
+            value={ profileData.style }
+            options={ preferredStyles }
+            disabled={ isLoading || !!loadError }
+            onSave={ value => saveField('style', value) }
+          />
+        </Grid>
       </Card.Body>
     </Card.Root>
   )
