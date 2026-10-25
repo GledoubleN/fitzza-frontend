@@ -1,0 +1,22 @@
+{
+  "options": [
+    {
+      "voteOptionId": 1,
+      "label": "A",
+      "count": 7,
+      "ratio": 0.5833333333333334,
+      "supportCommentCount": 1
+    },
+    {
+      "voteOptionId": 2,
+      "label": "B",
+      "count": 5,
+      "ratio": 0.4166666666666667,
+      "supportCommentCount": 1
+    }
+  ],
+  "total": 12,
+  "voteEndAt": "2026-10-24T02:10:00Z",
+  "closed": true,
+  "myVoteOptionId": null
+}

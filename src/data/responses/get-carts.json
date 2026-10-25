@@ -1,0 +1,72 @@
+[
+  {
+    "cartId": 5,
+    "optionId": 1311,
+    "quantity": 1,
+    "available": true,
+    "productId": 13,
+    "brandName": "Prada",
+    "productName": "Re-Nylon Puffer Jacket",
+    "color": "베이지",
+    "size": "L",
+    "imageUrl": "/product-image.png",
+    "unitPrice": 3400000,
+    "linePrice": 3400000
+  },
+  {
+    "cartId": 4,
+    "optionId": 600,
+    "quantity": 1,
+    "available": true,
+    "productId": 6,
+    "brandName": "Prada",
+    "productName": "Crewneck Sweatshirt",
+    "color": "블랙",
+    "size": "M",
+    "imageUrl": "/product-image.png",
+    "unitPrice": 1350000,
+    "linePrice": 1350000
+  },
+  {
+    "cartId": 3,
+    "optionId": 312,
+    "quantity": 1,
+    "available": false,
+    "productId": 3,
+    "brandName": "Balenciaga",
+    "productName": "Embroidered Logo Hoodie",
+    "color": "베이지",
+    "size": "XL",
+    "imageUrl": "/product-image.png",
+    "unitPrice": null,
+    "linePrice": 0
+  },
+  {
+    "cartId": 2,
+    "optionId": 211,
+    "quantity": 2,
+    "available": true,
+    "productId": 2,
+    "brandName": "Loewe",
+    "productName": "Straight Leg Denim Pants",
+    "color": "베이지",
+    "size": "L",
+    "imageUrl": "/product-image.png",
+    "unitPrice": 1250000,
+    "linePrice": 2500000
+  },
+  {
+    "cartId": 1,
+    "optionId": 100,
+    "quantity": 1,
+    "available": true,
+    "productId": 1,
+    "brandName": "Celine",
+    "productName": "Classic Monogram T-Shirt",
+    "color": "블랙",
+    "size": "M",
+    "imageUrl": "/product-image.png",
+    "unitPrice": 750000,
+    "linePrice": 750000
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "email": "user@fitzza.com",
+  "nickname": "핏짜",
+  "height": 175,
+  "weight": 68,
+  "gender": "보통",
+  "preferredFit": "레귤러",
+  "preferredStyles": [
+    "캐주얼"
+  ],
+  "shoeSize": 270,
+  "optionId": 501,
+  "quantity": 1,
+  "cartIds": [
+    1
+  ],
+  "recipientName": "Sample",
+  "recipientPhone": "010-1234-5678",
+  "shippingAddress": "Seoul",
+  "orderItemId": 1,
+  "sizeFeedback": "FIT",
+  "itemId": 5,
+  "query": "Sample",
+  "winnerProductId": 5
+}

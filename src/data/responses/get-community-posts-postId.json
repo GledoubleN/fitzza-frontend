@@ -1,0 +1,42 @@
+{
+  "postId": 1,
+  "title": "코트 사려는데 둘 중 고민입니다",
+  "content": "겨울 코트 하나 장만하려는데 두 개 중에 못 고르겠어요.\n왼쪽은 오버핏 울코트, 오른쪽은 좀 더 클래식한 핏이에요.\n둘 중에 뭐가 더 나을까요?",
+  "category": "FASHION",
+  "postType": "VOTE",
+  "author": {
+    "userId": 2,
+    "nickname": "민준"
+  },
+  "shared": null,
+  "likeCount": 4,
+  "liked": false,
+  "commentCount": 5,
+  "viewCount": 52,
+  "createdAt": "2026-10-17T02:10:00Z",
+  "updatedAt": "2026-10-17T02:10:00Z",
+  "voteEndAt": "2026-10-24T02:10:00Z",
+  "voteClosed": true,
+  "voteOptions": [
+    {
+      "voteOptionId": 1,
+      "label": "A",
+      "source": "WISHLIST",
+      "itemType": "PRODUCT",
+      "itemId": 1,
+      "imageUrl": "/product-image.png",
+      "name": "오버핏 울코트",
+      "price": 189000
+    },
+    {
+      "voteOptionId": 2,
+      "label": "B",
+      "source": "WISHLIST",
+      "itemType": "PRODUCT",
+      "itemId": 2,
+      "imageUrl": "/product-image.png",
+      "name": "클래식 싱글코트",
+      "price": 219000
+    }
+  ]
+}

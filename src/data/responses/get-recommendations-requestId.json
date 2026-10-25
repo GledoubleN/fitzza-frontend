@@ -1,0 +1,181 @@
+{
+  "requestId": "1",
+  "status": "DONE",
+  "searchType": "COMBO",
+  "tpoSummary": "주말 데이트 · 편안한 분위기",
+  "message": "주말 데이트에 어울리는 코디 2가지를 골랐어요",
+  "items": [
+    {
+      "productId": 1,
+      "productName": "코튼 셔츠",
+      "price": 39000,
+      "imageUrl": null,
+      "fitPercent": 92,
+      "evidence": "선호하는 레귤러 핏과 잘 맞아요",
+      "color": "블랙",
+      "size": "M"
+    },
+    {
+      "productId": 2,
+      "productName": "집업 가디건",
+      "price": 59000,
+      "imageUrl": null,
+      "fitPercent": 88,
+      "evidence": "간절기에 걸치기 좋은 두께예요",
+      "color": "블랙",
+      "size": "M"
+    },
+    {
+      "productId": 3,
+      "productName": "코튼 재킷",
+      "price": 79000,
+      "imageUrl": null,
+      "fitPercent": 85,
+      "evidence": "셔츠와 톤이 어울려요",
+      "color": "네이비",
+      "size": "L"
+    },
+    {
+      "productId": 9,
+      "productName": "옥스퍼드 셔츠",
+      "price": 45000,
+      "imageUrl": null,
+      "fitPercent": 91,
+      "evidence": "단정한 자리에도 어울려요",
+      "color": "블랙",
+      "size": "M"
+    },
+    {
+      "productId": 10,
+      "productName": "린넨 셔츠",
+      "price": 42000,
+      "imageUrl": null,
+      "fitPercent": 87,
+      "evidence": "통기성이 좋아 가볍게 입기 좋아요",
+      "color": "네이비",
+      "size": "M"
+    },
+    {
+      "productId": 11,
+      "productName": "니트 베스트",
+      "price": 49000,
+      "imageUrl": null,
+      "fitPercent": 89,
+      "evidence": "셔츠 위에 겹쳐 입기 좋아요",
+      "color": "블랙",
+      "size": "M"
+    },
+    {
+      "productId": 12,
+      "productName": "울 블렌드 재킷",
+      "price": 129000,
+      "imageUrl": null,
+      "fitPercent": 84,
+      "evidence": "쌀쌀한 저녁에 걸치기 좋아요",
+      "color": "블랙",
+      "size": "M"
+    },
+    {
+      "productId": 13,
+      "productName": "와이드 팬츠",
+      "price": 49000,
+      "imageUrl": null,
+      "fitPercent": 90,
+      "evidence": "편안한 실루엣을 만들어줘요",
+      "color": "블랙",
+      "size": "L"
+    },
+    {
+      "productId": 14,
+      "productName": "캔버스 스니커즈",
+      "price": 79000,
+      "imageUrl": null,
+      "fitPercent": 95,
+      "evidence": "어떤 하의에도 무난해요",
+      "color": "블랙",
+      "size": "M"
+    }
+  ],
+  "combos": [
+    {
+      "comboId": 101,
+      "items": [
+        {
+          "productId": 1,
+          "productName": "코튼 셔츠",
+          "price": 39000,
+          "imageUrl": null,
+          "fitPercent": 92,
+          "evidence": "선호하는 레귤러 핏과 잘 맞아요",
+          "color": "블랙",
+          "size": "M"
+        },
+        {
+          "productId": 4,
+          "productName": "와이드 팬츠",
+          "price": 49000,
+          "imageUrl": null,
+          "fitPercent": 90,
+          "evidence": "상의와 실루엣 균형이 좋아요",
+          "color": "블랙",
+          "size": "M"
+        },
+        {
+          "productId": 5,
+          "productName": "캔버스 스니커즈",
+          "price": 79000,
+          "imageUrl": null,
+          "fitPercent": 95,
+          "evidence": "캐주얼한 무드를 완성해요",
+          "color": "블랙",
+          "size": "M"
+        }
+      ],
+      "totalPrice": 167000,
+      "passStatus": "PASS",
+      "harmonyScore": 0.91,
+      "feedbackSummary": "편안한 데이트룩 · 톤온톤으로 차분하게 맞췄어요",
+      "budgetExceeded": false
+    },
+    {
+      "comboId": 102,
+      "items": [
+        {
+          "productId": 6,
+          "productName": "니트 베스트",
+          "price": 49000,
+          "imageUrl": null,
+          "fitPercent": 89,
+          "evidence": "레이어드하기 좋은 기장이에요",
+          "color": "블랙",
+          "size": "M"
+        },
+        {
+          "productId": 7,
+          "productName": "슬랙스",
+          "price": 59000,
+          "imageUrl": null,
+          "fitPercent": 93,
+          "evidence": "체형에 맞는 허리 실측이에요",
+          "color": "네이비",
+          "size": "M"
+        },
+        {
+          "productId": 8,
+          "productName": "더비 슈즈",
+          "price": 90000,
+          "imageUrl": null,
+          "fitPercent": 90,
+          "evidence": "세미 캐주얼에 어울려요",
+          "color": "블랙",
+          "size": "M"
+        }
+      ],
+      "totalPrice": 198000,
+      "passStatus": "PASS",
+      "harmonyScore": 0.87,
+      "feedbackSummary": "깔끔한 세미 캐주얼 · 단정한 인상을 줘요",
+      "budgetExceeded": false
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+[
+  {
+    "code": "001",
+    "name": "상의",
+    "children": [
+      {
+        "code": "001001",
+        "name": "후드",
+        "children": []
+      },
+      {
+        "code": "001002",
+        "name": "맨투맨",
+        "children": []
+      },
+      {
+        "code": "001003",
+        "name": "니트",
+        "children": []
+      },
+      {
+        "code": "001004",
+        "name": "셔츠",
+        "children": []
+      },
+      {
+        "code": "001005",
+        "name": "긴소매티셔츠",
+        "children": []
+      },
+      {
+        "code": "001006",
+        "name": "블라우스",
+        "children": []
+      },
+      {
+        "code": "001007",
+        "name": "조끼",
+        "children": []
+      },
+      {
+        "code": "001008",
+        "name": "반소매티셔츠",
+        "children": []
+      },
+      {
+        "code": "001009",
+        "name": "민소매",
+        "children": []
+      }
+    ]
+  },
+  {
+    "code": "002",
+    "name": "하의",
+    "children": [
+      {
+        "code": "002001",
+        "name": "데님",
+        "children": []
+      },
+      {
+        "code": "002002",
+        "name": "슬랙스",
+        "children": []
+      },
+      {
+        "code": "002003",
+        "name": "트레이닝",
+        "children": []
+      },
+      {
+        "code": "002004",
+        "name": "와이드팬츠",
+        "children": []
+      },
+      {
+        "code": "002005",
+        "name": "숏팬츠",
+        "children": []
+      },
+      {
+        "code": "002006",
+        "name": "레깅스",
+        "children": []
+      }
+    ]
+  },
+  {
+    "code": "003",
+    "name": "아우터",
+    "children": [
+      {
+        "code": "003001",
+        "name": "가디건",
+        "children": []
+      },
+      {
+        "code": "003002",
+        "name": "자켓",
+        "children": []
+      },
+      {
+        "code": "003003",
+        "name": "집업/점퍼",
+        "children": []
+      },
+      {
+        "code": "003004",
+        "name": "바람막이",
+        "children": []
+      },
+      {
+        "code": "003005",
+        "name": "코트",
+        "children": []
+      },
+      {
+        "code": "003006",
+        "name": "플리스",
+        "children": []
+      },
+      {
+        "code": "003007",
+        "name": "야상",
+        "children": []
+      },
+      {
+        "code": "003008",
+        "name": "패딩",
+        "children": []
+      }
+    ]
+  },
+  {
+    "code": "004",
+    "name": "신발",
+    "children": [
+      {
+        "code": "004001",
+        "name": "스니커즈",
+        "children": []
+      },
+      {
+        "code": "004002",
+        "name": "운동화",
+        "children": []
+      },
+      {
+        "code": "004003",
+        "name": "로퍼",
+        "children": []
+      },
+      {
+        "code": "004004",
+        "name": "플랫슈즈",
+        "children": []
+      },
+      {
+        "code": "004005",
+        "name": "힐",
+        "children": []
+      },
+      {
+        "code": "004006",
+        "name": "부츠",
+        "children": []
+      },
+      {
+        "code": "004007",
+        "name": "샌들",
+        "children": []
+      },
+      {
+        "code": "004008",
+        "name": "슬리퍼",
+        "children": []
+      }
+    ]
+  },
+  {
+    "code": "005",
+    "name": "모자",
+    "children": [
+      {
+        "code": "005001",
+        "name": "볼캡",
+        "children": []
+      },
+      {
+        "code": "005002",
+        "name": "버킷햇",
+        "children": []
+      },
+      {
+        "code": "005003",
+        "name": "비니",
+        "children": []
+      },
+      {
+        "code": "005004",
+        "name": "스냅백",
+        "children": []
+      },
+      {
+        "code": "005005",
+        "name": "페도라",
+        "children": []
+      },
+      {
+        "code": "005006",
+        "name": "방한모",
+        "children": []
+      }
+    ]
+  }
+]

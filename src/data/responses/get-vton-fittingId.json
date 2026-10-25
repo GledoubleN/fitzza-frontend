@@ -1,0 +1,19 @@
+{
+  "fittingId": 1,
+  "userId": 1,
+  "userImageUrl": null,
+  "status": "COMPLETED",
+  "resultImageUrl": "/src/assets/hero.png",
+  "errorMessage": null,
+  "products": [
+    {
+      "productId": 1,
+      "productName": "Classic Monogram T-Shirt",
+      "price": 750000,
+      "imageUrl": "/product-image.png",
+      "categoryName": "상의"
+    }
+  ],
+  "createdAt": "2026-10-01T10:00:00.000Z",
+  "updatedAt": "2026-10-01T10:00:00.000Z"
+}

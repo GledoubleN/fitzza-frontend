@@ -1,0 +1,49 @@
+{
+  "content": [
+    {
+      "wishlistId": 2,
+      "itemId": 2,
+      "brandName": "Loewe",
+      "name": "Straight Leg Denim Pants",
+      "price": 1250000,
+      "imageUrl": "/product-image.png",
+      "categoryL1": "001",
+      "createdAt": "2026-09-30T15:00:00.000Z"
+    },
+    {
+      "wishlistId": 5,
+      "itemId": 5,
+      "brandName": "Saint Laurent",
+      "name": "Denim Trucker Jacket",
+      "price": 2300000,
+      "imageUrl": "/product-image.png",
+      "categoryL1": "001",
+      "createdAt": "2026-10-01T15:00:00.000Z"
+    },
+    {
+      "wishlistId": 12,
+      "itemId": 12,
+      "brandName": "Valentino",
+      "name": "Silk Poplin Shirt",
+      "price": 980000,
+      "imageUrl": "/product-image.png",
+      "categoryL1": "001",
+      "createdAt": "2026-10-02T15:00:00.000Z"
+    },
+    {
+      "wishlistId": 19,
+      "itemId": 19,
+      "brandName": "Acne Studios",
+      "name": "Wool Knit Beanie",
+      "price": 240000,
+      "imageUrl": "/product-image.png",
+      "categoryL1": "001",
+      "createdAt": "2026-10-03T15:00:00.000Z"
+    }
+  ],
+  "page": 0,
+  "size": 100,
+  "totalElements": 4,
+  "totalPages": 1,
+  "hasNext": false
+}
