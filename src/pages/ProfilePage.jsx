@@ -44,6 +44,7 @@ export default function ProfilePage () {
               내 취향을 정리하고, 나에게 어울렸던 스타일을 다시 만나보세요.
             </Text>
           </Stack>
+          <ProfileQuickLinks/>
           <Grid
             templateColumns={ { base: 'minmax(0, 1fr)', lg: 'minmax(0, 5fr) minmax(0, 7fr)' } }
             gap={ 8 }
@@ -55,7 +56,6 @@ export default function ProfilePage () {
               minWidth={ 0 }
             >
               <VtonGalleryCard/>
-              <ProfileQuickLinks/>
             </Stack>
           </Grid>
         </Stack>
