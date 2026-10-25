@@ -9,14 +9,14 @@ import {
   Flex,
   Image,
 } from '@chakra-ui/react'
-import { Header } from '../components/Header.jsx'
-import { TabBar } from '../components/TabBar.jsx'
+import { Header } from '../../components/Header.jsx'
+import { TabBar } from '../../components/TabBar.jsx'
 import { useEffect, useState } from 'react'
-import { api } from '../api/axios.js'
+import { api } from '../../api/axios.js'
 import { HttpStatusCode } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { LuCheck, LuChevronLeft } from 'react-icons/lu'
-import { toaster } from '../components/ui/toaster.jsx'
+import { toaster } from '../../components/ui/toaster.jsx'
 
 const MAX_CANDIDATES = 64
 

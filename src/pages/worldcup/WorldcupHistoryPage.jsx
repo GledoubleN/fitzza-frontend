@@ -15,10 +15,10 @@ import {
 } from '@chakra-ui/react'
 import { LuChevronLeft } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
-import { Header } from '../components/Header.jsx'
-import { TabBar } from '../components/TabBar.jsx'
-import { Footer } from '../components/Footer.jsx'
-import defaultHeroImage from '../assets/hero.png'
+import { Header } from '../../components/Header.jsx'
+import { TabBar } from '../../components/TabBar.jsx'
+import { Footer } from '../../components/Footer.jsx'
+import defaultHeroImage from '../../assets/hero.png'
 
 export const WorldcupHistoryPage = ({
   historyList,

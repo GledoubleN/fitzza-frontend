@@ -11,10 +11,10 @@ import { CommunityArticlePage } from "./pages/community/CommunityArticlePage.jsx
 import { ProductPage } from './pages/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import { VtonGalleryPage } from './pages/profile/VtonGalleryPage.jsx'
-import WorldcupPage from './pages/WorldcupPage.jsx'
+import WorldcupPage from './pages/worldcup/WorldcupPage.jsx'
 import { ShortcutPage } from './pages/ShortcutPage.jsx'
 import { WishlistPage } from './pages/WishlistPage.jsx'
-import { WorldcupSetupPage } from './pages/WorldcupSetupPage.jsx'
+import { WorldcupSetupPage } from './pages/worldcup/WorldcupSetupPage.jsx'
 import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { OrderListPage } from './pages/OrderListPage.jsx'
