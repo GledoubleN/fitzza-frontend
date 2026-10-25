@@ -44,15 +44,29 @@ const toFittingTitle = ({ products = [] }) => {
 
 const FittingThumbnail = ({ fitting }) => {
   if (fitting.status === 'COMPLETED' && fitting.resultImageUrl) {
-    return <Image src={ toFittingImageUrl(fitting.resultImageUrl) } alt={ '가상 피팅 결과' } objectFit={ 'cover' }></Image>
+    return (
+      <Box>
+        <Image
+          src={ toFittingImageUrl(fitting.resultImageUrl) }
+          alt={ '가상 피팅 결과' }
+          objectFit={ 'contain' }
+        ></Image>
+      </Box>
+    )
+  } else {
+    return (
+      <Flex
+        direction={ 'column' }
+        align={ 'center' }
+        justify={ 'center' }
+        gap={ 4 }
+        bg={ 'bg.muted' }
+      >
+        <Spinner size={ 'sm' }></Spinner>
+        <Text textStyle={ 'xs' } color={ 'fg.muted' }>만드는 중</Text>
+      </Flex>
+    )
   }
-
-  return (
-    <Flex direction={ 'column' } align={ 'center' } justify={ 'center' } gap={ 4 } bg={ 'bg.muted' }>
-      <Spinner size={ 'sm' }></Spinner>
-      <Text textStyle={ 'xs' } color={ 'fg.muted' }>만드는 중</Text>
-    </Flex>
-  )
 }
 
 export const VtonGallery = ({ preview = false }) => {
