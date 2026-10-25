@@ -247,18 +247,10 @@ export const ProfileSummaryCard = () => {
         </Box>
       )}
 
-      <Grid templateColumns="repeat(2, 1fr)" gap={ 4 }>
-        <Box p={ 4 } borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted" textAlign="center">
-          <Text textStyle="xs" color="fg.muted" mb={ 4 }>적립금</Text>
-          <Text textStyle="md" fontWeight="600">7,777원</Text>
-        </Box>
-        <Box p={ 4 } borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted" textAlign="center">
-          <Text textStyle="xs" color="fg.muted" mb={ 4 }>쿠폰</Text>
-          <Text textStyle="md" fontWeight="600">11장</Text>
-        </Box>
-      </Grid>
-
-      <Grid templateColumns="repeat(4, 1fr)" gap={ 4 }>
+      <Grid
+        templateColumns="repeat(2, 1fr)"
+        gap={ 4 }
+      >
         {[
           { label: '주문', icon: LuPackage, path: '/orders' },
           { label: '추천내역', icon: LuHistory, path: '/ai/history' },
