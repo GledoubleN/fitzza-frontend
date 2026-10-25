@@ -26,11 +26,11 @@ import { TabBar } from '../components/TabBar.jsx';
 import { VtonGallery } from './profile/VtonGallery.jsx';
 import { api } from '../api/axios.js';
 import { useAuth } from '../contexts/AuthContext.js'
-import preferredFits from '/src/data/preferred-fits.json'
-import preferredStyles from '/src/data/preferred-styles.json'
+import { useUserPreferences } from '../hooks/useUserPreferences.js'
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
+  const { preferredFits, preferredStyles, errorMessage: preferencesError } = useUserPreferences()
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
     nickname: '테스트사용자',
@@ -166,6 +166,15 @@ export default function ProfilePage() {
                 {profileData.email}
               </Text>
             </Flex>
+
+            { preferencesError && (
+              <Text
+                color="fg.error"
+                textStyle="sm"
+              >
+                { preferencesError }
+              </Text>
+            ) }
 
             {!isEditing ? (
               <Box w="100%">

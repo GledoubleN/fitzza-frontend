@@ -2,11 +2,11 @@ import { useRef } from 'react'
 import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
 import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
 import { OnboardingSaveConfirmation } from './OnboardingSaveConfirmation.jsx'
-import preferredFits from '/src/data/preferred-fits.json'
-import preferredStyles from '/src/data/preferred-styles.json'
+import { useUserPreferences } from '../../hooks/useUserPreferences.js'
 
 export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMessage, onPrev, onSave, isLoading, isSaved, onConfirm }) {
   const styleSectionRef = useRef(null)
+  const { preferredFits, preferredStyles, errorMessage: preferencesError } = useUserPreferences()
 
   const handleFitSelect = (value) => {
     onFieldChange('preferredFit', value)
@@ -23,7 +23,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
     <OnboardingStepLayout
       step={ 3 }
       onSkip={ onSkip }
-      errorMessage={ errorMessage }
+      errorMessage={ errorMessage || preferencesError }
       actions={ (
         <Grid templateColumns="minmax(0, 1fr) minmax(0, 3fr)" gap={ 4 }>
           <Button variant="outline" size="md" onClick={ onPrev }>

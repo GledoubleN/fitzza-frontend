@@ -1,5 +1,7 @@
 import { api } from '../api/axios.js'
 import { http, HttpResponse } from 'msw/http'
+import getUsersPreferencesFitsResponse from '../data/responses/get-users-preferences-fits.json'
+import getUsersPreferencesStylesResponse from '../data/responses/get-users-preferences-styles.json'
 import getUsersMeResponse from '../data/responses/get-users-me.json'
 import patchUsersMeResponse from '../data/responses/patch-users-me.json'
 import postAuthSigninResponse from '../data/responses/post-auth-signin.json'
@@ -46,6 +48,16 @@ import postCommentsCommentIdLikesResponse from '../data/responses/post-comments-
 import deleteCommentsCommentIdLikesResponse from '../data/responses/delete-comments-commentId-likes.json'
 
 export const handlers = [
+  http.get(
+    `${ api.defaults.baseURL }/users/preferences/fits`,
+    () => HttpResponse.json(getUsersPreferencesFitsResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/users/preferences/styles`,
+    () => HttpResponse.json(getUsersPreferencesStylesResponse),
+  ),
+
   http.get(
     `${ api.defaults.baseURL }/users/me`,
     () => HttpResponse.json(getUsersMeResponse),
