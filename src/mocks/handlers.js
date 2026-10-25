@@ -15,6 +15,7 @@ import notifications from '../data/notifications.json'
 import fittingResultImage from '../assets/hero.png'
 import { communityHandlers } from './communityHandlers.js'
 import { analyticsHandlers } from './analyticsHandlers.js'
+import { worldcupHistories } from './worldcupHistories.js'
 
 let lastRecommendationId = 0
 
@@ -317,7 +318,7 @@ export const handlers = [
 
   http.get(
     `${ api.defaults.baseURL }/products/:id`,
-    ({ params }) => {
+    ({ params, request }) => {
       const product = products.find(
         product => product.productId === Number(params.id),
       )
@@ -846,6 +847,70 @@ export const handlers = [
     `${ api.defaults.baseURL }/recommendations/:requestId/messages`,
     () => {
       return HttpResponse.json(recommendationMessages)
+    },
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/worldcups`,
+    async ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const body = await request.json()
+      const { winnerProductId } = body
+
+      const targetProduct = products.find(p => p.productId === winnerProductId) || {
+        productId: winnerProductId,
+        brandName: '',
+        productName: '상품',
+        price: 0,
+        thumbnailUrl: '/src/assets/hero.png',
+      }
+
+      const newHistory = {
+        worldcupHistoryId: Date.now(),
+        winnerProduct: {
+          productId: targetProduct.productId,
+          brandName: targetProduct.brandName || '',
+          productName: targetProduct.productName || targetProduct.name || '',
+          price: targetProduct.price || 0,
+          imageUrl: targetProduct.thumbnailUrl || targetProduct.imageUrl || '/src/assets/hero.png',
+          status: 'ON_SALE',
+        },
+        completedAt: new Date().toISOString(),
+      }
+
+      worldcupHistories.unshift(newHistory)
+
+      return HttpResponse.json(newHistory, { status: 201 })
+    },
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/worldcups/history`,
+    ({ request }) => {
+      const userId = getRequestUserId(request)
+      if (!userId) {
+        return unauthorized()
+      }
+
+      const url = new URL(request.url)
+      const page = Number(url.searchParams.get('page') || 0)
+      const size = Number(url.searchParams.get('size') || 20)
+
+      const start = page * size
+      const end = start + size
+
+      return HttpResponse.json({
+        content: worldcupHistories.slice(start, end),
+        page: page,
+        size: size,
+        totalElements: worldcupHistories.length,
+        totalPages: Math.ceil(worldcupHistories.length / size),
+        hasNext: end < worldcupHistories.length,
+      })
     },
   ),
 ]

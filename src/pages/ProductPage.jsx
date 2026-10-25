@@ -21,7 +21,7 @@ import { useAuth } from '../contexts/AuthContext.js'
 import { Header } from '../components/Header.jsx'
 import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
 import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
-import { Toaster, toaster } from '../components/ui/toaster.jsx'
+import { toaster } from '../components/ui/toaster.jsx'
 import { ProductOptionSelector } from './product/ProductOptionSelector.jsx'
 import { ProductReviewTab } from './product/ProductReviewTab.jsx'
 import { ProductSizeTab } from './product/ProductSizeTab.jsx'
@@ -211,7 +211,6 @@ export const ProductPage = () => {
         <ScrollToTopButton bottom={ '8' }/>
       </Box>
       <SignInRequiredDialog open={ isSignInDialogOpen } onClose={ () => setIsSignInDialogOpen(false) }/>
-      <Toaster/>
     </Stack>
   )
 }

@@ -17,7 +17,7 @@ import {
 import { LuPlus, LuTrash2 } from 'react-icons/lu'
 import { Header } from '../../components/Header.jsx'
 import { RichTextEditor } from '/src/components/ui/rich-text-editor'
-import { Toaster, toaster } from '../../components/ui/toaster.jsx'
+import { toaster } from '../../components/ui/toaster.jsx'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Placeholder } from '@tiptap/extensions'
@@ -38,6 +38,12 @@ const VOTE_CATEGORY = 'COORDI_QUESTION'
 const VOTE_DURATION_HOURS = 6
 const TITLE_MAX_LENGTH = 100
 const CONTENT_MAX_LENGTH = 5000
+
+const SHARED_PREVIEW_TITLES = {
+  WORLDCUP: '공유할 월드컵 우승 상품',
+  COMBO: '공유할 코디',
+  FITTING: '공유할 가상 피팅',
+}
 
 const EDITOR_CSS = {
   '--content-padding-x': 'spacing.3',
@@ -196,14 +202,6 @@ export const CommunityWritePage = () => {
 
               { isVote && (
                 <Stack gap="4">
-                  <Stack gap="0">
-                    <Text fontWeight="bold">투표 선택지</Text>
-                    { !isEditing && (
-                      <Text fontSize="sm" color="fg.muted">
-                        투표는 글을 올린 뒤 { VOTE_DURATION_HOURS }시간 동안 진행돼요.
-                      </Text>
-                    ) }
-                  </Stack>
                   { options.map((option, index) => (
                     <Card.Root key={ optionKey(option) } size="sm" variant="outline">
                       <Card.Body>
@@ -245,13 +243,20 @@ export const CommunityWritePage = () => {
                   { pollStarted && (
                     <Text fontSize="sm" color="fg.muted">투표가 시작돼 선택지는 바꿀 수 없어요.</Text>
                   ) }
+                  <Stack gap="0">
+                    { options.length < MIN_VOTE_OPTIONS && (
+                      <Text fontSize="sm" color="fg.error">선택지를 { MIN_VOTE_OPTIONS }개 이상 골라주세요.</Text>
+                    ) }
+                    { !isEditing && (
+                      <Text fontSize="sm" color="fg.muted">
+                        투표는 글을 올린 뒤 { VOTE_DURATION_HOURS }시간 동안 진행돼요.
+                      </Text>
+                    ) }
+                  </Stack>
                   { canEditOptions && options.length < MAX_VOTE_OPTIONS && (
                     <Button variant="outline" borderStyle="dashed" onClick={ () => setSheetOpen(true) }>
                       <LuPlus/> 선택지 추가 (최대 { MAX_VOTE_OPTIONS }개)
                     </Button>
-                  ) }
-                  { options.length > 0 && options.length < MIN_VOTE_OPTIONS && (
-                    <Text fontSize="sm" color="fg.error">선택지를 { MIN_VOTE_OPTIONS }개 이상 골라주세요.</Text>
                   ) }
                 </Stack>
               ) }
@@ -272,19 +277,39 @@ export const CommunityWritePage = () => {
               >
                 { shared?.snapshot && !isVote && (
                   <Stack gap="4" padding="4" paddingBottom="0">
-                    <Text fontWeight="bold">{ shared.sharedType === 'FITTING' ? '공유할 가상 피팅' : '공유할 코디' }</Text>
-                    { shared.snapshot.imageUrl && (
-                      <Image src={ shared.snapshot.imageUrl } alt="공유할 가상 피팅 결과" maxWidth="xs" bg="bg.muted"/>
-                    ) }
-                    { shared.snapshot.items.map((item) => (
-                      <Flex key={ item.productId } justify="space-between" gap="4">
-                        <Text>{ item.productName }</Text>
-                        <Text>{ item.price.toLocaleString() }원</Text>
+                    <Text fontWeight="bold">{ SHARED_PREVIEW_TITLES[shared.sharedType] }</Text>
+                    { shared.sharedType === 'WORLDCUP' ? (
+                      <Flex gap="4" align="center">
+                        <Image
+                          src={ shared.snapshot.imageUrl }
+                          alt=""
+                          boxSize="16"
+                          objectFit="cover"
+                          rounded="sm"
+                          bg="bg.muted"
+                        />
+                        <Stack gap="0" flex="1" minWidth="0">
+                          <Text fontSize="xs" color="fg.muted">{ shared.snapshot.brandName }</Text>
+                          <Text fontSize="sm" lineClamp="1">{ shared.snapshot.productName }</Text>
+                        </Stack>
+                        <Text fontSize="sm">{ shared.snapshot.price?.toLocaleString() }원</Text>
                       </Flex>
-                    )) }
-                    <Text fontWeight="bold" alignSelf="flex-end">
-                      합계 { shared.snapshot.totalPrice.toLocaleString() }원
-                    </Text>
+                    ) : (
+                      <>
+                        { shared.snapshot.imageUrl && (
+                          <Image src={ shared.snapshot.imageUrl } alt="공유할 가상 피팅 결과" maxWidth="xs" bg="bg.muted"/>
+                        ) }
+                        { shared.snapshot.items.map((item) => (
+                          <Flex key={ item.productId } justify="space-between" gap="4">
+                            <Text>{ item.productName }</Text>
+                            <Text>{ item.price.toLocaleString() }원</Text>
+                          </Flex>
+                        )) }
+                        <Text fontWeight="bold" alignSelf="flex-end">
+                          합계 { shared.snapshot.totalPrice.toLocaleString() }원
+                        </Text>
+                      </>
+                    ) }
                     <Separator/>
                   </Stack>
                 ) }
@@ -309,7 +334,6 @@ export const CommunityWritePage = () => {
       </Container>
 
       <CommunityOptionSourceSheet open={ sheetOpen } onClose={ () => setSheetOpen(false) } onSelect={ openPicker }/>
-      <Toaster/>
     </Stack>
   )
 }

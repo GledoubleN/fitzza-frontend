@@ -1,7 +1,6 @@
 import { Container, Heading, Stack } from '@chakra-ui/react'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
-import { Toaster } from '../../components/ui/toaster.jsx'
 import { VtonGallery } from './VtonGallery.jsx'
 
 export const VtonGalleryPage = () => {
@@ -15,7 +14,6 @@ export const VtonGalleryPage = () => {
         </Stack>
       </Container>
       <TabBar/>
-      <Toaster></Toaster>
     </Stack>
   )
 }

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { Provider } from './components/ui/provider.jsx'
 import { AuthProvider } from './contexts/AuthProvider.jsx'
+import { Toaster } from './components/ui/toaster.jsx'
 import './index.css'
 
 async function enableMocking () {
@@ -21,6 +22,7 @@ enableMocking().then(() => {
       <Provider>
         <AuthProvider>
           <App/>
+          <Toaster/>
         </AuthProvider>
       </Provider>
     </StrictMode>

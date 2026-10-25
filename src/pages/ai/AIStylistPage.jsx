@@ -20,7 +20,6 @@ import { LuClock, LuUpload } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { Header } from '../../components/Header.jsx'
-import { Toaster } from '../../components/ui/toaster.jsx'
 import { ComboCard } from './ComboCard.jsx'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
@@ -497,7 +496,6 @@ export const AIStylistPage = () => {
           </Dialog.Positioner>
         </Portal>
       </Dialog.Root>
-      <Toaster></Toaster>
     </Stack>
   )
 }

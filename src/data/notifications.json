@@ -2,10 +2,18 @@
   {
     "notificationId": 6,
     "type": "VOTE_CLOSED",
-    "content": "참여한 투표가 마감됐어요.",
-    "targetId": 1,
+    "content": "내 투표가 마감됐어요: 주말에 입을 아우터 골라주세요",
+    "targetId": 2,
     "isRead": false,
     "createdAt": "2026-10-21T10:10:00Z"
+  },
+  {
+    "notificationId": 1,
+    "type": "COMMENT",
+    "content": "내 게시글에 새 댓글이 달렸어요: 왼쪽이요! 오버핏 코트가 요즘 더 트렌디해요.",
+    "targetId": 1,
+    "isRead": true,
+    "createdAt": "2026-10-21T10:00:00Z"
   },
   {
     "notificationId": 5,
@@ -38,13 +46,5 @@
     "targetId": 1,
     "isRead": false,
     "createdAt": "2026-10-21T08:50:00Z"
-  },
-  {
-    "notificationId": 1,
-    "type": "COMMENT",
-    "content": "게시글에 새 댓글이 달렸어요.",
-    "targetId": 1,
-    "isRead": true,
-    "createdAt": "2026-10-20T12:00:00Z"
   }
 ]
