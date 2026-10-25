@@ -24,7 +24,7 @@ import defaultHeroImage from '../../assets/hero.png'
 
 const HISTORY_PAGE_SIZE = 20
 
-export const WorldcupHistoryPage = () => {
+export const WorldCupHistoryPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [historyList, setHistoryList] = useState([])
@@ -73,7 +73,7 @@ export const WorldcupHistoryPage = () => {
   }
 
   const goBack = () => {
-    if (location.state?.fromWorldcup) {
+    if (location.state?.fromWorldCup) {
       navigate(-1)
       return
     }

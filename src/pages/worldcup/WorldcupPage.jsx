@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
-import { WorldcupResultPage } from './WorldcupResultPage.jsx'
-import { WorldcupTournamentPage } from './WorldcupTournamentPage.jsx'
+import { WorldCupResultPage } from './WorldCupResultPage.jsx'
+import { WorldCupTournamentPage } from './WorldCupTournamentPage.jsx'
 
 const shuffle = (array) => {
   const result = [...array]
@@ -14,7 +14,7 @@ const shuffle = (array) => {
   return result
 }
 
-export default function WorldcupPage () {
+export default function WorldCupPage () {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -190,7 +190,7 @@ export default function WorldcupPage () {
         tournamentState: { matchList, nextRoundList, currentIndex },
       },
     })
-    navigate('/worldcup/history', { state: { fromWorldcup: true } })
+    navigate('/worldcup/history', { state: { fromWorldCup: true } })
   }
 
   if (viewMode === 'tournament' && (!leftProduct || !rightProduct)) {
@@ -199,7 +199,7 @@ export default function WorldcupPage () {
 
   if (viewMode === 'result' && winnerProduct) {
     return (
-      <WorldcupResultPage
+      <WorldCupResultPage
         winnerProduct={ winnerProduct }
         isSaving={ isSaving }
         isSaveFailed={ isSaveFailed }
@@ -213,7 +213,7 @@ export default function WorldcupPage () {
   }
 
   return (
-    <WorldcupTournamentPage
+    <WorldCupTournamentPage
       leftProduct={ leftProduct }
       rightProduct={ rightProduct }
       roundTitle={ roundTitle }

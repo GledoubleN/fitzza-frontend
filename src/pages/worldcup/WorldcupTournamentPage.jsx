@@ -18,7 +18,7 @@ import { TabBar } from '../../components/TabBar.jsx'
 import { Footer } from '../../components/Footer.jsx'
 import defaultHeroImage from '../../assets/hero.png'
 
-export const WorldcupTournamentPage = ({
+export const WorldCupTournamentPage = ({
   leftProduct,
   rightProduct,
   roundTitle,

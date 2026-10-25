@@ -20,7 +20,7 @@ import { toaster } from '../../components/ui/toaster.jsx'
 
 const MAX_CANDIDATES = 64
 
-export const WorldcupSetupPage = () => {
+export const WorldCupSetupPage = () => {
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
