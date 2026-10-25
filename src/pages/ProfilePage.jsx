@@ -30,8 +30,6 @@ export default function ProfilePage () {
       </Container>
 
       <TabBar/>
-
-      <Footer/>
     </Stack>
   )
 }
