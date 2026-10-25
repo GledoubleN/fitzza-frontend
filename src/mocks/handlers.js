@@ -872,9 +872,9 @@ export const handlers = [
         winnerProduct: {
           productId: targetProduct.productId,
           brandName: targetProduct.brandName || '',
-          productName: targetProduct.productName || targetProduct.name || '',
+          productName: targetProduct.productName || '',
           price: targetProduct.price || 0,
-          imageUrl: targetProduct.thumbnailUrl || targetProduct.imageUrl || '/src/assets/hero.png',
+          imageUrl: targetProduct.thumbnailUrl || '/src/assets/hero.png',
           status: 'ON_SALE',
         },
         completedAt: new Date().toISOString(),
