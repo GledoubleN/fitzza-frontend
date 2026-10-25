@@ -26,7 +26,7 @@ import { useAuth } from '../contexts/AuthContext.js'
 import preferredFits from '/src/data/preferred-fits.json'
 import preferredStyles from '/src/data/preferred-styles.json'
 
-export const ProfileSummaryCard = () => {
+export const ProfileSummaryCard = ({ height }) => {
   const { setAccessToken } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
   const [profileData, setProfileData] = useState({
@@ -118,7 +118,7 @@ export const ProfileSummaryCard = () => {
   }
 
   return (
-    <Card.Root rounded={ '4xl' }>
+    <Card.Root rounded={ '4xl' } height={ height }>
       <Card.Body
         gap={ 4 }
         padding={ 8 }
