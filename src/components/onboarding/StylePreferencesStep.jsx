@@ -7,6 +7,8 @@ import { useUserPreferences } from '../../hooks/useUserPreferences.js'
 export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMessage, onPrev, onSave, isLoading, isSaved, onConfirm }) {
   const styleSectionRef = useRef(null)
   const { preferredFits, preferredStyles, errorMessage: preferencesError } = useUserPreferences()
+  const fitOptions = [{ label: '선택 안함', value: '' }, ...preferredFits]
+  const styleOptions = [{ label: '선택 안함', value: '' }, ...preferredStyles]
 
   const handleFitSelect = (value) => {
     onFieldChange('preferredFit', value)
@@ -50,7 +52,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
             선호 핏
           </Heading>
           <Grid templateColumns={ { base: '1fr', sm: 'repeat(3, minmax(0, 1fr))' } } gap={ 3 }>
-            { preferredFits.map((item) => {
+            { fitOptions.map((item) => {
               const isSelected = formData.preferredFit === item.value
               return (
                 <Button
@@ -72,7 +74,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
             선호 스타일
           </Heading>
           <Grid templateColumns={ { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' } } gap={ 3 }>
-            { preferredStyles.map((item) => {
+            { styleOptions.map((item) => {
               const isSelected = formData.style === item.value
               return (
                 <Button
