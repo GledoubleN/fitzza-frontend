@@ -32,7 +32,7 @@ const shuffle = (array) => {
   return result
 }
 
-export default function WorldCupPage () {
+export default function WorldcupPage () {
   const location = useLocation()
   const navigate = useNavigate()
 

@@ -11,7 +11,7 @@ import { CommunityArticlePage } from "./pages/community/CommunityArticlePage.jsx
 import { ProductPage } from './pages/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import { VtonGalleryPage } from './pages/profile/VtonGalleryPage.jsx'
-import WorldCupPage from './pages/WorldCupPage.jsx'
+import WorldcupPage from './pages/WorldcupPage.jsx'
 import { ShortcutPage } from './pages/ShortcutPage.jsx'
 import { WishlistPage } from './pages/WishlistPage.jsx'
 import { SelectPage } from './pages/SelectPage.jsx'
@@ -40,7 +40,7 @@ function App() {
         <Route path="/community/write" element={ <RequireSignIn><CommunityWritePage/></RequireSignIn> }/>
         <Route path="/profile" element={ <RequireSignIn><ProfilePage/></RequireSignIn> }/>
         <Route path="/profile/fittings" element={ <RequireSignIn><VtonGalleryPage/></RequireSignIn> }/>
-        <Route path="/worldcup" element={ <RequireSignIn><WorldCupPage/></RequireSignIn> }/>
+        <Route path="/worldcup" element={ <RequireSignIn><WorldcupPage/></RequireSignIn> }/>
         <Route path="/shortcuts" element={ <ShortcutPage/> }/>
         <Route path="/wishlist" element={ <RequireSignIn><WishlistPage/></RequireSignIn> }/>
         <Route path="/select" element={ <RequireSignIn><SelectPage/></RequireSignIn> }/>
