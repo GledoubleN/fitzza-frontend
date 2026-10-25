@@ -146,7 +146,7 @@ export const WishlistPage = () => {
             _hover={ { bg: 'bg.subtle', transform: 'scale(1.05)' } }
             transition="all 0.2s"
             aria-label="이상형 월드컵 시작"
-            onClick={ () => navigate('/select') }
+            onClick={ () => navigate('/worldcup/setup') }
           >
             <LuTrophy />
           </IconButton>

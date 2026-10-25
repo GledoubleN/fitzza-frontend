@@ -56,7 +56,7 @@ export default function WorldcupPage () {
     }
 
     if (rawSelectedProducts.length < 2) {
-      navigate('/select')
+      navigate('/worldcup/setup')
       return
     }
 

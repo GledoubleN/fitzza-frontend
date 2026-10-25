@@ -54,7 +54,7 @@ export const WorldcupTournamentPage = ({
                 <IconButton
                   variant="ghost"
                   aria-label="후보 선택 화면으로 돌아가기"
-                  onClick={ () => navigate('/select') }
+                  onClick={ () => navigate('/worldcup/setup') }
                 >
                   <Box
                     as={ LuChevronLeft }
