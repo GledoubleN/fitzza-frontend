@@ -44,15 +44,29 @@ const toFittingTitle = ({ products = [] }) => {
 
 const FittingThumbnail = ({ fitting }) => {
   if (fitting.status === 'COMPLETED' && fitting.resultImageUrl) {
-    return <Image src={ toFittingImageUrl(fitting.resultImageUrl) } alt={ '가상 피팅 결과' } objectFit={ 'cover' }></Image>
+    return (
+      <Box>
+        <Image
+          src={ toFittingImageUrl(fitting.resultImageUrl) }
+          alt={ '가상 피팅 결과' }
+          objectFit={ 'contain' }
+        ></Image>
+      </Box>
+    )
+  } else {
+    return (
+      <Flex
+        direction={ 'column' }
+        align={ 'center' }
+        justify={ 'center' }
+        gap={ 4 }
+        bg={ 'bg.muted' }
+      >
+        <Spinner size={ 'sm' }></Spinner>
+        <Text textStyle={ 'xs' } color={ 'fg.muted' }>만드는 중</Text>
+      </Flex>
+    )
   }
-
-  return (
-    <Flex direction={ 'column' } align={ 'center' } justify={ 'center' } gap={ 4 } bg={ 'bg.muted' }>
-      <Spinner size={ 'sm' }></Spinner>
-      <Text textStyle={ 'xs' } color={ 'fg.muted' }>만드는 중</Text>
-    </Flex>
-  )
 }
 
 export const VtonGallery = ({ preview = false }) => {
@@ -219,21 +233,6 @@ export const VtonGallery = ({ preview = false }) => {
           <Text color={ 'fg.error' }>가상 피팅 기록을 불러오지 못했어요.</Text>
           <Button variant={ 'outline' } size={ 'sm' } onClick={ () => load(fittings.length) }>다시 시도</Button>
         </Stack>
-      }
-
-      {
-        import.meta.env.DEV &&
-        <FailureTestButtons tests={ [
-          {
-            label: '빈 갤러리',
-            method: 'get',
-            path: '/vton',
-            respond: (HttpResponse) => HttpResponse.json({ items: [], totalCount: 0 }),
-            onReady: () => load(),
-          },
-          { label: '다음 목록 불러오기', method: 'get', path: '/vton' },
-          { label: '삭제 실패', method: 'delete', path: '/vton/:fittingId' },
-        ] }/>
       }
 
       <Dialog.Root
