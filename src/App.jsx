@@ -14,7 +14,7 @@ import { VtonGalleryPage } from './pages/profile/VtonGalleryPage.jsx'
 import WorldcupPage from './pages/WorldcupPage.jsx'
 import { ShortcutPage } from './pages/ShortcutPage.jsx'
 import { WishlistPage } from './pages/WishlistPage.jsx'
-import { SelectPage } from './pages/SelectPage.jsx'
+import { WorldcupSetupPage } from './pages/WorldcupSetupPage.jsx'
 import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { OrderListPage } from './pages/OrderListPage.jsx'
@@ -43,7 +43,7 @@ function App() {
         <Route path="/worldcup" element={ <RequireSignIn><WorldcupPage/></RequireSignIn> }/>
         <Route path="/shortcuts" element={ <ShortcutPage/> }/>
         <Route path="/wishlist" element={ <RequireSignIn><WishlistPage/></RequireSignIn> }/>
-        <Route path="/select" element={ <RequireSignIn><SelectPage/></RequireSignIn> }/>
+        <Route path="/select" element={ <RequireSignIn><WorldcupSetupPage/></RequireSignIn> }/>
         <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orders" element={ <RequireSignIn><OrderListPage/></RequireSignIn> }/>
         <Route path="/orders/:orderId" element={ <RequireSignIn><OrderDetail/></RequireSignIn> }/>
