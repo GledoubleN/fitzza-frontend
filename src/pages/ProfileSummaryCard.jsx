@@ -17,9 +17,9 @@ import { useNavigate } from 'react-router-dom'
 import {
   LuUser,
   LuPackage,
-  LuHistory,
   LuMessageSquare,
   LuSettings,
+  LuSparkle,
 } from 'react-icons/lu'
 import { api } from '../api/axios.js'
 import { useAuth } from '../contexts/AuthContext.js'
@@ -253,7 +253,7 @@ export const ProfileSummaryCard = () => {
       >
         {[
           { label: '주문', icon: LuPackage, path: '/orders' },
-          { label: '추천내역', icon: LuHistory, path: '/ai/history' },
+          { label: '추천내역', icon: LuSparkle, path: '/ai/history' },
           { label: '커뮤니티', icon: LuMessageSquare },
           { label: '설정', icon: LuSettings },
         ].map((item) => {
