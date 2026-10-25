@@ -4,7 +4,7 @@ import postsData from '../data/posts.json'
 import commentsData from '../data/comments.json'
 import products from '../data/products.json'
 import recommendations from '../data/recommendations.json'
-import { worldcupHistories } from './worldcupHistories.js'
+import worldcupHistories from '../data/worldcup-history.json'
 
 const BASE_URL = api.defaults.baseURL
 const ME = { userId: 1, nickname: '핏짜' }

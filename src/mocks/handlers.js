@@ -14,7 +14,7 @@ import recommendationMessages from '../data/recommendation-messages.json'
 import notifications from '../data/notifications.json'
 import fittingResultImage from '../assets/hero.png'
 import { communityHandlers } from './communityHandlers.js'
-import { worldcupHistories } from './worldcupHistories.js'
+import worldcupHistory from '../data/worldcup-history.json'
 
 let lastRecommendationId = 0
 
@@ -880,7 +880,7 @@ export const handlers = [
         completedAt: new Date().toISOString(),
       }
 
-      worldcupHistories.unshift(newHistory)
+      worldcupHistory.unshift(newHistory)
 
       return HttpResponse.json(newHistory, { status: 201 })
     },
@@ -902,12 +902,12 @@ export const handlers = [
       const end = start + size
 
       return HttpResponse.json({
-        content: worldcupHistories.slice(start, end),
+        content: worldcupHistory.slice(start, end),
         page: page,
         size: size,
-        totalElements: worldcupHistories.length,
-        totalPages: Math.ceil(worldcupHistories.length / size),
-        hasNext: end < worldcupHistories.length,
+        totalElements: worldcupHistory.length,
+        totalPages: Math.ceil(worldcupHistory.length / size),
+        hasNext: end < worldcupHistory.length,
       })
     },
   ),
