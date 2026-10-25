@@ -222,7 +222,7 @@ export const SelectPage = () => {
                           alt={ name }
                           w="100%"
                           h="100%"
-                          objectFit="cover"
+                          objectFit="contain"
                         />
 
                         { isSelected && (
