@@ -221,21 +221,6 @@ export const VtonGallery = ({ preview = false }) => {
         </Stack>
       }
 
-      {
-        import.meta.env.DEV &&
-        <FailureTestButtons tests={ [
-          {
-            label: '빈 갤러리',
-            method: 'get',
-            path: '/vton',
-            respond: (HttpResponse) => HttpResponse.json({ items: [], totalCount: 0 }),
-            onReady: () => load(),
-          },
-          { label: '다음 목록 불러오기', method: 'get', path: '/vton' },
-          { label: '삭제 실패', method: 'delete', path: '/vton/:fittingId' },
-        ] }/>
-      }
-
       <Dialog.Root
         open={ !!selected }
         onOpenChange={ (event) => !event.open && closeDialog() }
