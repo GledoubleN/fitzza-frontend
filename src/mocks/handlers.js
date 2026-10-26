@@ -823,6 +823,21 @@ export const handlers = [
     },
   ),
 
+  http.delete(
+    `${ api.defaults.baseURL }/recommendation/:requestId`,
+    ({ params }) => {
+      const index = recommendationHistory.findIndex((item) => item.requestId === params.requestId)
+
+      if (index === -1) {
+        return HttpResponse.json({ message: '대화 내역을 찾을 수 없습니다.' }, { status: 404 })
+      }
+
+      recommendationHistory.splice(index, 1)
+
+      return new HttpResponse(null, { status: 204 })
+    },
+  ),
+
   http.get(
     `${ api.defaults.baseURL }/notifications`,
     ({ request }) => {
