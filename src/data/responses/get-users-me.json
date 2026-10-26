@@ -5,6 +5,8 @@
   "weight": 68,
   "gender": "보통",
   "preferredFit": "레귤러",
-  "preferredStyles": ["캐주얼"],
+  "preferredStyles": [
+    "캐주얼"
+  ],
   "shoeSize": 270
 }
