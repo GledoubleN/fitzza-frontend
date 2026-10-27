@@ -69,22 +69,20 @@ const Polaroid = ({ product, piece, isInteractive }) => {
         >
           { product.brandName }
         </Text>
+        <Text
+          textStyle="sm"
+          fontWeight="semibold"
+          truncate
+        >
+          { product.productName }
+        </Text>
         { piece.isFeatured && (
-          <>
-            <Text
-              textStyle="sm"
-              fontWeight="semibold"
-              truncate
-            >
-              { product.productName }
-            </Text>
-            <Text
-              textStyle="sm"
-              fontWeight="bold"
-            >
-              { product.price?.toLocaleString() } 원
-            </Text>
-          </>
+          <Text
+            textStyle="sm"
+            fontWeight="bold"
+          >
+            { product.price?.toLocaleString() } 원
+          </Text>
         ) }
       </Stack>
     </Stack>
