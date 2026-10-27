@@ -200,13 +200,14 @@ export const AIStylistResultPage = () => {
   }, [fittings])
 
   const createFitting = ({ items, photo }) => {
-    const productIds = items.map((item) => item.productId)
+    const fittingItems = items.map(({ productId, imageUrl }) => ({ productId, imageUrl }))
     if (!photo) {
-      return api.post('/vton', { productIds }, TIMEOUT)
+      return api.post('/vton', { requestId: Number(requestId), items: fittingItems }, TIMEOUT)
     }
 
     const form = new FormData()
-    form.append('productIds', JSON.stringify(productIds))
+    form.append('requestId', requestId)
+    form.append('items', JSON.stringify(fittingItems))
     form.append('userImage', photo)
     return api.post('/vton', form, {
       ...TIMEOUT,
