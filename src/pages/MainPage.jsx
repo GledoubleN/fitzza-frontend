@@ -24,7 +24,7 @@ export const MainPage = () => {
   const { scrollY } = useScroll()
   const arrivalScrollY = useMotionValue(1)
   const progress = useTransform(() => Math.min(Math.max(scrollY.get() / arrivalScrollY.get(), 0), 1))
-  const headerBackgroundOpacity = useTransform(progress, [0.9, 1], [0, 1])
+  const headerBackgroundOpacity = useTransform(progress, [0.6, 0.85], [0, 1])
 
   useMeasure(() => {
     const productGridTop = productGridRef.current.getBoundingClientRect().top + window.scrollY
@@ -61,7 +61,12 @@ export const MainPage = () => {
         <MotionBox
           position="absolute"
           inset="0"
-          bg="bg"
+          bg="bg/70"
+          backdropFilter="auto"
+          backdropBlur="xl"
+          backdropSaturate="180%"
+          borderBottomWidth="1px"
+          borderColor="border.subtle"
           style={ { opacity: headerBackgroundOpacity } }
         />
         <Box position="relative">
