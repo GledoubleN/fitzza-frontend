@@ -100,6 +100,17 @@ const config = defineConfig({
           focusRing: { value: '{colors.accent.500}' },
         },
 
+        pantone: {
+          lemonIcing: { value: '#f5ebc8' },
+          nimbusCloud: { value: '#d5d5d7' },
+          raindropsOnRoses: { value: '#ead9dc' },
+          cloudDancer: { value: '#f0efeb' },
+          iceMelt: { value: '#d4e4f1' },
+          peachDust: { value: '#f0d9cc' },
+          almostAqua: { value: '#c9d3c0' },
+          orchidTint: { value: '#dcd4dd' },
+        },
+
         background: {
           canvas: { value: '{colors.background.900}' },
           surface: { value: '{colors.background.800}' },
