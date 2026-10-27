@@ -21,6 +21,7 @@ import { toNotificationPath, toNotificationText, useNotifications } from '../hoo
 import { usePushNotifications } from '../hooks/usePushNotifications.js'
 import { disablePush } from '../services/pushNotifications.js'
 import { toaster } from './ui/toaster.jsx'
+import { AIPromptCard } from './AIPromptCard.jsx'
 
 const isNotificationDenied = () => 'Notification' in window && Notification.permission === 'denied'
 
@@ -105,11 +106,18 @@ export const Header = ({ maxWidth = '7xl', logo, center }) => {
           ) }
         </GridItem>
         <GridItem
-          gridColumn={ center && { base: '1 / -1', md: 'auto' } }
-          gridRow={ center && { base: '2', md: 'auto' } }
+          gridColumn={ { base: '1 / -1', md: 'auto' } }
+          gridRow={ { base: '2', md: 'auto' } }
           alignContent={ 'center' }
         >
-          { center }
+          { center ?? (
+            <Box
+              maxWidth="xl"
+              marginX="auto"
+            >
+              <AIPromptCard/>
+            </Box>
+          ) }
         </GridItem>
         <GridItem
           gridColumn={ '3' }
