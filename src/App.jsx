@@ -11,10 +11,11 @@ import { CommunityArticlePage } from "./pages/community/CommunityArticlePage.jsx
 import { ProductPage } from './pages/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import { VtonGalleryPage } from './pages/profile/VtonGalleryPage.jsx'
-import WorldCupPage from './pages/WorldCupPage.jsx'
+import WorldCupPage from './pages/worldcup/WorldCupPage.jsx'
 import { ShortcutPage } from './pages/ShortcutPage.jsx'
 import { WishlistPage } from './pages/WishlistPage.jsx'
-import { SelectPage } from './pages/SelectPage.jsx'
+import { WorldCupSetupPage } from './pages/worldcup/WorldCupSetupPage.jsx'
+import { WorldCupHistoryPage } from './pages/worldcup/WorldCupHistoryPage.jsx'
 import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { OrderListPage } from './pages/OrderListPage.jsx'
@@ -40,10 +41,11 @@ function App() {
         <Route path="/community/write" element={ <RequireSignIn><CommunityWritePage/></RequireSignIn> }/>
         <Route path="/profile" element={ <RequireSignIn><ProfilePage/></RequireSignIn> }/>
         <Route path="/profile/fittings" element={ <RequireSignIn><VtonGalleryPage/></RequireSignIn> }/>
-        <Route path="/worldcup" element={ <RequireSignIn><WorldCupPage/></RequireSignIn> }/>
         <Route path="/shortcuts" element={ <ShortcutPage/> }/>
         <Route path="/wishlist" element={ <RequireSignIn><WishlistPage/></RequireSignIn> }/>
-        <Route path="/select" element={ <RequireSignIn><SelectPage/></RequireSignIn> }/>
+        <Route path="/worldcup" element={ <RequireSignIn><WorldCupPage/></RequireSignIn> }/>
+        <Route path="/worldcup/setup" element={ <RequireSignIn><WorldCupSetupPage/></RequireSignIn> }/>
+        <Route path="/worldcup/history" element={ <RequireSignIn><WorldCupHistoryPage/></RequireSignIn> }/>
         <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orders" element={ <RequireSignIn><OrderListPage/></RequireSignIn> }/>
         <Route path="/orders/:orderId" element={ <RequireSignIn><OrderDetail/></RequireSignIn> }/>

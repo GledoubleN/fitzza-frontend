@@ -9,18 +9,18 @@ import {
   Flex,
   Image,
 } from '@chakra-ui/react'
-import { Header } from '../components/Header.jsx'
-import { TabBar } from '../components/TabBar.jsx'
+import { Header } from '../../components/Header.jsx'
+import { TabBar } from '../../components/TabBar.jsx'
 import { useEffect, useState } from 'react'
-import { api } from '../api/axios.js'
+import { api } from '../../api/axios.js'
 import { HttpStatusCode } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { LuCheck, LuChevronLeft } from 'react-icons/lu'
-import { toaster } from '../components/ui/toaster.jsx'
+import { toaster } from '../../components/ui/toaster.jsx'
 
 const MAX_CANDIDATES = 64
 
-export const SelectPage = () => {
+export const WorldCupSetupPage = () => {
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
@@ -222,7 +222,7 @@ export const SelectPage = () => {
                           alt={ name }
                           w="100%"
                           h="100%"
-                          objectFit="cover"
+                          objectFit="contain"
                         />
 
                         { isSelected && (
