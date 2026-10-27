@@ -1,6 +1,6 @@
 import { Box, chakra, Flex, Icon, Text } from '@chakra-ui/react'
-import { easeInOut, mix, motion, transform, useMotionValue, useTransform } from 'motion/react'
-import { useRef } from 'react'
+import { easeInOut, mix, motion, transform, useMotionValue, useMotionValueEvent, useTransform } from 'motion/react'
+import { useRef, useState } from 'react'
 import { LuChevronDown } from 'react-icons/lu'
 import { AIPromptCard } from '../../components/AIPromptCard.jsx'
 import { LOGO_TEXT_PROPS } from './logoTextProps.js'
@@ -43,6 +43,8 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
   })
 
   const docking = useTransform(progress, (value) => transform(value, [0.05, 0.6], [0, 1], { ease: easeInOut }))
+  const [isDocked, setIsDocked] = useState(false)
+  useMotionValueEvent(docking, 'change', (value) => setIsDocked(value > 0.9))
 
   const logoX = useMorph(rects, docking, ({ logo, logoSlot }, k) => mix(0, logoSlot.left - logo.left, k), 0)
   const logoY = useMorph(rects, docking, ({ logo, logoSlot }, k) => mix(0, logoSlot.top - logo.top, k), 0)
@@ -143,7 +145,7 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
         style={ { left: promptLeft, top: promptTop, width: promptWidth, opacity: promptOpacity } }
         pointerEvents="auto"
       >
-        <AIPromptCard/>
+        <AIPromptCard hasShadow={ !isDocked }/>
       </MotionBox>
 
       <MotionBox

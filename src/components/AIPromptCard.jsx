@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext.js'
 import { MainPromptForm } from './MainPromptForm.jsx'
 import { SignInRequiredDialog } from './SignInRequiredDialog.jsx'
 
-export const AIPromptCard = () => {
+export const AIPromptCard = ({ hasShadow = false }) => {
   const navigate = useNavigate()
   const { isSignedIn } = useAuth()
   const [isSignInDialogOpen, setIsSignInDialogOpen] = useState(false)
@@ -26,7 +26,9 @@ export const AIPromptCard = () => {
         backdropFilter="auto"
         backdropBlur="lg"
         backdropSaturate="160%"
-        boxShadow="lg"
+        boxShadow={ hasShadow ? 'lg' : 'none' }
+        transition="box-shadow"
+        transitionDuration="moderate"
       >
         <Card.Body padding={ 1 }>
           <MainPromptForm onSubmitQuery={ onSubmitQuery }/>
