@@ -46,6 +46,7 @@ import getCommunityPostsPostIdCommentsResponse from '../data/responses/get-commu
 import postCommunityPostsPostIdCommentsResponse from '../data/responses/post-community-posts-postId-comments.json'
 import postCommentsCommentIdLikesResponse from '../data/responses/post-comments-commentId-likes.json'
 import deleteCommentsCommentIdLikesResponse from '../data/responses/delete-comments-commentId-likes.json'
+import getAnalyticsResponse from '../data/responses/get-analytics.json'
 
 export const handlers = [
   http.get(
@@ -339,5 +340,21 @@ export const handlers = [
   http.delete(
     `${ api.defaults.baseURL }/comments/:commentId/likes`,
     () => HttpResponse.json(deleteCommentsCommentIdLikesResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/analytics`,
+    ({ request }) => {
+      const period = new URL(request.url).searchParams.get('period') ?? 'daily'
+
+      if (!Object.hasOwn(getAnalyticsResponse, period)) {
+        return HttpResponse.json(
+          { code: 'INVALID_PERIOD', message: '지원하지 않는 조회 기간입니다.' },
+          { status: 400 },
+        )
+      }
+
+      return HttpResponse.json(getAnalyticsResponse[period])
+    },
   ),
 ]
