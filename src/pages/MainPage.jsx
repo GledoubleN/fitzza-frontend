@@ -62,7 +62,7 @@ export const MainPage = () => {
             fontSize="2xl"
             visibility="hidden"
           >
-            Fitzza
+            FiTZZA
           </Text>
         }
         center={

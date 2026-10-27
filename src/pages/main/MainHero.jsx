@@ -86,7 +86,7 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
             { ...LOGO_TEXT_PROPS }
             fontSize={ { base: '7xl', md: '9xl' } }
           >
-            Fitzza
+            FiTZZA
           </Text>
         </MotionBox>
 

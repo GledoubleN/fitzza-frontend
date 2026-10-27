@@ -162,7 +162,7 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
                 cursor="pointer"
                 onClick={ () => navigate('/') }
               >
-                Fitzza
+                FiTZZA
               </Text>
             ) }
           </GridItem>
