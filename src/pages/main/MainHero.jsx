@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { LuChevronDown } from 'react-icons/lu'
 import { AIPromptCard } from '../../components/AIPromptCard.jsx'
 import { LOGO_TEXT_PROPS } from './logoTextProps.js'
+import { MoodboardCollage } from './MoodboardCollage.jsx'
 import { useMeasure } from './useMeasure.js'
 
 const MotionBox = chakra(motion.div)
@@ -26,7 +27,7 @@ const useMorph = (rects, docking, pick, fallback) => useTransform(() => {
   return current ? pick(current, progress) : fallback
 })
 
-export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
+export const MainHero = ({ progress, products, logoSlotRef, promptSlotRef }) => {
   const logoRef = useRef(null)
   const promptAnchorRef = useRef(null)
   const rects = useMotionValue(null)
@@ -64,6 +65,11 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
       zIndex="banner"
       pointerEvents="none"
     >
+      <MoodboardCollage
+        products={ products }
+        progress={ progress }
+      />
+
       <Flex
         position="absolute"
         inset="0"

@@ -124,6 +124,7 @@ export const MainPage = () => {
 
       <MainHero
         progress={ progress }
+        products={ products }
         logoSlotRef={ logoSlotRef }
         promptSlotRef={ promptSlotRef }
       />
@@ -138,11 +139,7 @@ export const MainPage = () => {
         maxWidth={ '5xl' }
         paddingBottom={ 8 }
       >
-        <ProductGrid
-          products={ products }
-          scrollY={ scrollY }
-          progress={ progress }
-        />
+        <ProductGrid products={ products }/>
       </Container>
 
       <TabBar></TabBar>
