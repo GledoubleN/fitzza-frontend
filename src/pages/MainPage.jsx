@@ -1,5 +1,5 @@
-import { Box, chakra, Container, Stack, Text } from '@chakra-ui/react'
-import { motion, useMotionValue, useScroll, useTransform } from 'motion/react'
+import { Box, Container, Stack, Text } from '@chakra-ui/react'
+import { useMotionValue, useScroll, useTransform } from 'motion/react'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { Footer } from '../components/Footer.jsx'
@@ -12,8 +12,6 @@ import { MoodboardCollage } from './main/MoodboardCollage.jsx'
 import { LOGO_TEXT_PROPS } from './main/logoTextProps.js'
 import { ProductGrid } from './main/ProductGrid.jsx'
 import { useMeasure } from './main/useMeasure.js'
-
-const MotionBox = chakra(motion.div)
 
 export const MainPage = () => {
   const [products, setProducts] = useState([])
@@ -52,74 +50,30 @@ export const MainPage = () => {
     <Stack
       gap={ 4 }
       minHeight="100vh"
+      paddingTop={ 4 }
     >
-      <Box
+      <Header
         ref={ headerRef }
-        position="sticky"
-        top="0"
-        zIndex="sticky"
-        paddingY={ 4 }
-      >
-        <MotionBox
-          position="absolute"
-          inset="0"
-          overflow="hidden"
-          bgGradient="to-b"
-          gradientFrom="bg/80"
-          gradientTo="bg/50"
-          backdropFilter="auto"
-          backdropBlur="lg"
-          backdropSaturate="200%"
-          backdropBrightness="110%"
-          borderBottomWidth="thin"
-          borderColor="fg/10"
-          boxShadow="xs"
-          style={ { opacity: headerBackgroundOpacity } }
-        >
+        backgroundOpacity={ headerBackgroundOpacity }
+        logo={
+          <Text
+            ref={ logoSlotRef }
+            { ...LOGO_TEXT_PROPS }
+            fontSize="2xl"
+            visibility="hidden"
+          >
+            Fitzza
+          </Text>
+        }
+        center={
           <Box
-            position="absolute"
-            insetX="0"
-            top="0"
-            height="1/2"
-            bgGradient="to-b"
-            gradientFrom="bg/60"
-            gradientTo="transparent"
+            ref={ promptSlotRef }
+            maxWidth="xl"
+            height="12"
+            marginX="auto"
           />
-          <Box
-            position="absolute"
-            insetX="0"
-            bottom="0"
-            height="0.5"
-            bgGradient="to-r"
-            gradientFrom="transparent"
-            gradientVia="bg"
-            gradientTo="transparent"
-            opacity="0.9"
-          />
-        </MotionBox>
-        <Box position="relative">
-          <Header
-            logo={
-              <Text
-                ref={ logoSlotRef }
-                { ...LOGO_TEXT_PROPS }
-                fontSize="2xl"
-                visibility="hidden"
-              >
-                Fitzza
-              </Text>
-            }
-            center={
-              <Box
-                ref={ promptSlotRef }
-                maxWidth="xl"
-                height="12"
-                marginX="auto"
-              />
-            }
-          />
-        </Box>
-      </Box>
+        }
+      />
 
       <HeroLighting progress={ progress }/>
 
