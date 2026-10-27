@@ -61,14 +61,40 @@ export const MainPage = () => {
         <MotionBox
           position="absolute"
           inset="0"
-          bg="bg/70"
+          overflow="hidden"
+          bgGradient="to-b"
+          gradientFrom="bg/80"
+          gradientTo="bg/50"
           backdropFilter="auto"
-          backdropBlur="xl"
-          backdropSaturate="180%"
-          borderBottomWidth="1px"
-          borderColor="border.subtle"
+          backdropBlur="lg"
+          backdropSaturate="200%"
+          backdropBrightness="110%"
+          borderBottomWidth="thin"
+          borderColor="fg/10"
+          boxShadow="xs"
           style={ { opacity: headerBackgroundOpacity } }
-        />
+        >
+          <Box
+            position="absolute"
+            insetX="0"
+            top="0"
+            height="1/2"
+            bgGradient="to-b"
+            gradientFrom="bg/60"
+            gradientTo="transparent"
+          />
+          <Box
+            position="absolute"
+            insetX="0"
+            bottom="0"
+            height="0.5"
+            bgGradient="to-r"
+            gradientFrom="transparent"
+            gradientVia="bg"
+            gradientTo="transparent"
+            opacity="0.9"
+          />
+        </MotionBox>
         <Box position="relative">
           <Header
             logo={
