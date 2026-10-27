@@ -1,6 +1,7 @@
 import {
   Container,
   Grid,
+  Marquee,
   Stack,
   Card,
 } from '@chakra-ui/react'
@@ -45,42 +46,55 @@ export const AIStylistPage = () => {
   }, [])
 
   return (
-    <Grid
+    <Stack
       gap={ 4 }
-      templateRows={'auto auto 1fr auto auto'}
-      paddingY={ '4' }
-      minHeight={ '100vh' }
+      paddingY={ 4 }
+      minHeight="dvh"
     >
       <Header></Header>
 
-      <Container maxWidth={ '5xl' }>
-        <Card.Root
-          height={ '100%' }
-          rounded={ '4xl' }
-        >
-          <Card.Body padding={ 2 }>
-            <Stack height={ '100%' } gap={ 2 } position="relative">
+      <Grid
+        as="main"
+        flex={ 1 }
+        templateRows="minmax(0, 1fr) auto minmax(min-content, 1fr)"
+        paddingY={ 4 }
+        minWidth={ 0 }
+      >
+        <Container maxWidth="3xl" gridRow={ 2 }>
+          <Card.Root rounded="4xl">
+            <Card.Body padding={ 4 }>
               <PromptForm onSubmitQuery={ onSubmitQuery }/>
-            </Stack>
-          </Card.Body>
-        </Card.Root>
-      </Container>
+            </Card.Body>
+          </Card.Root>
+        </Container>
 
-      <Container maxWidth={ '5xl' }>
-        <Grid
-          templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
-          gap={ 4 }
-        >
-          {
-            products.map((product) => (
-              <ProductItem
-                key={ product.productId }
-                product={ product }
-              />
-            ))
-          }
-        </Grid>
-      </Container>
+        { products.length > 0 && (
+          <Container
+            maxWidth="3xl"
+            minWidth={ 0 }
+            gridRow={ 3 }
+            alignSelf="start"
+            paddingTop={ 4 }
+          >
+            <Marquee.Root autoFill pauseOnInteraction speed={ 30 } aria-label="추천 상품">
+              <Marquee.Viewport>
+                <Marquee.Content>
+                  { products.map((product) => (
+                    <Marquee.Item
+                      key={ product.productId }
+                      width={ { base: 28, md: 32 } }
+                      flexShrink={ 0 }
+                      paddingX={ 4 }
+                    >
+                      <ProductItem product={ product }/>
+                    </Marquee.Item>
+                  )) }
+                </Marquee.Content>
+              </Marquee.Viewport>
+            </Marquee.Root>
+          </Container>
+        ) }
+      </Grid>
 
       <TabBar></TabBar>
 
@@ -88,6 +102,6 @@ export const AIStylistPage = () => {
 
       <SignInRequiredDialog open={ isSignInDialogOpen } onClose={ () => setIsSignInDialogOpen(false) }/>
 
-    </Grid>
+    </Stack>
   )
 }
