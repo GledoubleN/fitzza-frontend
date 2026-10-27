@@ -93,11 +93,12 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
       .then(({ data }) => {
         if (cancelled) return
         const options = data.options ?? []
+        const colored = options.some((option) => option.color)
         setOptions(options)
-        // 추천 응답에 색상·사이즈가 있으면 바로 선택해둡니다.
-        if (options.some((option) => option.color === item.color)) setColor(item.color)
+        // 추천 응답에 색상·사이즈가 있으면 바로 선택해둡니다. 옵션에 색상이 없는 상품은 사이즈만 맞춥니다.
+        if (colored && options.some((option) => option.color === item.color)) setColor(item.color)
         const recommended = options.find((option) =>
-          option.color === item.color && option.size === item.recommendedSize && isAvailable(option))
+          (!colored || option.color === item.color) && option.size === item.recommendedSize && isAvailable(option))
         if (recommended) selectOption(String(recommended.optionId))
       })
       .catch(() => {
@@ -111,19 +112,21 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
     setAttempt(attempt + 1)
   }
 
+  const colored = options.some((option) => option.color)
+
   const colorCollection = useMemo(() => createListCollection({
     items: [...new Set(options.map((option) => option.color))].map((color) => ({ label: color, value: color })),
   }), [options])
 
   // 고른 색상에 있는 사이즈만 보여주고, 품절은 고를 수 없게 합니다. 값은 옵션 번호입니다.
   const sizeCollection = useMemo(() => createListCollection({
-    items: options.filter((option) => option.color === color).map((option) => ({
+    items: options.filter((option) => !colored || option.color === color).map((option) => ({
       label: isAvailable(option) ? option.size : `${ option.size } (품절)`,
       value: String(option.optionId),
       disabled: !isAvailable(option),
     })),
     isItemDisabled: (item) => item.disabled,
-  }), [options, color])
+  }), [options, colored, color])
 
   // 색상을 바꾸면 사이즈를 다시 고르게 합니다.
   const selectColor = (value) => {
@@ -179,7 +182,7 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
         collection={ colorCollection }
         value={ color }
         onChange={ selectColor }
-        hidden={ optionsFailed }
+        hidden={ optionsFailed || !colored }
       ></OptionSelect>
       <OptionSelect
         label={ `${ item.productName } 사이즈` }
@@ -187,7 +190,7 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
         collection={ sizeCollection }
         value={ optionId }
         onChange={ selectOption }
-        disabled={ !color }
+        disabled={ colored && !color }
         hidden={ optionsFailed }
       ></OptionSelect>
       <Button
