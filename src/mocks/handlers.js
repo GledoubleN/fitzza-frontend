@@ -242,7 +242,13 @@ export const handlers = [
 
   http.get(
     `${ api.defaults.baseURL }/vton`,
-    () => HttpResponse.json(getVtonResponse),
+    ({ request }) => {
+      const requestId = new URL(request.url).searchParams.get('requestId')
+      if (!requestId) return HttpResponse.json(getVtonResponse)
+
+      const items = getVtonResponse.items.filter((fitting) => fitting.requestId === Number(requestId))
+      return HttpResponse.json({ ...getVtonResponse, items, totalCount: items.length })
+    },
   ),
 
   http.get(

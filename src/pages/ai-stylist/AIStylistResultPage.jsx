@@ -44,6 +44,35 @@ const PHOTO_ERRORS = {
   FILE_TOO_LARGE: '사진은 15MB 이하로 올려 주세요.',
 }
 
+const toFittingState = (detail) => {
+  if (!detail) return { status: 'failed', message: FITTING_TIMEOUT_MESSAGE, timedOut: true }
+  if (detail.status === 'PENDING') return { status: 'loading', message: '' }
+  if (detail.status === 'COMPLETED' && detail.resultImageUrl) {
+    return { status: 'done', imageUrl: toFittingImageUrl(detail.resultImageUrl) }
+  }
+  return { status: 'failed', message: detail.errorMessage }
+}
+
+const toProductKey = (products) => products.map((product) => product.productId).sort().join()
+
+const toFittingLabel = (products, { items = [], combos = [] }) => {
+  const productKey = toProductKey(products)
+  const comboIndex = combos.findIndex((combo) => toProductKey(combo.items) === productKey)
+  if (comboIndex >= 0) return `코디 ${ comboIndex + 1 }`
+
+  const item = items.find((item) => toProductKey([item]) === productKey)
+  return item?.productName ?? products.map((product) => product.productName).join(', ')
+}
+
+const toRestoredFitting = (fitting, recommendation) => ({
+  id: `fitting-${ fitting.fittingId }`,
+  label: toFittingLabel(fitting.products, recommendation),
+  items: fitting.products,
+  photo: !!fitting.userImageUrl,
+  fittingId: fitting.fittingId,
+  ...toFittingState(fitting),
+})
+
 const isNotificationGranted = () => !('Notification' in window) || Notification.permission === 'granted'
 
 const NotificationHint = () => (
@@ -227,29 +256,49 @@ export const AIStylistResultPage = () => {
     }
   }
 
+  const updateFitting = (id, patch) => setFittings((fittings) => fittings.map(
+    (other) => other.id === id ? { ...other, ...patch } : other,
+  ))
+
+  const followFitting = async (id, fittingId) => {
+    try {
+      updateFitting(id, toFittingState(await waitForFitting(fittingId)))
+    } catch (err) {
+      updateFitting(id, { status: 'failed', message: err.response?.data?.message ?? '' })
+    }
+  }
+
   const runFitting = async (fitting) => {
-    const update = (patch) => setFittings((fittings) => fittings.map(
-      (other) => other.id === fitting.id ? { ...other, ...patch } : other,
-    ))
     setFittings((fittings) => [...fittings, { ...fitting, status: 'loading', message: '' }])
     try {
       const { data: created } = await createFitting(fitting)
-      const detail = await waitForFitting(created.fittingId)
-
-      if (!detail) {
-        update({ status: 'failed', message: FITTING_TIMEOUT_MESSAGE, timedOut: true })
-      } else if (detail.status === 'COMPLETED' && detail.resultImageUrl) {
-        update({ status: 'done', fittingId: detail.fittingId, imageUrl: toFittingImageUrl(detail.resultImageUrl) })
-      } else {
-        update({ status: 'failed', message: detail.errorMessage })
-      }
+      updateFitting(fitting.id, { fittingId: created.fittingId })
+      await followFitting(fitting.id, created.fittingId)
     } catch (err) {
-      update({
-        status: 'failed',
-        message: err.response?.data?.message ?? '',
-      })
+      updateFitting(fitting.id, { status: 'failed', message: err.response?.data?.message ?? '' })
     }
   }
+
+  useEffect(() => {
+    setFittings([])
+    if (!result) return
+
+    let cancelled = false
+    api.get('/vton', { params: { requestId, limit: 100 }, ...TIMEOUT })
+      .then(({ data }) => {
+        if (cancelled) return
+        const restored = data.items
+          .reverse()
+          .map((fitting) => toRestoredFitting(fitting, result))
+        setFittings(restored)
+        restored
+          .filter((fitting) => fitting.status === 'loading')
+          .forEach((fitting) => followFitting(fitting.id, fitting.fittingId))
+      })
+      .catch(() => {})
+
+    return () => { cancelled = true }
+  }, [result])
 
   const tryOn = (label, items) => {
     photoUpload.clearFiles()
