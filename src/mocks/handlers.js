@@ -28,7 +28,6 @@ import postRecommendationsResponse from '../data/responses/post-recommendations.
 import getRecommendationsResponse from '../data/responses/get-recommendations.json'
 import getRecommendationsRequestIdResponse from '../data/responses/get-recommendations-requestId.json'
 import getNotificationsResponse from '../data/responses/get-notifications.json'
-import getRecommendationsRequestIdMessagesResponse from '../data/responses/get-recommendations-requestId-messages.json'
 import postWorldcupsResponse from '../data/responses/post-worldcups.json'
 import getWorldcupsHistoryResponse from '../data/responses/get-worldcups-history.json'
 import postVtonResponse from '../data/responses/post-vton.json'
@@ -224,11 +223,6 @@ export const handlers = [
   http.patch(
     `${ api.defaults.baseURL }/notifications/:notificationId`,
     () => new HttpResponse(null, { status: 200 }),
-  ),
-
-  http.get(
-    `${ api.defaults.baseURL }/recommendations/:requestId/messages`,
-    () => HttpResponse.json(getRecommendationsRequestIdMessagesResponse),
   ),
 
   http.post(

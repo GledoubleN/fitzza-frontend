@@ -1,5 +1,6 @@
 {
-  "requestId": "1",
+  "requestId": 1,
+  "queryText": "요즘 유행하는 가을 코디 추천",
   "status": "DONE",
   "searchType": "COMBO",
   "tpoSummary": "주말 데이트 · 편안한 분위기",

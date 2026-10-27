@@ -136,13 +136,6 @@ export const AIStylistResultPage = () => {
     let cancelled = false
     const text = location.state?.query
     setQuery(text ?? '')
-    if (!text) {
-      api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`, TIMEOUT)
-        .then(({ data: messages }) => {
-          if (!cancelled) setQuery(messages.find((m) => m.senderType === 'USER')?.content ?? '')
-        })
-        .catch(() => {})
-    }
 
     setResult(null)
     setStatus('loading')
@@ -153,6 +146,8 @@ export const AIStylistResultPage = () => {
     const deadline = Date.now() + RECOMMENDATION_WAIT_LIMIT
     const load = async () => {
       let data = await fetchRecommendation()
+      if (cancelled) return
+      if (!text) setQuery(data.queryText ?? '')
       while (data.status === 'PROCESSING') {
         const shouldCheck = await push.wait(deadline - Date.now())
         if (cancelled) return
