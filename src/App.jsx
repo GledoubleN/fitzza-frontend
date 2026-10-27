@@ -25,12 +25,13 @@ import { AIStylistHistoryPage } from './pages/ai-stylist/AIStylistHistoryPage.js
 import OnboardingPage from './pages/OnboardingPage.jsx';
 import { RequireSignIn } from './components/RequireSignIn.jsx'
 import { DashboardPage } from './pages/DashboardPage.jsx'
+import { RequireAdmin } from './components/RequireAdmin.jsx'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/admin/dashboard" element={ <DashboardPage/> }/>
+        <Route path="/admin/dashboard" element={ <RequireAdmin><DashboardPage/></RequireAdmin> }/>
         <Route path="/" element={ <MainPage/> }/>
         <Route path="/shopping-cart" element={ <RequireSignIn><ShoppingCartPage/></RequireSignIn> }/>
         <Route path="/signin" element={ <SignInPage/> }/>
