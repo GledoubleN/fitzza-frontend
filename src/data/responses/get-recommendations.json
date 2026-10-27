@@ -20,5 +20,8 @@
     }
   ],
   "page": 0,
-  "totalPages": 1
+  "size": 20,
+  "totalElements": 3,
+  "totalPages": 1,
+  "hasNext": false
 }

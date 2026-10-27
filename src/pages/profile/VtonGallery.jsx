@@ -60,7 +60,7 @@ export const VtonGallery = ({ preview = false }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const linkedFittingId = searchParams.get('fittingId')
   const [fittings, setFittings] = useState([])
-  const [totalCount, setTotalCount] = useState(0)
+  const [hasNext, setHasNext] = useState(false)
   const [status, setStatus] = useState('loading')
   const [selected, setSelected] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -72,12 +72,12 @@ export const VtonGallery = ({ preview = false }) => {
 
   const fetchPreview = async () => {
     const items = []
-    let totalCount = Infinity
-    while (items.filter(isSuccessful).length < PREVIEW_PAGE_SIZE && items.length < totalCount) {
+    let hasNext = true
+    while (items.filter(isSuccessful).length < PREVIEW_PAGE_SIZE && hasNext) {
       const { data } = await api.get('/vton', { params: { limit: PREVIEW_PAGE_SIZE, offset: items.length } })
       if (!data.items.length) break
       items.push(...data.items)
-      totalCount = data.totalCount
+      hasNext = data.hasNext
     }
     return items
   }
@@ -90,7 +90,7 @@ export const VtonGallery = ({ preview = false }) => {
       } else {
         const { data } = await api.get('/vton', { params: { limit: PAGE_SIZE, offset } })
         setFittings((fittings) => offset ? [...fittings, ...data.items] : data.items)
-        setTotalCount(data.totalCount)
+        setHasNext(data.hasNext)
       }
       setStatus('done')
     } catch {
@@ -98,7 +98,7 @@ export const VtonGallery = ({ preview = false }) => {
     }
   }
 
-  const hasMore = !preview && fittings.length < totalCount
+  const hasMore = !preview && hasNext
 
   useEffect(() => {
     if (!hasMore || status !== 'done') return
@@ -146,7 +146,6 @@ export const VtonGallery = ({ preview = false }) => {
     try {
       await api.delete(`/vton/${ selected.fittingId }`)
       setFittings((fittings) => fittings.filter((fitting) => fitting.fittingId !== selected.fittingId))
-      setTotalCount((count) => count - 1)
       closeDialog()
     } catch {
       toaster.create({ type: 'error', title: '가상 피팅을 삭제하지 못했어요. 다시 시도해 주세요.' })
@@ -228,7 +227,7 @@ export const VtonGallery = ({ preview = false }) => {
             label: '빈 갤러리',
             method: 'get',
             path: '/vton',
-            respond: (HttpResponse) => HttpResponse.json({ items: [], totalCount: 0 }),
+            respond: (HttpResponse) => HttpResponse.json({ items: [], totalCount: 0, hasNext: false }),
             onReady: () => load(),
           },
           { label: '다음 목록 불러오기', method: 'get', path: '/vton' },
