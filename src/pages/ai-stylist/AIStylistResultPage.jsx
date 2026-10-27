@@ -21,6 +21,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { Header } from '../../components/Header.jsx'
 import { ComboCard } from './ComboCard.jsx'
+import { MarkdownMessage } from './MarkdownMessage.jsx'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
 import { toFittingImageUrl } from '../profile/toFittingImageUrl.js'
@@ -385,15 +386,17 @@ export const AIStylistResultPage = () => {
             <>
               <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
                 <Card.Body gap={ 1 }>
-                  <Text>
-                    {
-                      result.message || (
-                        items.length || combos.length
-                          ? '고객님에게 맞는 제품을 찾았어요!'
-                          : '조건에 맞는 상품을 찾지 못했어요.'
-                      )
-                    }
-                  </Text>
+                  {
+                    result.message
+                      ? <MarkdownMessage markdown={ result.message }></MarkdownMessage>
+                      : <Text>
+                        {
+                          items.length || combos.length
+                            ? '고객님에게 맞는 제품을 찾았어요!'
+                            : '조건에 맞는 상품을 찾지 못했어요.'
+                        }
+                      </Text>
+                  }
                   {
                     result.tpoSummary &&
                     <Text fontSize={ 'sm' } color={ 'fg.muted' }>{ result.tpoSummary }</Text>
