@@ -33,7 +33,7 @@ export const MainPage = () => {
   })
 
   async function loadRecommendedProducts () {
-    api.get('/products', {}).then((response) => {
+    api.get('/recommendations/personalized', { params: { size: 50 } }).then((response) => {
       if (response.status !== HttpStatusCode.Ok) {
         return
       }
