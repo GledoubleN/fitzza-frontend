@@ -2,13 +2,10 @@ import { Box, chakra, Container, Stack, Text } from '@chakra-ui/react'
 import { motion, useMotionValue, useScroll, useTransform } from 'motion/react'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import { useNavigate } from 'react-router-dom'
 import { Footer } from '../components/Footer.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
-import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
-import { useAuth } from '../contexts/AuthContext.js'
 import { MainHero } from './main/MainHero.jsx'
 import { LOGO_TEXT_PROPS } from './main/logoTextProps.js'
 import { ProductGrid } from './main/ProductGrid.jsx'
@@ -17,10 +14,7 @@ import { useMeasure } from './main/useMeasure.js'
 const MotionBox = chakra(motion.div)
 
 export const MainPage = () => {
-  const navigate = useNavigate()
-  const { isSignedIn } = useAuth()
   const [products, setProducts] = useState([])
-  const [isSignInDialogOpen, setIsSignInDialogOpen] = useState(false)
 
   const headerRef = useRef(null)
   const logoSlotRef = useRef(null)
@@ -37,14 +31,6 @@ export const MainPage = () => {
     const headerHeight = headerRef.current.offsetHeight
     arrivalScrollY.set(Math.max(productGridTop - headerHeight - 16, 1))
   })
-
-  const onSubmitQuery = (query) => {
-    if (!isSignedIn) {
-      setIsSignInDialogOpen(true)
-      return
-    }
-    navigate('/ai-stylist', { state: { query } })
-  }
 
   async function loadRecommendedProducts () {
     api.get('/products', {}).then((response) => {
@@ -106,7 +92,6 @@ export const MainPage = () => {
         progress={ progress }
         logoSlotRef={ logoSlotRef }
         promptSlotRef={ promptSlotRef }
-        onSubmitQuery={ onSubmitQuery }
       />
 
       <Box
@@ -129,8 +114,6 @@ export const MainPage = () => {
       <TabBar></TabBar>
 
       <Footer></Footer>
-
-      <SignInRequiredDialog open={ isSignInDialogOpen } onClose={ () => setIsSignInDialogOpen(false) }/>
     </Stack>
   )
 }

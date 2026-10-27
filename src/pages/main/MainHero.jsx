@@ -1,8 +1,8 @@
-import { Box, Card, chakra, Flex, Icon, Text } from '@chakra-ui/react'
+import { Box, chakra, Flex, Icon, Text } from '@chakra-ui/react'
 import { easeInOut, mix, motion, transform, useMotionValue, useTransform } from 'motion/react'
 import { useRef } from 'react'
 import { LuChevronDown } from 'react-icons/lu'
-import { MainPromptForm } from '../MainPromptForm.jsx'
+import { AIPromptCard } from '../../components/AIPromptCard.jsx'
 import { LOGO_TEXT_PROPS } from './logoTextProps.js'
 import { useMeasure } from './useMeasure.js'
 
@@ -26,7 +26,7 @@ const useMorph = (rects, docking, pick, fallback) => useTransform(() => {
   return current ? pick(current, progress) : fallback
 })
 
-export const MainHero = ({ progress, logoSlotRef, promptSlotRef, onSubmitQuery }) => {
+export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
   const logoRef = useRef(null)
   const promptAnchorRef = useRef(null)
   const rects = useMotionValue(null)
@@ -143,18 +143,7 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef, onSubmitQuery }
         style={ { left: promptLeft, top: promptTop, width: promptWidth, opacity: promptOpacity } }
         pointerEvents="auto"
       >
-        <Card.Root
-          rounded="3xl"
-          bg="bg.panel/80"
-          backdropFilter="auto"
-          backdropBlur="lg"
-          backdropSaturate="160%"
-          boxShadow="lg"
-        >
-          <Card.Body padding={ 1 }>
-            <MainPromptForm onSubmitQuery={ onSubmitQuery }/>
-          </Card.Body>
-        </Card.Root>
+        <AIPromptCard/>
       </MotionBox>
 
       <MotionBox
