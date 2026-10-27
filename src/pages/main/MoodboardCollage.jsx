@@ -100,8 +100,10 @@ export const MoodboardCollage = ({ products, progress }) => {
 
   return (
     <MotionBox
-      position="absolute"
+      position="fixed"
       inset="0"
+      zIndex="base"
+      pointerEvents="none"
       style={ { opacity, y } }
     >
       {

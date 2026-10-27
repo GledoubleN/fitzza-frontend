@@ -8,6 +8,7 @@ import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
 import { HeroLighting } from './main/HeroLighting.jsx'
 import { MainHero } from './main/MainHero.jsx'
+import { MoodboardCollage } from './main/MoodboardCollage.jsx'
 import { LOGO_TEXT_PROPS } from './main/logoTextProps.js'
 import { ProductGrid } from './main/ProductGrid.jsx'
 import { useMeasure } from './main/useMeasure.js'
@@ -122,9 +123,13 @@ export const MainPage = () => {
 
       <HeroLighting progress={ progress }/>
 
+      <MoodboardCollage
+        products={ products }
+        progress={ progress }
+      />
+
       <MainHero
         progress={ progress }
-        products={ products }
         logoSlotRef={ logoSlotRef }
         promptSlotRef={ promptSlotRef }
       />
