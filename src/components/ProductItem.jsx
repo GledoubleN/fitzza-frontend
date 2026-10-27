@@ -79,6 +79,14 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
       <Stack
         role="group"
         gap={ 3 }
+        padding={ 2 }
+        paddingBottom={ 3 }
+        bg="bg.panel"
+        borderWidth="thin"
+        borderColor="border.subtle"
+        boxShadow="sm"
+        transition="box-shadow 0.25s ease"
+        _hover={ { boxShadow: 'lg' } }
         cursor="pointer"
         onClick={ handleProductClick }
       >
