@@ -7,7 +7,7 @@ const MAX_PROMPT_ROWS = 4
 
 const MAX_QUERY_LENGTH = 500
 
-export const MainPromptForm = ({ onSubmitQuery }) => {
+export const PromptForm = ({ onSubmitQuery }) => {
   const navigate = useNavigate()
   const [prompt, setPrompt] = useState('')
 
