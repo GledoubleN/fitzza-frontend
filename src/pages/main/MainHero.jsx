@@ -96,15 +96,6 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
           maxWidth="2xl"
           height="12"
         />
-
-        <MotionBox style={ { opacity: introOpacity } }>
-          <Text
-            color="fg.muted"
-            textAlign="center"
-          >
-            오늘 뭐 입을지, AI 스타일리스트에게 물어보세요
-          </Text>
-        </MotionBox>
       </Flex>
 
       <MotionBox
