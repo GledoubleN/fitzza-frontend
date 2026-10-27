@@ -1,0 +1,12 @@
+{
+  "email": "user@fitzza.com",
+  "nickname": "핏짜",
+  "height": 175,
+  "weight": 68,
+  "gender": "보통",
+  "preferredFit": "레귤러",
+  "preferredStyles": [
+    "캐주얼"
+  ],
+  "shoeSize": 270
+}

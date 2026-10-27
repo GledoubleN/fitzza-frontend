@@ -1,0 +1,25 @@
+{
+  "cartId": 1,
+  "optionId": 501,
+  "quantity": 1,
+  "cartIds": [
+    1
+  ],
+  "recipientName": "Sample",
+  "recipientPhone": "010-1234-5678",
+  "shippingAddress": "Seoul",
+  "orderItemId": 1,
+  "sizeFeedback": "FIT",
+  "itemId": 5,
+  "query": "Sample",
+  "winnerProductId": 5,
+  "available": true,
+  "productId": 5,
+  "brandName": "Saint Laurent",
+  "productName": "Denim Trucker Jacket",
+  "color": "블랙",
+  "size": "L",
+  "imageUrl": "/product-image.png",
+  "unitPrice": 2300000,
+  "linePrice": 2300000
+}

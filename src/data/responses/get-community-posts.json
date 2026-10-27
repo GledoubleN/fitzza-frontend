@@ -1,0 +1,64 @@
+{
+  "content": [
+    {
+      "postId": 1,
+      "title": "코트 사려는데 둘 중 고민입니다",
+      "category": "FASHION",
+      "postType": "VOTE",
+      "nickname": "민준",
+      "createdAt": "2026-10-17T02:10:00Z",
+      "thumbnailUrl": "/product-image.png",
+      "likeCount": 4,
+      "commentCount": 5
+    },
+    {
+      "postId": 2,
+      "title": "주말에 입을 아우터 골라주세요",
+      "category": "COORDI_QUESTION",
+      "postType": "VOTE",
+      "nickname": "서연",
+      "createdAt": "2026-10-16T09:00:00Z",
+      "thumbnailUrl": "/product-image.png",
+      "likeCount": 2,
+      "commentCount": 2
+    },
+    {
+      "postId": 3,
+      "title": "이 셔츠에 어떤 바지가 어울릴까요?",
+      "category": "COORDI_QUESTION",
+      "postType": "NORMAL",
+      "nickname": "도윤",
+      "createdAt": "2026-10-15T11:30:00Z",
+      "thumbnailUrl": "/product-image.png",
+      "likeCount": 6,
+      "commentCount": 2
+    },
+    {
+      "postId": 4,
+      "title": "오늘의 출근룩 공유해요",
+      "category": "DAILY",
+      "postType": "NORMAL",
+      "nickname": "핏짜",
+      "createdAt": "2026-10-14T00:20:00Z",
+      "thumbnailUrl": "/product-image.png",
+      "likeCount": 3,
+      "commentCount": 1
+    },
+    {
+      "postId": 5,
+      "title": "흰 스니커즈 관리 팁 있나요?",
+      "category": "DAILY",
+      "postType": "NORMAL",
+      "nickname": "하린",
+      "createdAt": "2026-10-12T05:00:00Z",
+      "thumbnailUrl": null,
+      "likeCount": 1,
+      "commentCount": 2
+    }
+  ],
+  "page": 0,
+  "size": 5,
+  "totalElements": 5,
+  "totalPages": 1,
+  "hasNext": false
+}

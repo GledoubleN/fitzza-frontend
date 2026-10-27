@@ -11,16 +11,17 @@ import { CommunityArticlePage } from "./pages/community/CommunityArticlePage.jsx
 import { ProductPage } from './pages/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import { VtonGalleryPage } from './pages/profile/VtonGalleryPage.jsx'
-import WorldCupPage from './pages/WorldCupPage.jsx'
+import WorldCupPage from './pages/worldcup/WorldCupPage.jsx'
 import { ShortcutPage } from './pages/ShortcutPage.jsx'
 import { WishlistPage } from './pages/WishlistPage.jsx'
-import { SelectPage } from './pages/SelectPage.jsx'
+import { WorldCupSetupPage } from './pages/worldcup/WorldCupSetupPage.jsx'
+import { WorldCupHistoryPage } from './pages/worldcup/WorldCupHistoryPage.jsx'
 import { CategoryPage } from './pages/CategoryPage.jsx'
 import { OrderDetail } from './pages/OrderDetailPage';
 import { OrderListPage } from './pages/OrderListPage.jsx'
 import { ThemePreviewPage } from './pages/ThemePreviewPage.jsx'
-import { AIStylistPage } from './pages/ai/AIStylistPage.jsx'
-import { AIHistoryPage } from './pages/ai/AIHistoryPage.jsx'
+import { AIStylistResultPage } from './pages/ai-stylist/AIStylistResultPage.jsx'
+import { AIStylistHistoryPage } from './pages/ai-stylist/AIStylistHistoryPage.jsx'
 import OnboardingPage from './pages/OnboardingPage.jsx';
 import { RequireSignIn } from './components/RequireSignIn.jsx'
 import { DashboardPage } from './pages/DashboardPage.jsx'
@@ -42,16 +43,17 @@ function App() {
         <Route path="/community/write" element={ <RequireSignIn><CommunityWritePage/></RequireSignIn> }/>
         <Route path="/profile" element={ <RequireSignIn><ProfilePage/></RequireSignIn> }/>
         <Route path="/profile/fittings" element={ <RequireSignIn><VtonGalleryPage/></RequireSignIn> }/>
-        <Route path="/worldcup" element={ <RequireSignIn><WorldCupPage/></RequireSignIn> }/>
         <Route path="/shortcuts" element={ <ShortcutPage/> }/>
         <Route path="/wishlist" element={ <RequireSignIn><WishlistPage/></RequireSignIn> }/>
-        <Route path="/select" element={ <RequireSignIn><SelectPage/></RequireSignIn> }/>
+        <Route path="/worldcup" element={ <RequireSignIn><WorldCupPage/></RequireSignIn> }/>
+        <Route path="/worldcup/setup" element={ <RequireSignIn><WorldCupSetupPage/></RequireSignIn> }/>
+        <Route path="/worldcup/history" element={ <RequireSignIn><WorldCupHistoryPage/></RequireSignIn> }/>
         <Route path="/categories" element={ <CategoryPage/> }/>
         <Route path="/orders" element={ <RequireSignIn><OrderListPage/></RequireSignIn> }/>
         <Route path="/orders/:orderId" element={ <RequireSignIn><OrderDetail/></RequireSignIn> }/>
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
-        <Route path="/ai/history" element={ <RequireSignIn><AIHistoryPage/></RequireSignIn> }/>
-        <Route path="/ai/:requestId?" element={ <RequireSignIn><AIStylistPage/></RequireSignIn> }/>
+        <Route path="/ai-stylist/history" element={ <RequireSignIn><AIStylistHistoryPage/></RequireSignIn> }/>
+        <Route path="/ai-stylist/:requestId?" element={ <RequireSignIn><AIStylistResultPage/></RequireSignIn> }/>
         <Route path="/onboarding" element={<OnboardingPage />} />
       </Routes>
     </BrowserRouter>
