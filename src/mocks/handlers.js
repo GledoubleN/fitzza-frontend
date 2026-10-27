@@ -26,6 +26,7 @@ import postWishlistsResponse from '../data/responses/post-wishlists.json'
 import getLikesResponse from '../data/responses/get-likes.json'
 import postRecommendationsResponse from '../data/responses/post-recommendations.json'
 import getRecommendationsResponse from '../data/responses/get-recommendations.json'
+import getRecommendationsPersonalizedResponse from '../data/responses/get-recommendations-personalized.json'
 import getRecommendationsRequestIdResponse from '../data/responses/get-recommendations-requestId.json'
 import getNotificationsResponse from '../data/responses/get-notifications.json'
 import getRecommendationsRequestIdMessagesResponse from '../data/responses/get-recommendations-requestId-messages.json'
@@ -194,6 +195,11 @@ export const handlers = [
   http.get(
     `${ api.defaults.baseURL }/recommendations`,
     () => HttpResponse.json(getRecommendationsResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/recommendations/personalized`,
+    () => HttpResponse.json(getRecommendationsPersonalizedResponse),
   ),
 
   http.get(
