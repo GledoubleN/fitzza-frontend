@@ -1,8 +1,7 @@
-import { chakra, Image, Stack, Text, useBreakpointValue } from '@chakra-ui/react'
+import { Box, chakra, useBreakpointValue } from '@chakra-ui/react'
 import { motion, useMotionValueEvent, useTransform } from 'motion/react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import defaultThumbnail from '../../assets/hero.png'
+import { ProductItem } from '../../components/ProductItem.jsx'
 
 const MotionBox = chakra(motion.div)
 
@@ -28,66 +27,24 @@ const MOBILE_PIECES = [
 
 const HIDDEN_FROM_PROGRESS = 0.3
 
-const Polaroid = ({ product, piece, isInteractive }) => {
-  const navigate = useNavigate()
-
-  return (
-    <Stack
-      position="absolute"
-      left={ `${ piece.x * 100 }%` }
-      top={ `${ piece.y * 100 }%` }
-      width={ piece.width }
-      translate="-50% -50%"
-      rotate={ `${ piece.rotate }deg` }
-      zIndex={ piece.isFeatured ? 2 : 1 }
-      gap={ 2 }
-      padding={ 2 }
-      paddingBottom={ piece.isFeatured ? 3 : 4 }
-      bg="bg.panel"
-      rounded="xs"
-      boxShadow="lg"
-      cursor="pointer"
-      pointerEvents={ isInteractive ? 'auto' : 'none' }
-      filter="auto"
-      blur="sm"
-      transition="rotate 0.25s ease, scale 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease"
-      _hover={ { rotate: '0deg', scale: '1.05', zIndex: 3, boxShadow: 'xl', blur: '0' } }
-      onClick={ () => navigate(`/products/${ product.productId }`) }
-    >
-      <Image
-        src={ product.thumbnailUrl || defaultThumbnail }
-        alt={ product.productName }
-        aspectRatio={ 1 }
-        objectFit="cover"
-        bg="bg.subtle"
-      />
-      <Stack gap={ 0 }>
-        <Text
-          textStyle="xs"
-          color="fg.muted"
-          truncate
-        >
-          { product.brandName }
-        </Text>
-        <Text
-          textStyle="sm"
-          fontWeight="semibold"
-          truncate
-        >
-          { product.productName }
-        </Text>
-        { piece.isFeatured && (
-          <Text
-            textStyle="sm"
-            fontWeight="bold"
-          >
-            { product.price?.toLocaleString() } 원
-          </Text>
-        ) }
-      </Stack>
-    </Stack>
-  )
-}
+const Polaroid = ({ product, piece, isInteractive }) => (
+  <Box
+    position="absolute"
+    left={ `${ piece.x * 100 }%` }
+    top={ `${ piece.y * 100 }%` }
+    width={ piece.width }
+    translate="-50% -50%"
+    rotate={ `${ piece.rotate }deg` }
+    zIndex={ piece.isFeatured ? 2 : 1 }
+    pointerEvents={ isInteractive ? 'auto' : 'none' }
+    filter="auto"
+    blur="sm"
+    transition="rotate 0.25s ease, scale 0.25s ease, filter 0.25s ease"
+    _hover={ { rotate: '0deg', scale: '1.05', zIndex: 3, blur: '0' } }
+  >
+    <ProductItem product={ product }/>
+  </Box>
+)
 
 export const MoodboardCollage = ({ products, progress }) => {
   const pieces = useBreakpointValue({ base: MOBILE_PIECES, md: DESKTOP_PIECES }) ?? []
