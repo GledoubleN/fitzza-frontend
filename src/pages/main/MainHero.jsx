@@ -56,8 +56,6 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
   const promptOpacity = useTransform(() => rects.get() ? 1 : 0)
 
   const introOpacity = useTransform(progress, [0, 0.25], [1, 0])
-  const glowOpacity = useTransform(progress, [0, 0.5], [1, 0])
-  const glowScale = useTransform(progress, [0, 0.5], [1, 1.4])
 
   return (
     <MotionBox
@@ -66,37 +64,6 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
       zIndex="banner"
       pointerEvents="none"
     >
-      <MotionBox
-        position="absolute"
-        inset="0"
-        style={ { opacity: glowOpacity, scale: glowScale } }
-      >
-        <Box
-          position="absolute"
-          top="30%"
-          left="35%"
-          width="40vw"
-          height="40vw"
-          rounded="full"
-          bg="primary.muted"
-          opacity="0.5"
-          filter="auto"
-          blur="3xl"
-        />
-        <Box
-          position="absolute"
-          top="40%"
-          left="45%"
-          width="30vw"
-          height="30vw"
-          rounded="full"
-          bg="accent.muted"
-          opacity="0.4"
-          filter="auto"
-          blur="3xl"
-        />
-      </MotionBox>
-
       <Flex
         position="absolute"
         inset="0"

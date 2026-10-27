@@ -6,6 +6,7 @@ import { Footer } from '../components/Footer.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
+import { HeroLighting } from './main/HeroLighting.jsx'
 import { MainHero } from './main/MainHero.jsx'
 import { LOGO_TEXT_PROPS } from './main/logoTextProps.js'
 import { ProductGrid } from './main/ProductGrid.jsx'
@@ -118,6 +119,8 @@ export const MainPage = () => {
           />
         </Box>
       </Box>
+
+      <HeroLighting progress={ progress }/>
 
       <MainHero
         progress={ progress }
