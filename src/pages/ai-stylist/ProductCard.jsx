@@ -21,6 +21,9 @@ import { toaster } from '../../components/ui/toaster.jsx'
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
 const TIMEOUT = { timeout: 10000 }
 
+// 상품 상세 옵션에 품절 여부가 없으면 살 수 있는 옵션으로 봅니다.
+const isAvailable = (option) => option.available !== false
+
 // 상품 카드 한 칸의 크기. 줄 너비의 2/5를 차지해 다음 카드가 걸쳐 보이게 하되, 너무 작거나 커지지 않게 범위를 둡니다.
 // ProductCard가 이 칸을 쓰고, ProductRow의 넘기기 버튼도 사진 높이를 맞추는 데 같은 칸을 씁니다.
 export const ProductSlot = (props) => (
@@ -94,7 +97,7 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
         // 추천 응답에 색상·사이즈가 있으면 바로 선택해둡니다.
         if (options.some((option) => option.color === item.color)) setColor(item.color)
         const recommended = options.find((option) =>
-          option.color === item.color && option.size === item.recommendedSize && option.available)
+          option.color === item.color && option.size === item.recommendedSize && isAvailable(option))
         if (recommended) selectOption(String(recommended.optionId))
       })
       .catch(() => {
@@ -115,9 +118,9 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
   // 고른 색상에 있는 사이즈만 보여주고, 품절은 고를 수 없게 합니다. 값은 옵션 번호입니다.
   const sizeCollection = useMemo(() => createListCollection({
     items: options.filter((option) => option.color === color).map((option) => ({
-      label: option.available ? option.size : `${ option.size } (품절)`,
+      label: isAvailable(option) ? option.size : `${ option.size } (품절)`,
       value: String(option.optionId),
-      disabled: !option.available,
+      disabled: !isAvailable(option),
     })),
     isItemDisabled: (item) => item.disabled,
   }), [options, color])
