@@ -156,6 +156,7 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
           <GridItem alignContent={ 'center' }>
             { logo ?? (
               <Text
+                fontFamily="'Roboto Slab', serif"
                 fontSize="2xl"
                 fontWeight="bold"
                 cursor="pointer"
