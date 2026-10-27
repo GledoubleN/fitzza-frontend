@@ -16,7 +16,7 @@ import {
   useFileUpload,
 } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
-import { LuClock, LuUpload } from 'react-icons/lu'
+import { LuMenu, LuUpload } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { Header } from '../../components/Header.jsx'
@@ -344,7 +344,7 @@ export const AIStylistResultPage = () => {
               aria-label={ '대화 내역' }
               onClick={ () => navigate('/ai-stylist/history') }
             >
-              <LuClock></LuClock>
+              <LuMenu></LuMenu>
             </IconButton>
             <Text color={ 'fg.muted' }>AI 스타일리스트</Text>
           </Flex>
