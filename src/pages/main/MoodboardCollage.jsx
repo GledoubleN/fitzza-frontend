@@ -48,8 +48,10 @@ const Polaroid = ({ product, piece, isInteractive }) => {
       boxShadow="lg"
       cursor="pointer"
       pointerEvents={ isInteractive ? 'auto' : 'none' }
-      transition="rotate 0.25s ease, scale 0.25s ease, box-shadow 0.25s ease"
-      _hover={ { rotate: '0deg', scale: '1.05', zIndex: 3, boxShadow: 'xl' } }
+      filter="auto"
+      blur="sm"
+      transition="rotate 0.25s ease, scale 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease"
+      _hover={ { rotate: '0deg', scale: '1.05', zIndex: 3, boxShadow: 'xl', blur: '0' } }
       onClick={ () => navigate(`/products/${ product.productId }`) }
     >
       <Image
