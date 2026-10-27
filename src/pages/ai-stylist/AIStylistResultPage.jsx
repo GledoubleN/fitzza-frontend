@@ -387,7 +387,7 @@ export const AIStylistResultPage = () => {
               <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
                 <Card.Body gap={ 1 }>
                   {
-                    result.message
+                    result.message && result.searchType !== 'COMBO'
                       ? <MarkdownMessage markdown={ result.message }></MarkdownMessage>
                       : <Text>
                         {
