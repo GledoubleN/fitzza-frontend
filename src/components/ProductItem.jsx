@@ -1,4 +1,4 @@
-import { Box, Image, Text, Heading, IconButton, Stack } from '@chakra-ui/react'
+import { Badge, Box, Image, Text, IconButton, Stack } from '@chakra-ui/react'
 import { LuHeart } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios'
@@ -72,63 +72,92 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
     }
   }
 
-  return (
-    <Stack gap={ 4 }>
-      <Box
-        position="relative"
-        gap={ 4 }
-      >
-        <Image
-          width="100%"
-          aspectRatio={ 1 }
-          objectFit="contain"
-          src={ product?.thumbnailUrl || defaultThumbnail }
-          alt={ productName }
-          onClick={ handleProductClick }
-          cursor="pointer"
-        />
-        <IconButton
-          position="absolute"
-          top={ 0 }
-          right={ 0 }
-          rounded="full"
-          variant="ghost"
-          aria-label={ isLiked ? '찜 해제' : '찜하기' }
-          aria-pressed={ isLiked }
-          color={ isLiked ? 'fg.error' : 'fg.muted' }
-          onClick={ handleWishClick }
-          disabled={ isLoading }
-        >
-          <LuHeart fill={ isLiked ? 'currentColor' : 'none' } />
-        </IconButton>
-      </Box>
+  const isSoldOut = product?.status === 'SOLD_OUT'
 
-      <Stack gap={ 0 }>
-        <Text
-          textStyle="xs"
-          color="fg.muted"
-          truncate
+  return (
+    <>
+      <Stack
+        role="group"
+        gap={ 3 }
+        cursor="pointer"
+        onClick={ handleProductClick }
+      >
+        <Box
+          position="relative"
+          aspectRatio={ 3 / 4 }
+          overflow="hidden"
+          bg="bg.muted"
         >
-          { product?.brandName }
-        </Text>
-        <Heading
-          size={ { base: 'sm', md: 'md' } }
-          truncate
-        >
-          { productName }
-        </Heading>
-        <Text
-          textStyle={ { base: 'xs', md: 'sm' } }
-          fontWeight="bold"
-        >
-          { product?.price?.toLocaleString() } 원
-        </Text>
+          <Image
+            width="full"
+            height="full"
+            objectFit="cover"
+            src={ product?.thumbnailUrl || defaultThumbnail }
+            alt={ productName }
+            opacity={ isSoldOut ? 0.5 : 1 }
+            transition="transform 0.4s ease"
+            _groupHover={ { transform: 'scale(1.05)' } }
+          />
+          { isSoldOut && (
+            <Badge
+              position="absolute"
+              top={ 2 }
+              left={ 2 }
+              variant="solid"
+              colorPalette="gray"
+            >
+              품절
+            </Badge>
+          ) }
+          <IconButton
+            position="absolute"
+            top={ 2 }
+            right={ 2 }
+            size="sm"
+            rounded="full"
+            variant="ghost"
+            backdropFilter="auto"
+            _hover={ { bg: 'bg.muted/70', backdropBlur: 'lg' } }
+            aria-label={ isLiked ? '찜 해제' : '찜하기' }
+            aria-pressed={ isLiked }
+            color={ isLiked ? 'fg.error' : 'fg.muted' }
+            onClick={ handleWishClick }
+            disabled={ isLoading }
+          >
+            <LuHeart fill={ isLiked ? 'currentColor' : 'none' } />
+          </IconButton>
+        </Box>
+
+        <Stack gap={ 1 }>
+          <Text
+            textStyle="xs"
+            fontWeight="semibold"
+            letterSpacing="wide"
+            textTransform="uppercase"
+            color="fg.muted"
+            truncate
+          >
+            { product?.brandName }
+          </Text>
+          <Text
+            textStyle="sm"
+            lineClamp={ 2 }
+          >
+            { productName }
+          </Text>
+          <Text
+            textStyle={ { base: 'sm', md: 'md' } }
+            fontWeight="bold"
+          >
+            { product?.price?.toLocaleString() } 원
+          </Text>
+        </Stack>
       </Stack>
 
       <SignInRequiredDialog
         open={ isSignInDialogOpen }
         onClose={ () => setIsSignInDialogOpen(false) }
       />
-    </Stack>
+    </>
   )
 }
