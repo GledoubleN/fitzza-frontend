@@ -94,7 +94,7 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
         // 추천 응답에 색상·사이즈가 있으면 바로 선택해둡니다.
         if (options.some((option) => option.color === item.color)) setColor(item.color)
         const recommended = options.find((option) =>
-          option.color === item.color && option.size === item.size && option.available)
+          option.color === item.color && option.size === item.recommendedSize && option.available)
         if (recommended) selectOption(String(recommended.optionId))
       })
       .catch(() => {
