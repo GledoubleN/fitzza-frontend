@@ -1,0 +1,181 @@
+import { Box, Card, chakra, Flex, Icon, Text } from '@chakra-ui/react'
+import { easeInOut, mix, motion, transform, useMotionValue, useTransform } from 'motion/react'
+import { useRef } from 'react'
+import { LuChevronDown } from 'react-icons/lu'
+import { MainPromptForm } from '../MainPromptForm.jsx'
+import { LOGO_TEXT_PROPS } from './logoTextProps.js'
+import { useMeasure } from './useMeasure.js'
+
+const MotionBox = chakra(motion.div)
+
+const toRect = (element) => ({
+  left: element.offsetLeft,
+  top: element.offsetTop,
+  width: element.offsetWidth,
+  height: element.offsetHeight,
+})
+
+const toViewportRect = (element) => {
+  const { left, top, width, height } = element.getBoundingClientRect()
+  return { left, top, width, height }
+}
+
+const useMorph = (rects, docking, pick, fallback) => useTransform(() => {
+  const current = rects.get()
+  const progress = docking.get()
+  return current ? pick(current, progress) : fallback
+})
+
+export const MainHero = ({ progress, logoSlotRef, promptSlotRef, onSubmitQuery }) => {
+  const logoRef = useRef(null)
+  const promptAnchorRef = useRef(null)
+  const rects = useMotionValue(null)
+
+  useMeasure(() => {
+    if (!logoRef.current || !logoSlotRef.current || !promptSlotRef.current) return
+
+    rects.set({
+      logo: toRect(logoRef.current),
+      logoSlot: toViewportRect(logoSlotRef.current),
+      prompt: toRect(promptAnchorRef.current),
+      promptSlot: toViewportRect(promptSlotRef.current),
+    })
+  })
+
+  const docking = useTransform(progress, (value) => transform(value, [0.05, 0.6], [0, 1], { ease: easeInOut }))
+
+  const logoX = useMorph(rects, docking, ({ logo, logoSlot }, k) => mix(0, logoSlot.left - logo.left, k), 0)
+  const logoY = useMorph(rects, docking, ({ logo, logoSlot }, k) => mix(0, logoSlot.top - logo.top, k), 0)
+  const logoScale = useMorph(rects, docking, ({ logo, logoSlot }, k) => mix(1, logoSlot.width / logo.width, k), 1)
+
+  const promptLeft = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(prompt.left, promptSlot.left, k), 0)
+  const promptTop = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(prompt.top, promptSlot.top, k), 0)
+  const promptWidth = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(prompt.width, promptSlot.width, k), 0)
+  const promptOpacity = useTransform(() => rects.get() ? 1 : 0)
+
+  const introOpacity = useTransform(progress, [0, 0.25], [1, 0])
+  const glowOpacity = useTransform(progress, [0, 0.5], [1, 0])
+  const glowScale = useTransform(progress, [0, 0.5], [1, 1.4])
+
+  return (
+    <MotionBox
+      position="fixed"
+      inset="0"
+      zIndex="banner"
+      pointerEvents="none"
+    >
+      <MotionBox
+        position="absolute"
+        inset="0"
+        style={ { opacity: glowOpacity, scale: glowScale } }
+      >
+        <Box
+          position="absolute"
+          top="30%"
+          left="35%"
+          width="40vw"
+          height="40vw"
+          rounded="full"
+          bg="primary.muted"
+          opacity="0.5"
+          filter="auto"
+          blur="3xl"
+        />
+        <Box
+          position="absolute"
+          top="40%"
+          left="45%"
+          width="30vw"
+          height="30vw"
+          rounded="full"
+          bg="accent.muted"
+          opacity="0.4"
+          filter="auto"
+          blur="3xl"
+        />
+      </MotionBox>
+
+      <Flex
+        position="absolute"
+        inset="0"
+        direction="column"
+        align="center"
+        justify="center"
+        gap={ 8 }
+        paddingX={ 4 }
+        paddingBottom="12vh"
+      >
+        <MotionBox
+          ref={ logoRef }
+          style={ { x: logoX, y: logoY, scale: logoScale, transformOrigin: '0 0' } }
+          pointerEvents="auto"
+          cursor="pointer"
+          onClick={ () => window.scrollTo({ top: 0, behavior: 'smooth' }) }
+        >
+          <Text
+            as="h1"
+            { ...LOGO_TEXT_PROPS }
+            fontSize={ { base: '7xl', md: '9xl' } }
+          >
+            Fitzza
+          </Text>
+        </MotionBox>
+
+        <Box
+          ref={ promptAnchorRef }
+          width="full"
+          maxWidth="2xl"
+          height="12"
+        />
+
+        <MotionBox style={ { opacity: introOpacity } }>
+          <Text
+            color="fg.muted"
+            textAlign="center"
+          >
+            오늘 뭐 입을지, AI 스타일리스트에게 물어보세요
+          </Text>
+        </MotionBox>
+      </Flex>
+
+      <MotionBox
+        position="absolute"
+        style={ { left: promptLeft, top: promptTop, width: promptWidth, opacity: promptOpacity } }
+        pointerEvents="auto"
+      >
+        <Card.Root
+          rounded="3xl"
+          bg="bg.panel/80"
+          backdropFilter="auto"
+          backdropBlur="lg"
+          backdropSaturate="160%"
+          boxShadow="lg"
+        >
+          <Card.Body padding={ 1 }>
+            <MainPromptForm onSubmitQuery={ onSubmitQuery }/>
+          </Card.Body>
+        </Card.Root>
+      </MotionBox>
+
+      <MotionBox
+        position="absolute"
+        bottom="28"
+        left="0"
+        right="0"
+        style={ { opacity: introOpacity } }
+      >
+        <Flex
+          direction="column"
+          align="center"
+          gap={ 1 }
+          color="fg.subtle"
+          animation="bounce"
+          animationDuration="2s"
+        >
+          <Text textStyle="xs">스크롤해서 오늘의 추천 열어보기</Text>
+          <Icon as={ LuChevronDown }/>
+        </Flex>
+      </MotionBox>
+    </MotionBox>
+  )
+}

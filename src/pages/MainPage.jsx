@@ -1,26 +1,42 @@
-import {
-  Container,
-  Grid,
-  Stack,
-  Card,
-} from '@chakra-ui/react'
+import { Box, chakra, Container, Stack, Text } from '@chakra-ui/react'
+import { motion, useMotionValue, useScroll, useTransform } from 'motion/react'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { useNavigate } from 'react-router-dom'
 import { Footer } from '../components/Footer.jsx'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
-import { ProductItem } from '../components/ProductItem.jsx'
 import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
-import { MainPromptForm } from './MainPromptForm.jsx'
+import { MainHero } from './main/MainHero.jsx'
+import { LOGO_TEXT_PROPS } from './main/logoTextProps.js'
+import { ProductGrid } from './main/ProductGrid.jsx'
+import { useMeasure } from './main/useMeasure.js'
+
+const MotionBox = chakra(motion.div)
 
 export const MainPage = () => {
   const navigate = useNavigate()
   const { isSignedIn } = useAuth()
   const [products, setProducts] = useState([])
   const [isSignInDialogOpen, setIsSignInDialogOpen] = useState(false)
+
+  const headerRef = useRef(null)
+  const logoSlotRef = useRef(null)
+  const promptSlotRef = useRef(null)
+  const productGridRef = useRef(null)
+
+  const { scrollY } = useScroll()
+  const arrivalScrollY = useMotionValue(1)
+  const progress = useTransform(() => Math.min(Math.max(scrollY.get() / arrivalScrollY.get(), 0), 1))
+  const headerBackgroundOpacity = useTransform(progress, [0.9, 1], [0, 1])
+
+  useMeasure(() => {
+    const productGridTop = productGridRef.current.getBoundingClientRect().top + window.scrollY
+    const headerHeight = headerRef.current.offsetHeight
+    arrivalScrollY.set(Math.max(productGridTop - headerHeight - 16, 1))
+  })
 
   const onSubmitQuery = (query) => {
     if (!isSignedIn) {
@@ -45,41 +61,69 @@ export const MainPage = () => {
   }, [])
 
   return (
-    <Grid
+    <Stack
       gap={ 4 }
-      templateRows={'auto auto 1fr auto auto'}
-      paddingY={ '4' }
-      minHeight={ '100vh' }
+      minHeight="100vh"
     >
-      <Header></Header>
-
-      <Container maxWidth={ '5xl' }>
-        <Card.Root
-          height={ '100%' }
-          rounded={ '4xl' }
-        >
-          <Card.Body padding={ 2 }>
-            <Stack height={ '100%' } gap={ 2 } position="relative">
-              <MainPromptForm onSubmitQuery={ onSubmitQuery }/>
-            </Stack>
-          </Card.Body>
-        </Card.Root>
-      </Container>
-
-      <Container maxWidth={ '5xl' }>
-        <Grid
-          templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
-          gap={ 4 }
-        >
-          {
-            products.map((product) => (
-              <ProductItem
-                key={ product.productId }
-                product={ product }
+      <Box
+        ref={ headerRef }
+        position="sticky"
+        top="0"
+        zIndex="sticky"
+        paddingY={ 4 }
+      >
+        <MotionBox
+          position="absolute"
+          inset="0"
+          bg="bg"
+          style={ { opacity: headerBackgroundOpacity } }
+        />
+        <Box position="relative">
+          <Header
+            logo={
+              <Text
+                ref={ logoSlotRef }
+                { ...LOGO_TEXT_PROPS }
+                fontSize="2xl"
+                visibility="hidden"
+              >
+                Fitzza
+              </Text>
+            }
+            center={
+              <Box
+                ref={ promptSlotRef }
+                maxWidth="xl"
+                height="12"
+                marginX="auto"
               />
-            ))
-          }
-        </Grid>
+            }
+          />
+        </Box>
+      </Box>
+
+      <MainHero
+        progress={ progress }
+        logoSlotRef={ logoSlotRef }
+        promptSlotRef={ promptSlotRef }
+        onSubmitQuery={ onSubmitQuery }
+      />
+
+      <Box
+        height="100vh"
+        aria-hidden
+      />
+
+      <Container
+        ref={ productGridRef }
+        maxWidth={ '5xl' }
+        paddingBottom={ 8 }
+      >
+        <ProductGrid
+          products={ products }
+          scrollY={ scrollY }
+          progress={ progress }
+        />
       </Container>
 
       <TabBar></TabBar>
@@ -87,7 +131,6 @@ export const MainPage = () => {
       <Footer></Footer>
 
       <SignInRequiredDialog open={ isSignInDialogOpen } onClose={ () => setIsSignInDialogOpen(false) }/>
-
-    </Grid>
+    </Stack>
   )
 }
