@@ -31,7 +31,7 @@ const formatNotificationTime = (value) => new Date(value).toLocaleString('ko-KR'
   minute: '2-digit',
 })
 
-export const Header = ({ maxWidth = '7xl' }) => {
+export const Header = ({ maxWidth = '7xl', logo, center }) => {
   const navigate = useNavigate()
   const { isSignedIn, setAccessToken } = useAuth()
   const [isSigningOut, setIsSigningOut] = useState(false)
@@ -93,17 +93,28 @@ export const Header = ({ maxWidth = '7xl' }) => {
     <Container maxWidth={ maxWidth }>
       <Grid templateColumns={ 'auto 1fr auto' } gap={ '4' }>
         <GridItem alignContent={ 'center' }>
-          <Text
-            fontSize="2xl"
-            fontWeight="bold"
-            cursor="pointer"
-            onClick={ () => navigate('/') }
-          >
-            Fitzza
-          </Text>
+          { logo ?? (
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              cursor="pointer"
+              onClick={ () => navigate('/') }
+            >
+              Fitzza
+            </Text>
+          ) }
         </GridItem>
-        <GridItem></GridItem>
-        <GridItem alignContent={ 'center' }>
+        <GridItem
+          gridColumn={ center && { base: '1 / -1', md: 'auto' } }
+          gridRow={ center && { base: '2', md: 'auto' } }
+          alignContent={ 'center' }
+        >
+          { center }
+        </GridItem>
+        <GridItem
+          gridColumn={ '3' }
+          alignContent={ 'center' }
+        >
           <Stack direction={ 'row' } gap={ 4 } align="center">
             <Popover.Root
               open={ isNotificationOpen }
