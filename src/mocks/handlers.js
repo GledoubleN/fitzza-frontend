@@ -253,7 +253,10 @@ export const handlers = [
 
   http.get(
     `${ api.defaults.baseURL }/vton/:fittingId`,
-    () => HttpResponse.json(getVtonFittingIdResponse),
+    ({ params }) => {
+      const fitting = getVtonResponse.items.find((fitting) => fitting.fittingId === Number(params.fittingId))
+      return HttpResponse.json(fitting ?? getVtonFittingIdResponse)
+    },
   ),
 
   http.delete(

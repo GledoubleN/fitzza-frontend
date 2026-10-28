@@ -7,7 +7,7 @@ const pageSize = 5
 export const toNotificationPath = ({ type, targetId }) => {
   switch (type) {
     case 'FITTING_DONE':
-      return `/profile/fittings?fittingId=${ targetId }`
+      return `/ai-stylist/fittings/${ targetId }`
     case 'RECOMMENDATION_DONE':
       return `/ai-stylist/${ targetId }`
     case 'COMMENT':
