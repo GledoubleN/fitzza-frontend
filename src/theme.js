@@ -147,6 +147,15 @@ const config = defineConfig({
           content: { layerStyle: 'glass' },
         },
       },
+      dialog: {
+        base: {
+          backdrop: {
+            bg: 'bg/30',
+            backdropFilter: 'auto',
+            backdropBlur: 'md',
+          },
+        },
+      },
     },
   },
   globalCss: {
