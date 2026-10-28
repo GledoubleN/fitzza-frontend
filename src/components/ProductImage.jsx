@@ -14,15 +14,15 @@ export const ProductImage = ({ src, objectFit, onError, ...props }) => {
   if (isFallback) {
     return (
       <Flex
-        {...props}
         aspectRatio="3 / 4"
+        rounded="l2"
         direction="column"
         align="center"
         justify="center"
         gap={2}
         bg="bg.muted"
         color="fg.muted"
-        rounded="l2"
+        {...props}
       >
         <LuCameraOff size={28} />
         <Text textStyle="xs">이미지 준비 중입니다</Text>
