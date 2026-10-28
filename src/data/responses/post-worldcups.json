@@ -1,0 +1,12 @@
+{
+  "worldcupHistoryId": 25,
+  "winnerProduct": {
+    "productId": 5,
+    "brandName": "Saint Laurent",
+    "productName": "Denim Trucker Jacket",
+    "price": 2300000,
+    "imageUrl": "/product-image.png",
+    "status": "ON_SALE"
+  },
+  "completedAt": "2026-10-25T03:00:00.000Z"
+}

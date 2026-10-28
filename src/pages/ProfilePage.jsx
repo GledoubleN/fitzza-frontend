@@ -23,15 +23,16 @@ import {
 } from 'react-icons/lu';
 import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
-import { Toaster } from '../components/ui/toaster.jsx';
 import { VtonGallery } from './profile/VtonGallery.jsx';
 import { api } from '../api/axios.js';
 import { useAuth } from '../contexts/AuthContext.js'
-import preferredFits from '/src/data/preferred-fits.json'
-import preferredStyles from '/src/data/preferred-styles.json'
+import { useUserPreferences } from '../hooks/useUserPreferences.js'
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
+  const { preferredFits, preferredStyles, errorMessage: preferencesError } = useUserPreferences()
+  const fitOptions = [{ label: '선택 안함', value: '' }, ...preferredFits]
+  const styleOptions = [{ label: '선택 안함', value: '' }, ...preferredStyles]
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
     nickname: '테스트사용자',
@@ -168,6 +169,15 @@ export default function ProfilePage() {
               </Text>
             </Flex>
 
+            { preferencesError && (
+              <Text
+                color="fg.error"
+                textStyle="sm"
+              >
+                { preferencesError }
+              </Text>
+            ) }
+
             {!isEditing ? (
               <Box w="100%">
                 <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted">
@@ -216,7 +226,7 @@ export default function ProfilePage() {
                   <HStack position="relative" zIndex={2}>
                     <Text textStyle="xs" w="28%" color="fg.muted">선호 핏</Text>
                     <Select.Root
-                      collection={createListCollection({ items: preferredFits })}
+                      collection={createListCollection({ items: fitOptions })}
                       size="xs"
                       width="full"
                       value={profileData.preferredFit ? [profileData.preferredFit] : ['']}
@@ -226,7 +236,7 @@ export default function ProfilePage() {
                         <Select.ValueText placeholder="선호 핏 선택" />
                       </Select.Trigger>
                       <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {preferredFits.map((item) => (
+                        {fitOptions.map((item) => (
                           <Select.Item key={item.value} item={item}>
                             {item.label}
                           </Select.Item>
@@ -239,7 +249,7 @@ export default function ProfilePage() {
                   <HStack position="relative" zIndex={1}>
                     <Text textStyle="xs" w="28%" color="fg.muted">스타일</Text>
                     <Select.Root
-                      collection={createListCollection({ items: preferredStyles })}
+                      collection={createListCollection({ items: styleOptions })}
                       size="xs"
                       width="full"
                       value={profileData.style ? [profileData.style] : ['']}
@@ -249,7 +259,7 @@ export default function ProfilePage() {
                         <Select.ValueText placeholder="선호 스타일 선택" />
                       </Select.Trigger>
                       <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {preferredStyles.map((item) => (
+                        {styleOptions.map((item) => (
                           <Select.Item key={item.value} item={item}>
                             {item.label}
                           </Select.Item>
@@ -283,7 +293,7 @@ export default function ProfilePage() {
             <Grid templateColumns="repeat(4, 1fr)" gap={2}>
               {[
                 { label: '주문', icon: LuPackage, path: '/orders' },
-                { label: '추천내역', icon: LuHistory, path: '/ai/history' },
+                { label: '추천내역', icon: LuHistory, path: '/ai-stylist/history' },
                 { label: '커뮤니티', icon: LuMessageSquare },
                 { label: '설정', icon: LuSettings },
               ].map((item) => {
@@ -333,7 +343,6 @@ export default function ProfilePage() {
       <Box position="fixed" bottom={0} left={0} right={0} zIndex={10} bg="bg">
         <TabBar />
       </Box>
-      <Toaster />
     </Box>
   );
 }

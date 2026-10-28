@@ -37,7 +37,7 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
         type={ 'button' }
         rounded={ 'full' }
         aria-label={ '대화 내역' }
-        onClick={ () => navigate('/ai/history') }
+        onClick={ () => navigate('/ai-stylist/history') }
       >
         <LuSparkle/>
       </IconButton>

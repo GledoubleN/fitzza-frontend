@@ -21,7 +21,7 @@ export const usePushNotifications = (isSignedIn) => {
     let registeredToken
 
     const registerPushToken = async () => {
-      if (registering || session.current !== currentSession) return
+      if (registering || registeredToken || session.current !== currentSession) return
 
       registering = true
 

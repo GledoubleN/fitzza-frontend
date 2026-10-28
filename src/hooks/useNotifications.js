@@ -9,7 +9,7 @@ export const toNotificationPath = ({ type, targetId }) => {
     case 'FITTING_DONE':
       return `/profile/fittings?fittingId=${ targetId }`
     case 'RECOMMENDATION_DONE':
-      return `/ai/${ targetId }`
+      return `/ai-stylist/${ targetId }`
     case 'COMMENT':
     case 'VOTE_CLOSED':
       return `/community/articles/${ targetId }`

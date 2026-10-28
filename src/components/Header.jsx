@@ -17,9 +17,10 @@ import { LuBell, LuShoppingBag, LuLogIn, LuLogOut } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { useAuth } from '../contexts/AuthContext.js'
+import { usePushNotification } from '../contexts/PushNotificationContext.js'
 import { toNotificationPath, toNotificationText, useNotifications } from '../hooks/useNotifications.js'
-import { usePushNotifications } from '../hooks/usePushNotifications.js'
 import { disablePush } from '../services/pushNotifications.js'
+import { toaster } from './ui/toaster.jsx'
 
 const isNotificationDenied = () => 'Notification' in window && Notification.permission === 'denied'
 
@@ -34,7 +35,7 @@ export const Header = ({ maxWidth = '7xl' }) => {
   const navigate = useNavigate()
   const { isSignedIn, setAccessToken } = useAuth()
   const [isSigningOut, setIsSigningOut] = useState(false)
-  const { error, isConfigured } = usePushNotifications(isSignedIn && !isSigningOut)
+  const { error, isConfigured } = usePushNotification()
   const { notifications, status: notificationStatus, hasUnread, reload, markAsRead } = useNotifications(isSignedIn && !isSigningOut)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
 
@@ -46,32 +47,41 @@ export const Header = ({ maxWidth = '7xl' }) => {
     navigate(path)
   }
 
-  const handleSignOutButtonClick = async () => {
+  const handleSignIn = () => {
+    navigate('/signin')
+  }
+
+  const handleSignOut = async () => {
     if (isSigningOut) return
 
-    if (isSignedIn) {
-      setIsSigningOut(true)
+    setIsSigningOut(true)
 
-      try {
-        await disablePush()
-      } catch (error) {
-        setIsSigningOut(false)
-        alert(error.message || '푸시 알림을 해제하지 못했습니다. 다시 시도해주세요.')
-        return
-      }
-
-      api.post('/auth/signout').catch((error) => {
-        console.log(error)
-      })
-
-      setAccessToken(null)
+    try {
+      await disablePush()
+    } catch (error) {
       setIsSigningOut(false)
-      alert('로그아웃되었습니다.')
-      navigate('/signin')
-
-    } else {
-      navigate('/signin')
+      toaster.create({
+        type: 'error',
+        title: error.message || '푸시 알림을 해제하지 못했습니다. 다시 시도해주세요.',
+        closable: true,
+      })
+      return
     }
+
+    api.post('/auth/signout').catch((error) => {
+      console.log(error)
+    })
+
+    setAccessToken(null)
+    setIsSigningOut(false)
+    navigate('/')
+    toaster.create({ type: 'success', title: '로그아웃되었습니다.', closable: true })
+  }
+
+  const handleAuthButtonClick = () => {
+    if (isSigningOut) return
+
+    return isSignedIn ? handleSignOut() : handleSignIn()
   }
 
   const buttonProps = {
@@ -191,7 +201,7 @@ export const Header = ({ maxWidth = '7xl' }) => {
 
             <IconButton
               { ...buttonProps }
-              onClick={ handleSignOutButtonClick }
+              onClick={ handleAuthButtonClick }
               disabled={ isSigningOut }
               title={ isSignedIn ? '로그아웃' : '로그인' }
             >

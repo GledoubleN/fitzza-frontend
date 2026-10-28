@@ -14,7 +14,6 @@ import { HttpStatusCode } from 'axios'
 import { ProductItem } from '../components/ProductItem.jsx'
 import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
-import { Toaster } from '../components/ui/toaster.jsx'
 import { MainPromptForm } from './MainPromptForm.jsx'
 
 export const MainPage = () => {
@@ -28,7 +27,7 @@ export const MainPage = () => {
       setIsSignInDialogOpen(true)
       return
     }
-    navigate('/ai', { state: { query } })
+    navigate('/ai-stylist', { state: { query } })
   }
 
   async function loadRecommendedProducts () {
@@ -46,8 +45,9 @@ export const MainPage = () => {
   }, [])
 
   return (
-    <Stack
+    <Grid
       gap={ 4 }
+      templateRows={'auto auto 1fr auto auto'}
       paddingY={ '4' }
       minHeight={ '100vh' }
     >
@@ -88,7 +88,6 @@ export const MainPage = () => {
 
       <SignInRequiredDialog open={ isSignInDialogOpen } onClose={ () => setIsSignInDialogOpen(false) }/>
 
-      <Toaster />
-    </Stack>
+    </Grid>
   )
 }

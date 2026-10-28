@@ -1,0 +1,54 @@
+{
+  "content": [
+    {
+      "notificationId": 6,
+      "type": "VOTE_CLOSED",
+      "content": "내 투표가 마감됐어요: 주말에 입을 아우터 골라주세요",
+      "targetId": 2,
+      "isRead": false,
+      "createdAt": "2026-10-21T10:10:00Z"
+    },
+    {
+      "notificationId": 1,
+      "type": "COMMENT",
+      "content": "내 게시글에 새 댓글이 달렸어요: 왼쪽이요! 오버핏 코트가 요즘 더 트렌디해요.",
+      "targetId": 1,
+      "isRead": true,
+      "createdAt": "2026-10-21T10:00:00Z"
+    },
+    {
+      "notificationId": 5,
+      "type": "FITTING_DONE",
+      "content": "가상 피팅이 완료되었습니다.",
+      "targetId": 2,
+      "isRead": true,
+      "createdAt": "2026-10-21T09:50:00Z"
+    },
+    {
+      "notificationId": 4,
+      "type": "RECOMMENDATION_DONE",
+      "content": "추천 결과가 나왔어요.",
+      "targetId": 7,
+      "isRead": false,
+      "createdAt": "2026-10-21T09:30:00Z"
+    },
+    {
+      "notificationId": 3,
+      "type": "FITTING_FAILED",
+      "content": "가상 피팅 생성에 실패했습니다.",
+      "targetId": 4,
+      "isRead": false,
+      "createdAt": "2026-10-21T09:10:00Z"
+    },
+    {
+      "notificationId": 2,
+      "type": "FITTING_DONE",
+      "content": "가상 피팅이 완료되었습니다.",
+      "targetId": 1,
+      "isRead": false,
+      "createdAt": "2026-10-21T08:50:00Z"
+    }
+  ],
+  "page": 0,
+  "totalPages": 1
+}
