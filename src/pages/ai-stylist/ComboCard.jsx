@@ -19,6 +19,13 @@ export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
   const [addedProductIds, setAddedProductIds] = useState([])
   const [cartFailures, setCartFailures] = useState({})
 
+  const markAdded = (productId) => {
+    setAddedProductIds((productIds) => productIds.includes(productId) ? productIds : [...productIds, productId])
+    setCartFailures((failures) => Object.fromEntries(
+      Object.entries(failures).filter(([failedProductId]) => Number(failedProductId) !== productId),
+    ))
+  }
+
   const hasAllRecommendedSizes = combo.items.every((item) => item.recommendedSize)
 
   const addAllToCart = async () => {
@@ -80,6 +87,7 @@ export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
                 key={ item.productId }
                 item={ item }
                 cartFailure={ cartFailures[item.productId] }
+                onCartAdded={ markAdded }
               ></ProductCard>
             ))
           }

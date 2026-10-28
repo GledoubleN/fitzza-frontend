@@ -21,7 +21,7 @@ export const ProductSlot = (props) => (
 )
 
 // onTryOn: 있으면 이 상품으로 가상 피팅을 시작하는 버튼을 보여줍니다. tryingOn: 다른 가상 피팅이 진행 중인지.
-export const ProductCard = ({ item, cartFailure, onTryOn, tryingOn }) => {
+export const ProductCard = ({ item, cartFailure, onCartAdded, onTryOn, tryingOn }) => {
   const [saving, setSaving] = useState(false)
   const [added, setAdded] = useState(false)
   const optionLabel = toRecommendedOptionLabel(item)
@@ -31,6 +31,7 @@ export const ProductCard = ({ item, cartFailure, onTryOn, tryingOn }) => {
     try {
       if (await addRecommendedOptionToCart(item)) {
         setAdded(true)
+        onCartAdded?.(item.productId)
       } else {
         toaster.create({ type: 'error', title: '추천 옵션을 찾지 못했어요. 상품 페이지에서 담아주세요.' })
       }
