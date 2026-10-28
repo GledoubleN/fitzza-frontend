@@ -25,15 +25,22 @@ const boldFollowedByKorean = {
 
 const marked = new Marked().use({ extensions: [boldFollowedByKorean] })
 
-const LEAD_SENTENCE_PATTERN = /^([^\n#>*\-\d][^\n]*?[.!?])\s+(?=\S)/
-
-const hasUnclosedBold = (text) => text.split('**').length % 2 === 0
+const SENTENCE_END_PATTERN = /[.!?](?=\s+\S)/
 
 const separateLeadSentence = (markdown) => {
-  const match = LEAD_SENTENCE_PATTERN.exec(markdown)
-  if (!match || hasUnclosedBold(match[1])) return markdown
+  const [firstBlock] = marked.lexer(markdown)
+  if (firstBlock?.type !== 'paragraph' || !markdown.startsWith(firstBlock.raw)) return markdown
 
-  return `${ match[1] }\n\n${ markdown.slice(match[0].length) }`
+  let offset = 0
+  for (const token of firstBlock.tokens) {
+    const sentenceEnd = token.type === 'text' ? token.raw.search(SENTENCE_END_PATTERN) : -1
+    if (sentenceEnd >= 0) {
+      const cut = offset + sentenceEnd + 1
+      return `${ markdown.slice(0, cut) }\n\n${ markdown.slice(cut).trimStart() }`
+    }
+    offset += token.raw.length
+  }
+  return markdown
 }
 
 const messageCss = {
