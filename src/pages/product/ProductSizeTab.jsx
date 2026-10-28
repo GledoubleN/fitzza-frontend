@@ -13,13 +13,16 @@ const unique = (values) => [...new Set(values.filter(Boolean))]
 
 export const ProductSizeTab = ({ product }) => {
   const options = product.options ?? []
-  // 실측은 옵션별로 내려오지만 같은 사이즈면 색상과 무관하게 같다고 보고 사이즈당 하나만 쓴다.
-  // measurement의 세부 필드는 명세에 정의되지 않아 내려온 키를 그대로 행 이름으로 쓴다.
+  const sizeGuide = product.sizeGuide ?? {}
+  const measurements = sizeGuide.measurements ?? []
+
+  const sizes = measurements.map((m) => m.size).filter(Boolean)
+
+  const parts = unique(measurements.flatMap((m) => Object.keys(m.values ?? {})))
+
   const measurementsBySize = new Map(
-    options.filter((option) => option.measurement).map((option) => [option.size, option.measurement]),
+    measurements.map((m) => [m.size, m.values ?? {}])
   )
-  const sizes = [...measurementsBySize.keys()]
-  const parts = unique(sizes.flatMap((size) => Object.keys(measurementsBySize.get(size))))
 
   const details = [
     { label: '소재', value: product.material },
@@ -35,11 +38,13 @@ export const ProductSizeTab = ({ product }) => {
         <Text textStyle={ 'sm' } color={ 'fg.muted' }>상세 페이지를 스캔해 실측정보를 찾아왔어요!</Text>
       </Stack>
 
-      { sizes.length === 0 ? (
+      { sizes.length === 0 || parts.length === 0 ? (
         <Text color={ 'fg.muted' }>정보가 없습니다.</Text>
       ) : (
         <Stack gap={ 3 }>
-          <Text textStyle={ 'xs' } color={ 'fg.muted' } textAlign={ 'end' }>단면(cm)</Text>
+          <Text textStyle={ 'xs' } color={ 'fg.muted' } textAlign={ 'end' }>
+            단면({ sizeGuide.unit || 'cm' })
+          </Text>
           <Table.ScrollArea border={ 'sm' } borderColor={ 'border' } rounded={ 'l2' }>
             <Table.Root textAlign={ 'center' }>
               <Table.Header>
@@ -54,20 +59,24 @@ export const ProductSizeTab = ({ product }) => {
                 { parts.map((part) => (
                   <Table.Row key={ part }>
                     <Table.Cell fontWeight={ 'bold' } textAlign={ 'center' }>{ part }</Table.Cell>
-                    { sizes.map((size) => (
-                      <Table.Cell key={ size } textAlign={ 'center' }>
-                        { measurementsBySize.get(size)[part] ?? '-' }
-                      </Table.Cell>
-                    )) }
+                    { sizes.map((size) => {
+                      const valuesMap = measurementsBySize.get(size) || {}
+                      return (
+                        <Table.Cell key={ size } textAlign={ 'center' }>
+                          { valuesMap[part] ?? '-' }
+                        </Table.Cell>
+                      )
+                    }) }
                   </Table.Row>
                 )) }
               </Table.Body>
             </Table.Root>
           </Table.ScrollArea>
+
           <Flex gap={ 2 } color={ 'fg.muted' }>
             <Icon marginTop={ 1 }><LuInfo/></Icon>
             <Text textStyle={ 'xs' }>
-              스캔 과정에서 오류가 발생하거나, 상품 판매자가 정보를 수정하는 경우 정확한 정보가 아닐 수 있으므로 참고용으로만 봐 주세요.
+              { sizeGuide.description || '스캔 과정에서 오류가 발생하거나, 상품 판매자가 정보를 수정하는 경우 정확한 정보가 아닐 수 있으므로 참고용으로만 봐 주세요.' }
             </Text>
           </Flex>
         </Stack>
