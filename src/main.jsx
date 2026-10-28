@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { Provider } from './components/ui/provider.jsx'
 import { AuthProvider } from './contexts/AuthProvider.jsx'
+import { PushNotificationProvider } from './contexts/PushNotificationProvider.jsx'
 import { Toaster } from './components/ui/toaster.jsx'
 import './index.css'
 
@@ -21,7 +22,9 @@ enableMocking().then(() => {
     <StrictMode>
       <Provider>
         <AuthProvider>
-          <App/>
+          <PushNotificationProvider>
+            <App/>
+          </PushNotificationProvider>
           <Toaster/>
         </AuthProvider>
       </Provider>

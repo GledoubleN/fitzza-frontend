@@ -26,6 +26,7 @@ import { useAuth } from '../../contexts/AuthContext.js'
 import { api } from '../../api/axios.js'
 import { CommunityArticleCommentList } from './CommunityArticleCommentList.jsx'
 import { CommunityPoll } from './CommunityPoll.jsx'
+import { ProductImage } from '../../components/ProductImage.jsx'
 import { CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } from './communityFormat.js'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 import { CommunityConfirmDialog } from './CommunityConfirmDialog.jsx'
@@ -351,7 +352,7 @@ export const CommunityArticlePage = () => {
                     textAlign="start"
                     onClick={ () => navigate(`/products/${ sharedProduct.productId }`) }
                   >
-                    <Image
+                    <ProductImage
                       src={ sharedProduct.imageUrl }
                       alt=""
                       boxSize="16"
@@ -378,7 +379,7 @@ export const CommunityArticlePage = () => {
                     textAlign="start"
                     onClick={ () => navigate(`/products/${ item.productId }`) }
                   >
-                    <Image src={ item.imageUrl } alt="" boxSize="12" objectFit="cover" rounded="sm" bg="bg.muted"/>
+                    <ProductImage src={ item.imageUrl } alt="" boxSize="12" objectFit="cover" rounded="sm" bg="bg.muted"/>
                     <Text flex="1" fontSize="sm" lineClamp="1">{ item.productName }</Text>
                     <Text fontSize="sm">{ item.price?.toLocaleString() }원</Text>
                   </Flex>

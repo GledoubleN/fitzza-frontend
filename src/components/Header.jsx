@@ -19,8 +19,8 @@ import { motion, useScroll, useTransform } from 'motion/react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { useAuth } from '../contexts/AuthContext.js'
+import { usePushNotification } from '../contexts/PushNotificationContext.js'
 import { toNotificationPath, toNotificationText, useNotifications } from '../hooks/useNotifications.js'
-import { usePushNotifications } from '../hooks/usePushNotifications.js'
 import { disablePush } from '../services/pushNotifications.js'
 import { toaster } from './ui/toaster.jsx'
 import { AIPromptCard } from './AIPromptCard.jsx'
@@ -78,7 +78,7 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
   const scrolledOpacity = useTransform(scrollY, [0, GLASS_FADE_DISTANCE], [0, 1])
   const { isSignedIn, setAccessToken } = useAuth()
   const [isSigningOut, setIsSigningOut] = useState(false)
-  const { error, isConfigured } = usePushNotifications(isSignedIn && !isSigningOut)
+  const { error, isConfigured } = usePushNotification()
   const { notifications, status: notificationStatus, hasUnread, reload, markAsRead } = useNotifications(isSignedIn && !isSigningOut)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
 

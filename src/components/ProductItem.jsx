@@ -1,4 +1,4 @@
-import { Badge, Box, Image, LinkOverlay, Text, IconButton, Stack } from '@chakra-ui/react'
+import { Badge, Box, LinkOverlay, Text, IconButton, Stack } from '@chakra-ui/react'
 import { LuHeart } from 'react-icons/lu'
 import { Link as RouterLink } from 'react-router-dom'
 import { api } from '../api/axios'
@@ -6,7 +6,7 @@ import { toaster } from '../components/ui/toaster'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { SignInRequiredDialog } from './SignInRequiredDialog.jsx'
-import defaultThumbnail from '../assets/hero.png'
+import { ProductImage } from './ProductImage.jsx'
 
 export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange }) => {
   const { isSignedIn } = useAuth()
@@ -43,6 +43,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
         toaster.create({
           title: '찜 목록에서 제외되었습니다.',
           type: 'success',
+          closable: true,
         })
 
         if (onWishlistChange) {
@@ -53,6 +54,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
         toaster.create({
           title: '찜 목록에 추가되었습니다.',
           type: 'success',
+          closable: true,
         })
       }
     } catch (error) {
@@ -61,6 +63,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
       toaster.create({
         title: '요청을 처리하지 못했습니다.',
         type: 'error',
+        closable: true,
       })
     } finally {
       setIsLoading(false)
@@ -90,11 +93,11 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           overflow="hidden"
           bg="bg.muted"
         >
-          <Image
+          <ProductImage
             width="full"
             height="full"
             objectFit="cover"
-            src={ product?.thumbnailUrl || defaultThumbnail }
+            src={ product?.thumbnailUrl }
             alt={ productName }
             opacity={ isSoldOut ? 0.5 : 1 }
             transition="transform 0.4s ease"

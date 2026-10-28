@@ -29,6 +29,7 @@ import { api } from '../../api/axios.js'
 import { CATEGORIES, MAX_VOTE_OPTIONS, SOURCE_LABELS, VOTE_LABELS, errorMessage, optionKey } from './communityFormat.js'
 import { CommunityOptionPicker, CommunityOptionSourceSheet } from './CommunityOptionPicker.jsx'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 const MODES = [
   { value: 'NORMAL', label: '기본' },
@@ -227,7 +228,7 @@ export const CommunityWritePage = () => {
                           <Circle size="6" bg="fg" color="bg" fontSize="xs" fontWeight="bold" flexShrink="0">
                             { VOTE_LABELS[index] }
                           </Circle>
-                          <Image
+                          <ProductImage
                             src={ option.imageUrl }
                             alt=""
                             boxSize="12"
