@@ -300,7 +300,10 @@ export const AIStylistResultPage = () => {
         const restored = data.items
           .reverse()
           .map((fitting) => toRestoredFitting(fitting, result))
-        setFittings(restored)
+        setFittings((fittings) => {
+          const shownFittingIds = fittings.map((fitting) => fitting.fittingId)
+          return [...restored.filter((fitting) => !shownFittingIds.includes(fitting.fittingId)), ...fittings]
+        })
         restored
           .filter((fitting) => fitting.status === 'loading')
           .forEach((fitting) => followFitting(fitting.id, fitting.fittingId, result))
