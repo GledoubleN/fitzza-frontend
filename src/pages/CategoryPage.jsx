@@ -18,26 +18,6 @@ import { TabBar } from '../components/TabBar.jsx'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
 
-const UNDERLINE_ON_HOVER = {
-  position: 'relative',
-  _after: {
-    content: '""',
-    position: 'absolute',
-    left: '0',
-    bottom: '0',
-    width: '0',
-    borderBottomWidth: 'thin',
-    borderColor: 'fg',
-    transition: 'width 0.25s ease',
-  },
-  _groupHover: { _after: { width: 'full' } },
-}
-
-const ARROW_ON_HOVER = {
-  transition: 'translate 0.2s ease',
-  _groupHover: { translate: '{spacing.1} 0' },
-}
-
 export const CategoryPage = () => {
   const navigate = useNavigate()
   const [categories, setCategories] = useState([])
@@ -107,12 +87,10 @@ export const CategoryPage = () => {
                     variant={ 'ghost' }
                     width={ 'full' }
                     justifyContent={ 'space-between' }
-                    className={ 'group' }
-                    _hover={ { bg: 'transparent' } }
                     onClick={ () => search(selected.code) }
                   >
-                    <Heading size={ 'md' } { ...UNDERLINE_ON_HOVER }>{ selected?.name }</Heading>
-                    <Icon { ...ARROW_ON_HOVER }><LuChevronRight></LuChevronRight></Icon>
+                    <Heading size={ 'md' }>{ selected?.name }</Heading>
+                    <Icon><LuChevronRight></LuChevronRight></Icon>
                   </Button>
                   {/* 칸 최소 140px, 최대 3열: 칸 폭을 max(140px, 1/3)로 잡아 4열 이상 생기지 않게 하였습니다. */ }
                   {/* spacing.1 === gap={ 1 } */ }
@@ -128,13 +106,11 @@ export const CategoryPage = () => {
                           key={ subcategory.name }
                           variant={ 'ghost' }
                           justifyContent={ 'space-between' }
-                          className={ 'group' }
-                          _hover={ { bg: 'transparent' } }
                           onClick={ () => search(
                             `${ subcategory.code }`) }
                         >
-                          <Text truncate { ...UNDERLINE_ON_HOVER }>{ subcategory.name }</Text>
-                          <Icon { ...ARROW_ON_HOVER }><LuChevronRight></LuChevronRight></Icon>
+                          <Text truncate>{ subcategory.name }</Text>
+                          <Icon><LuChevronRight></LuChevronRight></Icon>
                         </Button>
                       ))
                     }
