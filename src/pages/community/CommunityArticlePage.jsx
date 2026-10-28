@@ -264,7 +264,7 @@ export const CommunityArticlePage = () => {
     return (
       <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
         <Header/>
-        <Container maxWidth="3xl" flex="1" display="flex" flexDirection="column" gap="4">
+        <Container maxWidth="5xl" flex="1" display="flex" flexDirection="column" gap="4">
           <CommunityTitleBar/>
           <Stack flex="1" align="center" justify="center" gap="4">
             <Text color={ error ? 'fg.error' : 'fg.muted' } textAlign="center">{ error || '불러오는 중...' }</Text>
@@ -288,7 +288,7 @@ export const CommunityArticlePage = () => {
     <Stack direction="column" gap="4" minHeight="100vh" paddingTop="4">
       <Header/>
 
-      <Container maxWidth="3xl" flex="1">
+      <Container maxWidth="5xl" flex="1">
         <Stack direction="column" gap="4">
           <CommunityTitleBar>
             { isAuthor && (
@@ -455,7 +455,7 @@ export const CommunityArticlePage = () => {
       </Container>
 
       <Box position="sticky" bottom="0" bg="bg" paddingY="4" borderTopWidth="sm">
-        <Container maxWidth="3xl">
+        <Container maxWidth="5xl">
           <form onSubmit={ submitCommentInput }>
             <HStack gap="4">
               <Input

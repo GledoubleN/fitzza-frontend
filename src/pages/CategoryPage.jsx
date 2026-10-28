@@ -54,7 +54,7 @@ export const CategoryPage = () => {
     >
       <Header></Header>
 
-      <Container maxWidth={ '3xl' } flex={ '1' } minHeight={ '0' }>
+      <Container maxWidth={ '5xl' } flex={ '1' } minHeight={ '0' }>
         <Stack height={ 'full' } gap={ '4' }>
           <Heading size={ 'xl' }>카테고리</Heading>
           <Grid

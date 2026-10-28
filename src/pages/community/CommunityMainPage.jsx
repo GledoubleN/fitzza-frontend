@@ -82,7 +82,7 @@ export const CommunityMainPage = () => {
       <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
         <Header/>
 
-        <Container maxWidth="3xl">
+        <Container maxWidth="5xl">
           <Stack direction="column" gap="4">
             <CommunityTitleBar/>
 
@@ -117,7 +117,7 @@ export const CommunityMainPage = () => {
           </Stack>
         </Container>
 
-        <Container maxWidth="3xl" paddingBottom="20">
+        <Container maxWidth="5xl" paddingBottom="20">
           <Stack direction="column" gap="0" separator={ <Separator/> }>
             { posts.map((post) => (
               <PostItem
@@ -144,7 +144,7 @@ export const CommunityMainPage = () => {
       </Stack>
 
       <Box position="fixed" bottom="24" left="0" right="0" pointerEvents="none">
-        <Container maxWidth="3xl" display="flex" justifyContent="flex-end">
+        <Container maxWidth="5xl" display="flex" justifyContent="flex-end">
           <IconButton
             rounded="full"
             size="xl"

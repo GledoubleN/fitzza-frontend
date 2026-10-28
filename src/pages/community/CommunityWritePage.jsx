@@ -154,7 +154,7 @@ export const CommunityWritePage = () => {
     <Stack direction="column" gap="4" minHeight="100vh" paddingTop="4">
       <Header/>
 
-      <Container maxWidth="3xl" flex="1" display="flex" flexDirection="column">
+      <Container maxWidth="5xl" flex="1" display="flex" flexDirection="column">
         <Stack gap="4" flex="1">
           <CommunityTitleBar title={ isEditing ? '게시글 수정' : '커뮤니티' }/>
 
