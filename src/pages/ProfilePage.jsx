@@ -123,7 +123,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
+    <Box position="relative" minH="100vh" pt={24} bg="bg">
       <Box
         position="fixed"
         top={0}
