@@ -1,6 +1,6 @@
-import { Badge, Box, Image, Text, IconButton, Stack } from '@chakra-ui/react'
+import { Badge, Box, Image, LinkOverlay, Text, IconButton, Stack } from '@chakra-ui/react'
 import { LuHeart } from 'react-icons/lu'
-import { useNavigate } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { api } from '../api/axios'
 import { toaster } from '../components/ui/toaster'
 import { useState, useEffect } from 'react'
@@ -9,7 +9,6 @@ import { SignInRequiredDialog } from './SignInRequiredDialog.jsx'
 import defaultThumbnail from '../assets/hero.png'
 
 export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange }) => {
-  const navigate = useNavigate()
   const { isSignedIn } = useAuth()
 
   const [isLiked, setIsLiked] = useState(initialIsLiked ?? product?.wished ?? false)
@@ -22,10 +21,6 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
 
   const productId = product?.productId
   const productName = product?.productName
-
-  const handleProductClick = () => {
-    navigate(`/products/${ productId }`)
-  }
 
   const handleWishClick = async (event) => {
     event.stopPropagation()
@@ -78,6 +73,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
     <>
       <Stack
         className="group"
+        position="relative"
         gap={ 3 }
         padding={ 2 }
         paddingBottom={ 3 }
@@ -87,8 +83,6 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
         boxShadow="sm"
         transition="box-shadow 0.25s ease"
         _hover={ { boxShadow: 'lg' } }
-        cursor="pointer"
-        onClick={ handleProductClick }
       >
         <Box
           position="relative"
@@ -121,6 +115,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
             position="absolute"
             top={ 1 }
             right={ 1 }
+            zIndex="1"
             size="sm"
             rounded="full"
             variant="ghost"
@@ -152,7 +147,11 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
             lineClamp={ 2 }
             minHeight="2lh"
           >
-            { productName }
+            <LinkOverlay asChild>
+              <RouterLink to={ `/products/${ productId }` }>
+                { productName }
+              </RouterLink>
+            </LinkOverlay>
           </Text>
           <Text
             textStyle={ { base: 'sm', md: 'md' } }

@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react'
 import { LuBell, LuShoppingBag, LuLogIn, LuLogOut } from 'react-icons/lu'
 import { motion, useScroll, useTransform } from 'motion/react'
-import { useNavigate } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { useAuth } from '../contexts/AuthContext.js'
 import { toNotificationPath, toNotificationText, useNotifications } from '../hooks/useNotifications.js'
@@ -150,13 +150,12 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
           <GridItem alignContent={ 'center' }>
             { logo ?? (
               <Text
+                asChild
                 fontFamily="logo"
                 fontSize="2xl"
                 fontWeight="bold"
-                cursor="pointer"
-                onClick={ () => navigate('/') }
               >
-                FiTZZA
+                <RouterLink to="/">FiTZZA</RouterLink>
               </Text>
             ) }
           </GridItem>

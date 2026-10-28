@@ -78,15 +78,18 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
           ref={ logoRef }
           style={ { x: logoX, y: logoY, scale: logoScale, transformOrigin: '0 0' } }
           pointerEvents="auto"
-          cursor="pointer"
-          onClick={ () => window.scrollTo({ top: 0, behavior: 'smooth' }) }
         >
           <Text
             as="h1"
             { ...LOGO_TEXT_PROPS }
             fontSize={ { base: '7xl', md: '9xl' } }
           >
-            FiTZZA
+            <chakra.button
+              cursor="pointer"
+              onClick={ () => window.scrollTo({ top: 0, behavior: 'smooth' }) }
+            >
+              FiTZZA
+            </chakra.button>
           </Text>
         </MotionBox>
 
