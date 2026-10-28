@@ -4,11 +4,13 @@ import {
   Card,
   Circle,
   Container,
+  createListCollection,
   Flex,
   IconButton,
   Image,
   Input,
-  NativeSelect,
+  Portal,
+  Select,
   Separator,
   Stack,
   Tabs,
@@ -32,6 +34,8 @@ const MODES = [
   { value: 'NORMAL', label: '기본' },
   { value: 'VOTE', label: '투표' },
 ]
+
+const categoryCollection = createListCollection({ items: CATEGORIES })
 
 const MIN_VOTE_OPTIONS = 2
 const VOTE_CATEGORY = 'COORDI_QUESTION'
@@ -185,19 +189,33 @@ export const CommunityWritePage = () => {
           ) : (
             <Stack gap="4" flex="1">
               { !isVote && (
-                <NativeSelect.Root>
-                  <NativeSelect.Field
-                    placeholder="카테고리 선택"
-                    aria-label="카테고리"
-                    value={ category }
-                    onChange={ (e) => setCategory(e.target.value) }
-                  >
-                    { CATEGORIES.map((item) => (
-                      <option key={ item.value } value={ item.value }>{ item.label }</option>
-                    )) }
-                  </NativeSelect.Field>
-                  <NativeSelect.Indicator/>
-                </NativeSelect.Root>
+                <Select.Root
+                  collection={ categoryCollection }
+                  value={ category ? [category] : [] }
+                  onValueChange={ ({ value }) => setCategory(value[0] ?? '') }
+                >
+                  <Select.HiddenSelect/>
+                  <Select.Control>
+                    <Select.Trigger aria-label="카테고리">
+                      <Select.ValueText placeholder="카테고리 선택"/>
+                    </Select.Trigger>
+                    <Select.IndicatorGroup>
+                      <Select.Indicator/>
+                    </Select.IndicatorGroup>
+                  </Select.Control>
+                  <Portal>
+                    <Select.Positioner>
+                      <Select.Content>
+                        { categoryCollection.items.map((item) => (
+                          <Select.Item key={ item.value } item={ item }>
+                            <Select.ItemText>{ item.label }</Select.ItemText>
+                            <Select.ItemIndicator/>
+                          </Select.Item>
+                        )) }
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Portal>
+                </Select.Root>
               ) }
 
               { isVote && (
