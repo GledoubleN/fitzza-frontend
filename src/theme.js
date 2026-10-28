@@ -120,19 +120,30 @@ const config = defineConfig({
       },
     },
 
+    layerStyles: {
+      glass: {
+        value: {
+          background: 'transparent',
+          bgGradient: 'to-b',
+          gradientFrom: 'bg/70',
+          gradientTo: 'bg/40',
+          backdropFilter: 'auto',
+          backdropBlur: 'md',
+          backdropSaturate: '200%',
+          backdropBrightness: '110%',
+        },
+      },
+    },
+
     slotRecipes: {
       select: {
         base: {
-          content: {
-            background: 'transparent',
-            bgGradient: 'to-b',
-            gradientFrom: 'bg/70',
-            gradientTo: 'bg/40',
-            backdropFilter: 'auto',
-            backdropBlur: 'md',
-            backdropSaturate: '200%',
-            backdropBrightness: '110%',
-          },
+          content: { layerStyle: 'glass' },
+        },
+      },
+      menu: {
+        base: {
+          content: { layerStyle: 'glass' },
         },
       },
     },
