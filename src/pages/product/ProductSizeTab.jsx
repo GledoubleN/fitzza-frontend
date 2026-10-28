@@ -2,11 +2,10 @@ import { DataList, Flex, Heading, Icon, Image, Stack, Table, Text } from '@chakr
 import { LuInfo } from 'react-icons/lu'
 
 const NOTICES = [
-  '상세 사이즈는 측정 방법과 위치, 소재에 따라 1~3cm 오차가 발생할 수 있습니다.',
+  '상세 사이즈는 측정 방법과 위치, 소재에 따라 오차가 발생할 수 있습니다.',
   '제품 컬러는 모니터 해상도와 각도에 따라 다르게 보일 수 있습니다.',
   '아이보리, 화이트 계열의 경우 비침이 있을 수도 있습니다.',
   '모델컷보다 디테일컷이 실제 상품 색상에 가깝습니다.',
-  '사이즈는 단면(cm) 측정입니다.',
 ]
 
 const unique = (values) => [...new Set(values.filter(Boolean))]
@@ -76,23 +75,24 @@ export const ProductSizeTab = ({ product }) => {
         <Text textStyle={ 'sm' } color={ 'fg.muted' }>상세 페이지를 스캔해 실측정보를 찾아왔어요!</Text>
       </Stack>
 
-      { partOrder && sizeGuide.guideImageUrl && (
-        <Image
-          src={ sizeGuide.guideImageUrl }
-          alt={ `${sizeGuide.typeName} 측정 가이드` }
-          width="full"
-          maxHeight="80"
-          objectFit="contain"
-        />
-      ) }
-
       { sizes.length === 0 || parts.length === 0 ? (
         <Text color={ 'fg.muted' }>정보가 없습니다.</Text>
       ) : (
         <Stack gap={ 3 }>
-          <Text textStyle={ 'xs' } color={ 'fg.muted' } textAlign={ 'end' }>
-            단면({ sizeGuide.unit || 'cm' })
-          </Text>
+          { partOrder && sizeGuide.guideImageUrl && (
+            <Image
+              src={ sizeGuide.guideImageUrl }
+              alt={ `${sizeGuide.typeName} 측정 가이드` }
+              width="full"
+              maxHeight="80"
+              objectFit="contain"
+            />
+          ) }
+          { sizeGuide.unit && (
+            <Text textStyle={ 'xs' } color={ 'fg.muted' } textAlign={ 'end' }>
+              측정 단위({ sizeGuide.unit })
+            </Text>
+          ) }
           <Table.ScrollArea border={ 'sm' } borderColor={ 'border' } rounded={ 'l2' }>
             <Table.Root textAlign={ 'center' }>
               <Table.Header>
@@ -123,14 +123,20 @@ export const ProductSizeTab = ({ product }) => {
             </Table.Root>
           </Table.ScrollArea>
 
-          <Flex gap={ 2 } color={ 'fg.muted' }>
-            <Icon marginTop={ 1 }><LuInfo/></Icon>
-            <Text textStyle={ 'xs' }>
-              { sizeGuide.description || '스캔 과정에서 오류가 발생하거나, 상품 판매자가 정보를 수정하는 경우 정확한 정보가 아닐 수 있으므로 참고용으로만 봐 주세요.' }
-            </Text>
-          </Flex>
         </Stack>
       ) }
+
+      <Flex gap={ 2 } color={ 'fg.muted' }>
+        <Icon marginTop={ 1 }><LuInfo/></Icon>
+        <Stack gap={ 1 }>
+          { sizeGuide.description && (
+            <Text textStyle={ 'xs' }>{ sizeGuide.description }</Text>
+          ) }
+          <Text textStyle={ 'xs' }>
+            스캔 과정에서 오류가 발생하거나 상품 판매자가 정보를 수정하는 경우 정확한 정보가 아닐 수 있으므로 참고용으로만 봐 주세요.
+          </Text>
+        </Stack>
+      </Flex>
 
       <DataList.Root orientation={ 'horizontal' }>
         { details.map((detail) => (
