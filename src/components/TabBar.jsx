@@ -9,8 +9,6 @@ import {
   LuUser,
 } from 'react-icons/lu'
 
-// 마운트 시 1회 재생되는 팝(살짝 오버슈트). 바가 페이지마다 새로 마운트되므로
-// 탭 전환마다 활성 아이콘이 톡 튀어오름.
 const pop = keyframes`
   0% {
     transform: scale(0.6);
@@ -25,7 +23,6 @@ const pop = keyframes`
   }
 `
 
-// 순서: 카테고리, 커뮤니티, 홈, 찜, 프로필. 활성 시 strokeWidth로 볼드 강조.
 const items = [
   { to: "/categories", label: "카테고리", icon: LuLayoutGrid },
   { to: "/community/main", label: "커뮤니티", icon: LuUsers },
@@ -34,7 +31,7 @@ const items = [
   { to: "/profile", label: "프로필", icon: LuUser },
 ];
 
-export const TabBar = () => {
+export const TabBar = ({ solid = false }) => {
   return (
     <Box
       paddingX={ 4 }
@@ -46,7 +43,7 @@ export const TabBar = () => {
         paddingX={ 0 }
         maxWidth="xl"
         zIndex="docked"
-        bg="bg.panel/10"
+        bg={ solid ? 'bg.panel' : 'bg.panel/10' }
         backdropFilter="blur(6px) saturate(150%)"
         borderWidth="1px"
         borderColor="border.subtle"
