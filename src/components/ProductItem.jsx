@@ -77,7 +77,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
   return (
     <>
       <Stack
-        role="group"
+        className="group"
         gap={ 3 }
         padding={ 2 }
         paddingBottom={ 3 }
