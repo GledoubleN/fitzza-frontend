@@ -1,4 +1,24 @@
+import { useState } from 'react'
 import { Image, Stack, Text } from '@chakra-ui/react'
+import { ImageFallback } from '../../components/ImageFallback.jsx'
+
+const ProductInformationImage = ({ src, alt }) => {
+  const source = typeof src === 'string' ? src.trim() : ''
+  const [failedSource, setFailedSource] = useState(null)
+
+  if (!source || failedSource === source) {
+    return <ImageFallback width={ '100%' }/>
+  }
+
+  return (
+    <Image
+      width={ '100%' }
+      src={ source }
+      alt={ alt }
+      onError={ () => setFailedSource(source) }
+    ></Image>
+  )
+}
 
 export const ProductInformationTab = ({ product }) => {
   return (
@@ -7,7 +27,11 @@ export const ProductInformationTab = ({ product }) => {
         <Text whiteSpace={ 'pre-wrap' }>{ product.description }</Text>
       ) }
       { product.images?.map((image) => (
-        <Image key={ image } width={ '100%' } src={ image } alt={ product.productName }></Image>
+        <ProductInformationImage
+          key={ image }
+          src={ image }
+          alt={ product.productName }
+        ></ProductInformationImage>
       )) }
     </Stack>
   )
