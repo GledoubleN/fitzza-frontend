@@ -24,12 +24,20 @@ export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
     const added = pending
       .filter((_, index) => results[index].status === 'fulfilled' && results[index].value)
       .map((item) => item.productId)
+    const optionNotFoundCount = results
+      .filter((result) => result.status === 'fulfilled' && !result.value)
+      .length
     if (added.length === pending.length) {
       setAddedProductIds([])
       setAdded(true)
     } else {
       setAddedProductIds([...addedProductIds, ...added])
-      toaster.create({ type: 'error', title: '일부 상품을 담지 못했어요. 다시 누르면 남은 상품만 담아요.' })
+      toaster.create({
+        type: 'error',
+        title: optionNotFoundCount
+          ? `추천 옵션을 찾지 못한 상품 ${ optionNotFoundCount }개는 상품 페이지에서 담아주세요.`
+          : '일부 상품을 담지 못했어요. 다시 누르면 남은 상품만 담아요.',
+      })
     }
     setSaving(false)
   }
