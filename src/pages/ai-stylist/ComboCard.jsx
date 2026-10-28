@@ -7,6 +7,9 @@ import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
 import { addRecommendedOptionToCart } from './recommendedOption.js'
 
+const OPTION_NOT_FOUND_MESSAGE = '추천 옵션이 없어 담지 못했어요. 상품 페이지에서 담아주세요.'
+const CART_FAILED_MESSAGE = '담지 못했어요. 다시 눌러주세요.'
+
 // onTryOn: 이 코디의 상품들로 가상 피팅을 시작합니다. tryingOn: 다른 가상 피팅이 진행 중인지.
 export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
   const navigate = useNavigate()
@@ -14,6 +17,7 @@ export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
   const [added, setAdded] = useState(false)
   // 전체 담기가 일부만 성공했을 때 이미 담긴 상품. 재시도 때 다시 담지 않습니다.
   const [addedProductIds, setAddedProductIds] = useState([])
+  const [cartFailures, setCartFailures] = useState({})
 
   const hasAllRecommendedSizes = combo.items.every((item) => item.recommendedSize)
 
@@ -24,9 +28,12 @@ export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
     const added = pending
       .filter((_, index) => results[index].status === 'fulfilled' && results[index].value)
       .map((item) => item.productId)
-    const optionNotFoundCount = results
-      .filter((result) => result.status === 'fulfilled' && !result.value)
-      .length
+    const failures = Object.fromEntries(pending.flatMap((item, index) => {
+      const result = results[index]
+      if (result.status === 'fulfilled' && result.value) return []
+      return [[item.productId, result.status === 'fulfilled' ? OPTION_NOT_FOUND_MESSAGE : CART_FAILED_MESSAGE]]
+    }))
+    setCartFailures(failures)
     if (added.length === pending.length) {
       setAddedProductIds([])
       setAdded(true)
@@ -34,9 +41,7 @@ export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
       setAddedProductIds([...addedProductIds, ...added])
       toaster.create({
         type: 'error',
-        title: optionNotFoundCount
-          ? `추천 옵션을 찾지 못한 상품 ${ optionNotFoundCount }개는 상품 페이지에서 담아주세요.`
-          : '일부 상품을 담지 못했어요. 다시 누르면 남은 상품만 담아요.',
+        title: `상품 ${ pending.length - added.length }개를 담지 못했어요. 상품 아래 안내를 확인해주세요.`,
       })
     }
     setSaving(false)
@@ -74,6 +79,7 @@ export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
               <ProductCard
                 key={ item.productId }
                 item={ item }
+                cartFailure={ cartFailures[item.productId] }
               ></ProductCard>
             ))
           }

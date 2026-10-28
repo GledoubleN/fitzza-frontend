@@ -21,7 +21,7 @@ export const ProductSlot = (props) => (
 )
 
 // onTryOn: 있으면 이 상품으로 가상 피팅을 시작하는 버튼을 보여줍니다. tryingOn: 다른 가상 피팅이 진행 중인지.
-export const ProductCard = ({ item, onTryOn, tryingOn }) => {
+export const ProductCard = ({ item, cartFailure, onTryOn, tryingOn }) => {
   const [saving, setSaving] = useState(false)
   const [added, setAdded] = useState(false)
   const optionLabel = toRecommendedOptionLabel(item)
@@ -68,6 +68,10 @@ export const ProductCard = ({ item, onTryOn, tryingOn }) => {
           }
         </Link>
       </Stack>
+      {
+        cartFailure &&
+        <Text fontSize={ 'xs' } color={ 'fg.error' }>{ cartFailure }</Text>
+      }
       <Button
         size={ 'xs' }
         variant={ 'outline' }
