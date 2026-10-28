@@ -11,7 +11,7 @@ const OPTION_NOT_FOUND_MESSAGE = '추천 옵션이 없어 담지 못했어요. �
 const CART_FAILED_MESSAGE = '담지 못했어요. 다시 눌러주세요.'
 
 // onTryOn: 이 코디의 상품들로 가상 피팅을 시작합니다. tryingOn: 다른 가상 피팅이 진행 중인지.
-export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
+export const ComboCard = ({ combo, index, wishedProductIds, onToggleWish, onTryOn, tryingOn }) => {
   const navigate = useNavigate()
   const [saving, setSaving] = useState(false)
   const [added, setAdded] = useState(false)
@@ -86,6 +86,8 @@ export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
               <ProductCard
                 key={ item.productId }
                 item={ item }
+                wished={ wishedProductIds.includes(item.productId) }
+                onToggleWish={ onToggleWish }
                 cartFailure={ cartFailures[item.productId] }
                 onCartAdded={ markAdded }
               ></ProductCard>

@@ -21,10 +21,17 @@ export const ProductSlot = (props) => (
 )
 
 // onTryOn: 있으면 이 상품으로 가상 피팅을 시작하는 버튼을 보여줍니다. tryingOn: 다른 가상 피팅이 진행 중인지.
-export const ProductCard = ({ item, cartFailure, onCartAdded, onTryOn, tryingOn }) => {
+export const ProductCard = ({ item, wished, onToggleWish, cartFailure, onCartAdded, onTryOn, tryingOn }) => {
   const [saving, setSaving] = useState(false)
+  const [wishSaving, setWishSaving] = useState(false)
   const [added, setAdded] = useState(false)
   const optionLabel = toRecommendedOptionLabel(item)
+
+  const toggleWish = async () => {
+    setWishSaving(true)
+    await onToggleWish(item.productId)
+    setWishSaving(false)
+  }
 
   const submit = async () => {
     setSaving(true)
@@ -93,9 +100,13 @@ export const ProductCard = ({ item, cartFailure, onCartAdded, onTryOn, tryingOn 
         size={ 'sm' }
         variant={ 'ghost' }
         rounded={ 'full' }
-        aria-label={ '찜' }
+        aria-label={ wished ? '찜 해제' : '찜하기' }
+        aria-pressed={ wished }
+        color={ wished ? 'fg.error' : 'fg.muted' }
+        disabled={ wishSaving }
+        onClick={ toggleWish }
       >
-        <LuHeart></LuHeart>
+        <LuHeart fill={ wished ? 'currentColor' : 'none' }></LuHeart>
       </IconButton>
       <CartAddedDialog
         open={ added }

@@ -28,6 +28,7 @@ import { ProductRow } from './ProductRow.jsx'
 import { toFittingImageUrl } from '../profile/toFittingImageUrl.js'
 import { listenForPush } from './listenForPush.js'
 import { TabBar } from '../../components/TabBar.jsx'
+import { toaster } from '../../components/ui/toaster.jsx'
 
 const FAIL_MESSAGE = '추천을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
@@ -219,6 +220,40 @@ export const AIStylistResultPage = () => {
   }
 
   // 이 화면에서 입어본 가상 피팅들. { id, label, items, photo, status, fittingId, imageUrl, message, timedOut }
+  const [wishedProductIds, setWishedProductIds] = useState([])
+
+  useEffect(() => {
+    if (!result) return
+
+    let cancelled = false
+    api.get('/wishlists', { params: { page: 0, size: 100 }, ...TIMEOUT })
+      .then(({ data }) => {
+        if (!cancelled) setWishedProductIds(data.content.map((wishlist) => wishlist.itemId))
+      })
+      .catch(() => {})
+
+    return () => { cancelled = true }
+  }, [result])
+
+  const setWished = (productId, wished) => setWishedProductIds((productIds) => (
+    wished ? [...productIds.filter((id) => id !== productId), productId] : productIds.filter((id) => id !== productId)
+  ))
+
+  const toggleWish = async (productId) => {
+    const wished = wishedProductIds.includes(productId)
+    setWished(productId, !wished)
+    try {
+      if (wished) {
+        await api.delete('/wishlists', { params: { itemId: productId }, ...TIMEOUT })
+      } else {
+        await api.post('/wishlists', { itemId: productId }, TIMEOUT)
+      }
+    } catch {
+      setWished(productId, wished)
+      toaster.create({ type: 'error', title: '찜 상태를 바꾸지 못했어요. 다시 시도해주세요.' })
+    }
+  }
+
   const [fittings, setFittings] = useState([])
   const [fittingsRestoreFailed, setFittingsRestoreFailed] = useState(false)
   const [fittingsRestoreAttempt, setFittingsRestoreAttempt] = useState(0)
@@ -460,6 +495,8 @@ export const AIStylistResultPage = () => {
                           <ProductCard
                             key={ item.productId }
                             item={ item }
+                            wished={ wishedProductIds.includes(item.productId) }
+                            onToggleWish={ toggleWish }
                             tryingOn={ tryingOn }
                             onTryOn={ () => tryOn(item.productName, [item]) }
                           ></ProductCard>
@@ -476,6 +513,8 @@ export const AIStylistResultPage = () => {
                     key={ combo.comboId }
                     combo={ combo }
                     index={ index }
+                    wishedProductIds={ wishedProductIds }
+                    onToggleWish={ toggleWish }
                     tryingOn={ tryingOn }
                     onTryOn={ () => tryOn(`코디 ${ index + 1 }`, combo.items) }
                   ></ComboCard>
