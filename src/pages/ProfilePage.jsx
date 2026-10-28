@@ -123,18 +123,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <Box position="relative" minH="100vh" pt={24} bg="bg">
-      <Box
-        position="fixed"
-        top={0}
-        left={0}
-        right={0}
-        zIndex={10}
-        bg="bg"
-        py={4}
-      >
-        <Header />
-      </Box>
+    <Box position="relative" minH="100vh" pt={4} bg="bg">
+      <Header />
 
       <Container maxW="5xl" mx="auto" px={5}>
         <Grid
