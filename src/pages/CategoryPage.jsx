@@ -49,20 +49,19 @@ export const CategoryPage = () => {
   return (
     <Stack
       paddingY={ '4' }
-      height={ '100vh' }
+      minHeight={ '100vh' }
       gap={ '4' }
     >
       <Header></Header>
 
-      <Container maxWidth={ '5xl' } flex={ '1' } minHeight={ '0' }>
-        <Stack height={ 'full' } gap={ '4' }>
+      <Container maxWidth={ '5xl' } flex={ '1' }>
+        <Stack gap={ '4' }>
           <Heading size={ 'xl' }>카테고리</Heading>
           <Grid
             templateColumns={ '1fr 4fr' }
             gap={ '4' }
-            minHeight={ '0' }
           >
-            <GridItem overflowY={ 'auto' }>
+            <GridItem>
               <Stack gap={ '4' }>
                 {
                   categories.map((category) => (
@@ -80,7 +79,7 @@ export const CategoryPage = () => {
                 }
               </Stack>
             </GridItem>
-            <GridItem overflowY={ 'auto' }>
+            <GridItem>
               <Stack gap={ '4' }>
                 <Stack key={ selected?.name } gap={ 4 }>
                   <Button
