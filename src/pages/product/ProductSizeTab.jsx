@@ -1,4 +1,4 @@
-import { DataList, Flex, Heading, Icon, Stack, Table, Text } from '@chakra-ui/react'
+import { DataList, Flex, Heading, Icon, Image, Stack, Table, Text } from '@chakra-ui/react'
 import { LuInfo } from 'react-icons/lu'
 
 const NOTICES = [
@@ -11,14 +11,52 @@ const NOTICES = [
 
 const unique = (values) => [...new Set(values.filter(Boolean))]
 
+const TOP_PARTS = ['총장', '어깨너비', '가슴단면', '소매길이', '밑단단면', '소매부리단면', '암홀']
+const RAGLAN_PARTS = ['총장', '가슴단면', '소매부리단면', '전체소매길이', '밑단단면', '암홀']
+const BOTTOM_PARTS = ['총장', '허리단면', '엉덩이단면', '허벅지단면', '밑위', '밑단단면']
+const SHOES_PARTS = ['발길이', '발볼', '발목높이', '굽높이']
+
+const PART_ORDER_BY_SIZE_TYPE = {
+  셔츠: TOP_PARTS,
+  긴소매티셔츠: TOP_PARTS,
+  반소매티셔츠: TOP_PARTS,
+  점퍼: TOP_PARTS,
+  코트: TOP_PARTS,
+  헤비아우터: TOP_PARTS,
+  블레이져: [...TOP_PARTS, '허리단면'],
+  민소매: ['총장', '가슴단면', '어깨너비', '밑단단면', '암홀'],
+  베스트: ['총장', '어깨너비', '가슴단면', '밑단단면', '암홀'],
+  긴소매_래글런: RAGLAN_PARTS,
+  반소매_래글런: RAGLAN_PARTS,
+  점퍼_래글런: ['총장', '가슴단면', '소매부리단면', '전체소매길이', '밑단 단면', '암홀'],
+  바지: BOTTOM_PARTS,
+  반바지: BOTTOM_PARTS,
+  '캡/야구모자': ['머리둘레', '챙길이', '깊이'],
+  비니: ['머리둘레', '깊이'],
+  신발: SHOES_PARTS,
+  스니커즈: SHOES_PARTS,
+}
+
 export const ProductSizeTab = ({ product }) => {
   const options = product.options ?? []
   const sizeGuide = product.sizeGuide ?? {}
   const measurements = sizeGuide.measurements ?? []
+  const partOrder = Object.hasOwn(PART_ORDER_BY_SIZE_TYPE, sizeGuide.typeName)
+    ? PART_ORDER_BY_SIZE_TYPE[sizeGuide.typeName]
+    : undefined
 
   const sizes = measurements.map((m) => m.size).filter(Boolean)
 
   const parts = unique(measurements.flatMap((m) => Object.keys(m.values ?? {})))
+  if (partOrder) {
+    parts.sort((a, b) => {
+      const indexA = partOrder.indexOf(a)
+      const indexB = partOrder.indexOf(b)
+      if (indexA === -1) return indexB === -1 ? 0 : 1
+      if (indexB === -1) return -1
+      return indexA - indexB
+    })
+  }
 
   const measurementsBySize = new Map(
     measurements.map((m) => [m.size, m.values ?? {}])
@@ -37,6 +75,16 @@ export const ProductSizeTab = ({ product }) => {
         <Heading size={ 'lg' }>AI 실측 사이즈</Heading>
         <Text textStyle={ 'sm' } color={ 'fg.muted' }>상세 페이지를 스캔해 실측정보를 찾아왔어요!</Text>
       </Stack>
+
+      { partOrder && sizeGuide.guideImageUrl && (
+        <Image
+          src={ sizeGuide.guideImageUrl }
+          alt={ `${sizeGuide.typeName} 측정 가이드` }
+          width="full"
+          maxHeight="80"
+          objectFit="contain"
+        />
+      ) }
 
       { sizes.length === 0 || parts.length === 0 ? (
         <Text color={ 'fg.muted' }>정보가 없습니다.</Text>
@@ -58,7 +106,9 @@ export const ProductSizeTab = ({ product }) => {
               <Table.Body>
                 { parts.map((part) => (
                   <Table.Row key={ part }>
-                    <Table.Cell fontWeight={ 'bold' } textAlign={ 'center' }>{ part }</Table.Cell>
+                    <Table.Cell fontWeight={ 'bold' } textAlign={ 'center' }>
+                      { partOrder?.includes(part) ? `${partOrder.indexOf(part) + 1}. ${part}` : part }
+                    </Table.Cell>
                     { sizes.map((size) => {
                       const valuesMap = measurementsBySize.get(size) || {}
                       return (

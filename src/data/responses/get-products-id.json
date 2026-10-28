@@ -12,17 +12,45 @@
   "images": [
     "/src/assets/hero.png"
   ],
+  "sizeGuide": {
+    "typeName": "긴소매티셔츠",
+    "unit": "cm",
+    "description": "측정 방법에 따라 약 2cm 정도의 오차가 있을 수 있습니다.",
+    "guideImageUrl": "https://image.musinsa.com/images/size_type/detail_img/2026090711323100000052223.png",
+    "measurements": [
+      {
+        "size": "M",
+        "sequence": 0,
+        "values": {
+          "암홀": 24,
+          "총장": 74,
+          "가슴단면": 61,
+          "밑단단면": 58,
+          "소매길이": 60,
+          "어깨너비": 56,
+          "소매부리단면": 10
+        }
+      },
+      {
+        "size": "L",
+        "sequence": 1,
+        "values": {
+          "소매부리단면": 11,
+          "어깨너비": 58,
+          "암홀": 25,
+          "밑단단면": 60,
+          "총장": 76,
+          "소매길이": 62,
+          "가슴단면": 63
+        }
+      }
+    ]
+  },
   "options": [
     {
       "optionId": 100,
       "color": "블랙",
       "size": "M",
-      "measurement": {
-        "총장": 70,
-        "가슴단면": 55,
-        "소매길이": 60,
-        "소매단면": 11
-      },
       "additionalPrice": 0,
       "price": 750000,
       "available": true
@@ -31,12 +59,6 @@
       "optionId": 101,
       "color": "블랙",
       "size": "L",
-      "measurement": {
-        "총장": 72,
-        "가슴단면": 58,
-        "소매길이": 62,
-        "소매단면": 12
-      },
       "additionalPrice": 0,
       "price": 750000,
       "available": true
@@ -45,12 +67,6 @@
       "optionId": 102,
       "color": "블랙",
       "size": "XL",
-      "measurement": {
-        "총장": 75,
-        "가슴단면": 63,
-        "소매길이": 63,
-        "소매단면": 12
-      },
       "additionalPrice": 5000,
       "price": 755000,
       "available": true
@@ -59,12 +75,6 @@
       "optionId": 110,
       "color": "베이지",
       "size": "M",
-      "measurement": {
-        "총장": 70,
-        "가슴단면": 55,
-        "소매길이": 60,
-        "소매단면": 11
-      },
       "additionalPrice": 0,
       "price": 750000,
       "available": true
@@ -73,12 +83,6 @@
       "optionId": 111,
       "color": "베이지",
       "size": "L",
-      "measurement": {
-        "총장": 72,
-        "가슴단면": 58,
-        "소매길이": 62,
-        "소매단면": 12
-      },
       "additionalPrice": 0,
       "price": 750000,
       "available": true
@@ -87,12 +91,6 @@
       "optionId": 112,
       "color": "베이지",
       "size": "XL",
-      "measurement": {
-        "총장": 75,
-        "가슴단면": 63,
-        "소매길이": 63,
-        "소매단면": 12
-      },
       "additionalPrice": 5000,
       "price": 755000,
       "available": false
