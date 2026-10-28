@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Badge,
   Box,
@@ -30,6 +30,7 @@ import { ProductImage } from '../../components/ProductImage.jsx'
 import { CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } from './communityFormat.js'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 import { CommunityConfirmDialog } from './CommunityConfirmDialog.jsx'
+import { NOTIFICATION_RECEIVED_EVENT } from '../../hooks/useNotifications.js'
 
 const COMMENT_MAX_LENGTH = 500
 
@@ -65,7 +66,7 @@ export const CommunityArticlePage = () => {
   const [supportFilter, setSupportFilter] = useState(null)
   const latestCommentsRequest = useRef(0)
 
-  const loadComments = (supportedOptionId = supportFilter) => {
+  const loadComments = useCallback((supportedOptionId = supportFilter) => {
     const request = ++latestCommentsRequest.current
     const isLatest = () => request === latestCommentsRequest.current
 
@@ -83,7 +84,7 @@ export const CommunityArticlePage = () => {
           throw error
         }
       })
-  }
+  }, [id, supportFilter])
 
   useEffect(() => {
     let ignore = false
@@ -113,6 +114,18 @@ export const CommunityArticlePage = () => {
       ignore = true
     }
   }, [id])
+
+  useEffect(() => {
+    const handleNotification = (event) => {
+      const { type, targetId } = event.detail ?? {}
+      if (type !== 'COMMENT' || String(targetId) !== id) return
+
+      loadComments().catch(() => setCommentsFailed(true))
+    }
+
+    window.addEventListener(NOTIFICATION_RECEIVED_EVENT, handleNotification)
+    return () => window.removeEventListener(NOTIFICATION_RECEIVED_EVENT, handleNotification)
+  }, [id, loadComments])
 
   const selectSupportFilter = (voteOptionId) => {
     setSupportFilter(voteOptionId)
