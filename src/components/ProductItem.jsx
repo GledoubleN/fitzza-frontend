@@ -150,6 +150,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           <Text
             textStyle="sm"
             lineClamp={ 2 }
+            minHeight="2lh"
           >
             { productName }
           </Text>
