@@ -46,6 +46,8 @@ const PHOTO_ERRORS = {
   FILE_TOO_LARGE: '사진은 15MB 이하로 올려 주세요.',
 }
 
+const FITTING_WAIT_CANCELLED = Symbol('fitting wait cancelled')
+
 const toFittingState = (detail) => {
   if (!detail) return { status: 'failed', message: FITTING_TIMEOUT_MESSAGE, timedOut: true }
   if (detail.status === 'PENDING') return { status: 'loading', message: '' }
@@ -225,6 +227,7 @@ export const AIStylistResultPage = () => {
   const photo = photoUpload.acceptedFiles[0] ?? null
   const photoErrorCode = photo ? null : photoUpload.rejectedFiles[0]?.errors[0]
   const fittingsEnd = useRef(null)
+  const fittingWaitCancels = useRef(new Set())
   const tryingOn = fittings.some((fitting) => fitting.status === 'loading')
 
   // 입어보기를 누르거나 결과가 오면 그 말풍선이 보이게 내립니다.
@@ -250,17 +253,26 @@ export const AIStylistResultPage = () => {
 
   const waitForFitting = async (fittingId) => {
     const push = listenForPush(['FITTING_DONE', 'FITTING_FAILED'], fittingId)
+    const waiting = { cancelled: false }
+    const cancel = () => {
+      waiting.cancelled = true
+      push.close()
+    }
+    fittingWaitCancels.current.add(cancel)
+
     const fetchFitting = async () => (await api.get(`/vton/${ fittingId }`, TIMEOUT)).data
     const deadline = Date.now() + FITTING_WAIT_LIMIT
     try {
       let detail = await fetchFitting()
-      while (detail.status === 'PENDING') {
+      while (!waiting.cancelled && detail.status === 'PENDING') {
         const shouldCheck = await push.wait(deadline - Date.now())
+        if (waiting.cancelled) break
         detail = await fetchFitting()
         if (!shouldCheck && detail.status === 'PENDING') return null
       }
-      return detail
+      return waiting.cancelled ? FITTING_WAIT_CANCELLED : detail
     } finally {
+      fittingWaitCancels.current.delete(cancel)
       push.close()
     }
   }
@@ -272,6 +284,8 @@ export const AIStylistResultPage = () => {
   const followFitting = async (id, fittingId, recommendation) => {
     try {
       const detail = await waitForFitting(fittingId)
+      if (detail === FITTING_WAIT_CANCELLED) return
+
       const restoredProducts = recommendation && detail?.products.length
         ? toFittingProducts(detail.products, recommendation)
         : {}
@@ -296,6 +310,7 @@ export const AIStylistResultPage = () => {
 
   useEffect(() => {
     setFittings([])
+    return () => fittingWaitCancels.current.forEach((cancel) => cancel())
   }, [result])
 
   useEffect(() => {
