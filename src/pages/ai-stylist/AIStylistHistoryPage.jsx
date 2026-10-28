@@ -35,7 +35,7 @@ const formatRecommendationDate = (value) => {
 export const AIStylistHistoryPage = () => {
   const [items, setItems] = useState([])
   const [page, setPage] = useState(0)
-  const [totalPages, setTotalPages] = useState(0)
+  const [hasNext, setHasNext] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [attempt, setAttempt] = useState(0)
@@ -68,7 +68,7 @@ export const AIStylistHistoryPage = () => {
       .then(({ data }) => {
         if (cancelled) return
         setItems((items) => page === 0 ? data.content : [...items, ...data.content])
-        setTotalPages(data.totalPages)
+        setHasNext(data.hasNext)
       })
       .catch(() => {
         if (!cancelled) setError('대화 내역을 불러오지 못했어요. 잠시 후 다시 시도해주세요.')
@@ -138,7 +138,7 @@ export const AIStylistHistoryPage = () => {
             <Text color={ 'fg.muted' }>아직 추천받은 대화가 없어요.</Text>
           }
           {
-            !loading && !error && page + 1 < totalPages &&
+            !loading && !error && hasNext &&
             <Button
               variant={ 'ghost' }
               disabled={ deletingRequestId !== null }

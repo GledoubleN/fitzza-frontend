@@ -28,7 +28,6 @@ import postRecommendationsResponse from '../data/responses/post-recommendations.
 import getRecommendationsResponse from '../data/responses/get-recommendations.json'
 import getRecommendationsRequestIdResponse from '../data/responses/get-recommendations-requestId.json'
 import getNotificationsResponse from '../data/responses/get-notifications.json'
-import getRecommendationsRequestIdMessagesResponse from '../data/responses/get-recommendations-requestId-messages.json'
 import postWorldcupsResponse from '../data/responses/post-worldcups.json'
 import getWorldcupsHistoryResponse from '../data/responses/get-worldcups-history.json'
 import postVtonResponse from '../data/responses/post-vton.json'
@@ -216,11 +215,6 @@ export const handlers = [
     () => new HttpResponse(null, { status: 200 }),
   ),
 
-  http.get(
-    `${ api.defaults.baseURL }/recommendations/:requestId/messages`,
-    () => HttpResponse.json(getRecommendationsRequestIdMessagesResponse),
-  ),
-
   http.post(
     `${ api.defaults.baseURL }/worldcups`,
     () => HttpResponse.json(postWorldcupsResponse, { status: 201 }),
@@ -238,12 +232,21 @@ export const handlers = [
 
   http.get(
     `${ api.defaults.baseURL }/vton`,
-    () => HttpResponse.json(getVtonResponse),
+    ({ request }) => {
+      const requestId = new URL(request.url).searchParams.get('requestId')
+      if (!requestId) return HttpResponse.json(getVtonResponse)
+
+      const items = getVtonResponse.items.filter((fitting) => fitting.requestId === Number(requestId))
+      return HttpResponse.json({ ...getVtonResponse, items, totalCount: items.length })
+    },
   ),
 
   http.get(
     `${ api.defaults.baseURL }/vton/:fittingId`,
-    () => HttpResponse.json(getVtonFittingIdResponse),
+    ({ params }) => {
+      const fitting = getVtonResponse.items.find((fitting) => fitting.fittingId === Number(params.fittingId))
+      return HttpResponse.json(fitting ?? getVtonFittingIdResponse)
+    },
   ),
 
   http.delete(
