@@ -128,7 +128,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
             _hover={ { bg: 'bg.muted/70', backdropBlur: 'lg' } }
             aria-label={ isLiked ? '찜 해제' : '찜하기' }
             aria-pressed={ isLiked }
-            color={ isLiked ? 'fg.error' : 'fg.muted' }
+            color={ isLiked ? 'primary.solid' : 'fg.muted' }
             onClick={ handleWishClick }
             disabled={ isLoading }
           >
