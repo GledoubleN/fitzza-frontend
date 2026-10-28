@@ -41,7 +41,7 @@ export const ComboCard = ({ combo, index, onTryOn, tryingOn }) => {
       setAddedProductIds([...addedProductIds, ...added])
       toaster.create({
         type: 'error',
-        title: `상품 ${ pending.length - added.length }개를 담지 못했어요. 상품 아래 안내를 확인해주세요.`,
+        title: `상품 ${ pending.length - added.length }개를 담지 못했어요.`,
       })
     }
     setSaving(false)
