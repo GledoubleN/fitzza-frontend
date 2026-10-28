@@ -3,7 +3,6 @@ import {
   Flex,
   Text,
   IconButton,
-  Image,
   Button,
   Grid,
   GridItem,
@@ -16,7 +15,7 @@ import { useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { Footer } from '../../components/Footer.jsx'
-import defaultHeroImage from '../../assets/hero.png'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 export const WorldCupResultPage = ({
   winnerProduct,
@@ -114,8 +113,8 @@ export const WorldCupResultPage = ({
               alignItems="center"
               justifyContent="center"
             >
-              <Image
-                src={ winnerProduct.thumbnailUrl || winnerProduct.imageUrl || defaultHeroImage }
+              <ProductImage
+                src={ winnerProduct.thumbnailUrl || winnerProduct.imageUrl }
                 alt={ winnerProduct.productName || winnerProduct.name }
                 w="100%"
                 h="100%"

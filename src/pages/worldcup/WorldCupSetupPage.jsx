@@ -7,7 +7,6 @@ import {
   Button,
   Box,
   Flex,
-  Image,
 } from '@chakra-ui/react'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
@@ -17,6 +16,7 @@ import { HttpStatusCode } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { LuCheck, LuChevronLeft } from 'react-icons/lu'
 import { toaster } from '../../components/ui/toaster.jsx'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 const MAX_CANDIDATES = 64
 
@@ -217,7 +217,7 @@ export const WorldCupSetupPage = () => {
                         position="relative"
                         overflow="hidden"
                       >
-                        <Image
+                        <ProductImage
                           src={ imageUrl }
                           alt={ name }
                           w="100%"

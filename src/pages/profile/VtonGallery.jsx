@@ -19,6 +19,7 @@ import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { FailureTestButtons } from '../../mocks/FailureTestButtons.jsx'
 import { toFittingImageUrl } from './toFittingImageUrl.js'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 const PAGE_SIZE = 20
 const PREVIEW_PAGE_SIZE = 8
@@ -275,7 +276,7 @@ export const VtonGallery = ({ preview = false }) => {
                           >
                             <Box width={ 12 } flexShrink={ 0 }>
                               <AspectRatio ratio={ 1 } borderRadius={ 'md' } overflow={ 'hidden' } bg={ 'bg.muted' }>
-                                <Image src={ product.imageUrl } alt={ product.productName }></Image>
+                                <ProductImage src={ product.imageUrl } alt={ product.productName }></ProductImage>
                               </AspectRatio>
                             </Box>
                             <Stack gap={ 0 } minWidth={ 0 }>

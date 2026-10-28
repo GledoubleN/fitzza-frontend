@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Badge, Box, Button, Dialog, Flex, Grid, Image, Portal, Stack, Text } from '@chakra-ui/react'
+import { Badge, Box, Button, Dialog, Flex, Grid, Portal, Stack, Text } from '@chakra-ui/react'
+import { ProductImage } from '../../components/ProductImage.jsx'
 import { LuCheck } from 'react-icons/lu'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
@@ -81,7 +82,7 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
           return (
             <Stack key={ option.voteOptionId } gap="4">
               <Box position="relative">
-                <Image
+                <ProductImage
                   src={ option.imageUrl }
                   alt={ option.name ?? `선택지 ${ option.label }` }
                   aspectRatio="4/3"
