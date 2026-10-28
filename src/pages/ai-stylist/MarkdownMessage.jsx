@@ -25,11 +25,23 @@ const boldFollowedByKorean = {
 
 const marked = new Marked().use({ extensions: [boldFollowedByKorean] })
 
+const LEAD_SENTENCE_PATTERN = /^([^\n#>*\-\d][^\n]*?[.!?])\s+(?=\S)/
+
+const separateLeadSentence = (markdown) => markdown.replace(LEAD_SENTENCE_PATTERN, '$1\n\n')
+
+const messageCss = {
+  '--content-padding-x': 0,
+  '--content-padding-y': 0,
+  '& .ProseMirror': { lineHeight: 'tall' },
+  '& .ProseMirror > p:first-of-type:not(:last-child)': { fontWeight: 'semibold' },
+  '& .ProseMirror :is(h1, h2, h3, h4)': { fontSize: 'md' },
+}
+
 export const MarkdownMessage = ({ markdown }) => {
   const editor = useEditor({
     editable: false,
     extensions: [StarterKit.configure({ link: false }), Markdown.configure({ marked })],
-    content: markdown,
+    content: separateLeadSentence(markdown),
     contentType: 'markdown',
   }, [markdown])
 
@@ -37,7 +49,7 @@ export const MarkdownMessage = ({ markdown }) => {
     <RichTextEditor.Root
       editor={ editor }
       borderWidth={ 0 }
-      css={ { '--content-padding-x': 0, '--content-padding-y': 0 } }
+      css={ messageCss }
     >
       <RichTextEditor.Content/>
     </RichTextEditor.Root>

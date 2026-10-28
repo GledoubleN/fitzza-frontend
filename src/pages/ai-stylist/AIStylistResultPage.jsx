@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Card,
@@ -349,6 +350,7 @@ export const AIStylistResultPage = () => {
 
   const items = result?.items ?? []
   const combos = result?.combos ?? []
+  const tpoKeywords = (result?.tpoSummary ?? '').split('·').map((keyword) => keyword.trim()).filter(Boolean)
   const bubbleProps = { maxWidth: '4/5' }
 
   return (
@@ -405,7 +407,17 @@ export const AIStylistResultPage = () => {
             status === 'done' &&
             <>
               <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
-                <Card.Body gap={ 1 }>
+                <Card.Body gap={ 3 }>
+                  {
+                    tpoKeywords.length > 0 &&
+                    <Flex wrap={ 'wrap' } gap={ 2 }>
+                      {
+                        tpoKeywords.map((keyword) => (
+                          <Badge key={ keyword } variant={ 'subtle' }>{ keyword }</Badge>
+                        ))
+                      }
+                    </Flex>
+                  }
                   {
                     result.message && (result.searchType !== 'COMBO' || !combos.length)
                       ? <MarkdownMessage markdown={ result.message }></MarkdownMessage>
@@ -416,10 +428,6 @@ export const AIStylistResultPage = () => {
                             : '조건에 맞는 상품을 찾지 못했어요.'
                         }
                       </Text>
-                  }
-                  {
-                    result.tpoSummary &&
-                    <Text fontSize={ 'sm' } color={ 'fg.muted' }>{ result.tpoSummary }</Text>
                   }
                 </Card.Body>
               </Card.Root>
