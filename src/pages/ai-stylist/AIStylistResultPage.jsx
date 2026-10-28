@@ -263,6 +263,7 @@ export const AIStylistResultPage = () => {
   const photoErrorCode = photo ? null : photoUpload.rejectedFiles[0]?.errors[0]
   const fittingsEnd = useRef(null)
   const fittingWaitCancels = useRef(new Set())
+  const fittingsGeneration = useRef(0)
   const tryingOn = fittings.some((fitting) => fitting.status === 'loading')
 
   // 입어보기를 누르거나 결과가 오면 그 말풍선이 보이게 내립니다.
@@ -331,21 +332,29 @@ export const AIStylistResultPage = () => {
   }
 
   const runFitting = async (fitting) => {
+    const generation = fittingsGeneration.current
     setFittings((fittings) => [...fittings, { ...fitting, status: 'loading', message: '' }])
     try {
       const { data: created } = await createFitting(fitting)
+      if (generation !== fittingsGeneration.current) return
+
       setFittings((fittings) => fittings
         .filter((other) => other.id === fitting.id || other.fittingId !== created.fittingId)
         .map((other) => other.id === fitting.id ? { ...other, fittingId: created.fittingId } : other))
       await followFitting(fitting.id, created.fittingId)
     } catch (err) {
+      if (generation !== fittingsGeneration.current) return
+
       updateFitting(fitting.id, { status: 'failed', message: err.response?.data?.message ?? '' })
     }
   }
 
   useEffect(() => {
     setFittings([])
-    return () => fittingWaitCancels.current.forEach((cancel) => cancel())
+    return () => {
+      fittingsGeneration.current += 1
+      fittingWaitCancels.current.forEach((cancel) => cancel())
+    }
   }, [result])
 
   useEffect(() => {
