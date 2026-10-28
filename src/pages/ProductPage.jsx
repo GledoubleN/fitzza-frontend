@@ -8,7 +8,6 @@ import {
   GridItem,
   Heading,
   IconButton,
-  Image,
   Spinner,
   Stack,
   Tabs,
@@ -22,9 +21,11 @@ import { Header } from '../components/Header.jsx'
 import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
 import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
 import { toaster } from '../components/ui/toaster.jsx'
+import { ProductInformationTab } from './product/ProductInformationTab.jsx'
 import { ProductOptionSelector } from './product/ProductOptionSelector.jsx'
 import { ProductReviewTab } from './product/ProductReviewTab.jsx'
 import { ProductSizeTab } from './product/ProductSizeTab.jsx'
+import { ProductImage } from '../components/ProductImage.jsx'
 
 function getEstimatedArrivalDate () {
   const date = new Date()
@@ -107,15 +108,15 @@ export const ProductPage = () => {
       <Container maxWidth={ '5xl' } flex={ '1' }>
         <Grid templateColumns={ { base: '1fr', md: '2fr 1fr' } } gap={ 4 }>
           <GridItem minWidth={ 0 }>
-            <Image
+            <ProductImage
               width={ '100%' }
               aspectRatio={ 'square' }
               objectFit={ 'contain' }
               rounded={ 'l3' }
               bg={ 'bg.muted' }
-              src={ product.thumbnailUrl ?? product.images?.[0] }
+              src={ product.thumbnailUrl || product.images?.[0] }
               alt={ product.productName }
-            ></Image>
+            ></ProductImage>
           </GridItem>
 
           <GridItem
@@ -167,12 +168,7 @@ export const ProductPage = () => {
                   <Tabs.Trigger value={ 'review' }>후기</Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content value={ 'information' }>
-                  <Stack gap={ 4 } paddingY={ 4 }>
-                    <Text whiteSpace={ 'pre-wrap' }>{ product.description || '정보가 없습니다.' }</Text>
-                    { product.images?.map((image) => (
-                      <Image key={ image } width={ '100%' } src={ image } alt={ product.productName }></Image>
-                    )) }
-                  </Stack>
+                  <ProductInformationTab product={ product }/>
                 </Tabs.Content>
                 <Tabs.Content value={ 'size' }>
                   <ProductSizeTab product={ product }/>

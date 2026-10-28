@@ -3,15 +3,14 @@ import {
   Button,
   Flex,
   IconButton,
-  Image,
   Stack,
   Text,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { LuHeart } from 'react-icons/lu'
 import { Link } from 'react-router-dom'
-import exampleProductImage from '/src/assets/hero.png'
 import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
+import { ProductImage } from '../../components/ProductImage.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { addRecommendedOptionToCart, toRecommendedOptionLabel } from './recommendedOption.js'
 
@@ -46,13 +45,13 @@ export const ProductCard = ({ item, onTryOn, tryingOn }) => {
     <ProductSlot direction={ 'column' } gap={ 2 } position={ 'relative' } flexShrink={ 0 } scrollSnapAlign={ 'start' }>
       <Stack gap={ 1 } flex={ 1 } asChild>
         <Link to={ `/products/${ item.productId }` }>
-          <Image
-            src={ item.imageUrl || exampleProductImage }
+          <ProductImage
+            src={ item.imageUrl }
             alt={ item.productName }
             aspectRatio={ 1 }
             objectFit={ 'contain' }
             bg={ 'bg.muted' }
-          ></Image>
+          ></ProductImage>
           <Text fontSize={ 'sm' } lineClamp={ 1 }>{ item.productName }</Text>
           <Text fontSize={ 'sm' } fontWeight={ 'bold' }>{ item.price.toLocaleString() }원</Text>
           {

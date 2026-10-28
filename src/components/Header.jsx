@@ -17,8 +17,8 @@ import { LuBell, LuShoppingBag, LuLogIn, LuLogOut } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios.js'
 import { useAuth } from '../contexts/AuthContext.js'
+import { usePushNotification } from '../contexts/PushNotificationContext.js'
 import { toNotificationPath, toNotificationText, useNotifications } from '../hooks/useNotifications.js'
-import { usePushNotifications } from '../hooks/usePushNotifications.js'
 import { disablePush } from '../services/pushNotifications.js'
 import { toaster } from './ui/toaster.jsx'
 
@@ -35,7 +35,7 @@ export const Header = ({ maxWidth = '7xl' }) => {
   const navigate = useNavigate()
   const { isSignedIn, setAccessToken } = useAuth()
   const [isSigningOut, setIsSigningOut] = useState(false)
-  const { error, isConfigured } = usePushNotifications(isSignedIn && !isSigningOut)
+  const { error, isConfigured } = usePushNotification()
   const { notifications, status: notificationStatus, hasUnread, reload, markAsRead } = useNotifications(isSignedIn && !isSigningOut)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
 

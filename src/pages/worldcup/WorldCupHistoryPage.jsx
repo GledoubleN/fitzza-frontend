@@ -3,7 +3,6 @@ import {
   Flex,
   Text,
   IconButton,
-  Image,
   Center,
   Button,
   Grid,
@@ -20,7 +19,7 @@ import { toaster } from '../../components/ui/toaster.jsx'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { Footer } from '../../components/Footer.jsx'
-import defaultHeroImage from '../../assets/hero.png'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 const HISTORY_PAGE_SIZE = 20
 
@@ -174,8 +173,8 @@ export const WorldCupHistoryPage = () => {
                         alignItems="center"
                         justifyContent="center"
                       >
-                        <Image
-                          src={ product?.thumbnailUrl || product?.imageUrl || defaultHeroImage }
+                        <ProductImage
+                          src={ product?.thumbnailUrl || product?.imageUrl }
                           alt={ product?.productName || product?.name }
                           w="100%"
                           h="100%"

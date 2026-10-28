@@ -19,6 +19,7 @@ import { LuMessageCircle, LuPencil, LuSearch, LuThumbsUp } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { Header } from '../../components/Header.jsx'
+import { ProductImage } from '../../components/ProductImage.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { CATEGORIES, CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } from './communityFormat.js'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
@@ -164,6 +165,7 @@ export const CommunityMainPage = () => {
 
 const PostItem = ({ post, onClick }) => {
   const { title, category, postType, nickname, createdAt, thumbnailUrl, likeCount, commentCount } = post
+  const ThumbnailImage = postType === 'VOTE' ? ProductImage : Image
 
   return (
     <Flex
@@ -201,7 +203,7 @@ const PostItem = ({ post, onClick }) => {
       </Stack>
 
       { thumbnailUrl && (
-        <Image
+        <ThumbnailImage
           src={ thumbnailUrl }
           alt=""
           boxSize="14"

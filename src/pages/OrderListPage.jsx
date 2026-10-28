@@ -1,4 +1,5 @@
-import { Badge, Button, Card, Container, Flex, Heading, Image, Spinner, Stack, Text } from '@chakra-ui/react'
+import { Badge, Button, Card, Container, Flex, Heading, Spinner, Stack, Text } from '@chakra-ui/react'
+import { ProductImage } from '../components/ProductImage.jsx'
 import { useEffect, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
@@ -46,7 +47,7 @@ export const OrderListPage = () => {
               <RouterLink to={ `/orders/${ order.orderId }` }>
                 <Card.Body>
                   <Flex gap={ 4 } align={ 'center' }>
-                    <Image
+                    <ProductImage
                       boxSize={ '16' }
                       objectFit={ 'contain' }
                       rounded={ 'l2' }
