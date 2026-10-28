@@ -22,10 +22,7 @@ export const AIPromptCard = ({ hasShadow = false }) => {
     <>
       <Card.Root
         rounded="3xl"
-        bg="bg.panel/80"
-        backdropFilter="auto"
-        backdropBlur="lg"
-        backdropSaturate="160%"
+        layerStyle="glass"
         boxShadow={ hasShadow ? 'lg' : 'none' }
         transition="box-shadow"
         transitionDuration="moderate"
