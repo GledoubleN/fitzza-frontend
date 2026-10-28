@@ -25,7 +25,7 @@ const SectionTitle = ({ children }) => (
 )
 
 export const ProductGrid = ({ products }) => {
-  const productsByCategory = Object.groupBy(products, (product) => product.category)
+  const productsByCategory = Object.groupBy(products, (product) => product.category ?? '')
 
   return (
     <Stack gap={ 12 }>
@@ -35,7 +35,10 @@ export const ProductGrid = ({ products }) => {
             key={ category }
             gap={ 4 }
           >
-            <SectionTitle>Today&apos;s Pick - { CATEGORY_NAMES[category] ?? category }</SectionTitle>
+            <SectionTitle>
+              Today&apos;s Pick
+              { category && ` - ${ CATEGORY_NAMES[category] ?? category }` }
+            </SectionTitle>
             <Grid
               templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
               gap={ 4 }

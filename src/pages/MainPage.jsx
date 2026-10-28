@@ -6,6 +6,7 @@ import { Footer } from '../components/Footer.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
+import { useAuth } from '../contexts/AuthContext.js'
 import { HeroLighting } from './main/HeroLighting.jsx'
 import { MainHero } from './main/MainHero.jsx'
 import { MoodboardCollage } from './main/MoodboardCollage.jsx'
@@ -14,6 +15,7 @@ import { ProductGrid } from './main/ProductGrid.jsx'
 import { useMeasure } from './main/useMeasure.js'
 
 export const MainPage = () => {
+  const { isSignedIn } = useAuth()
   const [products, setProducts] = useState([])
 
   const headerRef = useRef(null)
@@ -33,7 +35,11 @@ export const MainPage = () => {
   })
 
   async function loadRecommendedProducts () {
-    api.get('/recommendations/personalized', { params: { size: 50 } }).then((response) => {
+    const request = isSignedIn
+      ? api.get('/recommendations/personalized', { params: { size: 50 } })
+      : api.get('/products')
+
+    request.then((response) => {
       if (response.status !== HttpStatusCode.Ok) {
         return
       }
@@ -44,7 +50,7 @@ export const MainPage = () => {
 
   useEffect(() => {
     loadRecommendedProducts()
-  }, [])
+  }, [isSignedIn])
 
   return (
     <Stack
