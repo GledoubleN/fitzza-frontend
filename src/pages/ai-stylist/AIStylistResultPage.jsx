@@ -217,6 +217,8 @@ export const AIStylistResultPage = () => {
 
   // 이 화면에서 입어본 가상 피팅들. { id, label, items, photo, status, fittingId, imageUrl, message, timedOut }
   const [fittings, setFittings] = useState([])
+  const [fittingsRestoreFailed, setFittingsRestoreFailed] = useState(false)
+  const [fittingsRestoreAttempt, setFittingsRestoreAttempt] = useState(0)
   const [pendingTryOn, setPendingTryOn] = useState(null)
   const photoUpload = useFileUpload({ accept: PHOTO_TYPES, maxFileSize: PHOTO_MAX_SIZE })
   const photo = photoUpload.acceptedFiles[0] ?? null
@@ -291,6 +293,10 @@ export const AIStylistResultPage = () => {
 
   useEffect(() => {
     setFittings([])
+  }, [result])
+
+  useEffect(() => {
+    setFittingsRestoreFailed(false)
     if (!result) return
 
     let cancelled = false
@@ -308,10 +314,12 @@ export const AIStylistResultPage = () => {
           .filter((fitting) => fitting.status === 'loading')
           .forEach((fitting) => followFitting(fitting.id, fitting.fittingId, result))
       })
-      .catch(() => {})
+      .catch(() => {
+        if (!cancelled) setFittingsRestoreFailed(true)
+      })
 
     return () => { cancelled = true }
-  }, [result])
+  }, [result, fittingsRestoreAttempt])
 
   const tryOn = (label, items) => {
     photoUpload.clearFiles()
@@ -447,6 +455,22 @@ export const AIStylistResultPage = () => {
                     onTryOn={ () => tryOn(`코디 ${ index + 1 }`, combo.items) }
                   ></ComboCard>
                 ))
+              }
+
+              {
+                fittingsRestoreFailed &&
+                <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
+                  <Card.Body gap={ 3 }>
+                    <Text color={ 'fg.error' }>입어본 가상 피팅을 불러오지 못했어요.</Text>
+                    <Button
+                      variant={ 'outline' }
+                      alignSelf={ 'flex-start' }
+                      onClick={ () => setFittingsRestoreAttempt((attempt) => attempt + 1) }
+                    >
+                      다시 불러오기
+                    </Button>
+                  </Card.Body>
+                </Card.Root>
               }
 
               {
