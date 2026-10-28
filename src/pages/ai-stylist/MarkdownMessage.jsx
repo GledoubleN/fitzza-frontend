@@ -27,7 +27,14 @@ const marked = new Marked().use({ extensions: [boldFollowedByKorean] })
 
 const LEAD_SENTENCE_PATTERN = /^([^\n#>*\-\d][^\n]*?[.!?])\s+(?=\S)/
 
-const separateLeadSentence = (markdown) => markdown.replace(LEAD_SENTENCE_PATTERN, '$1\n\n')
+const hasUnclosedBold = (text) => text.split('**').length % 2 === 0
+
+const separateLeadSentence = (markdown) => {
+  const match = LEAD_SENTENCE_PATTERN.exec(markdown)
+  if (!match || hasUnclosedBold(match[1])) return markdown
+
+  return `${ match[1] }\n\n${ markdown.slice(match[0].length) }`
+}
 
 const messageCss = {
   '--content-padding-x': 0,
