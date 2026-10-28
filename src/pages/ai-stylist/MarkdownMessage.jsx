@@ -6,7 +6,7 @@ import { RichTextEditor } from '../../components/ui/rich-text-editor.jsx'
 export const MarkdownMessage = ({ markdown }) => {
   const editor = useEditor({
     editable: false,
-    extensions: [StarterKit, Markdown],
+    extensions: [StarterKit.configure({ link: false }), Markdown],
     content: markdown,
     contentType: 'markdown',
   }, [markdown])
