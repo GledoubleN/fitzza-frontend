@@ -119,8 +119,8 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
           ) }
           <IconButton
             position="absolute"
-            top={ 2 }
-            right={ 2 }
+            top={ 1 }
+            right={ 1 }
             size="sm"
             rounded="full"
             variant="ghost"
