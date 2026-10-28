@@ -11,7 +11,7 @@ const CATEGORY_NAMES = {
 
 const SectionTitle = ({ children }) => (
   <Text
-    fontFamily="'Roboto Slab', serif"
+    fontFamily="logo"
     fontWeight="black"
     textStyle="xl"
     textTransform="uppercase"

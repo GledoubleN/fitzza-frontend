@@ -65,6 +65,7 @@ const config = defineConfig({
         heading: { value: '\'Nanum Gothic\', sans-serif' },
         body: { value: '\'Nanum Gothic\', sans-serif' },
         mono: { value: '\'Nanum Gothic Coding\', monospace' },
+        logo: { value: '\'Roboto Slab\', serif' },
       },
     },
 

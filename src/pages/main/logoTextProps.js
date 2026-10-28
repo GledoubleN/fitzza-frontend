@@ -1,5 +1,5 @@
 export const LOGO_TEXT_PROPS = {
-  fontFamily: '\'Roboto Slab\', serif',
+  fontFamily: 'logo',
   fontWeight: 'bold',
   lineHeight: '1',
   userSelect: 'none',
