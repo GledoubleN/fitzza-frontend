@@ -285,7 +285,9 @@ export const AIStylistResultPage = () => {
     setFittings((fittings) => [...fittings, { ...fitting, status: 'loading', message: '' }])
     try {
       const { data: created } = await createFitting(fitting)
-      updateFitting(fitting.id, { fittingId: created.fittingId })
+      setFittings((fittings) => fittings
+        .filter((other) => other.id === fitting.id || other.fittingId !== created.fittingId)
+        .map((other) => other.id === fitting.id ? { ...other, fittingId: created.fittingId } : other))
       await followFitting(fitting.id, created.fittingId)
     } catch (err) {
       updateFitting(fitting.id, { status: 'failed', message: err.response?.data?.message ?? '' })
