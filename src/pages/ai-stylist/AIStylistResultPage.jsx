@@ -57,6 +57,8 @@ const toFittingState = (detail) => {
 const toProductKey = (products) => products.map((product) => product.productId).sort().join()
 
 const toFittingLabel = (products, { items = [], combos = [] }) => {
+  if (!products.length) return '추천 상품'
+
   const productKey = toProductKey(products)
   const comboIndex = combos.findIndex((combo) => toProductKey(combo.items) === productKey)
   if (comboIndex >= 0) return `코디 ${ comboIndex + 1 }`
@@ -65,11 +67,15 @@ const toFittingLabel = (products, { items = [], combos = [] }) => {
   return item?.productName ?? products.map((product) => product.productName).join(', ')
 }
 
+const toFittingProducts = (products, recommendation) => ({
+  label: toFittingLabel(products, recommendation),
+  items: products,
+})
+
 const toRestoredFitting = (fitting, recommendation) => ({
   id: `fitting-${ fitting.fittingId }`,
-  label: toFittingLabel(fitting.products, recommendation),
-  items: fitting.products,
   fittingId: fitting.fittingId,
+  ...toFittingProducts(fitting.products, recommendation),
   ...toFittingState(fitting),
 })
 
@@ -260,9 +266,13 @@ export const AIStylistResultPage = () => {
     (other) => other.id === id ? { ...other, ...patch } : other,
   ))
 
-  const followFitting = async (id, fittingId) => {
+  const followFitting = async (id, fittingId, recommendation) => {
     try {
-      updateFitting(id, toFittingState(await waitForFitting(fittingId)))
+      const detail = await waitForFitting(fittingId)
+      const restoredProducts = recommendation && detail?.products.length
+        ? toFittingProducts(detail.products, recommendation)
+        : {}
+      updateFitting(id, { ...toFittingState(detail), ...restoredProducts })
     } catch (err) {
       updateFitting(id, { status: 'failed', message: err.response?.data?.message ?? '' })
     }
@@ -293,7 +303,7 @@ export const AIStylistResultPage = () => {
         setFittings(restored)
         restored
           .filter((fitting) => fitting.status === 'loading')
-          .forEach((fitting) => followFitting(fitting.id, fitting.fittingId))
+          .forEach((fitting) => followFitting(fitting.id, fitting.fittingId, result))
       })
       .catch(() => {})
 
