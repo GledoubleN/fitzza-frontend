@@ -1,4 +1,4 @@
-import { Box, Image, Text, Heading, IconButton, Stack } from '@chakra-ui/react'
+import { Box, Text, Heading, IconButton, Stack } from '@chakra-ui/react'
 import { LuHeart } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/axios'
@@ -6,7 +6,7 @@ import { toaster } from '../components/ui/toaster'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { SignInRequiredDialog } from './SignInRequiredDialog.jsx'
-import defaultThumbnail from '../assets/hero.png'
+import { ProductImage } from './ProductImage.jsx'
 
 export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange }) => {
   const navigate = useNavigate()
@@ -48,6 +48,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
         toaster.create({
           title: '찜 목록에서 제외되었습니다.',
           type: 'success',
+          closable: true,
         })
 
         if (onWishlistChange) {
@@ -58,6 +59,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
         toaster.create({
           title: '찜 목록에 추가되었습니다.',
           type: 'success',
+          closable: true,
         })
       }
     } catch (error) {
@@ -66,6 +68,7 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
       toaster.create({
         title: '요청을 처리하지 못했습니다.',
         type: 'error',
+        closable: true,
       })
     } finally {
       setIsLoading(false)
@@ -78,11 +81,11 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
         position="relative"
         gap={ 4 }
       >
-        <Image
+        <ProductImage
           width="100%"
           aspectRatio={ 1 }
           objectFit="contain"
-          src={ product?.thumbnailUrl || defaultThumbnail }
+          src={ product?.thumbnailUrl }
           alt={ productName }
           onClick={ handleProductClick }
           cursor="pointer"

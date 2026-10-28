@@ -4,7 +4,6 @@ import {
   createListCollection,
   Flex,
   IconButton,
-  Image,
   Portal,
   Select,
   Stack,
@@ -13,9 +12,9 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { LuHeart } from 'react-icons/lu'
 import { Link } from 'react-router-dom'
-import exampleProductImage from '/src/assets/hero.png'
 import { api } from '../../api/axios.js'
 import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
+import { ProductImage } from '../../components/ProductImage.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
 
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
@@ -144,13 +143,13 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
     <ProductSlot direction={ 'column' } gap={ 2 } position={ 'relative' } flexShrink={ 0 } scrollSnapAlign={ 'start' }>
       <Stack gap={ 1 } flex={ 1 } asChild>
         <Link to={ `/products/${ item.productId }` }>
-          <Image
-            src={ item.imageUrl || exampleProductImage }
+          <ProductImage
+            src={ item.imageUrl }
             alt={ item.productName }
             aspectRatio={ 1 }
             objectFit={ 'contain' }
             bg={ 'bg.muted' }
-          ></Image>
+          ></ProductImage>
           <Text fontSize={ 'sm' } lineClamp={ 1 }>{ item.productName }</Text>
           <Text fontSize={ 'sm' } fontWeight={ 'bold' }>{ item.price.toLocaleString() }원</Text>
           {

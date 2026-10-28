@@ -8,7 +8,6 @@ import {
   Flex,
   Grid,
   IconButton,
-  Image,
   Portal,
   Stack,
   Text,
@@ -19,6 +18,7 @@ import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { MAX_VOTE_OPTIONS, errorMessage, formatRelativeTime, optionKey } from './communityFormat.js'
 import { CommunityConfirmDialog } from './CommunityConfirmDialog.jsx'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 const RECOMMENDATION_PAGE_SIZE = 10
 
@@ -257,7 +257,7 @@ const OptionGrid = ({ items, options, onToggle }) => (
         >
           <Checkbox.HiddenInput aria-label={ item.name }/>
           <Box position="relative">
-            <Image
+            <ProductImage
               src={ item.imageUrl }
               alt=""
               aspectRatio="square"
