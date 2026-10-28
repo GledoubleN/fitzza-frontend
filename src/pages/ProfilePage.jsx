@@ -123,10 +123,10 @@ export default function ProfilePage() {
   };
 
   return (
-    <Box position="relative" minH="100vh" pt={4} bg="bg">
+    <Stack position="relative" minH="100vh" paddingY={4} gap={4} bg="bg">
       <Header />
 
-      <Container maxW="5xl" mx="auto" px={5}>
+      <Container maxW="5xl" mx="auto" px={5} flex="1">
         <Grid
           templateColumns={{ base: '1fr', lg: '1fr 1.8fr' }}
           gap={6}
@@ -337,6 +337,6 @@ export default function ProfilePage() {
       </Container>
 
       <TabBar />
-    </Box>
+    </Stack>
   );
 }
