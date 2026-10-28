@@ -46,12 +46,11 @@ export const TabBar = () => {
         paddingX={ 0 }
         maxWidth="xl"
         zIndex="docked"
-        bg="bg.panel/10"
-        backdropFilter="blur(6px) saturate(150%)"
-        borderWidth="1px"
-        borderColor="border.subtle"
+        layerStyle="glass"
+        borderWidth="thin"
+        borderColor="fg/10"
         borderRadius="full"
-        boxShadow="0 8px 32px rgba(0,0,0,0.12)"
+        boxShadow="md"
         transition="transform 0.2s ease"
       >
         <Grid
