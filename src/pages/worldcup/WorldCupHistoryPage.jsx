@@ -18,7 +18,6 @@ import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
-import { Footer } from '../../components/Footer.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
 
 const HISTORY_PAGE_SIZE = 20
@@ -227,7 +226,6 @@ export const WorldCupHistoryPage = () => {
         </Grid>
       </Container>
       <TabBar/>
-      <Footer/>
     </Stack>
   )
 }

@@ -14,7 +14,6 @@ import { LuChevronLeft, LuHistory } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
-import { Footer } from '../../components/Footer.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
 
 export const WorldCupTournamentPage = ({
@@ -229,7 +228,6 @@ export const WorldCupTournamentPage = ({
         </Grid>
       </Container>
       <TabBar/>
-      <Footer/>
     </Stack>
   )
 }
