@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Heading, Text, Input, InputGroup, VStack } from '@chakra-ui/react'
 import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
 
-export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMessage, onNext }) {
+export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMessage, fieldErrors, onNext }) {
   const handleNumberChange = (e) => {
     const { name, value } = e.target
     onFieldChange(name, value.replace(/[^0-9]/g, ''))
@@ -31,57 +31,69 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
 
       <VStack gap={ 4 } align="stretch">
 
-        <VStack align="stretch">
+        {/* 키 입력 */}
+        <VStack align="stretch" gap={ 1 }>
           <Heading fontSize="sm" color="fg.subtle">키</Heading>
           <InputGroup endAddon="cm" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
               name="height"
-              placeholder="175"
+              placeholder="178"
               value={ formData.height }
               onChange={ handleNumberChange }
               onKeyDown={ handleKeyDown }
               maxLength={ 3 }
               autoComplete="off"
               size="md"
+              borderColor={ fieldErrors?.height ? "fg.error" : undefined }
             />
           </InputGroup>
+          { fieldErrors?.height && (
+            <Text fontSize="xs" color="fg.error">{ fieldErrors.height }</Text>
+          ) }
         </VStack>
 
-        <VStack align="stretch">
+        {/* 몸무게 입력 */}
+        <VStack align="stretch" gap={ 1 }>
           <Heading fontSize="sm" color="fg.subtle">몸무게</Heading>
           <InputGroup endAddon="kg" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
               name="weight"
-              placeholder="65"
+              placeholder="75"
               value={ formData.weight }
               onChange={ handleNumberChange }
               onKeyDown={ handleKeyDown }
               maxLength={ 3 }
               autoComplete="off"
               size="md"
+              borderColor={ fieldErrors?.weight ? "fg.error" : undefined }
             />
           </InputGroup>
+          { fieldErrors?.weight && (
+            <Text fontSize="xs" color="fg.error">{ fieldErrors.weight }</Text>
+          ) }
         </VStack>
 
-        <VStack align="stretch">
+        {/* 발사이즈 입력 */}
+        <VStack align="stretch" gap={ 1 }>
           <Heading fontSize="sm" color="fg.subtle">발사이즈</Heading>
           <InputGroup endAddon="mm" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
               name="shoeSize"
-              placeholder="270"
+              placeholder="280"
               value={ formData.shoeSize }
               onChange={ handleNumberChange }
               onKeyDown={ handleKeyDown }
               maxLength={ 3 }
               autoComplete="off"
               size="md"
+              borderColor={ fieldErrors?.shoeSize ? "fg.error" : undefined }
             />
           </InputGroup>
+          { fieldErrors?.shoeSize && (
+            <Text fontSize="xs" color="fg.error">{ fieldErrors.shoeSize }</Text>
+          ) }
         </VStack>
 
-        <Text fontSize="xs" color="fg.subtle" pt={ 4 }>
-          키(130~200cm), 몸무게(30~120kg), 발사이즈(210~320mm) 범위 내로 입력해주세요.
-        </Text>
       </VStack>
     </OnboardingStepLayout>
   )

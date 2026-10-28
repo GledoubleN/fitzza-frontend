@@ -1,0 +1,31 @@
+{
+  "orderId": 1,
+  "orderNum": "ORD-20260916-8C1D4E2A7B",
+  "orderStatus": "COMPLETED",
+  "recipient": {
+    "name": "김예시",
+    "phone": "010-1234-5678"
+  },
+  "shippingAddress": "서울시 OO구 OO로 00, 예시 아파트 101동 101호",
+  "items": [
+    {
+      "orderItemId": 1,
+      "productId": 5,
+      "productName": "Denim Trucker Jacket",
+      "color": "블랙",
+      "size": "L",
+      "orderQty": 1,
+      "unitPrice": 2300000
+    },
+    {
+      "orderItemId": 2,
+      "productId": 2,
+      "productName": "Straight Leg Denim Pants",
+      "color": "베이지",
+      "size": "L",
+      "orderQty": 2,
+      "unitPrice": 1250000
+    }
+  ],
+  "totalPrice": 4800000
+}

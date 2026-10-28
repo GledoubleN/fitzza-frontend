@@ -2,10 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { Provider } from './components/ui/provider.jsx'
+import { AuthProvider } from './contexts/AuthProvider.jsx'
+import { PushNotificationProvider } from './contexts/PushNotificationProvider.jsx'
+import { Toaster } from './components/ui/toaster.jsx'
 import './index.css'
 
 async function enableMocking () {
-  if (process.env.NODE_ENV !== 'development') {
+  if (import.meta.env.VITE_ENABLE_MOCKING !== 'true') {
     return
   }
 
@@ -18,7 +21,12 @@ enableMocking().then(() => {
   createRoot(document.getElementById('root')).render(
     <StrictMode>
       <Provider>
-        <App/>
+        <AuthProvider>
+          <PushNotificationProvider>
+            <App/>
+          </PushNotificationProvider>
+          <Toaster/>
+        </AuthProvider>
       </Provider>
     </StrictMode>
   )

@@ -1,0 +1,545 @@
+{
+  "items": [
+    {
+      "fittingId": 30,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 30,
+          "productName": "Utility Cargo Overalls",
+          "price": 1420000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-15T22:00:00.000Z"
+    },
+    {
+      "fittingId": 29,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 29,
+          "productName": "Striped Track Jacket",
+          "price": 760000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-15T10:00:00.000Z"
+    },
+    {
+      "fittingId": 28,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 28,
+          "productName": "Leather Loafers",
+          "price": 1150000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-14T22:00:00.000Z"
+    },
+    {
+      "fittingId": 27,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 27,
+          "productName": "Cashmere Knit Vest",
+          "price": 1850000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-14T10:00:00.000Z"
+    },
+    {
+      "fittingId": 26,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 26,
+          "productName": "Nylon Bucket Hat",
+          "price": 720000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-13T22:00:00.000Z"
+    },
+    {
+      "fittingId": 25,
+      "userId": 1,
+      "status": "FAILED",
+      "resultImageUrl": null,
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 25,
+          "productName": "Cotton Fleece Joggers",
+          "price": 980000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-13T10:00:00.000Z"
+    },
+    {
+      "fittingId": 24,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 24,
+          "productName": "Wool Blazer",
+          "price": 3800000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-12T22:00:00.000Z"
+    },
+    {
+      "fittingId": 23,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 23,
+          "productName": "Waterproof Anorak",
+          "price": 1280000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-12T10:00:00.000Z"
+    },
+    {
+      "fittingId": 22,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 22,
+          "productName": "Drawstring Shorts",
+          "price": 950000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-11T22:00:00.000Z"
+    },
+    {
+      "fittingId": 21,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 21,
+          "productName": "Ribbed Tank Top",
+          "price": 430000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-11T10:00:00.000Z"
+    },
+    {
+      "fittingId": 20,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 20,
+          "productName": "Low-Top Sneakers",
+          "price": 850000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-10T22:00:00.000Z"
+    },
+    {
+      "fittingId": 19,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 19,
+          "productName": "Wool Knit Beanie",
+          "price": 240000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-10T10:00:00.000Z"
+    },
+    {
+      "fittingId": 18,
+      "userId": 1,
+      "status": "FAILED",
+      "resultImageUrl": null,
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 18,
+          "productName": "Pleated Wool Trousers",
+          "price": 920000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-09T22:00:00.000Z"
+    },
+    {
+      "fittingId": 17,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 17,
+          "productName": "Merino Wool Cardigan",
+          "price": 820000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-09T10:00:00.000Z"
+    },
+    {
+      "fittingId": 16,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 16,
+          "productName": "Maia Down Puffer Coat",
+          "price": 2950000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-08T22:00:00.000Z"
+    },
+    {
+      "fittingId": 15,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 15,
+          "productName": "Oversized Flannel Shirt",
+          "price": 890000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-08T10:00:00.000Z"
+    },
+    {
+      "fittingId": 14,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 14,
+          "productName": "Jersey Track Pants",
+          "price": 680000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-07T22:00:00.000Z"
+    },
+    {
+      "fittingId": 13,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 13,
+          "productName": "Re-Nylon Puffer Jacket",
+          "price": 3400000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "fittingId": 12,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 12,
+          "productName": "Silk Poplin Shirt",
+          "price": 980000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-06T22:00:00.000Z"
+    },
+    {
+      "fittingId": 11,
+      "userId": 1,
+      "status": "FAILED",
+      "resultImageUrl": null,
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 11,
+          "productName": "Canvas Baseball Cap",
+          "price": 620000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-06T10:00:00.000Z"
+    },
+    {
+      "fittingId": 10,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 10,
+          "productName": "Cotton Chino Trousers",
+          "price": 1100000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-05T22:00:00.000Z"
+    },
+    {
+      "fittingId": 9,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 9,
+          "productName": "Slim Fit Polo Shirt",
+          "price": 590000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-05T10:00:00.000Z"
+    },
+    {
+      "fittingId": 8,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 8,
+          "productName": "Technical Windbreaker",
+          "price": 1950000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-04T22:00:00.000Z"
+    },
+    {
+      "fittingId": 7,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 7,
+          "productName": "Tailored Wool Slacks",
+          "price": 1680000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-04T10:00:00.000Z"
+    },
+    {
+      "fittingId": 6,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 6,
+          "productName": "Crewneck Sweatshirt",
+          "price": 1350000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-03T22:00:00.000Z"
+    },
+    {
+      "fittingId": 5,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 5,
+          "productName": "Denim Trucker Jacket",
+          "price": 2300000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-03T10:00:00.000Z"
+    },
+    {
+      "fittingId": 4,
+      "userId": 1,
+      "status": "FAILED",
+      "resultImageUrl": null,
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 4,
+          "productName": "B32 Sneaker in Mesh",
+          "price": 1850000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-02T22:00:00.000Z"
+    },
+    {
+      "fittingId": 3,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 3,
+          "productName": "Embroidered Logo Hoodie",
+          "price": 1450000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-02T10:00:00.000Z"
+    },
+    {
+      "fittingId": 2,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 2,
+          "productName": "Straight Leg Denim Pants",
+          "price": 1250000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-01T22:00:00.000Z"
+    },
+    {
+      "fittingId": 1,
+      "userId": 1,
+      "status": "COMPLETED",
+      "resultImageUrl": "/src/assets/hero.png",
+      "userImageUrl": null,
+      "productCount": 1,
+      "products": [
+        {
+          "productId": 1,
+          "productName": "Classic Monogram T-Shirt",
+          "price": 750000,
+          "imageUrl": "/product-image.png",
+          "categoryName": "상의"
+        }
+      ],
+      "createdAt": "2026-10-01T10:00:00.000Z"
+    }
+  ],
+  "totalCount": 30
+}

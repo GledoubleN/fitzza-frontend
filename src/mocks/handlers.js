@@ -1,410 +1,343 @@
-import { delay } from 'msw'
+import { api } from '../api/axios.js'
 import { http, HttpResponse } from 'msw/http'
-import users from '../data/users.json'
-import categories from '../data/categories.json'
-import products from '../data/products.json'
-import likes from '../data/wishlist.json'
-import articles from '../data/articles.json'
-import comments from '../data/comments.json'
-import recommendations from '../data/recommendations.json'
-import recommendationHistory from '../data/recommendation-history.json'
-import recommendationMessages from '../data/recommendation-messages.json'
-import fittingResultImage from '../assets/hero.png'
-
-// [개발용] 추천 요청의 응답이 오기까지 걸리는 시간을 흉내 냅니다.
-// 추천 결과는 요청(POST)의 응답에 담겨 오므로, 이 시간 동안 화면의 로딩 말풍선을 확인할 수 있습니다.
-// 실제 백엔드가 붙으면 필요 없습니다.
-const RECOMMENDATION_PROCESSING_MS = 3000
-
-// TODO API 필요: 가상 피팅 결과 조회·최신 피팅 조회 API가 명세에 없어 목에서만 저장한다.
-// 새로고침하면 비워진다.
-const fittings = []
-const FITTING_DURATION = 3000
-
-// 요청 후 일정 시간이 지나면 완료된 것으로 응답한다.
-const toFittingResponse = (fitting) => {
-  if (!fitting) {
-    return new HttpResponse(null, { status: 404 })
-  }
-
-  const isDone = Date.now() - fitting.createdAt >= FITTING_DURATION
-
-  return HttpResponse.json({
-    fittingId: fitting.fittingId,
-    status: isDone ? 'DONE' : 'PROCESSING',
-    resultImageUrl: isDone ? '/src/assets/hero.png' : null,
-  })
-}
+import getUsersPreferencesFitsResponse from '../data/responses/get-users-preferences-fits.json'
+import getUsersPreferencesStylesResponse from '../data/responses/get-users-preferences-styles.json'
+import getUsersMeResponse from '../data/responses/get-users-me.json'
+import patchUsersMeResponse from '../data/responses/patch-users-me.json'
+import postAuthSigninResponse from '../data/responses/post-auth-signin.json'
+import postAuthRefreshResponse from '../data/responses/post-auth-refresh.json'
+import postAuthSignupResponse from '../data/responses/post-auth-signup.json'
+import postAuthSignoutResponse from '../data/responses/post-auth-signout.json'
+import getUersIdResponse from '../data/responses/get-uers-id.json'
+import getCategoriesResponse from '../data/responses/get-categories.json'
+import getProductsResponse from '../data/responses/get-products.json'
+import getProductsIdResponse from '../data/responses/get-products-id.json'
+import getReviewsResponse from '../data/responses/get-reviews.json'
+import getCartsResponse from '../data/responses/get-carts.json'
+import postCartsResponse from '../data/responses/post-carts.json'
+import patchCartsCartIdResponse from '../data/responses/patch-carts-cartId.json'
+import postOrdersResponse from '../data/responses/post-orders.json'
+import getOrdersResponse from '../data/responses/get-orders.json'
+import getOrdersOrderIdResponse from '../data/responses/get-orders-orderId.json'
+import getSurveysMeResponse from '../data/responses/get-surveys-me.json'
+import postSurveysResponse from '../data/responses/post-surveys.json'
+import getWishlistsResponse from '../data/responses/get-wishlists.json'
+import postWishlistsResponse from '../data/responses/post-wishlists.json'
+import getLikesResponse from '../data/responses/get-likes.json'
+import postRecommendationsResponse from '../data/responses/post-recommendations.json'
+import getRecommendationsResponse from '../data/responses/get-recommendations.json'
+import getRecommendationsRequestIdResponse from '../data/responses/get-recommendations-requestId.json'
+import getNotificationsResponse from '../data/responses/get-notifications.json'
+import getRecommendationsRequestIdMessagesResponse from '../data/responses/get-recommendations-requestId-messages.json'
+import postWorldcupsResponse from '../data/responses/post-worldcups.json'
+import getWorldcupsHistoryResponse from '../data/responses/get-worldcups-history.json'
+import postVtonResponse from '../data/responses/post-vton.json'
+import getVtonResponse from '../data/responses/get-vton.json'
+import getVtonFittingIdResponse from '../data/responses/get-vton-fittingId.json'
+import getCommunityPostsResponse from '../data/responses/get-community-posts.json'
+import postCommunityPostsResponse from '../data/responses/post-community-posts.json'
+import getCommunityPostsPostIdResponse from '../data/responses/get-community-posts-postId.json'
+import postCommunityPostsPostIdLikesResponse from '../data/responses/post-community-posts-postId-likes.json'
+import deleteCommunityPostsPostIdLikesResponse from '../data/responses/delete-community-posts-postId-likes.json'
+import getCommunityPostsPostIdPollResponse from '../data/responses/get-community-posts-postId-poll.json'
+import postCommunityPostsPostIdPollVotesResponse from '../data/responses/post-community-posts-postId-poll-votes.json'
+import patchCommunityPostsPostIdPollResponse from '../data/responses/patch-community-posts-postId-poll.json'
+import getCommunityPostsPostIdCommentsResponse from '../data/responses/get-community-posts-postId-comments.json'
+import postCommunityPostsPostIdCommentsResponse from '../data/responses/post-community-posts-postId-comments.json'
+import postCommentsCommentIdLikesResponse from '../data/responses/post-comments-commentId-likes.json'
+import deleteCommentsCommentIdLikesResponse from '../data/responses/delete-comments-commentId-likes.json'
 
 export const handlers = [
-  http.post(
-    'http://localhost:8000/api/v1/auth/signin',
-    ({ params }) => {
-      return HttpResponse.json({
-        accessToken:  "fitzza-access-token",
-        refreshToken: "fitzza-refresh-token",
-        userId: 1,
-        nickname: "CoffeeSlayer",
-      })
-    }
-  ),
-
-  http.post(
-    'http://localhost:8000/api/v1/auth/signup',
-    ({ params }) => {
-      return HttpResponse.json({
-        userId: 1
-      })
-    }
-  ),
-
-  http.post(
-    'http://localhost:8000/api/v1/auth/signout',
-    ({ params }) => {
-      return HttpResponse.json({
-
-      })
-    }
+  http.get(
+    `${ api.defaults.baseURL }/users/preferences/fits`,
+    () => HttpResponse.json(getUsersPreferencesFitsResponse),
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/uers/:id',
-    ({ params }) => {
-      const user = users.find(
-        user => user.id === Number(params.id),
-      )
-
-      if (!user) {
-        return new HttpResponse(null, { status: 404 })
-      }
-
-      return HttpResponse.json(user)
-    },
+    `${ api.defaults.baseURL }/users/preferences/styles`,
+    () => HttpResponse.json(getUsersPreferencesStylesResponse),
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/categories',
-    () => {
-      return HttpResponse.json(categories)
-    },
+    `${ api.defaults.baseURL }/users/me`,
+    () => HttpResponse.json(getUsersMeResponse),
   ),
 
-  http.get(
-    'http://localhost:8000/api/v1/products',
-    ({ request }) => {
-      // 🧪 [조회 실패 테스트용 주석]
-      // return new HttpResponse(null, { status: 500 })
-
-      const url = new URL(request.url)
-      const page = Number(url.searchParams.get('page') || 0)
-      const size = Number(url.searchParams.get('size') || 10)
-
-      const start = page * size
-      const end = start + size
-      const paginatedContent = products.slice(start, end)
-      const hasNext = end < products.length
-
-      return HttpResponse.json({
-        content: paginatedContent,
-        page: page,
-        size: size,
-        totalElements: products.length,
-        totalPages: Math.ceil(products.length / size),
-        hasNext: hasNext,
-        sort: url.searchParams.get('sort') || 'LATEST'
-      })
-    },
-  ),
-
-  http.get(
-    'http://localhost:8000/api/v1/products/recommended',
-    () => {
-      return HttpResponse.json(products)
-    },
-  ),
-
-  http.get(
-    'http://localhost:8000/api/v1/products/:id',
-    ({ params }) => {
-      const product = products.find(
-        product => product.productId === Number(params.id),
-      )
-
-      if (!product) {
-        return new HttpResponse(null, { status: 404 })
-      }
-
-      const measurements = {
-        M: { 총장: 70, 가슴단면: 55, 소매길이: 60, 소매단면: 11 },
-        L: { 총장: 72, 가슴단면: 58, 소매길이: 62, 소매단면: 12 },
-        XL: { 총장: 75, 가슴단면: 63, 소매길이: 63, 소매단면: 12 },
-      }
-      const options = ['블랙', '베이지'].flatMap((color, colorIndex) => (
-        Object.keys(measurements).map((size, sizeIndex) => ({
-          optionId: product.productId * 100 + colorIndex * 10 + sizeIndex,
-          color,
-          size,
-          measurement: measurements[size],
-          available: !(color === '베이지' && size === 'XL'),
-        }))
-      ))
-
-      return HttpResponse.json({
-        productId: product.productId,
-        productName: product.productName,
-        brandName: product.brandName,
-        price: product.price,
-        normalPrice: Math.round(product.price / 0.8 / 100) * 100,
-        discountRate: 20,
-        material: '폴리에스터 95%, 스판 5%',
-        fitType: '오버핏',
-        description: '부드러운 촉감과 여유로운 실루엣으로 매일 입기 좋은 상품입니다.',
-        thumbnailUrl: '/src/assets/hero.png',
-        images: ['/src/assets/hero.png'],
-        options,
-        status: 'ON_SALE',
-        wished: false,
-      })
-    },
-  ),
-
-  http.get(
-    'http://localhost:8000/api/v1/reviews',
-    ({ request }) => {
-      const query = new URL(request.url).searchParams
-      const page = Number(query.get('page') ?? 0)
-      const size = Number(query.get('size') ?? 10)
-      const sort = query.get('sort')
-      const TOTAL = 13
-      const contents = {
-        5: '이름 그대로 널널한 박시핏이 너무 예뻐요. 두께도 적당해서 지금 입기 좋아요.',
-        4: '그냥저냥 입을 만하네요.',
-        3: '별로입니다. 사지 마세요.',
-      }
-      const content = Array.from({ length: TOTAL }, (_, index) => ({
-        reviewId: index + 1,
-        productId: Number(query.get('productId')),
-        userId: index + 1,
-        rating: 5 - (index % 3),
-        content: contents[5 - (index % 3)],
-        imageUrl: index % 2 === 0 ? '/src/assets/hero.png' : null,
-        createdAt: new Date(2026, 8, 30 - index).toISOString(),
-      }))
-        .sort((a, b) => (
-          sort === 'RATING_DESC' ? b.rating - a.rating : sort === 'RATING_ASC' ? a.rating - b.rating : 0
-        ))
-        .slice(page * size, (page + 1) * size)
-
-      return HttpResponse.json({ content, page, totalPages: Math.ceil(TOTAL / size) })
-    },
+  http.patch(
+    `${ api.defaults.baseURL }/users/me`,
+    () => HttpResponse.json(patchUsersMeResponse),
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/carts',
-    async ({ request }) => {
-      const { optionId, quantity } = await request.json()
-
-      return HttpResponse.json({ cartId: optionId, optionId, quantity }, { status: 201 })
-    },
-  ),
-
-  http.get(
-    'http://localhost:8000/api/v1/wishlists',
-    async ({ request }) => {
-      return HttpResponse.json({
-        content: products,
-        page: 1,
-        size: products.length,
-        totalElements: 1,
-        totalPages: 1,
-        hasNext: 1
-      })
-    },
+    `${ api.defaults.baseURL }/auth/signin`,
+    () => HttpResponse.json(postAuthSigninResponse, {
+      headers: {
+        'Set-Cookie': 'refreshToken=fitzza-refresh-token; Path=/; SameSite=Lax',
+      },
+    }),
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/wishlists',
-    async ({ request }) => {
-      const { itemId } = await request.json()
+    `${ api.defaults.baseURL }/auth/refresh`,
+    () => HttpResponse.json(postAuthRefreshResponse),
+  ),
 
-      return HttpResponse.json({ wishlistId: itemId })
-    },
+  http.post(
+    `${ api.defaults.baseURL }/auth/signup`,
+    () => HttpResponse.json(postAuthSignupResponse),
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/auth/signout`,
+    () => HttpResponse.json(postAuthSignoutResponse, {
+      headers: {
+        'Set-Cookie': 'refreshToken=; Path=/; SameSite=Lax; Max-Age=0',
+      },
+    }),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/uers/:id`,
+    () => HttpResponse.json(getUersIdResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/categories`,
+    () => HttpResponse.json(getCategoriesResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/products`,
+    () => HttpResponse.json(getProductsResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/products/:id`,
+    () => HttpResponse.json(getProductsIdResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/reviews`,
+    () => HttpResponse.json(getReviewsResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/carts`,
+    () => HttpResponse.json(getCartsResponse),
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/carts`,
+    () => HttpResponse.json(postCartsResponse, { status: 201 }),
+  ),
+
+  http.patch(
+    `${ api.defaults.baseURL }/carts/:cartId`,
+    () => HttpResponse.json(patchCartsCartIdResponse),
   ),
 
   http.delete(
-    'http://localhost:8000/api/v1/wishlists',
+    `${ api.defaults.baseURL }/carts/:cartId`,
     () => new HttpResponse(null, { status: 204 }),
   ),
 
-  // TODO API 필요: photoId(프로필 전신 사진 ID)는 명세의 /users/me 응답에 없는 가정 필드다.
+  http.post(
+    `${ api.defaults.baseURL }/orders`,
+    () => HttpResponse.json(postOrdersResponse, { status: 201 }),
+  ),
+
   http.get(
-    'http://localhost:8000/api/v1/users/me',
-    () => HttpResponse.json({ email: 'user@fitzza.com', nickname: '핏짜', photoId: 1 }),
+    `${ api.defaults.baseURL }/orders`,
+    () => HttpResponse.json(getOrdersResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/orders/:orderId`,
+    () => HttpResponse.json(getOrdersOrderIdResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/surveys/me`,
+    () => HttpResponse.json(getSurveysMeResponse),
   ),
 
   http.post(
-    'http://localhost:8000/api/v1/vton',
-    async ({ request }) => {
-      const { productIds, color, size } = await request.json()
-      const fitting = {
-        fittingId: fittings.length + 1,
-        productId: productIds[0],
-        color,
-        size,
-        createdAt: Date.now(),
-      }
-      fittings.push(fitting)
-
-      return HttpResponse.json({ fittingId: fitting.fittingId, status: 'PENDING' }, { status: 202 })
-    },
+    `${ api.defaults.baseURL }/surveys`,
+    () => HttpResponse.json(postSurveysResponse, { status: 201 }),
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/vton/latest',
-    ({ request }) => toFittingResponse(fittings.findLast(
-      fitting => fitting.productId === Number(new URL(request.url).searchParams.get('productId')),
-    )),
+    `${ api.defaults.baseURL }/wishlists`,
+    () => HttpResponse.json(getWishlistsResponse),
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/wishlists`,
+    () => HttpResponse.json(postWishlistsResponse),
+  ),
+
+  http.delete(
+    `${ api.defaults.baseURL }/wishlists`,
+    () => new HttpResponse(null, { status: 204 }),
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/vton/:fittingId',
-    ({ params }) => toFittingResponse(fittings.find(
-      fitting => fitting.fittingId === Number(params.fittingId),
-    )),
+    `${ api.defaults.baseURL }/likes`,
+    () => HttpResponse.json(getLikesResponse),
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/recommendations`,
+    () => HttpResponse.json(postRecommendationsResponse, { status: 202 }),
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/shopping-cart',
-    () => {
-      return HttpResponse.json(products)
-    },
+    `${ api.defaults.baseURL }/recommendations`,
+    () => HttpResponse.json(getRecommendationsResponse),
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/checkout',
-    () => {
-      return HttpResponse.json(products)
-    },
+    `${ api.defaults.baseURL }/recommendations/:requestId`,
+    () => HttpResponse.json(getRecommendationsRequestIdResponse),
   ),
 
-  http.get(
-    'http://localhost:8000/api/v1/likes',
-    () => {
-      return HttpResponse.json(likes)
-    },
-  ),
-
-  http.get(
-    'http://localhost:8000/api/v1/community/articles/:id/comments',
-    () => {
-      return HttpResponse.json(comments)
-    },
-  ),
-
-  http.get(
-    'http://localhost:8000/api/v1/community/articles',
-    () => {
-      return HttpResponse.json(articles)
-    },
-  ),
-
-  http.get(
-    'http://localhost:8000/api/v1/community/articles/:id',
+  http.delete(
+    `${ api.defaults.baseURL }/recommendation/:requestId`,
     ({ params }) => {
-      const article = articles.find(
-        product => product.id === Number(params.id),
-      )
+      const index = recommendationHistory.findIndex((item) => item.requestId === params.requestId)
 
-      if (!article) {
-        return new HttpResponse(null, { status: 404 })
+      if (index === -1) {
+        return HttpResponse.json({ message: '대화 내역을 찾을 수 없습니다.' }, { status: 404 })
       }
 
-      return HttpResponse.json(article)
-    },
-  ),
+      recommendationHistory.splice(index, 1)
 
-  // AI 추천 요청. 추천이 끝나면 결과를 응답에 담아 돌려줍니다.
-  http.post(
-    'http://localhost:8000/api/v1/recommendations',
-    async ({ request }) => {
-      const { query } = await request.json()
-
-      if (!query?.trim()) {
-        return new HttpResponse(null, { status: 400 })
-      }
-
-      // [개발용] 추천에 걸리는 시간만큼 응답을 늦춥니다.
-      await delay(RECOMMENDATION_PROCESSING_MS)
-
-      return HttpResponse.json({ requestId: 'sample', ...recommendations })
-    },
-  ),
-
-  // 내 추천 대화 목록
-  http.get(
-    'http://localhost:8000/api/v1/recommendations',
-    ({ request }) => {
-      const page = Number(new URL(request.url).searchParams.get('page') ?? 0)
-
-      return HttpResponse.json({
-        content: page === 0 ? recommendationHistory : [],
-        page,
-        totalPages: 1,
-      })
-    },
-  ),
-
-  // 지난 추천 결과 조회. 목업에서는 어떤 requestId든 같은 결과를 돌려줍니다.
-  http.get(
-    'http://localhost:8000/api/v1/recommendations/:requestId',
-    ({ params }) => {
-      return HttpResponse.json({ requestId: params.requestId, ...recommendations })
+      return new HttpResponse(null, { status: 204 })
     },
   ),
 
   http.get(
-    'http://localhost:8000/api/v1/recommendations/:requestId/messages',
-    () => {
-      return HttpResponse.json(recommendationMessages)
-    },
+    `${ api.defaults.baseURL }/notifications`,
+    () => HttpResponse.json(getNotificationsResponse),
   ),
 
-  // 가상 피팅. 생성이 끝나면 결과를 응답에 담아 돌려줍니다. 목업에서는 어떤 요청이든 같은 이미지를 돌려줍니다.
-  http.post(
-    'http://localhost:8000/api/v1/fittings',
-    async ({ request }) => {
-      const { photoId, productIds } = await request.json()
-
-      if (!photoId || !productIds?.length) {
-        return new HttpResponse(null, { status: 400 })
-      }
-
-      // [개발용] 이미지 생성에 걸리는 시간만큼 응답을 늦춥니다.
-      await delay(RECOMMENDATION_PROCESSING_MS)
-
-      return HttpResponse.json({
-        fittingId: 'sample-fitting',
-        status: 'COMPLETED',
-        resultImageUrl: fittingResultImage,
-        failReason: null,
-        retryable: false,
-        products: products.filter((product) => productIds.includes(product.productId)),
-        createdAt: new Date().toISOString(),
-      })
-    },
+  http.patch(
+    `${ api.defaults.baseURL }/notifications/:notificationId`,
+    () => new HttpResponse(null, { status: 200 }),
   ),
 
-  // 장바구니 담기
+  http.get(
+    `${ api.defaults.baseURL }/recommendations/:requestId/messages`,
+    () => HttpResponse.json(getRecommendationsRequestIdMessagesResponse),
+  ),
+
   http.post(
-    'http://localhost:8000/api/v1/carts',
-    async ({ request }) => {
-      const { optionId, quantity } = await request.json()
+    `${ api.defaults.baseURL }/worldcups`,
+    () => HttpResponse.json(postWorldcupsResponse, { status: 201 }),
+  ),
 
-      if (!optionId || quantity < 1) {
-        return new HttpResponse(null, { status: 400 })
-      }
+  http.get(
+    `${ api.defaults.baseURL }/worldcups/history`,
+    () => HttpResponse.json(getWorldcupsHistoryResponse),
+  ),
 
-      return HttpResponse.json({ cartId: optionId, quantity })
-    },
+  http.post(
+    `${ api.defaults.baseURL }/vton`,
+    () => HttpResponse.json(postVtonResponse, { status: 202 }),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/vton`,
+    () => HttpResponse.json(getVtonResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/vton/:fittingId`,
+    () => HttpResponse.json(getVtonFittingIdResponse),
+  ),
+
+  http.delete(
+    `${ api.defaults.baseURL }/vton/:fittingId`,
+    () => new HttpResponse(null, { status: 204 }),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/community/posts`,
+    () => HttpResponse.json(getCommunityPostsResponse),
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/community/posts`,
+    () => HttpResponse.json(postCommunityPostsResponse, { status: 201 }),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/community/posts/:postId`,
+    () => HttpResponse.json(getCommunityPostsPostIdResponse),
+  ),
+
+  http.patch(
+    `${ api.defaults.baseURL }/community/posts/:postId`,
+    () => new HttpResponse(null, { status: 200 }),
+  ),
+
+  http.delete(
+    `${ api.defaults.baseURL }/community/posts/:postId`,
+    () => new HttpResponse(null, { status: 204 }),
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/community/posts/:postId/likes`,
+    () => HttpResponse.json(postCommunityPostsPostIdLikesResponse),
+  ),
+
+  http.delete(
+    `${ api.defaults.baseURL }/community/posts/:postId/likes`,
+    () => HttpResponse.json(deleteCommunityPostsPostIdLikesResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/community/posts/:postId/poll`,
+    () => HttpResponse.json(getCommunityPostsPostIdPollResponse),
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/community/posts/:postId/poll/votes`,
+    () => HttpResponse.json(postCommunityPostsPostIdPollVotesResponse),
+  ),
+
+  http.patch(
+    `${ api.defaults.baseURL }/community/posts/:postId/poll`,
+    () => HttpResponse.json(patchCommunityPostsPostIdPollResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/community/posts/:postId/comments`,
+    () => HttpResponse.json(getCommunityPostsPostIdCommentsResponse),
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/community/posts/:postId/comments`,
+    () => HttpResponse.json(postCommunityPostsPostIdCommentsResponse, { status: 201 }),
+  ),
+
+  http.patch(
+    `${ api.defaults.baseURL }/comments/:commentId`,
+    () => new HttpResponse(null, { status: 200 }),
+  ),
+
+  http.delete(
+    `${ api.defaults.baseURL }/comments/:commentId`,
+    () => new HttpResponse(null, { status: 204 }),
+  ),
+
+  http.post(
+    `${ api.defaults.baseURL }/comments/:commentId/likes`,
+    () => HttpResponse.json(postCommentsCommentIdLikesResponse),
+  ),
+
+  http.delete(
+    `${ api.defaults.baseURL }/comments/:commentId/likes`,
+    () => HttpResponse.json(deleteCommentsCommentIdLikesResponse),
   ),
 ]

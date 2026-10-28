@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
@@ -23,8 +23,8 @@ export const CategoryPage = () => {
   const [categories, setCategories] = useState([])
   const [selected, setSelected] = useState(undefined)
 
-  const search = (query) => navigate(
-    `/search?${ new URLSearchParams({ q: query }) }`,
+  const search = (code) => navigate(
+    `/search?${ new URLSearchParams({ category: code }) }`,
   )
 
   async function loadCategories () {
@@ -52,7 +52,7 @@ export const CategoryPage = () => {
       height={ '100vh' }
       gap={ '4' }
     >
-      <AppBar></AppBar>
+      <Header></Header>
 
       <Container maxWidth={ '3xl' } flex={ '1' } minHeight={ '0' }>
         <Stack height={ 'full' } gap={ '4' }>
@@ -87,7 +87,7 @@ export const CategoryPage = () => {
                     variant={ 'ghost' }
                     width={ 'full' }
                     justifyContent={ 'space-between' }
-                    onClick={ () => search(selected.name) }
+                    onClick={ () => search(selected.code) }
                   >
                     <Heading size={ 'md' }>{ selected?.name }</Heading>
                     <Icon><LuChevronRight></LuChevronRight></Icon>
@@ -107,7 +107,7 @@ export const CategoryPage = () => {
                           variant={ 'ghost' }
                           justifyContent={ 'space-between' }
                           onClick={ () => search(
-                            `${ subcategory.name }`) }
+                            `${ subcategory.code }`) }
                         >
                           <Text truncate>{ subcategory.name }</Text>
                           <Icon><LuChevronRight></LuChevronRight></Icon>

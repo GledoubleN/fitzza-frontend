@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
+  Box,
   Button,
   Container,
   Field,
@@ -13,7 +14,9 @@ import {
 } from '@chakra-ui/react'
 import { LuMail, LuLockKeyhole } from 'react-icons/lu'
 import { api } from '../api/axios.js'
-import { AppBar } from '../components/AppBar.jsx'
+import { Header } from '../components/Header.jsx'
+import { useAuth } from '../contexts/AuthContext.js'
+import { requestPushPermission } from '../services/pushNotifications.js'
 
 export const SignInPage = () => {
   const [email, setEmail] = useState('')
@@ -21,6 +24,8 @@ export const SignInPage = () => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const navigate = useNavigate()
+  const location = useLocation()
+  const { setAccessToken } = useAuth()
 
   const changeHandler = async (e) => {
     e.preventDefault()
@@ -32,11 +37,13 @@ export const SignInPage = () => {
       const response = await api.post('/auth/signin', { email, password })
       const token = response.data?.accessToken
 
-      localStorage.setItem('accessToken', token)
-      navigate('/')
+      await requestPushPermission().catch(() => {})
+
+      setAccessToken(token)
+      navigate(location.state?.from ?? '/', { replace: true })
 
     } catch (err) {
-
+      setErrorMessage(err.response?.data?.message || '로그인 중 오류가 발생했습니다. 다시 시도해 주세요.')
     } finally {
       setLoading(false)
     }
@@ -50,7 +57,7 @@ export const SignInPage = () => {
       paddingY={ 4 }
       bg="bg"
     >
-      <AppBar/>
+      <Header/>
 
       <Container maxWidth="md" display={ 'flex' } alignItems={ 'center' }>
         <Stack
@@ -63,12 +70,15 @@ export const SignInPage = () => {
           <Heading size="lg">로그인</Heading>
 
           <Field.Root w="100%">
-            <InputGroup startElement={ <LuMail/> }>
+            <InputGroup startElement={ <Box as={ LuMail } boxSize={ 4 }/> }>
               <Input
                 type="email"
                 placeholder="이메일"
                 value={ email }
-                onChange={ (e) => setEmail(e.target.value) }
+                onChange={ (e) => {
+                  setEmail(e.target.value)
+                  setErrorMessage('')
+                } }
                 variant="outline"
                 size="lg"
                 textAlign="left"
@@ -77,12 +87,16 @@ export const SignInPage = () => {
           </Field.Root>
 
           <Field.Root w="100%">
-            <InputGroup startElement={ <LuLockKeyhole/> }>
+            <InputGroup startElement={ <Box as={ LuLockKeyhole } boxSize={ 4 }/> }>
               <Input
                 type="password"
                 placeholder="비밀번호"
+                autoComplete="current-password"
                 value={ password }
-                onChange={ (e) => setPassword(e.target.value) }
+                onChange={ (e) => {
+                  setPassword(e.target.value)
+                  setErrorMessage('')
+                } }
                 variant="outline"
                 size="lg"
                 textAlign="left"
@@ -91,7 +105,7 @@ export const SignInPage = () => {
           </Field.Root>
 
           { errorMessage && (
-            <Text color="red.500" textStyle="sm">{ errorMessage }</Text>
+            <Text color="fg.error" textStyle="sm">{ errorMessage }</Text>
           ) }
 
           <Button
