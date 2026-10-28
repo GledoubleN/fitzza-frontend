@@ -21,6 +21,7 @@ import { Header } from '../components/Header.jsx'
 import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
 import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
 import { toaster } from '../components/ui/toaster.jsx'
+import { ProductInformationTab } from './product/ProductInformationTab.jsx'
 import { ProductOptionSelector } from './product/ProductOptionSelector.jsx'
 import { ProductReviewTab } from './product/ProductReviewTab.jsx'
 import { ProductSizeTab } from './product/ProductSizeTab.jsx'
@@ -167,12 +168,7 @@ export const ProductPage = () => {
                   <Tabs.Trigger value={ 'review' }>후기</Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content value={ 'information' }>
-                  <Stack gap={ 4 } paddingY={ 4 }>
-                    <Text whiteSpace={ 'pre-wrap' }>{ product.description || '정보가 없습니다.' }</Text>
-                    { product.images?.map((image) => (
-                      <ProductImage key={ image } width={ '100%' } src={ image } alt={ product.productName }></ProductImage>
-                    )) }
-                  </Stack>
+                  <ProductInformationTab product={ product }/>
                 </Tabs.Content>
                 <Tabs.Content value={ 'size' }>
                   <ProductSizeTab product={ product }/>

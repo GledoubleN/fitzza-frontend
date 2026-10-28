@@ -2,6 +2,7 @@
   "items": [
     {
       "fittingId": 30,
+      "requestId": 1,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -20,6 +21,7 @@
     },
     {
       "fittingId": 29,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -38,6 +40,7 @@
     },
     {
       "fittingId": 28,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -56,6 +59,7 @@
     },
     {
       "fittingId": 27,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -74,6 +78,7 @@
     },
     {
       "fittingId": 26,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -92,6 +97,7 @@
     },
     {
       "fittingId": 25,
+      "requestId": null,
       "userId": 1,
       "status": "FAILED",
       "resultImageUrl": null,
@@ -110,6 +116,7 @@
     },
     {
       "fittingId": 24,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -128,6 +135,7 @@
     },
     {
       "fittingId": 23,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -146,6 +154,7 @@
     },
     {
       "fittingId": 22,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -164,6 +173,7 @@
     },
     {
       "fittingId": 21,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -182,6 +192,7 @@
     },
     {
       "fittingId": 20,
+      "requestId": 1,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -200,6 +211,7 @@
     },
     {
       "fittingId": 19,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -218,6 +230,7 @@
     },
     {
       "fittingId": 18,
+      "requestId": null,
       "userId": 1,
       "status": "FAILED",
       "resultImageUrl": null,
@@ -236,6 +249,7 @@
     },
     {
       "fittingId": 17,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -254,6 +268,7 @@
     },
     {
       "fittingId": 16,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -272,6 +287,7 @@
     },
     {
       "fittingId": 15,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -290,6 +306,7 @@
     },
     {
       "fittingId": 14,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -308,6 +325,7 @@
     },
     {
       "fittingId": 13,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -326,6 +344,7 @@
     },
     {
       "fittingId": 12,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -344,6 +363,7 @@
     },
     {
       "fittingId": 11,
+      "requestId": null,
       "userId": 1,
       "status": "FAILED",
       "resultImageUrl": null,
@@ -362,6 +382,7 @@
     },
     {
       "fittingId": 10,
+      "requestId": 1,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -380,6 +401,7 @@
     },
     {
       "fittingId": 9,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -398,6 +420,7 @@
     },
     {
       "fittingId": 8,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -416,6 +439,7 @@
     },
     {
       "fittingId": 7,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -434,6 +458,7 @@
     },
     {
       "fittingId": 6,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -452,6 +477,7 @@
     },
     {
       "fittingId": 5,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -470,6 +496,7 @@
     },
     {
       "fittingId": 4,
+      "requestId": null,
       "userId": 1,
       "status": "FAILED",
       "resultImageUrl": null,
@@ -488,6 +515,7 @@
     },
     {
       "fittingId": 3,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -506,6 +534,7 @@
     },
     {
       "fittingId": 2,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -524,6 +553,7 @@
     },
     {
       "fittingId": 1,
+      "requestId": null,
       "userId": 1,
       "status": "COMPLETED",
       "resultImageUrl": "/src/assets/hero.png",
@@ -541,5 +571,9 @@
       "createdAt": "2026-10-01T10:00:00.000Z"
     }
   ],
-  "totalCount": 30
+  "totalCount": 30,
+  "page": null,
+  "size": 30,
+  "totalPages": 1,
+  "hasNext": false
 }
