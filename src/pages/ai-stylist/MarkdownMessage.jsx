@@ -4,7 +4,7 @@ import StarterKit from '@tiptap/starter-kit'
 import { Marked } from 'marked'
 import { RichTextEditor } from '../../components/ui/rich-text-editor.jsx'
 
-const BOLD_PATTERN = /^\*\*(?=\S)([\s\S]*?\S)\*\*/
+const BOLD_PATTERN = /^\*\*(?=[^\s*])([\s\S]*?\S)\*\*/
 
 const boldFollowedByKorean = {
   name: 'strong',
