@@ -69,7 +69,6 @@ const toRestoredFitting = (fitting, recommendation) => ({
   id: `fitting-${ fitting.fittingId }`,
   label: toFittingLabel(fitting.products, recommendation),
   items: fitting.products,
-  photo: !!fitting.userImageUrl,
   fittingId: fitting.fittingId,
   ...toFittingState(fitting),
 })
@@ -447,7 +446,6 @@ export const AIStylistResultPage = () => {
                         <>
                           <Flex align={ 'center' } gap={ 3 }>
                             <Spinner size={ 'sm' }></Spinner>
-                            <Text>{ fitting.photo ? '고객님 사진에 입혀보고 있어요' : '기본 모델에 입혀보고 있어요' }</Text>
                           </Flex>
                           <NotificationHint></NotificationHint>
                         </>
