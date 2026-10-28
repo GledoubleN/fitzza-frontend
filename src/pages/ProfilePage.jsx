@@ -132,8 +132,6 @@ export default function ProfilePage() {
         zIndex={10}
         bg="bg"
         py={4}
-        borderBottomWidth="1px"
-        borderColor="border.subtle"
       >
         <Header />
       </Box>
