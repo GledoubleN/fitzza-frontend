@@ -1,28 +1,19 @@
 import {
   Badge,
   Button,
-  createListCollection,
   Flex,
   IconButton,
   Image,
-  Portal,
-  Select,
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { LuHeart } from 'react-icons/lu'
 import { Link } from 'react-router-dom'
 import exampleProductImage from '/src/assets/hero.png'
-import { api } from '../../api/axios.js'
 import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
-
-// 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
-const TIMEOUT = { timeout: 10000 }
-
-// 상품 상세 옵션에 품절 여부가 없으면 살 수 있는 옵션으로 봅니다.
-const isAvailable = (option) => option.available !== false
+import { addRecommendedOptionToCart, toRecommendedOptionLabel } from './recommendedOption.js'
 
 // 상품 카드 한 칸의 크기. 줄 너비의 2/5를 차지해 다음 카드가 걸쳐 보이게 하되, 너무 작거나 커지지 않게 범위를 둡니다.
 // ProductCard가 이 칸을 쓰고, ProductRow의 넘기기 버튼도 사진 높이를 맞추는 데 같은 칸을 씁니다.
@@ -30,115 +21,20 @@ export const ProductSlot = (props) => (
   <Flex width={ '2/5' } minWidth={ 32 } maxWidth={ 44 } { ...props }></Flex>
 )
 
-// 상품 카드의 색상·사이즈 선택. 가로 스크롤 줄 안에서 목록이 잘리지 않도록 Portal로 띄웁니다.
-const OptionSelect = ({ label, placeholder, collection, value, onChange, disabled, hidden }) => (
-  <Select.Root
-    collection={ collection }
-    size={ 'xs' }
-    value={ value ? [value] : [] }
-    onValueChange={ (e) => onChange(e.value[0] ?? '') }
-    disabled={ disabled }
-    display={ hidden ? 'none' : undefined }
-    // 카드가 많아서, 목록은 펼쳤을 때만 그립니다.
-    lazyMount
-    unmountOnExit
-  >
-    <Select.HiddenSelect/>
-    <Select.Label srOnly>{ label }</Select.Label>
-    <Select.Control>
-      <Select.Trigger>
-        <Select.ValueText placeholder={ placeholder }/>
-      </Select.Trigger>
-      <Select.IndicatorGroup>
-        <Select.Indicator/>
-      </Select.IndicatorGroup>
-    </Select.Control>
-    <Portal>
-      <Select.Positioner>
-        <Select.Content>
-          {
-            collection.items.map((option) => (
-              <Select.Item item={ option } key={ option.value }>
-                { option.label }
-                <Select.ItemIndicator/>
-              </Select.Item>
-            ))
-          }
-        </Select.Content>
-      </Select.Positioner>
-    </Portal>
-  </Select.Root>
-)
-
-// onOptionChange: 코디 전체 담기를 위해 선택한 옵션을 ComboCard에 전달합니다.
 // onTryOn: 있으면 이 상품으로 가상 피팅을 시작하는 버튼을 보여줍니다. tryingOn: 다른 가상 피팅이 진행 중인지.
-export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
-  const [options, setOptions] = useState([])
-  const [color, setColor] = useState('')
-  const [optionId, setOptionId] = useState('')
+export const ProductCard = ({ item, onTryOn, tryingOn }) => {
   const [saving, setSaving] = useState(false)
   const [added, setAdded] = useState(false)
-  const [optionsFailed, setOptionsFailed] = useState(false)
-  const [attempt, setAttempt] = useState(0)
-
-  const selectOption = (value) => {
-    setOptionId(value)
-    onOptionChange?.(item.productId, value)
-  }
-
-  // 카드마다 상품 상세를 한 번씩 조회. 느려지면 옵션 일괄 조회 API로 교체.
-  useEffect(() => {
-    let cancelled = false
-    api.get(`/products/${ item.productId }`, TIMEOUT)
-      .then(({ data }) => {
-        if (cancelled) return
-        const options = data.options ?? []
-        const colored = options.some((option) => option.color)
-        setOptions(options)
-        // 추천 응답에 색상·사이즈가 있으면 바로 선택해둡니다. 옵션에 색상이 없는 상품은 사이즈만 맞춥니다.
-        if (colored && options.some((option) => option.color === item.color)) setColor(item.color)
-        const recommended = options.find((option) =>
-          (!colored || option.color === item.color) && option.size === item.recommendedSize && isAvailable(option))
-        if (recommended) selectOption(String(recommended.optionId))
-      })
-      .catch(() => {
-        if (!cancelled) setOptionsFailed(true)
-      })
-    return () => { cancelled = true }
-  }, [item.productId, attempt])
-
-  const retryOptions = () => {
-    setOptionsFailed(false)
-    setAttempt(attempt + 1)
-  }
-
-  const colored = options.some((option) => option.color)
-
-  const colorCollection = useMemo(() => createListCollection({
-    items: [...new Set(options.map((option) => option.color))].map((color) => ({ label: color, value: color })),
-  }), [options])
-
-  // 고른 색상에 있는 사이즈만 보여주고, 품절은 고를 수 없게 합니다. 값은 옵션 번호입니다.
-  const sizeCollection = useMemo(() => createListCollection({
-    items: options.filter((option) => !colored || option.color === color).map((option) => ({
-      label: isAvailable(option) ? option.size : `${ option.size } (품절)`,
-      value: String(option.optionId),
-      disabled: !isAvailable(option),
-    })),
-    isItemDisabled: (item) => item.disabled,
-  }), [options, colored, color])
-
-  // 색상을 바꾸면 사이즈를 다시 고르게 합니다.
-  const selectColor = (value) => {
-    setColor(value)
-    selectOption('')
-  }
+  const optionLabel = toRecommendedOptionLabel(item)
 
   const submit = async () => {
     setSaving(true)
     try {
-      await api.post('/carts', { optionId: Number(optionId), quantity: 1 }, TIMEOUT)
-      setAdded(true)
+      if (await addRecommendedOptionToCart(item)) {
+        setAdded(true)
+      } else {
+        toaster.create({ type: 'error', title: '추천 옵션을 찾지 못했어요. 상품 페이지에서 담아주세요.' })
+      }
     } catch {
       toaster.create({ type: 'error', title: '장바구니에 담지 못했어요. 다시 시도해주세요.' })
     } finally {
@@ -160,6 +56,10 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
           <Text fontSize={ 'sm' } lineClamp={ 1 }>{ item.productName }</Text>
           <Text fontSize={ 'sm' } fontWeight={ 'bold' }>{ item.price.toLocaleString() }원</Text>
           {
+            optionLabel &&
+            <Text fontSize={ 'xs' }>{ optionLabel }</Text>
+          }
+          {
             item.fitPercent != null &&
             <Badge alignSelf={ 'flex-start' }>핏 { item.fitPercent }%</Badge>
           }
@@ -169,35 +69,10 @@ export const ProductCard = ({ item, onOptionChange, onTryOn, tryingOn }) => {
           }
         </Link>
       </Stack>
-      {
-        optionsFailed &&
-        <>
-          <Text fontSize={ 'xs' } color={ 'fg.error' }>옵션을 불러오지 못했어요.</Text>
-          <Button size={ 'xs' } variant={ 'outline' } onClick={ retryOptions }>다시 시도</Button>
-        </>
-      }
-      <OptionSelect
-        label={ `${ item.productName } 색상` }
-        placeholder={ '색상' }
-        collection={ colorCollection }
-        value={ color }
-        onChange={ selectColor }
-        hidden={ optionsFailed || !colored }
-      ></OptionSelect>
-      <OptionSelect
-        label={ `${ item.productName } 사이즈` }
-        placeholder={ '사이즈' }
-        collection={ sizeCollection }
-        value={ optionId }
-        onChange={ selectOption }
-        disabled={ colored && !color }
-        hidden={ optionsFailed }
-      ></OptionSelect>
       <Button
         size={ 'xs' }
         variant={ 'outline' }
-        display={ optionsFailed ? 'none' : undefined }
-        disabled={ !optionId }
+        disabled={ !item.recommendedSize }
         loading={ saving }
         onClick={ submit }
       >
