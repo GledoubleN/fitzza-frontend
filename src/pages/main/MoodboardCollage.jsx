@@ -37,6 +37,7 @@ const Polaroid = ({ product, piece, isInteractive }) => (
     rotate={ `${ piece.rotate }deg` }
     zIndex={ piece.isFeatured ? 2 : 1 }
     pointerEvents={ isInteractive ? 'auto' : 'none' }
+    inert={ !isInteractive }
     filter="auto"
     blur="sm"
     transition="rotate 0.25s ease, scale 0.25s ease, filter 0.25s ease"
