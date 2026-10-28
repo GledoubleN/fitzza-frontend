@@ -64,7 +64,7 @@ export const ProductRow = ({ children }) => {
             position={ 'absolute' }
             top={ 0 }
             { ...button.side }
-            aspectRatio={ 1 }
+            aspectRatio={ 3 / 4 }
             align={ 'center' }
             justify={ button.justify }
             pointerEvents={ 'none' }
