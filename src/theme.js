@@ -182,6 +182,14 @@ const config = defineConfig({
           content: { layerStyle: 'glass' },
         },
       },
+      popover: {
+        base: {
+          content: {
+            layerStyle: 'glass',
+            '--arrow-background': '{colors.bg/70}',
+          },
+        },
+      },
       toast: {
         base: {
           root: {
