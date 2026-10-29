@@ -62,7 +62,7 @@ export const WorldCupTournamentPage = ({
                     textStyle="lg"
                     fontWeight="bold"
                   >
-                    이상형 월드컵 ({ roundTitle })
+                    월드컵 ({ roundTitle })
                   </Text>
                 </Flex>
               </Flex>
