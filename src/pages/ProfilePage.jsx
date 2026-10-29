@@ -42,7 +42,7 @@ export default function ProfilePage() {
     preferredFit: '',
     style: '',
   });
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState({ text: '', isError: false });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -97,7 +97,7 @@ export default function ProfilePage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    setMessage('');
+    setMessage({ text: '', isError: false });
 
     const payload = {
       height: profileData.height ? Number(profileData.height) : null,
@@ -110,13 +110,13 @@ export default function ProfilePage() {
 
     try {
       await api.patch('/users/me', payload);
-      setMessage('프로필이 성공적으로 저장되었습니다.');
+      setMessage({ text: '프로필이 성공적으로 저장되었습니다.', isError: false });
       setIsEditing(false);
     } catch (err) {
       if (err.response?.status === 400) {
-        setMessage('입력한 데이터의 단위나 범위를 확인해주세요.');
+        setMessage({ text: '입력한 데이터의 단위나 범위를 확인해주세요.', isError: true });
       } else {
-        setMessage('프로필이 저장되었습니다 (테스트 모드).');
+        setMessage({ text: '프로필이 저장되었습니다 (테스트 모드).', isError: false });
         setIsEditing(false);
       }
     }
@@ -256,7 +256,7 @@ export default function ProfilePage() {
                     <Button size="xs" variant="ghost" onClick={() => handleSkipField('style')}>비우기</Button>
                   </HStack>
 
-                  {message && <Text color="blue.500" textStyle="xs" textAlign="center">{message}</Text>}
+                  {message.text && <Text color={message.isError ? 'fg.error' : 'fg.info'} textStyle="xs" textAlign="center">{message.text}</Text>}
 
                   <HStack mt={1}>
                     <Button type="submit" size="xs" flex="1">저장</Button>
