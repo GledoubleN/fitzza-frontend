@@ -37,12 +37,12 @@ export const TabBar = () => {
       paddingX={ 4 }
       position="sticky"
       bottom="calc(env(safe-area-inset-bottom, 0px) + 12px)"
+      zIndex="docked"
     >
       <Container
         as="nav"
         paddingX={ 0 }
         maxWidth="xl"
-        zIndex="docked"
         layerStyle="glass"
         borderWidth="thin"
         borderColor="fg/10"
