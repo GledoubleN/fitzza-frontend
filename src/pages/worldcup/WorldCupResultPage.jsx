@@ -150,6 +150,19 @@ export const WorldCupResultPage = ({
                   >
                     { winnerProduct.price ? `${ winnerProduct.price.toLocaleString() } 원` : '가격 정보 없음' }
                   </Text>
+                  <Stack
+                    gap={ 1 }
+                    textStyle="sm"
+                    color="fg.muted"
+                  >
+                    <Text>
+                      계절: { winnerProduct.seasonName || winnerProduct.seasonType || winnerProduct.season || '정보 없음' }
+                    </Text>
+                    <Text>핏: { winnerProduct.fitType || '정보 없음' }</Text>
+                    <Text>
+                      색상: { [...new Set(winnerProduct.options?.map(option => option.color).filter(Boolean) ?? [])].join(', ') || '정보 없음' }
+                    </Text>
+                  </Stack>
                 </Stack>
 
                 { isSaveFailed && !savedResult && (

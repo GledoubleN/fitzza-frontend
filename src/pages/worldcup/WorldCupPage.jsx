@@ -50,16 +50,32 @@ export default function WorldCupPage () {
       return
     }
 
+    let ignore = false
     const tournamentState = location.state?.tournamentState
-    const shuffled = tournamentState?.matchList ?? shuffle(rawSelectedProducts)
-    setMatchList(shuffled)
-    setNextRoundList(tournamentState?.nextRoundList ?? [])
-    setCurrentIndex(tournamentState?.currentIndex ?? 0)
-    setWinnerProduct(null)
-    setSavedResult(null)
-    setIsSaveFailed(false)
-    setViewMode('tournament')
-    updateRoundTitle(shuffled.length)
+    const products = tournamentState?.matchList ?? shuffle(rawSelectedProducts)
+
+    Promise.all(products.map(async (product) => {
+      try {
+        const productId = product.productId ?? product.itemId
+        const response = await api.get(`/products/${ productId }`)
+        return { ...product, ...response.data }
+      } catch {
+        return product
+      }
+    })).then((productsWithDetails) => {
+      if (ignore) return
+
+      setMatchList(productsWithDetails)
+      setNextRoundList(tournamentState?.nextRoundList ?? [])
+      setCurrentIndex(tournamentState?.currentIndex ?? 0)
+      setWinnerProduct(null)
+      setSavedResult(null)
+      setIsSaveFailed(false)
+      setViewMode('tournament')
+      updateRoundTitle(productsWithDetails.length)
+    })
+
+    return () => { ignore = true }
   }, [location.state])
 
   const updateRoundTitle = (length) => {
