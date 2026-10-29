@@ -20,6 +20,7 @@ import {
   LuHistory,
   LuMessageSquare,
   LuSettings,
+  LuRotateCw,
 } from 'react-icons/lu';
 import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
@@ -31,7 +32,7 @@ import { findBodyMeasurementRangeError } from '../utils/bodyMeasurements.js'
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
-  const { preferredFits, preferredStyles } = useUserPreferences()
+  const { preferredFits, preferredStyles, isFailed: isPreferencesFailed, reload: reloadPreferences } = useUserPreferences()
   const fitOptions = [{ label: '선택 안함', value: '' }, ...preferredFits]
   const styleOptions = [{ label: '선택 안함', value: '' }, ...preferredStyles]
   const [isEditing, setIsEditing] = useState(false);
@@ -263,6 +264,13 @@ export default function ProfilePage() {
                     </Select.Root>
                     <Button size="xs" variant="ghost" onClick={() => handleSkipField('style')}>비우기</Button>
                   </HStack>
+
+                  {isPreferencesFailed && (
+                    <Button size="xs" variant="ghost" alignSelf="flex-start" onClick={reloadPreferences}>
+                      <LuRotateCw />
+                      선택지 다시 불러오기
+                    </Button>
+                  )}
 
                   {message.text && <Text color={message.isError ? 'fg.error' : 'fg.info'} textStyle="xs" textAlign="center">{message.text}</Text>}
 

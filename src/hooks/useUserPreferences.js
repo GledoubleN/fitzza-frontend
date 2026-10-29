@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { api } from '../api/axios.js'
 
 export const useUserPreferences = () => {
+  const [attempt, setAttempt] = useState(0)
   const [preferences, setPreferences] = useState({
     preferredFits: [],
     preferredStyles: [],
+    isFailed: false,
   })
 
   useEffect(() => {
@@ -19,11 +21,18 @@ export const useUserPreferences = () => {
       setPreferences({
         preferredFits: fits.data,
         preferredStyles: styles.data,
+        isFailed: false,
       })
-    }).catch(() => {})
+    }).catch(() => {
+      if (controller.signal.aborted) return
+
+      setPreferences((prev) => ({ ...prev, isFailed: true }))
+    })
 
     return () => controller.abort()
-  }, [])
+  }, [attempt])
 
-  return preferences
+  const reload = () => setAttempt((count) => count + 1)
+
+  return { ...preferences, reload }
 }
