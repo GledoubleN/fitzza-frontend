@@ -17,8 +17,9 @@ import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
-import { FailureTestButtons } from '../../mocks/FailureTestButtons.jsx'
 import { toFittingImageUrl } from './toFittingImageUrl.js'
+import { AuroraSpinner } from '../../components/AuroraSpinner.jsx'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 const PAGE_SIZE = 20
 const PREVIEW_PAGE_SIZE = 8
@@ -44,14 +45,21 @@ const toFittingTitle = ({ products = [] }) => {
 
 const FittingThumbnail = ({ fitting }) => {
   if (fitting.status === 'COMPLETED' && fitting.resultImageUrl) {
-    return <Image src={ toFittingImageUrl(fitting.resultImageUrl) } alt={ '가상 피팅 결과' } objectFit={ 'cover' }></Image>
+    return (
+      <Image
+        src={ toFittingImageUrl(fitting.resultImageUrl) }
+        alt={ '가상 피팅 결과' }
+        objectFit={ 'cover' }
+        transition={ 'transform 0.4s ease' }
+        _groupHover={ { transform: 'scale(1.05)' } }
+      ></Image>
+    )
   }
 
   return (
-    <Flex direction={ 'column' } align={ 'center' } justify={ 'center' } gap={ 4 } bg={ 'bg.muted' }>
-      <Spinner size={ 'sm' }></Spinner>
-      <Text textStyle={ 'xs' } color={ 'fg.muted' }>만드는 중</Text>
-    </Flex>
+    <Box>
+      <AuroraSpinner label={ '가상 피팅 만드는 중' }/>
+    </Box>
   )
 }
 
@@ -60,7 +68,7 @@ export const VtonGallery = ({ preview = false }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const linkedFittingId = searchParams.get('fittingId')
   const [fittings, setFittings] = useState([])
-  const [totalCount, setTotalCount] = useState(0)
+  const [hasNext, setHasNext] = useState(false)
   const [status, setStatus] = useState('loading')
   const [selected, setSelected] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -72,12 +80,12 @@ export const VtonGallery = ({ preview = false }) => {
 
   const fetchPreview = async () => {
     const items = []
-    let totalCount = Infinity
-    while (items.filter(isSuccessful).length < PREVIEW_PAGE_SIZE && items.length < totalCount) {
+    let hasNext = true
+    while (items.filter(isSuccessful).length < PREVIEW_PAGE_SIZE && hasNext) {
       const { data } = await api.get('/vton', { params: { limit: PREVIEW_PAGE_SIZE, offset: items.length } })
       if (!data.items.length) break
       items.push(...data.items)
-      totalCount = data.totalCount
+      hasNext = data.hasNext
     }
     return items
   }
@@ -90,7 +98,7 @@ export const VtonGallery = ({ preview = false }) => {
       } else {
         const { data } = await api.get('/vton', { params: { limit: PAGE_SIZE, offset } })
         setFittings((fittings) => offset ? [...fittings, ...data.items] : data.items)
-        setTotalCount(data.totalCount)
+        setHasNext(data.hasNext)
       }
       setStatus('done')
     } catch {
@@ -98,7 +106,7 @@ export const VtonGallery = ({ preview = false }) => {
     }
   }
 
-  const hasMore = !preview && fittings.length < totalCount
+  const hasMore = !preview && hasNext
 
   useEffect(() => {
     if (!hasMore || status !== 'done') return
@@ -146,7 +154,6 @@ export const VtonGallery = ({ preview = false }) => {
     try {
       await api.delete(`/vton/${ selected.fittingId }`)
       setFittings((fittings) => fittings.filter((fitting) => fitting.fittingId !== selected.fittingId))
-      setTotalCount((count) => count - 1)
       closeDialog()
     } catch {
       toaster.create({ type: 'error', title: '가상 피팅을 삭제하지 못했어요. 다시 시도해 주세요.' })
@@ -185,27 +192,41 @@ export const VtonGallery = ({ preview = false }) => {
         ref={ grid }
         templateColumns={ preview
           ? 'repeat(auto-fill, minmax(max({sizes.24}, calc((100% - 3 * {spacing.4}) / 4)), 1fr))'
-          : 'repeat(auto-fill, minmax(max({sizes.28}, calc((100% - 5 * {spacing.4}) / 6)), 1fr))' }
+          : 'repeat(auto-fill, minmax(max({sizes.28}, calc((100% - 4 * {spacing.4}) / 5)), 1fr))' }
         gap={ 4 }
       >
         {
           visibleFittings.map((fitting) => (
             <Button
               key={ fitting.fittingId }
+              className={ 'group' }
               variant={ 'plain' }
               height={ 'auto' }
-              padding={ 0 }
-              display={ 'block' }
+              padding={ 2 }
+              paddingBottom={ 3 }
+              display={ 'flex' }
+              flexDirection={ 'column' }
+              alignItems={ 'stretch' }
+              gap={ 3 }
               textAlign={ 'start' }
+              rounded={ 'none' }
+              bg={ 'bg.panel' }
+              borderWidth={ 'thin' }
+              borderColor={ 'border.subtle' }
+              boxShadow={ 'sm' }
+              transition={ 'box-shadow 0.25s ease' }
+              _hover={ { boxShadow: 'lg' } }
               onClick={ () => setSelected(fitting) }
             >
-              <AspectRatio ratio={ 3 / 4 } borderRadius={ 'xl' } overflow={ 'hidden' } borderWidth={ 'thin' } borderColor={ 'border.subtle' }>
+              <AspectRatio ratio={ 3 / 4 } overflow={ 'hidden' } bg={ 'bg.muted' }>
                 <FittingThumbnail fitting={ fitting }></FittingThumbnail>
               </AspectRatio>
-              <Text textStyle={ 'xs' } color={ 'fg.muted' } marginTop={ 4 } truncate>
-                { fitting.products?.map((product) => product.productName).join(', ') }
-              </Text>
-              <Text textStyle={ 'xs' } color={ 'fg.subtle' }>{ formatDate(fitting.createdAt) }</Text>
+              <Stack gap={ 1 }>
+                <Text textStyle={ 'sm' } fontWeight={ 'normal' } lineClamp={ 2 } minHeight={ '2lh' }>
+                  { fitting.products?.map((product) => product.productName).join(', ') }
+                </Text>
+                <Text textStyle={ 'xs' } fontWeight={ 'normal' } color={ 'fg.muted' }>{ formatDate(fitting.createdAt) }</Text>
+              </Stack>
             </Button>
           ))
         }
@@ -219,21 +240,6 @@ export const VtonGallery = ({ preview = false }) => {
           <Text color={ 'fg.error' }>가상 피팅 기록을 불러오지 못했어요.</Text>
           <Button variant={ 'outline' } size={ 'sm' } onClick={ () => load(fittings.length) }>다시 시도</Button>
         </Stack>
-      }
-
-      {
-        import.meta.env.DEV &&
-        <FailureTestButtons tests={ [
-          {
-            label: '빈 갤러리',
-            method: 'get',
-            path: '/vton',
-            respond: (HttpResponse) => HttpResponse.json({ items: [], totalCount: 0 }),
-            onReady: () => load(),
-          },
-          { label: '다음 목록 불러오기', method: 'get', path: '/vton' },
-          { label: '삭제 실패', method: 'delete', path: '/vton/:fittingId' },
-        ] }/>
       }
 
       <Dialog.Root
@@ -275,7 +281,7 @@ export const VtonGallery = ({ preview = false }) => {
                           >
                             <Box width={ 12 } flexShrink={ 0 }>
                               <AspectRatio ratio={ 1 } borderRadius={ 'md' } overflow={ 'hidden' } bg={ 'bg.muted' }>
-                                <Image src={ product.imageUrl } alt={ product.productName }></Image>
+                                <ProductImage src={ product.imageUrl } alt={ product.productName }></ProductImage>
                               </AspectRatio>
                             </Box>
                             <Stack gap={ 0 } minWidth={ 0 }>

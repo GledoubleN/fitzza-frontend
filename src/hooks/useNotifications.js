@@ -3,11 +3,12 @@ import { api } from '../api/axios.js'
 import { isPushConfigured, subscribeToPush } from '../services/pushNotifications.js'
 
 const pageSize = 5
+export const NOTIFICATION_RECEIVED_EVENT = 'fitzza:notification-received'
 
 export const toNotificationPath = ({ type, targetId }) => {
   switch (type) {
     case 'FITTING_DONE':
-      return `/profile/fittings?fittingId=${ targetId }`
+      return `/ai-stylist/fittings/${ targetId }`
     case 'RECOMMENDATION_DONE':
       return `/ai-stylist/${ targetId }`
     case 'COMMENT':
@@ -69,6 +70,9 @@ export const useNotifications = (isSignedIn) => {
     if (isPushConfigured) {
       subscribeToPush((payload) => {
         showSystemNotification(payload)
+        window.dispatchEvent(new CustomEvent(NOTIFICATION_RECEIVED_EVENT, {
+          detail: payload?.data ?? {},
+        }))
         load()
       }).then((cleanup) => {
         if (cancelled) cleanup()

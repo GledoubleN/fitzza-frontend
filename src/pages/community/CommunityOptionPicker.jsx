@@ -4,11 +4,10 @@ import {
   Button,
   Checkbox,
   CloseButton,
-  Drawer,
+  Dialog,
   Flex,
   Grid,
   IconButton,
-  Image,
   Portal,
   Stack,
   Text,
@@ -19,6 +18,7 @@ import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { MAX_VOTE_OPTIONS, errorMessage, formatRelativeTime, optionKey } from './communityFormat.js'
 import { CommunityConfirmDialog } from './CommunityConfirmDialog.jsx'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 const RECOMMENDATION_PAGE_SIZE = 10
 
@@ -59,15 +59,15 @@ const SOURCES = [
 ]
 
 export const CommunityOptionSourceSheet = ({ open, onClose, onSelect }) => (
-  <Drawer.Root open={ open } placement="bottom" onOpenChange={ (e) => !e.open && onClose() }>
+  <Dialog.Root open={ open } placement="center" size="xs" onOpenChange={ (e) => !e.open && onClose() }>
     <Portal>
-      <Drawer.Backdrop/>
-      <Drawer.Positioner>
-        <Drawer.Content roundedTop="xl">
-          <Drawer.Header>
-            <Drawer.Title>투표에 올릴 상품 가져오기</Drawer.Title>
-          </Drawer.Header>
-          <Drawer.Body paddingBottom="8">
+      <Dialog.Backdrop/>
+      <Dialog.Positioner>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>투표에 올릴 상품 가져오기</Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body paddingBottom="8">
             <Stack gap="4">
               { SOURCES.map(({ value, icon: Icon, title, description }) => (
                 <Flex
@@ -89,14 +89,14 @@ export const CommunityOptionSourceSheet = ({ open, onClose, onSelect }) => (
                 </Flex>
               )) }
             </Stack>
-          </Drawer.Body>
-          <Drawer.CloseTrigger asChild>
+          </Dialog.Body>
+          <Dialog.CloseTrigger asChild>
             <CloseButton size="sm"/>
-          </Drawer.CloseTrigger>
-        </Drawer.Content>
-      </Drawer.Positioner>
+          </Dialog.CloseTrigger>
+        </Dialog.Content>
+      </Dialog.Positioner>
     </Portal>
-  </Drawer.Root>
+  </Dialog.Root>
 )
 
 export const CommunityOptionPicker = ({ source, options, onToggle, onDone }) => {
@@ -257,7 +257,7 @@ const OptionGrid = ({ items, options, onToggle }) => (
         >
           <Checkbox.HiddenInput aria-label={ item.name }/>
           <Box position="relative">
-            <Image
+            <ProductImage
               src={ item.imageUrl }
               alt=""
               aspectRatio="square"

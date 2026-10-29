@@ -3,7 +3,6 @@ import {
   Flex,
   Text,
   IconButton,
-  Image,
   Center,
   Button,
   Grid,
@@ -19,8 +18,7 @@ import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
-import { Footer } from '../../components/Footer.jsx'
-import defaultHeroImage from '../../assets/hero.png'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 const HISTORY_PAGE_SIZE = 20
 
@@ -45,7 +43,7 @@ export const WorldCupHistoryPage = () => {
       setHasNextHistory(data.hasNext)
     }).catch(() => {
       if (controller.signal.aborted) return
-      toaster.create({ title: '우승 이력을 불러오지 못했습니다.', type: 'error', closable: true })
+      toaster.create({ title: '우승 이력을 불러오지 못했습니다.', type: 'error' })
     }).finally(() => {
       if (!controller.signal.aborted) setIsLoadingHistory(false)
     })
@@ -66,7 +64,7 @@ export const WorldCupHistoryPage = () => {
       setHistoryPage(page)
       setHasNextHistory(data.hasNext)
     } catch {
-      toaster.create({ title: '우승 이력을 불러오지 못했습니다.', type: 'error', closable: true })
+      toaster.create({ title: '우승 이력을 불러오지 못했습니다.', type: 'error' })
     } finally {
       setIsLoadingMoreHistory(false)
     }
@@ -152,7 +150,6 @@ export const WorldCupHistoryPage = () => {
                       key={ item.worldcupHistoryId }
                       borderWidth="thin"
                       borderColor="border.subtle"
-                      borderRadius="2xl"
                       p={ 4 }
                       bg="bg.panel"
                       display="flex"
@@ -166,7 +163,6 @@ export const WorldCupHistoryPage = () => {
                       <Box
                         w="20"
                         h="20"
-                        borderRadius="xl"
                         overflow="hidden"
                         bg="bg.subtle"
                         flexShrink={ 0 }
@@ -174,8 +170,8 @@ export const WorldCupHistoryPage = () => {
                         alignItems="center"
                         justifyContent="center"
                       >
-                        <Image
-                          src={ product?.thumbnailUrl || product?.imageUrl || defaultHeroImage }
+                        <ProductImage
+                          src={ product?.thumbnailUrl || product?.imageUrl }
                           alt={ product?.productName || product?.name }
                           w="100%"
                           h="100%"
@@ -216,7 +212,6 @@ export const WorldCupHistoryPage = () => {
               { hasNextHistory && (
                 <Button
                   variant="outline"
-                  borderRadius="xl"
                   loading={ isLoadingMoreHistory }
                   onClick={ loadMore }
                 >
@@ -228,7 +223,6 @@ export const WorldCupHistoryPage = () => {
         </Grid>
       </Container>
       <TabBar/>
-      <Footer/>
     </Stack>
   )
 }

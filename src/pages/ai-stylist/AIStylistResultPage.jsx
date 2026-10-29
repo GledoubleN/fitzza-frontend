@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Card,
@@ -10,22 +11,25 @@ import {
   IconButton,
   Image,
   Portal,
-  Spinner,
   Stack,
   Text,
   useFileUpload,
 } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
-import { LuClock, LuUpload } from 'react-icons/lu'
+import { LuMenu, LuUpload } from 'react-icons/lu'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { Header } from '../../components/Header.jsx'
 import { ComboCard } from './ComboCard.jsx'
+import { FittingLoading } from './FittingLoading.jsx'
+import { MarkdownMessage } from './MarkdownMessage.jsx'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
+import { RecommendationLoading } from './RecommendationLoading.jsx'
 import { toFittingImageUrl } from '../profile/toFittingImageUrl.js'
 import { listenForPush } from './listenForPush.js'
 import { TabBar } from '../../components/TabBar.jsx'
+import { toaster } from '../../components/ui/toaster.jsx'
 
 const FAIL_MESSAGE = '추천을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
@@ -43,6 +47,42 @@ const PHOTO_ERRORS = {
   FILE_INVALID_TYPE: 'PNG, JPG, WEBP 이미지만 올릴 수 있어요.',
   FILE_TOO_LARGE: '사진은 15MB 이하로 올려 주세요.',
 }
+
+const FITTING_WAIT_CANCELLED = Symbol('fitting wait cancelled')
+
+const toFittingState = (detail) => {
+  if (!detail) return { status: 'failed', message: FITTING_TIMEOUT_MESSAGE, timedOut: true }
+  if (detail.status === 'PENDING') return { status: 'loading', message: '' }
+  if (detail.status === 'COMPLETED' && detail.resultImageUrl) {
+    return { status: 'done', imageUrl: toFittingImageUrl(detail.resultImageUrl) }
+  }
+  return { status: 'failed', message: detail.errorMessage }
+}
+
+const toProductKey = (products) => products.map((product) => product.productId).sort().join()
+
+const toFittingLabel = (products, { items = [], combos = [] }) => {
+  if (!products.length) return '추천 상품'
+
+  const productKey = toProductKey(products)
+  const comboIndex = combos.findIndex((combo) => toProductKey(combo.items) === productKey)
+  if (comboIndex >= 0) return `코디 ${ comboIndex + 1 }`
+
+  const item = items.find((item) => toProductKey([item]) === productKey)
+  return item?.productName ?? products.map((product) => product.productName).join(', ')
+}
+
+const toFittingProducts = (products, recommendation) => ({
+  label: toFittingLabel(products, recommendation),
+  items: products,
+})
+
+const toRestoredFitting = (fitting, recommendation) => ({
+  id: `fitting-${ fitting.fittingId }`,
+  fittingId: fitting.fittingId,
+  ...toFittingProducts(fitting.products, recommendation),
+  ...toFittingState(fitting),
+})
 
 const isNotificationGranted = () => !('Notification' in window) || Notification.permission === 'granted'
 
@@ -136,13 +176,6 @@ export const AIStylistResultPage = () => {
     let cancelled = false
     const text = location.state?.query
     setQuery(text ?? '')
-    if (!text) {
-      api.get(`/recommendations/${ encodeURIComponent(requestId) }/messages`, TIMEOUT)
-        .then(({ data: messages }) => {
-          if (!cancelled) setQuery(messages.find((m) => m.senderType === 'USER')?.content ?? '')
-        })
-        .catch(() => {})
-    }
 
     setResult(null)
     setStatus('loading')
@@ -153,6 +186,8 @@ export const AIStylistResultPage = () => {
     const deadline = Date.now() + RECOMMENDATION_WAIT_LIMIT
     const load = async () => {
       let data = await fetchRecommendation()
+      if (cancelled) return
+      if (!text) setQuery(data.queryText ?? '')
       while (data.status === 'PROCESSING') {
         const shouldCheck = await push.wait(deadline - Date.now())
         if (cancelled) return
@@ -186,12 +221,50 @@ export const AIStylistResultPage = () => {
   }
 
   // 이 화면에서 입어본 가상 피팅들. { id, label, items, photo, status, fittingId, imageUrl, message, timedOut }
+  const [wishedProductIds, setWishedProductIds] = useState([])
+
+  useEffect(() => {
+    if (!result) return
+
+    let cancelled = false
+    api.get('/wishlists', { params: { page: 0, size: 100 }, ...TIMEOUT })
+      .then(({ data }) => {
+        if (!cancelled) setWishedProductIds(data.content.map((wishlist) => wishlist.itemId))
+      })
+      .catch(() => {})
+
+    return () => { cancelled = true }
+  }, [result])
+
+  const setWished = (productId, wished) => setWishedProductIds((productIds) => (
+    wished ? [...productIds.filter((id) => id !== productId), productId] : productIds.filter((id) => id !== productId)
+  ))
+
+  const toggleWish = async (productId) => {
+    const wished = wishedProductIds.includes(productId)
+    setWished(productId, !wished)
+    try {
+      if (wished) {
+        await api.delete('/wishlists', { params: { itemId: productId }, ...TIMEOUT })
+      } else {
+        await api.post('/wishlists', { itemId: productId }, TIMEOUT)
+      }
+    } catch {
+      setWished(productId, wished)
+      toaster.create({ type: 'error', title: '찜 상태를 바꾸지 못했어요. 다시 시도해주세요.' })
+    }
+  }
+
   const [fittings, setFittings] = useState([])
+  const [fittingsRestoreFailed, setFittingsRestoreFailed] = useState(false)
+  const [fittingsRestoreAttempt, setFittingsRestoreAttempt] = useState(0)
   const [pendingTryOn, setPendingTryOn] = useState(null)
   const photoUpload = useFileUpload({ accept: PHOTO_TYPES, maxFileSize: PHOTO_MAX_SIZE })
   const photo = photoUpload.acceptedFiles[0] ?? null
   const photoErrorCode = photo ? null : photoUpload.rejectedFiles[0]?.errors[0]
   const fittingsEnd = useRef(null)
+  const fittingWaitCancels = useRef(new Set())
+  const fittingsGeneration = useRef(0)
   const tryingOn = fittings.some((fitting) => fitting.status === 'loading')
 
   // 입어보기를 누르거나 결과가 오면 그 말풍선이 보이게 내립니다.
@@ -200,13 +273,14 @@ export const AIStylistResultPage = () => {
   }, [fittings])
 
   const createFitting = ({ items, photo }) => {
-    const productIds = items.map((item) => item.productId)
+    const fittingItems = items.map(({ productId, imageUrl }) => ({ productId, imageUrl }))
     if (!photo) {
-      return api.post('/vton', { productIds }, TIMEOUT)
+      return api.post('/vton', { requestId: Number(requestId), items: fittingItems }, TIMEOUT)
     }
 
     const form = new FormData()
-    form.append('productIds', JSON.stringify(productIds))
+    form.append('requestId', requestId)
+    form.append('items', JSON.stringify(fittingItems))
     form.append('userImage', photo)
     return api.post('/vton', form, {
       ...TIMEOUT,
@@ -216,44 +290,99 @@ export const AIStylistResultPage = () => {
 
   const waitForFitting = async (fittingId) => {
     const push = listenForPush(['FITTING_DONE', 'FITTING_FAILED'], fittingId)
+    const waiting = { cancelled: false }
+    const cancel = () => {
+      waiting.cancelled = true
+      push.close()
+    }
+    fittingWaitCancels.current.add(cancel)
+
     const fetchFitting = async () => (await api.get(`/vton/${ fittingId }`, TIMEOUT)).data
     const deadline = Date.now() + FITTING_WAIT_LIMIT
     try {
       let detail = await fetchFitting()
-      while (detail.status === 'PENDING') {
+      while (!waiting.cancelled && detail.status === 'PENDING') {
         const shouldCheck = await push.wait(deadline - Date.now())
+        if (waiting.cancelled) break
         detail = await fetchFitting()
         if (!shouldCheck && detail.status === 'PENDING') return null
       }
-      return detail
+      return waiting.cancelled ? FITTING_WAIT_CANCELLED : detail
     } finally {
+      fittingWaitCancels.current.delete(cancel)
       push.close()
     }
   }
 
+  const updateFitting = (id, patch) => setFittings((fittings) => fittings.map(
+    (other) => other.id === id ? { ...other, ...patch } : other,
+  ))
+
+  const followFitting = async (id, fittingId, recommendation) => {
+    try {
+      const detail = await waitForFitting(fittingId)
+      if (detail === FITTING_WAIT_CANCELLED) return
+
+      const restoredProducts = recommendation && detail?.products.length
+        ? toFittingProducts(detail.products, recommendation)
+        : {}
+      updateFitting(id, { ...toFittingState(detail), ...restoredProducts })
+    } catch (err) {
+      updateFitting(id, { status: 'failed', message: err.response?.data?.message ?? '' })
+    }
+  }
+
   const runFitting = async (fitting) => {
-    const update = (patch) => setFittings((fittings) => fittings.map(
-      (other) => other.id === fitting.id ? { ...other, ...patch } : other,
-    ))
+    const generation = fittingsGeneration.current
     setFittings((fittings) => [...fittings, { ...fitting, status: 'loading', message: '' }])
     try {
       const { data: created } = await createFitting(fitting)
-      const detail = await waitForFitting(created.fittingId)
+      if (generation !== fittingsGeneration.current) return
 
-      if (!detail) {
-        update({ status: 'failed', message: FITTING_TIMEOUT_MESSAGE, timedOut: true })
-      } else if (detail.status === 'COMPLETED' && detail.resultImageUrl) {
-        update({ status: 'done', fittingId: detail.fittingId, imageUrl: toFittingImageUrl(detail.resultImageUrl) })
-      } else {
-        update({ status: 'failed', message: detail.errorMessage })
-      }
+      setFittings((fittings) => fittings
+        .filter((other) => other.id === fitting.id || other.fittingId !== created.fittingId)
+        .map((other) => other.id === fitting.id ? { ...other, fittingId: created.fittingId } : other))
+      await followFitting(fitting.id, created.fittingId)
     } catch (err) {
-      update({
-        status: 'failed',
-        message: err.response?.data?.message ?? '',
-      })
+      if (generation !== fittingsGeneration.current) return
+
+      updateFitting(fitting.id, { status: 'failed', message: err.response?.data?.message ?? '' })
     }
   }
+
+  useEffect(() => {
+    setFittings([])
+    return () => {
+      fittingsGeneration.current += 1
+      fittingWaitCancels.current.forEach((cancel) => cancel())
+    }
+  }, [result])
+
+  useEffect(() => {
+    setFittingsRestoreFailed(false)
+    if (!result) return
+
+    let cancelled = false
+    api.get('/vton', { params: { requestId, limit: 100 }, ...TIMEOUT })
+      .then(({ data }) => {
+        if (cancelled) return
+        const restored = data.items
+          .reverse()
+          .map((fitting) => toRestoredFitting(fitting, result))
+        setFittings((fittings) => {
+          const shownFittingIds = fittings.map((fitting) => fitting.fittingId)
+          return [...restored.filter((fitting) => !shownFittingIds.includes(fitting.fittingId)), ...fittings]
+        })
+        restored
+          .filter((fitting) => fitting.status === 'loading')
+          .forEach((fitting) => followFitting(fitting.id, fitting.fittingId, result))
+      })
+      .catch(() => {
+        if (!cancelled) setFittingsRestoreFailed(true)
+      })
+
+    return () => { cancelled = true }
+  }, [result, fittingsRestoreAttempt])
 
   const tryOn = (label, items) => {
     photoUpload.clearFiles()
@@ -283,13 +412,14 @@ export const AIStylistResultPage = () => {
 
   const items = result?.items ?? []
   const combos = result?.combos ?? []
+  const tpoKeywords = (result?.tpoSummary ?? '').split('·').map((keyword) => keyword.trim()).filter(Boolean)
   const bubbleProps = { maxWidth: '4/5' }
 
   return (
     <Stack gap={ 4 } paddingY={ 4 } minHeight={ 'vh' }>
       <Header></Header>
 
-      <Container maxWidth={ '3xl' } flex={ 1 }>
+      <Container maxWidth={ '5xl' } flex={ 1 }>
         <Stack gap={ 4 }>
           <Flex align={ 'center' } gap={ 3 }>
             <IconButton
@@ -298,7 +428,7 @@ export const AIStylistResultPage = () => {
               aria-label={ '대화 내역' }
               onClick={ () => navigate('/ai-stylist/history') }
             >
-              <LuClock></LuClock>
+              <LuMenu></LuMenu>
             </IconButton>
             <Text color={ 'fg.muted' }>AI 스타일리스트</Text>
           </Flex>
@@ -314,10 +444,7 @@ export const AIStylistResultPage = () => {
             status === 'loading' &&
             <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
               <Card.Body gap={ 4 }>
-                <Flex align={ 'center' } gap={ 3 }>
-                  <Spinner size={ 'sm' }></Spinner>
-                  <Text>고객님에게 맞는 제품을 찾고 있어요</Text>
-                </Flex>
+                <RecommendationLoading/>
                 <NotificationHint></NotificationHint>
               </Card.Body>
             </Card.Root>
@@ -339,19 +466,27 @@ export const AIStylistResultPage = () => {
             status === 'done' &&
             <>
               <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
-                <Card.Body gap={ 1 }>
-                  <Text>
-                    {
-                      result.message || (
-                        items.length || combos.length
-                          ? '고객님에게 맞는 제품을 찾았어요!'
-                          : '조건에 맞는 상품을 찾지 못했어요.'
-                      )
-                    }
-                  </Text>
+                <Card.Body gap={ 3 }>
                   {
-                    result.tpoSummary &&
-                    <Text fontSize={ 'sm' } color={ 'fg.muted' }>{ result.tpoSummary }</Text>
+                    tpoKeywords.length > 0 &&
+                    <Flex wrap={ 'wrap' } gap={ 2 }>
+                      {
+                        tpoKeywords.map((keyword) => (
+                          <Badge key={ keyword } variant={ 'subtle' }>{ keyword }</Badge>
+                        ))
+                      }
+                    </Flex>
+                  }
+                  {
+                    result.message && (result.searchType !== 'COMBO' || !combos.length)
+                      ? <MarkdownMessage markdown={ result.message }></MarkdownMessage>
+                      : <Text>
+                        {
+                          items.length || combos.length
+                            ? '고객님에게 맞는 제품을 찾았어요!'
+                            : '조건에 맞는 상품을 찾지 못했어요.'
+                        }
+                      </Text>
                   }
                 </Card.Body>
               </Card.Root>
@@ -367,6 +502,8 @@ export const AIStylistResultPage = () => {
                           <ProductCard
                             key={ item.productId }
                             item={ item }
+                            wished={ wishedProductIds.includes(item.productId) }
+                            onToggleWish={ toggleWish }
                             tryingOn={ tryingOn }
                             onTryOn={ () => tryOn(item.productName, [item]) }
                           ></ProductCard>
@@ -383,10 +520,28 @@ export const AIStylistResultPage = () => {
                     key={ combo.comboId }
                     combo={ combo }
                     index={ index }
+                    wishedProductIds={ wishedProductIds }
+                    onToggleWish={ toggleWish }
                     tryingOn={ tryingOn }
                     onTryOn={ () => tryOn(`코디 ${ index + 1 }`, combo.items) }
                   ></ComboCard>
                 ))
+              }
+
+              {
+                fittingsRestoreFailed &&
+                <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
+                  <Card.Body gap={ 3 }>
+                    <Text color={ 'fg.error' }>입어본 가상 피팅을 불러오지 못했어요.</Text>
+                    <Button
+                      variant={ 'outline' }
+                      alignSelf={ 'flex-start' }
+                      onClick={ () => setFittingsRestoreAttempt((attempt) => attempt + 1) }
+                    >
+                      다시 불러오기
+                    </Button>
+                  </Card.Body>
+                </Card.Root>
               }
 
               {
@@ -397,10 +552,7 @@ export const AIStylistResultPage = () => {
                       {
                         fitting.status === 'loading' &&
                         <>
-                          <Flex align={ 'center' } gap={ 3 }>
-                            <Spinner size={ 'sm' }></Spinner>
-                            <Text>{ fitting.photo ? '고객님 사진에 입혀보고 있어요' : '기본 모델에 입혀보고 있어요' }</Text>
-                          </Flex>
+                          <FittingLoading/>
                           <NotificationHint></NotificationHint>
                         </>
                       }

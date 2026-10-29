@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Badge,
   Box,
@@ -26,9 +26,11 @@ import { useAuth } from '../../contexts/AuthContext.js'
 import { api } from '../../api/axios.js'
 import { CommunityArticleCommentList } from './CommunityArticleCommentList.jsx'
 import { CommunityPoll } from './CommunityPoll.jsx'
+import { ProductImage } from '../../components/ProductImage.jsx'
 import { CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } from './communityFormat.js'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 import { CommunityConfirmDialog } from './CommunityConfirmDialog.jsx'
+import { NOTIFICATION_RECEIVED_EVENT } from '../../hooks/useNotifications.js'
 
 const COMMENT_MAX_LENGTH = 500
 
@@ -64,7 +66,7 @@ export const CommunityArticlePage = () => {
   const [supportFilter, setSupportFilter] = useState(null)
   const latestCommentsRequest = useRef(0)
 
-  const loadComments = (supportedOptionId = supportFilter) => {
+  const loadComments = useCallback((supportedOptionId = supportFilter) => {
     const request = ++latestCommentsRequest.current
     const isLatest = () => request === latestCommentsRequest.current
 
@@ -82,7 +84,7 @@ export const CommunityArticlePage = () => {
           throw error
         }
       })
-  }
+  }, [id, supportFilter])
 
   useEffect(() => {
     let ignore = false
@@ -112,6 +114,18 @@ export const CommunityArticlePage = () => {
       ignore = true
     }
   }, [id])
+
+  useEffect(() => {
+    const handleNotification = (event) => {
+      const { type, targetId } = event.detail ?? {}
+      if (type !== 'COMMENT' || String(targetId) !== id) return
+
+      loadComments().catch(() => setCommentsFailed(true))
+    }
+
+    window.addEventListener(NOTIFICATION_RECEIVED_EVENT, handleNotification)
+    return () => window.removeEventListener(NOTIFICATION_RECEIVED_EVENT, handleNotification)
+  }, [id, loadComments])
 
   const selectSupportFilter = (voteOptionId) => {
     setSupportFilter(voteOptionId)
@@ -264,7 +278,7 @@ export const CommunityArticlePage = () => {
     return (
       <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
         <Header/>
-        <Container maxWidth="3xl" flex="1" display="flex" flexDirection="column" gap="4">
+        <Container maxWidth="5xl" flex="1" display="flex" flexDirection="column" gap="4">
           <CommunityTitleBar/>
           <Stack flex="1" align="center" justify="center" gap="4">
             <Text color={ error ? 'fg.error' : 'fg.muted' } textAlign="center">{ error || '불러오는 중...' }</Text>
@@ -288,7 +302,7 @@ export const CommunityArticlePage = () => {
     <Stack direction="column" gap="4" minHeight="100vh" paddingTop="4">
       <Header/>
 
-      <Container maxWidth="3xl" flex="1">
+      <Container maxWidth="5xl" flex="1">
         <Stack direction="column" gap="4">
           <CommunityTitleBar>
             { isAuthor && (
@@ -351,7 +365,7 @@ export const CommunityArticlePage = () => {
                     textAlign="start"
                     onClick={ () => navigate(`/products/${ sharedProduct.productId }`) }
                   >
-                    <Image
+                    <ProductImage
                       src={ sharedProduct.imageUrl }
                       alt=""
                       boxSize="16"
@@ -378,7 +392,7 @@ export const CommunityArticlePage = () => {
                     textAlign="start"
                     onClick={ () => navigate(`/products/${ item.productId }`) }
                   >
-                    <Image src={ item.imageUrl } alt="" boxSize="12" objectFit="cover" rounded="sm" bg="bg.muted"/>
+                    <ProductImage src={ item.imageUrl } alt="" boxSize="12" objectFit="cover" rounded="sm" bg="bg.muted"/>
                     <Text flex="1" fontSize="sm" lineClamp="1">{ item.productName }</Text>
                     <Text fontSize="sm">{ item.price?.toLocaleString() }원</Text>
                   </Flex>
@@ -455,7 +469,7 @@ export const CommunityArticlePage = () => {
       </Container>
 
       <Box position="sticky" bottom="0" bg="bg" paddingY="4" borderTopWidth="sm">
-        <Container maxWidth="3xl">
+        <Container maxWidth="5xl">
           <form onSubmit={ submitCommentInput }>
             <HStack gap="4">
               <Input

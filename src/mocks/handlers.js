@@ -26,9 +26,10 @@ import postWishlistsResponse from '../data/responses/post-wishlists.json'
 import getLikesResponse from '../data/responses/get-likes.json'
 import postRecommendationsResponse from '../data/responses/post-recommendations.json'
 import getRecommendationsResponse from '../data/responses/get-recommendations.json'
+import getRecommendationsPersonalizedResponse from '../data/responses/get-recommendations-personalized.json'
 import getRecommendationsRequestIdResponse from '../data/responses/get-recommendations-requestId.json'
+import getRecommendationsProductIdSizeResponse from '../data/responses/get-recommendations-productId-size.json'
 import getNotificationsResponse from '../data/responses/get-notifications.json'
-import getRecommendationsRequestIdMessagesResponse from '../data/responses/get-recommendations-requestId-messages.json'
 import postWorldcupsResponse from '../data/responses/post-worldcups.json'
 import getWorldcupsHistoryResponse from '../data/responses/get-worldcups-history.json'
 import postVtonResponse from '../data/responses/post-vton.json'
@@ -197,23 +198,23 @@ export const handlers = [
   ),
 
   http.get(
+    `${ api.defaults.baseURL }/recommendations/personalized`,
+    () => HttpResponse.json(getRecommendationsPersonalizedResponse),
+  ),
+
+  http.get(
     `${ api.defaults.baseURL }/recommendations/:requestId`,
     () => HttpResponse.json(getRecommendationsRequestIdResponse),
   ),
 
+  http.get(
+    `${ api.defaults.baseURL }/recommendations/:productId/size`,
+    () => HttpResponse.json(getRecommendationsProductIdSizeResponse),
+  ),
+
   http.delete(
     `${ api.defaults.baseURL }/recommendation/:requestId`,
-    ({ params }) => {
-      const index = recommendationHistory.findIndex((item) => item.requestId === params.requestId)
-
-      if (index === -1) {
-        return HttpResponse.json({ message: '대화 내역을 찾을 수 없습니다.' }, { status: 404 })
-      }
-
-      recommendationHistory.splice(index, 1)
-
-      return new HttpResponse(null, { status: 204 })
-    },
+    () => new HttpResponse(null, { status: 204 }),
   ),
 
   http.get(
@@ -224,11 +225,6 @@ export const handlers = [
   http.patch(
     `${ api.defaults.baseURL }/notifications/:notificationId`,
     () => new HttpResponse(null, { status: 200 }),
-  ),
-
-  http.get(
-    `${ api.defaults.baseURL }/recommendations/:requestId/messages`,
-    () => HttpResponse.json(getRecommendationsRequestIdMessagesResponse),
   ),
 
   http.post(
@@ -248,12 +244,21 @@ export const handlers = [
 
   http.get(
     `${ api.defaults.baseURL }/vton`,
-    () => HttpResponse.json(getVtonResponse),
+    ({ request }) => {
+      const requestId = new URL(request.url).searchParams.get('requestId')
+      if (!requestId) return HttpResponse.json(getVtonResponse)
+
+      const items = getVtonResponse.items.filter((fitting) => fitting.requestId === Number(requestId))
+      return HttpResponse.json({ ...getVtonResponse, items, totalCount: items.length })
+    },
   ),
 
   http.get(
     `${ api.defaults.baseURL }/vton/:fittingId`,
-    () => HttpResponse.json(getVtonFittingIdResponse),
+    ({ params }) => {
+      const fitting = getVtonResponse.items.find((fitting) => fitting.fittingId === Number(params.fittingId))
+      return HttpResponse.json(fitting ?? getVtonFittingIdResponse)
+    },
   ),
 
   http.delete(

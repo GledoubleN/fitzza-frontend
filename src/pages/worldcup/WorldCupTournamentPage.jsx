@@ -3,20 +3,17 @@ import {
   Flex,
   Text,
   IconButton,
-  Image,
-  Center,
-  Button,
   Grid,
   GridItem,
   Container,
+  Separator,
   Stack,
 } from '@chakra-ui/react'
-import { LuChevronLeft, LuHistory } from 'react-icons/lu'
+import { LuChevronLeft } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
-import { Footer } from '../../components/Footer.jsx'
-import defaultHeroImage from '../../assets/hero.png'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 export const WorldCupTournamentPage = ({
   leftProduct,
@@ -25,7 +22,6 @@ export const WorldCupTournamentPage = ({
   currentIndex,
   matchList,
   isSaving,
-  onOpenHistory,
   onSelect,
 }) => {
   const navigate = useNavigate()
@@ -43,54 +39,43 @@ export const WorldCupTournamentPage = ({
       >
         <Grid gap={ 8 }>
           <GridItem>
-            <Flex
-              align="center"
-              justify="space-between"
-            >
+            <Stack gap={ 4 }>
               <Flex
                 align="center"
-                gap={ 4 }
+                justify="space-between"
               >
-                <IconButton
-                  variant="ghost"
-                  aria-label="후보 선택 화면으로 돌아가기"
-                  onClick={ () => navigate('/worldcup/setup') }
+                <Flex
+                  align="center"
+                  gap={ 4 }
                 >
-                  <Box
-                    as={ LuChevronLeft }
-                    boxSize={ 6 }
-                  />
-                </IconButton>
-                <Text
-                  textStyle="lg"
-                  fontWeight="bold"
-                >
-                  이상형 월드컵 ({ roundTitle })
-                </Text>
+                  <IconButton
+                    variant="ghost"
+                    aria-label="후보 선택 화면으로 돌아가기"
+                    onClick={ () => navigate('/worldcup/setup') }
+                  >
+                    <Box
+                      as={ LuChevronLeft }
+                      boxSize={ 6 }
+                    />
+                  </IconButton>
+                  <Text
+                    textStyle="lg"
+                    fontWeight="bold"
+                  >
+                    월드컵 ({ roundTitle })
+                  </Text>
+                </Flex>
               </Flex>
-              <Button
-                size="sm"
-                variant="outline"
-                borderRadius="xl"
-                onClick={ onOpenHistory }
-              >
-                <Box
-                  as={ LuHistory }
-                  boxSize={ 4 }
-                />
-                우승 이력 보기
-              </Button>
-            </Flex>
-          </GridItem>
 
-          <GridItem textAlign="center">
-            <Text
-              textStyle="md"
-              fontWeight="medium"
-              color="fg.muted"
-            >
-              마음에 드는 상품을 선택해 주세요 ({ Math.floor(currentIndex / 2) + 1 } / { Math.ceil(matchList.length / 2) })
-            </Text>
+              <Text
+                textAlign="center"
+                textStyle="md"
+                fontWeight="medium"
+                color="fg.muted"
+              >
+                마음에 드는 상품을 선택해 주세요 ({ Math.floor(currentIndex / 2) + 1 } / { Math.ceil(matchList.length / 2) })
+              </Text>
+            </Stack>
           </GridItem>
 
           <GridItem>
@@ -99,119 +84,123 @@ export const WorldCupTournamentPage = ({
               gap={ 4 }
               alignItems="center"
               position="relative"
+              maxWidth="3xl"
+              marginX="auto"
             >
               <GridItem
+                className="group"
                 minWidth={ 0 }
-                borderWidth="thin"
-                borderColor="border.subtle"
-                borderRadius="2xl"
-                p={ 4 }
+                display="flex"
+                flexDirection="column"
+                gap={ 3 }
+                padding={ 2 }
+                paddingBottom={ 3 }
                 cursor={ isSaving ? 'not-allowed' : 'pointer' }
                 bg="bg.panel"
-                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
-                transition="all 0.2s"
+                borderWidth="thin"
+                borderColor="border.subtle"
+                boxShadow="sm"
+                transition="box-shadow 0.25s ease"
+                _hover={ { boxShadow: 'lg' } }
                 onClick={ () => onSelect(leftProduct) }
               >
                 <Box
-                  w="100%"
-                  h={ { base: '40', md: '60' } }
-                  borderRadius="xl"
+                  width="full"
+                  aspectRatio={ { base: 3 / 4, md: 1 } }
                   overflow="hidden"
-                  mb={ 4 }
-                  bg="bg.subtle"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
+                  bg="bg.muted"
                 >
-                  <Image
-                    src={ leftProduct?.thumbnailUrl || leftProduct?.imageUrl || defaultHeroImage }
+                  <ProductImage
+                    src={ leftProduct?.thumbnailUrl || leftProduct?.imageUrl }
                     alt={ leftProduct?.productName || leftProduct?.name }
-                    w="100%"
-                    h="100%"
-                    objectFit="contain"
+                    width="full"
+                    height="full"
+                    objectFit="cover"
+                    transition="transform 0.4s ease"
+                    _groupHover={ { transform: 'scale(1.05)' } }
                   />
                 </Box>
-                <Text
-                  textStyle="xs"
-                  color="fg.muted"
-                  truncate
-                >
-                  { leftProduct?.brandName }
-                </Text>
-                <Text
-                  textStyle={ { base: 'xs', md: 'md' } }
-                  fontWeight="bold"
-                  textAlign="center"
-                  truncate
-                >
-                  { leftProduct?.productName || leftProduct?.name }
-                </Text>
+                <Stack gap={ 1 }>
+                  <Text
+                    textStyle="xs"
+                    fontWeight="semibold"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
+                    color="fg.muted"
+                    truncate
+                  >
+                    { leftProduct?.brandName }
+                  </Text>
+                  <Text
+                    textStyle={ { base: 'xs', md: 'md' } }
+                    lineClamp={ 2 }
+                    minHeight="2lh"
+                  >
+                    { leftProduct?.productName || leftProduct?.name }
+                  </Text>
+                </Stack>
               </GridItem>
 
-              <GridItem zIndex={ 10 }>
-                <Center
-                  boxShadow="md"
-                  borderRadius="full"
-                  boxSize={ { base: 9, md: 12 } }
-                  bg="bg.panel"
-                  borderWidth="thin"
-                  borderColor="border.subtle"
-                >
-                  <Text
-                    textStyle={ { base: 'xs', md: 'sm' } }
-                    fontWeight="bold"
-                  >
-                    VS
-                  </Text>
-                </Center>
+              <GridItem alignSelf="stretch">
+                <Separator
+                  orientation="vertical"
+                  height="full"
+                  borderColor="fg.muted/30"
+                />
               </GridItem>
 
               <GridItem
+                className="group"
                 minWidth={ 0 }
-                borderWidth="thin"
-                borderColor="border.subtle"
-                borderRadius="2xl"
-                p={ 4 }
+                display="flex"
+                flexDirection="column"
+                gap={ 3 }
+                padding={ 2 }
+                paddingBottom={ 3 }
                 cursor={ isSaving ? 'not-allowed' : 'pointer' }
                 bg="bg.panel"
-                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
-                transition="all 0.2s"
+                borderWidth="thin"
+                borderColor="border.subtle"
+                boxShadow="sm"
+                transition="box-shadow 0.25s ease"
+                _hover={ { boxShadow: 'lg' } }
                 onClick={ () => onSelect(rightProduct) }
               >
                 <Box
-                  w="100%"
-                  h={ { base: '40', md: '60' } }
-                  borderRadius="xl"
+                  width="full"
+                  aspectRatio={ { base: 3 / 4, md: 1 } }
                   overflow="hidden"
-                  mb={ 4 }
-                  bg="bg.subtle"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
+                  bg="bg.muted"
                 >
-                  <Image
-                    src={ rightProduct?.thumbnailUrl || rightProduct?.imageUrl || defaultHeroImage }
+                  <ProductImage
+                    src={ rightProduct?.thumbnailUrl || rightProduct?.imageUrl }
                     alt={ rightProduct?.productName || rightProduct?.name }
-                    w="100%"
-                    h="100%"
-                    objectFit="contain"
+                    width="full"
+                    height="full"
+                    objectFit="cover"
+                    transition="transform 0.4s ease"
+                    _groupHover={ { transform: 'scale(1.05)' } }
                   />
                 </Box>
-                <Text
-                  textStyle="xs"
-                  color="fg.muted"
-                  truncate
-                >
-                  { rightProduct?.brandName }
-                </Text>
-                <Text
-                  textStyle={ { base: 'xs', md: 'md' } }
-                  fontWeight="bold"
-                  textAlign="center"
-                  truncate
-                >
-                  { rightProduct?.productName || rightProduct?.name }
-                </Text>
+                <Stack gap={ 1 }>
+                  <Text
+                    textStyle="xs"
+                    fontWeight="semibold"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
+                    color="fg.muted"
+                    truncate
+                  >
+                    { rightProduct?.brandName }
+                  </Text>
+                  <Text
+                    textStyle={ { base: 'xs', md: 'md' } }
+                    lineClamp={ 2 }
+                    minHeight="2lh"
+                  >
+                    { rightProduct?.productName || rightProduct?.name }
+                  </Text>
+                </Stack>
               </GridItem>
             </Grid>
           </GridItem>
@@ -230,7 +219,6 @@ export const WorldCupTournamentPage = ({
         </Grid>
       </Container>
       <TabBar/>
-      <Footer/>
     </Stack>
   )
 }

@@ -123,7 +123,6 @@ export default function WorldCupPage () {
       toaster.create({
         title: '월드컵 결과를 저장하지 못했습니다.',
         type: 'error',
-        closable: true,
       })
     }
 
@@ -220,7 +219,6 @@ export default function WorldCupPage () {
       currentIndex={ currentIndex }
       matchList={ matchList }
       isSaving={ isSaving }
-      onOpenHistory={ handleOpenHistory }
       onSelect={ handleSelect }
     />
   )

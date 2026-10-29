@@ -35,7 +35,7 @@ const formatRecommendationDate = (value) => {
 export const AIStylistHistoryPage = () => {
   const [items, setItems] = useState([])
   const [page, setPage] = useState(0)
-  const [totalPages, setTotalPages] = useState(0)
+  const [hasNext, setHasNext] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [attempt, setAttempt] = useState(0)
@@ -53,7 +53,6 @@ export const AIStylistHistoryPage = () => {
       toaster.create({
         type: 'error',
         title: error.response?.data?.message || '대화 내역을 삭제하지 못했어요. 다시 시도해주세요.',
-        closable: true,
       })
     } finally {
       setDeletingRequestId(null)
@@ -68,7 +67,7 @@ export const AIStylistHistoryPage = () => {
       .then(({ data }) => {
         if (cancelled) return
         setItems((items) => page === 0 ? data.content : [...items, ...data.content])
-        setTotalPages(data.totalPages)
+        setHasNext(data.hasNext)
       })
       .catch(() => {
         if (!cancelled) setError('대화 내역을 불러오지 못했어요. 잠시 후 다시 시도해주세요.')
@@ -84,7 +83,7 @@ export const AIStylistHistoryPage = () => {
     <Stack gap={ 4 } paddingY={ 4 } minHeight={ 'vh' }>
       <Header></Header>
 
-      <Container maxWidth={ '3xl' } flex={ 1 }>
+      <Container maxWidth={ '5xl' } flex={ 1 }>
         <Stack gap={ 4 }>
           <Flex align="center" justify="space-between">
               <Text fontSize="lg" fontWeight="semibold">
@@ -138,7 +137,7 @@ export const AIStylistHistoryPage = () => {
             <Text color={ 'fg.muted' }>아직 추천받은 대화가 없어요.</Text>
           }
           {
-            !loading && !error && page + 1 < totalPages &&
+            !loading && !error && hasNext &&
             <Button
               variant={ 'ghost' }
               disabled={ deletingRequestId !== null }

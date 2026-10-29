@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import {
   Button,
   Flex,
-  Image,
   Portal,
   RatingGroup,
   Select,
@@ -13,6 +12,7 @@ import {
   createListCollection,
 } from '@chakra-ui/react'
 import { api } from '../../api/axios.js'
+import { ProductImage } from '../../components/ProductImage.jsx'
 
 const PAGE_SIZE = 10
 
@@ -106,7 +106,7 @@ export const ProductReviewTab = ({ productId }) => {
               </Text>
             </Flex>
             { review.imageUrl && (
-              <Image src={ review.imageUrl } alt={ '후기 사진' } boxSize={ 24 } objectFit={ 'cover' } rounded={ 'l2' } bg={ 'bg.muted' }/>
+              <ProductImage src={ review.imageUrl } alt={ '후기 사진' } boxSize={ 24 } objectFit={ 'cover' } rounded={ 'l2' } bg={ 'bg.muted' }/>
             ) }
             <Text whiteSpace={ 'pre-wrap' }>{ review.content }</Text>
           </Stack>

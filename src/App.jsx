@@ -22,6 +22,7 @@ import { OrderListPage } from './pages/OrderListPage.jsx'
 import { ThemePreviewPage } from './pages/ThemePreviewPage.jsx'
 import { AIStylistResultPage } from './pages/ai-stylist/AIStylistResultPage.jsx'
 import { AIStylistHistoryPage } from './pages/ai-stylist/AIStylistHistoryPage.jsx'
+import { AIStylistFittingRedirectPage } from './pages/ai-stylist/AIStylistFittingRedirectPage.jsx'
 import OnboardingPage from './pages/OnboardingPage.jsx';
 import { RequireSignIn } from './components/RequireSignIn.jsx'
 
@@ -51,6 +52,7 @@ function App() {
         <Route path="/orders/:orderId" element={ <RequireSignIn><OrderDetail/></RequireSignIn> }/>
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
         <Route path="/ai-stylist/history" element={ <RequireSignIn><AIStylistHistoryPage/></RequireSignIn> }/>
+        <Route path="/ai-stylist/fittings/:fittingId" element={ <RequireSignIn><AIStylistFittingRedirectPage/></RequireSignIn> }/>
         <Route path="/ai-stylist/:requestId?" element={ <RequireSignIn><AIStylistResultPage/></RequireSignIn> }/>
         <Route path="/onboarding" element={<OnboardingPage />} />
       </Routes>
