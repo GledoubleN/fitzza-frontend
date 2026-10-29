@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CloseButton,
+  Collapsible,
   Container,
   Dialog,
   FileUpload,
@@ -97,6 +98,7 @@ export const AIStylistResultPage = () => {
 
   const [query, setQuery] = useState(location.state?.query ?? '')
   const [status, setStatus] = useState('loading')
+  const [gameExpanded, setGameExpanded] = useState(false)
   const [result, setResult] = useState(null)
   const [message, setMessage] = useState('')
   const [attempt, setAttempt] = useState(0)
@@ -119,6 +121,7 @@ export const AIStylistResultPage = () => {
   }
 
   const show = (data) => {
+    setGameExpanded(false)
     setResult(data)
     setStatus('done')
   }
@@ -440,14 +443,59 @@ export const AIStylistResultPage = () => {
           }
 
           {
-            status === 'loading' &&
-            <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
+            (status === 'loading' || status === 'done') &&
+            <Card.Root>
               <Card.Body gap={ 4 }>
-                <Flex align={ 'center' } gap={ 3 }>
-                  <Spinner size={ 'sm' }></Spinner>
-                  <Text>고객님에게 맞는 제품을 찾고 있어요</Text>
-                </Flex>
-                <NotificationHint></NotificationHint>
+                {
+                  status === 'loading' &&
+                  <>
+                    <Flex align={ 'center' } gap={ 4 }>
+                      <Spinner size={ 'sm' }></Spinner>
+                      <Text>고객님에게 맞는 제품을 찾고 있어요</Text>
+                    </Flex>
+                    <NotificationHint></NotificationHint>
+                    <Text color={ 'fg.muted' }>기다리는 동안 2048 게임을 즐겨보세요.</Text>
+                  </>
+                }
+                <Collapsible.Root
+                  open={ status === 'loading' || gameExpanded }
+                  onOpenChange={ ({ open }) => setGameExpanded(open) }
+                  unmountOnExit={ false }
+                >
+                  {
+                    status === 'done' &&
+                    <Collapsible.Trigger asChild>
+                      <Button variant={ 'ghost' } width={ 'full' }>
+                        { gameExpanded ? '2048 게임 접기' : '2048 게임 펼치기' }
+                      </Button>
+                    </Collapsible.Trigger>
+                  }
+                  <Collapsible.Content>
+                    <Stack gap={ 4 }>
+                      <Box
+                        as={ 'iframe' }
+                        src={ 'https://cloud.onlinegames.io/games/2025/html/2048/index.html' }
+                        title={ '추천을 기다리며 즐기는 2048 게임' }
+                        width={ 'full' }
+                        aspectRatio={ 3 / 4 }
+                        border={ 'none' }
+                        borderRadius={ 'md' }
+                        bg={ 'bg.muted' }
+                        referrerPolicy={ 'no-referrer' }
+                        allowFullScreen
+                      />
+                      <Button asChild variant={ 'outline' } alignSelf={ 'flex-start' }>
+                        <a
+                          href={ 'https://cloud.onlinegames.io/games/2025/html/2048/index.html' }
+                          target={ '_blank' }
+                          rel={ 'noopener noreferrer' }
+                        >
+                          게임을 새 탭에서 열기
+                        </a>
+                      </Button>
+                    </Stack>
+                  </Collapsible.Content>
+                </Collapsible.Root>
               </Card.Body>
             </Card.Root>
           }
