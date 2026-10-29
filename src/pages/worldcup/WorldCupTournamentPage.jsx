@@ -97,6 +97,8 @@ export const WorldCupTournamentPage = ({
               gap={ 4 }
               alignItems="center"
               position="relative"
+              maxWidth="3xl"
+              marginX="auto"
             >
               <GridItem
                 className="group"
@@ -117,7 +119,7 @@ export const WorldCupTournamentPage = ({
               >
                 <Box
                   width="full"
-                  height={ { base: '40', md: '60' } }
+                  aspectRatio={ { base: 3 / 4, md: 1 } }
                   overflow="hidden"
                   bg="bg.muted"
                 >
@@ -179,7 +181,7 @@ export const WorldCupTournamentPage = ({
               >
                 <Box
                   width="full"
-                  height={ { base: '40', md: '60' } }
+                  aspectRatio={ { base: 3 / 4, md: 1 } }
                   overflow="hidden"
                   bg="bg.muted"
                 >
