@@ -63,7 +63,6 @@ export const Header = ({ maxWidth = '7xl' }) => {
       toaster.create({
         type: 'error',
         title: error.message || '푸시 알림을 해제하지 못했습니다. 다시 시도해주세요.',
-        closable: true,
       })
       return
     }
@@ -75,7 +74,7 @@ export const Header = ({ maxWidth = '7xl' }) => {
     setAccessToken(null)
     setIsSigningOut(false)
     navigate('/')
-    toaster.create({ type: 'success', title: '로그아웃되었습니다.', closable: true })
+    toaster.create({ type: 'success', title: '로그아웃되었습니다.' })
   }
 
   const handleAuthButtonClick = () => {
