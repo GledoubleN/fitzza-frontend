@@ -214,9 +214,6 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
                                 <Text color="fg.muted">푸시 알림 설정이 필요합니다.</Text> }
                               { isConfigured && isNotificationDenied() &&
                                 <Text color="fg.muted">브라우저 설정에서 알림을 허용하면 결과를 바로 받을 수 있어요.</Text> }
-                              { error && (
-                                <Text role="alert" color="fg.error">{ error }</Text>
-                              ) }
                               <Stack
                                 gap={ 4 }
                                 separator={ <Separator/> }
