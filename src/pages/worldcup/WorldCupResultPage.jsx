@@ -6,12 +6,12 @@ import {
   Button,
   Grid,
   GridItem,
-  Table,
+  LinkOverlay,
   Container,
   Stack,
 } from '@chakra-ui/react'
 import { LuChevronLeft, LuRotateCcw, LuShare2, LuHistory } from 'react-icons/lu'
-import { useNavigate } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
@@ -64,7 +64,7 @@ export const WorldCupResultPage = ({
                   textStyle="lg"
                   fontWeight="bold"
                 >
-                  이상형 월드컵 결과
+                  월드컵 결과
                 </Text>
               </Flex>
               <Button
@@ -83,165 +83,132 @@ export const WorldCupResultPage = ({
             </Flex>
           </GridItem>
 
-          <GridItem textAlign="center">
-            <Text
-              textStyle="md"
-              fontWeight="bold"
-            >
-              당신의 최종 선택은?
-            </Text>
-          </GridItem>
-
-          <GridItem
-            textAlign="center"
-            cursor="pointer"
-            onClick={ () => navigate(`/products/${ winnerId }`) }
-            _hover={ { opacity: 0.9 } }
-            transition="opacity 0.2s"
-          >
-            <Box
-              w="100%"
-              h={ { base: 'sm', md: 'md' } }
-              borderRadius="2xl"
-              overflow="hidden"
-              mb={ 4 }
-              borderWidth="thin"
-              borderColor="border.subtle"
-              bg="bg.subtle"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <ProductImage
-                src={ winnerProduct.thumbnailUrl || winnerProduct.imageUrl }
-                alt={ winnerProduct.productName || winnerProduct.name }
-                w="100%"
-                h="100%"
-                objectFit="contain"
-              />
-            </Box>
-            <Text
-              textStyle="xl"
-              fontWeight="bold"
-              _hover={ { textDecoration: 'underline' } }
-            >
-              { winnerProduct.productName || winnerProduct.name }
-            </Text>
-            <Text
-              textStyle="sm"
-              color="fg.muted"
-            >
-              { winnerProduct.brandName }
-            </Text>
-          </GridItem>
-
-          <GridItem
-            borderWidth="thin"
-            borderColor="border.subtle"
-            borderRadius="2xl"
-            p={ 4 }
-            bg="bg.panel"
-          >
-            <Text
-              textStyle="sm"
-              fontWeight="bold"
-              mb={ 4 }
-              textAlign="center"
-              color="fg.muted"
-            >
-              우승 상품 정보
-            </Text>
-
-            <Table.Root size="sm">
-              <Table.Body>
-                <Table.Row>
-                  <Table.Cell
-                    fontWeight="medium"
-                    w="30%"
-                    color="fg.muted"
-                  >
-                    가격
-                  </Table.Cell>
-                  <Table.Cell
-                    textAlign="right"
-                    fontWeight="bold"
-                  >
-                    { winnerProduct.price ? `${ winnerProduct.price.toLocaleString() }원` : '정보 없음' }
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.Cell
-                    fontWeight="medium"
-                    color="fg.muted"
-                  >
-                    브랜드
-                  </Table.Cell>
-                  <Table.Cell textAlign="right">
-                    { winnerProduct.brandName || '정보 없음' }
-                  </Table.Cell>
-                </Table.Row>
-              </Table.Body>
-            </Table.Root>
-          </GridItem>
-
-          { isSaveFailed && !savedResult && (
-            <GridItem textAlign="center">
-              <Flex
-                direction="column"
-                align="center"
-                gap={ 4 }
-              >
-                <Text
-                  textStyle="xs"
-                  color="fg.error"
-                >
-                  결과 저장에 실패하여 커뮤니티에 공유할 수 없습니다.
-                </Text>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  loading={ isSaving }
-                  onClick={ onRetrySave }
-                >
-                  결과 저장 다시 시도
-                </Button>
-              </Flex>
-            </GridItem>
-          ) }
-
           <GridItem>
             <Grid
-              templateColumns="1fr 1fr"
-              gap={ 4 }
+              templateColumns={ { base: '1fr', md: '{sizes.sm} 1fr' } }
+              gap={ 8 }
+              alignItems="center"
             >
-              <Button
-                size="lg"
-                variant="outline"
-                borderRadius="xl"
-                disabled={ isSaving }
-                onClick={ onRestart }
+              <Box
+                className="group"
+                position="relative"
+                aspectRatio={ 3 / 4 }
+                overflow="hidden"
+                bg="bg.muted"
+                borderWidth="thin"
+                borderColor="border.subtle"
               >
-                <Box
-                  as={ LuRotateCcw }
-                  boxSize={ 4 }
+                <ProductImage
+                  src={ winnerProduct.thumbnailUrl || winnerProduct.imageUrl }
+                  alt={ winnerProduct.productName || winnerProduct.name }
+                  width="full"
+                  height="full"
+                  objectFit="cover"
+                  transition="transform 0.4s ease"
+                  _groupHover={ { transform: 'scale(1.05)' } }
                 />
-                다시 하기
-              </Button>
-              <Button
-                size="lg"
-                bg="fg"
-                color="bg"
-                borderRadius="xl"
-                disabled={ !savedResult || isSaving }
-                _hover={ { opacity: 0.9 } }
-                onClick={ onShare }
-              >
-                <Box
-                  as={ LuShare2 }
-                  boxSize={ 4 }
-                />
-                커뮤니티에 공유
-              </Button>
+                <LinkOverlay asChild>
+                  <RouterLink
+                    to={ `/products/${ winnerId }` }
+                    aria-label={ `${ winnerProduct.productName || winnerProduct.name } 상세 보기` }
+                  />
+                </LinkOverlay>
+              </Box>
+
+              <Stack gap={ 8 }>
+                <Stack gap={ 4 }>
+                  <Text
+                    textStyle="md"
+                    fontWeight="bold"
+                    color="fg.muted"
+                  >
+                    당신의 최종 선택은?
+                  </Text>
+                  <Stack gap={ 1 }>
+                    <Text
+                      textStyle="xs"
+                      fontWeight="semibold"
+                      letterSpacing="wide"
+                      textTransform="uppercase"
+                      color="fg.muted"
+                    >
+                      { winnerProduct.brandName }
+                    </Text>
+                    <Text
+                      asChild
+                      textStyle="2xl"
+                      fontWeight="bold"
+                      _hover={ { textDecoration: 'underline' } }
+                    >
+                      <RouterLink to={ `/products/${ winnerId }` }>
+                        { winnerProduct.productName || winnerProduct.name }
+                      </RouterLink>
+                    </Text>
+                  </Stack>
+                  <Text
+                    textStyle="xl"
+                    fontWeight="bold"
+                  >
+                    { winnerProduct.price ? `${ winnerProduct.price.toLocaleString() } 원` : '가격 정보 없음' }
+                  </Text>
+                </Stack>
+
+                { isSaveFailed && !savedResult && (
+                  <Stack
+                    align="flex-start"
+                    gap={ 4 }
+                  >
+                    <Text
+                      textStyle="xs"
+                      color="fg.error"
+                    >
+                      결과 저장에 실패하여 커뮤니티에 공유할 수 없습니다.
+                    </Text>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      loading={ isSaving }
+                      onClick={ onRetrySave }
+                    >
+                      결과 저장 다시 시도
+                    </Button>
+                  </Stack>
+                ) }
+
+                <Grid
+                  templateColumns="1fr 1fr"
+                  gap={ 4 }
+                >
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    borderRadius="xl"
+                    disabled={ isSaving }
+                    onClick={ onRestart }
+                  >
+                    <Box
+                      as={ LuRotateCcw }
+                      boxSize={ 4 }
+                    />
+                    다시 하기
+                  </Button>
+                  <Button
+                    size="lg"
+                    bg="fg"
+                    color="bg"
+                    borderRadius="xl"
+                    disabled={ !savedResult || isSaving }
+                    _hover={ { opacity: 0.9 } }
+                    onClick={ onShare }
+                  >
+                    <Box
+                      as={ LuShare2 }
+                      boxSize={ 4 }
+                    />
+                    커뮤니티에 공유
+                  </Button>
+                </Grid>
+              </Stack>
             </Grid>
           </GridItem>
         </Grid>
