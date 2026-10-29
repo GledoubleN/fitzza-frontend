@@ -132,10 +132,10 @@ export const WorldCupSetupPage = () => {
           </Flex>
           <Button
             size="sm"
+            minWidth="32"
             variant="outline"
             onClick={ () => navigate('/worldcup/history', { state: { fromWorldCup: true } }) }
           >
-            <LuHistory/>
             우승 이력 보기
           </Button>
         </Flex>
@@ -183,6 +183,7 @@ export const WorldCupSetupPage = () => {
               </Text>
               <Button
                 size="sm"
+                minWidth="32"
                 bg="fg"
                 color="bg"
                 disabled={ selectedProductIds.length < 2 }
