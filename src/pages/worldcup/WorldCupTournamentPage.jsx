@@ -41,54 +41,55 @@ export const WorldCupTournamentPage = ({
       >
         <Grid gap={ 8 }>
           <GridItem>
-            <Flex
-              align="center"
-              justify="space-between"
-            >
+            <Stack gap={ 4 }>
               <Flex
                 align="center"
-                gap={ 4 }
+                justify="space-between"
               >
-                <IconButton
-                  variant="ghost"
-                  aria-label="후보 선택 화면으로 돌아가기"
-                  onClick={ () => navigate('/worldcup/setup') }
+                <Flex
+                  align="center"
+                  gap={ 4 }
+                >
+                  <IconButton
+                    variant="ghost"
+                    aria-label="후보 선택 화면으로 돌아가기"
+                    onClick={ () => navigate('/worldcup/setup') }
+                  >
+                    <Box
+                      as={ LuChevronLeft }
+                      boxSize={ 6 }
+                    />
+                  </IconButton>
+                  <Text
+                    textStyle="lg"
+                    fontWeight="bold"
+                  >
+                    이상형 월드컵 ({ roundTitle })
+                  </Text>
+                </Flex>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  borderRadius="xl"
+                  onClick={ onOpenHistory }
                 >
                   <Box
-                    as={ LuChevronLeft }
-                    boxSize={ 6 }
+                    as={ LuHistory }
+                    boxSize={ 4 }
                   />
-                </IconButton>
-                <Text
-                  textStyle="lg"
-                  fontWeight="bold"
-                >
-                  이상형 월드컵 ({ roundTitle })
-                </Text>
+                  우승 이력 보기
+                </Button>
               </Flex>
-              <Button
-                size="sm"
-                variant="outline"
-                borderRadius="xl"
-                onClick={ onOpenHistory }
-              >
-                <Box
-                  as={ LuHistory }
-                  boxSize={ 4 }
-                />
-                우승 이력 보기
-              </Button>
-            </Flex>
-          </GridItem>
 
-          <GridItem textAlign="center">
-            <Text
-              textStyle="md"
-              fontWeight="medium"
-              color="fg.muted"
-            >
-              마음에 드는 상품을 선택해 주세요 ({ Math.floor(currentIndex / 2) + 1 } / { Math.ceil(matchList.length / 2) })
-            </Text>
+              <Text
+                textAlign="center"
+                textStyle="md"
+                fontWeight="medium"
+                color="fg.muted"
+              >
+                마음에 드는 상품을 선택해 주세요 ({ Math.floor(currentIndex / 2) + 1 } / { Math.ceil(matchList.length / 2) })
+              </Text>
+            </Stack>
           </GridItem>
 
           <GridItem>
