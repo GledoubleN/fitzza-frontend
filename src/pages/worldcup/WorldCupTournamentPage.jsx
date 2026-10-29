@@ -99,51 +99,57 @@ export const WorldCupTournamentPage = ({
               position="relative"
             >
               <GridItem
+                className="group"
                 minWidth={ 0 }
-                borderWidth="thin"
-                borderColor="border.subtle"
-                borderRadius="2xl"
-                p={ 4 }
+                display="flex"
+                flexDirection="column"
+                gap={ 3 }
+                padding={ 2 }
+                paddingBottom={ 3 }
                 cursor={ isSaving ? 'not-allowed' : 'pointer' }
                 bg="bg.panel"
-                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
-                transition="all 0.2s"
+                borderWidth="thin"
+                borderColor="border.subtle"
+                boxShadow="sm"
+                transition="box-shadow 0.25s ease"
+                _hover={ { boxShadow: 'lg' } }
                 onClick={ () => onSelect(leftProduct) }
               >
                 <Box
-                  w="100%"
-                  h={ { base: '40', md: '60' } }
-                  borderRadius="xl"
+                  width="full"
+                  height={ { base: '40', md: '60' } }
                   overflow="hidden"
-                  mb={ 4 }
-                  bg="bg.subtle"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
+                  bg="bg.muted"
                 >
                   <ProductImage
                     src={ leftProduct?.thumbnailUrl || leftProduct?.imageUrl }
                     alt={ leftProduct?.productName || leftProduct?.name }
-                    w="100%"
-                    h="100%"
-                    objectFit="contain"
+                    width="full"
+                    height="full"
+                    objectFit="cover"
+                    transition="transform 0.4s ease"
+                    _groupHover={ { transform: 'scale(1.05)' } }
                   />
                 </Box>
-                <Text
-                  textStyle="xs"
-                  color="fg.muted"
-                  truncate
-                >
-                  { leftProduct?.brandName }
-                </Text>
-                <Text
-                  textStyle={ { base: 'xs', md: 'md' } }
-                  fontWeight="bold"
-                  textAlign="center"
-                  truncate
-                >
-                  { leftProduct?.productName || leftProduct?.name }
-                </Text>
+                <Stack gap={ 1 }>
+                  <Text
+                    textStyle="xs"
+                    fontWeight="semibold"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
+                    color="fg.muted"
+                    truncate
+                  >
+                    { leftProduct?.brandName }
+                  </Text>
+                  <Text
+                    textStyle={ { base: 'xs', md: 'md' } }
+                    lineClamp={ 2 }
+                    minHeight="2lh"
+                  >
+                    { leftProduct?.productName || leftProduct?.name }
+                  </Text>
+                </Stack>
               </GridItem>
 
               <GridItem zIndex={ 10 }>
@@ -165,51 +171,57 @@ export const WorldCupTournamentPage = ({
               </GridItem>
 
               <GridItem
+                className="group"
                 minWidth={ 0 }
-                borderWidth="thin"
-                borderColor="border.subtle"
-                borderRadius="2xl"
-                p={ 4 }
+                display="flex"
+                flexDirection="column"
+                gap={ 3 }
+                padding={ 2 }
+                paddingBottom={ 3 }
                 cursor={ isSaving ? 'not-allowed' : 'pointer' }
                 bg="bg.panel"
-                _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
-                transition="all 0.2s"
+                borderWidth="thin"
+                borderColor="border.subtle"
+                boxShadow="sm"
+                transition="box-shadow 0.25s ease"
+                _hover={ { boxShadow: 'lg' } }
                 onClick={ () => onSelect(rightProduct) }
               >
                 <Box
-                  w="100%"
-                  h={ { base: '40', md: '60' } }
-                  borderRadius="xl"
+                  width="full"
+                  height={ { base: '40', md: '60' } }
                   overflow="hidden"
-                  mb={ 4 }
-                  bg="bg.subtle"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
+                  bg="bg.muted"
                 >
                   <ProductImage
                     src={ rightProduct?.thumbnailUrl || rightProduct?.imageUrl }
                     alt={ rightProduct?.productName || rightProduct?.name }
-                    w="100%"
-                    h="100%"
-                    objectFit="contain"
+                    width="full"
+                    height="full"
+                    objectFit="cover"
+                    transition="transform 0.4s ease"
+                    _groupHover={ { transform: 'scale(1.05)' } }
                   />
                 </Box>
-                <Text
-                  textStyle="xs"
-                  color="fg.muted"
-                  truncate
-                >
-                  { rightProduct?.brandName }
-                </Text>
-                <Text
-                  textStyle={ { base: 'xs', md: 'md' } }
-                  fontWeight="bold"
-                  textAlign="center"
-                  truncate
-                >
-                  { rightProduct?.productName || rightProduct?.name }
-                </Text>
+                <Stack gap={ 1 }>
+                  <Text
+                    textStyle="xs"
+                    fontWeight="semibold"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
+                    color="fg.muted"
+                    truncate
+                  >
+                    { rightProduct?.brandName }
+                  </Text>
+                  <Text
+                    textStyle={ { base: 'xs', md: 'md' } }
+                    lineClamp={ 2 }
+                    minHeight="2lh"
+                  >
+                    { rightProduct?.productName || rightProduct?.name }
+                  </Text>
+                </Stack>
               </GridItem>
             </Grid>
           </GridItem>

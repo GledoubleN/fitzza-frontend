@@ -196,32 +196,40 @@ export const WorldCupSetupPage = () => {
                       key={ id }
                       as="button"
                       type="button"
+                      className="group"
                       aria-label={ `${ product.brandName } ${ name }` }
                       aria-pressed={ isSelected }
+                      display="flex"
+                      flexDirection="column"
+                      gap={ 3 }
+                      padding={ 2 }
+                      paddingBottom={ 3 }
                       textAlign="left"
-                      position="relative"
-                      borderWidth="thin"
-                      borderColor={ isSelected ? 'border.emphasized' : 'border.subtle' }
-                      borderRadius="xl"
-                      overflow="hidden"
                       cursor="pointer"
+                      bg="bg.panel"
+                      borderWidth="thin"
+                      borderColor={ isSelected ? 'fg' : 'border.subtle' }
+                      boxShadow="sm"
+                      transition="box-shadow 0.25s ease, border-color 0.25s ease"
+                      _hover={ { boxShadow: 'lg' } }
                       onClick={ () => handleToggleSelect(id) }
-                      transition="all 0.2s"
                     >
                       <Box
                         as="span"
                         display="block"
-                        w="100%"
-                        h="48"
                         position="relative"
+                        aspectRatio={ 3 / 4 }
                         overflow="hidden"
+                        bg="bg.muted"
                       >
                         <ProductImage
                           src={ imageUrl }
                           alt={ name }
-                          w="100%"
-                          h="100%"
-                          objectFit="contain"
+                          width="full"
+                          height="full"
+                          objectFit="cover"
+                          transition="transform 0.4s ease"
+                          _groupHover={ { transform: 'scale(1.05)' } }
                         />
 
                         { isSelected && (
@@ -232,15 +240,14 @@ export const WorldCupSetupPage = () => {
                             inset={ 0 }
                             bg="bg.emphasized"
                             opacity={ 0.2 }
-                            transition="all 0.2s"
                           />
                         ) }
 
                         <Flex
                           as="span"
                           position="absolute"
-                          top={ 4 }
-                          right={ 4 }
+                          top={ 2 }
+                          right={ 2 }
                           boxSize={ 6 }
                           borderRadius="full"
                           bg={ isSelected ? 'fg' : 'bg' }
@@ -250,7 +257,6 @@ export const WorldCupSetupPage = () => {
                           boxShadow="sm"
                           borderWidth="thin"
                           borderColor="border.subtle"
-                          zIndex={ 20 }
                         >
                           <Box
                             as={ LuCheck }
@@ -261,12 +267,15 @@ export const WorldCupSetupPage = () => {
 
                       <Stack
                         as="span"
-                        p={ 4 }
+                        gap={ 1 }
                       >
                         <Text
                           as="span"
                           display="block"
                           textStyle="xs"
+                          fontWeight="semibold"
+                          letterSpacing="wide"
+                          textTransform="uppercase"
                           color="fg.muted"
                           truncate
                         >
@@ -274,20 +283,19 @@ export const WorldCupSetupPage = () => {
                         </Text>
                         <Text
                           as="span"
-                          display="block"
                           textStyle="sm"
-                          fontWeight="medium"
-                          truncate
+                          lineClamp={ 2 }
+                          minHeight="2lh"
                         >
                           { name }
                         </Text>
                         <Text
                           as="span"
                           display="block"
-                          textStyle="sm"
+                          textStyle={ { base: 'sm', md: 'md' } }
                           fontWeight="bold"
                         >
-                          { product.price ? `${ product.price.toLocaleString() }원` : '' }
+                          { product.price ? `${ product.price.toLocaleString() } 원` : '' }
                         </Text>
                       </Stack>
                     </Box>
