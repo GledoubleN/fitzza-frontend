@@ -53,7 +53,6 @@ export const AIStylistHistoryPage = () => {
       toaster.create({
         type: 'error',
         title: error.response?.data?.message || '대화 내역을 삭제하지 못했어요. 다시 시도해주세요.',
-        closable: true,
       })
     } finally {
       setDeletingRequestId(null)
