@@ -19,6 +19,7 @@ import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { FailureTestButtons } from '../../mocks/FailureTestButtons.jsx'
 import { toFittingImageUrl } from './toFittingImageUrl.js'
+import { AuroraSpinner } from '../../components/AuroraSpinner.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
 
 const PAGE_SIZE = 20
@@ -45,14 +46,21 @@ const toFittingTitle = ({ products = [] }) => {
 
 const FittingThumbnail = ({ fitting }) => {
   if (fitting.status === 'COMPLETED' && fitting.resultImageUrl) {
-    return <Image src={ toFittingImageUrl(fitting.resultImageUrl) } alt={ '가상 피팅 결과' } objectFit={ 'cover' }></Image>
+    return (
+      <Image
+        src={ toFittingImageUrl(fitting.resultImageUrl) }
+        alt={ '가상 피팅 결과' }
+        objectFit={ 'cover' }
+        transition={ 'transform 0.4s ease' }
+        _groupHover={ { transform: 'scale(1.05)' } }
+      ></Image>
+    )
   }
 
   return (
-    <Flex direction={ 'column' } align={ 'center' } justify={ 'center' } gap={ 4 } bg={ 'bg.muted' }>
-      <Spinner size={ 'sm' }></Spinner>
-      <Text textStyle={ 'xs' } color={ 'fg.muted' }>만드는 중</Text>
-    </Flex>
+    <Box>
+      <AuroraSpinner label={ '가상 피팅 만드는 중' }/>
+    </Box>
   )
 }
 
@@ -192,20 +200,34 @@ export const VtonGallery = ({ preview = false }) => {
           visibleFittings.map((fitting) => (
             <Button
               key={ fitting.fittingId }
+              className={ 'group' }
               variant={ 'plain' }
               height={ 'auto' }
-              padding={ 0 }
-              display={ 'block' }
+              padding={ 2 }
+              paddingBottom={ 3 }
+              display={ 'flex' }
+              flexDirection={ 'column' }
+              alignItems={ 'stretch' }
+              gap={ 3 }
               textAlign={ 'start' }
+              rounded={ 'none' }
+              bg={ 'bg.panel' }
+              borderWidth={ 'thin' }
+              borderColor={ 'border.subtle' }
+              boxShadow={ 'sm' }
+              transition={ 'box-shadow 0.25s ease' }
+              _hover={ { boxShadow: 'lg' } }
               onClick={ () => setSelected(fitting) }
             >
-              <AspectRatio ratio={ 3 / 4 } borderRadius={ 'xl' } overflow={ 'hidden' } borderWidth={ 'thin' } borderColor={ 'border.subtle' }>
+              <AspectRatio ratio={ 3 / 4 } overflow={ 'hidden' } bg={ 'bg.muted' }>
                 <FittingThumbnail fitting={ fitting }></FittingThumbnail>
               </AspectRatio>
-              <Text textStyle={ 'xs' } color={ 'fg.muted' } marginTop={ 4 } truncate>
-                { fitting.products?.map((product) => product.productName).join(', ') }
-              </Text>
-              <Text textStyle={ 'xs' } color={ 'fg.subtle' }>{ formatDate(fitting.createdAt) }</Text>
+              <Stack gap={ 1 }>
+                <Text textStyle={ 'sm' } fontWeight={ 'normal' } lineClamp={ 2 } minHeight={ '2lh' }>
+                  { fitting.products?.map((product) => product.productName).join(', ') }
+                </Text>
+                <Text textStyle={ 'xs' } fontWeight={ 'normal' } color={ 'fg.muted' }>{ formatDate(fitting.createdAt) }</Text>
+              </Stack>
             </Button>
           ))
         }
