@@ -58,7 +58,10 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
                 <Button
                   key={ item.value }
                   size="md"
-                  variant={ isSelected ? 'solid' : 'outline' }
+                  variant="outline"
+                  layerStyle={ isSelected ? 'glass' : undefined }
+                  borderColor={ isSelected ? 'fg' : undefined }
+                  fontWeight={ isSelected ? 'bold' : undefined }
                   onClick={ () => handleFitSelect(item.value) }
                 >
                   { item.label }
@@ -80,7 +83,10 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
                 <Button
                   key={ item.value }
                   size="md"
-                  variant={ isSelected ? 'solid' : 'outline' }
+                  variant="outline"
+                  layerStyle={ isSelected ? 'glass' : undefined }
+                  borderColor={ isSelected ? 'fg' : undefined }
+                  fontWeight={ isSelected ? 'bold' : undefined }
                   onClick={ () => handleStyleSelect(item.value) }
                 >
                   { item.label }
