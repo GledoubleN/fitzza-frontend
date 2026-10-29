@@ -124,7 +124,7 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
           animation="bounce"
           animationDuration="2s"
         >
-          <Text textStyle="xs">스크롤해서 오늘의 추천 열어보기</Text>
+          <Text textStyle="xs">스크롤해서 맞춤 추천 열어보기</Text>
           <Icon as={ LuChevronDown }/>
         </Flex>
       </MotionBox>
