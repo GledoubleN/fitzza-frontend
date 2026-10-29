@@ -4,6 +4,17 @@ import {
   defineConfig,
 } from '@chakra-ui/react'
 
+const toToastType = (palette) => ({
+  bg: 'transparent',
+  bgGradient: 'to-b',
+  gradientFrom: 'bg/80',
+  gradientTo: 'bg/60',
+  color: 'fg',
+  '--toast-trigger-bg': 'colors.bg.muted',
+  '--toast-border-color': 'colors.border',
+  '& > svg': { color: `${ palette }.solid` },
+})
+
 const config = defineConfig({
   theme: {
     tokens: {
@@ -169,6 +180,26 @@ const config = defineConfig({
       menu: {
         base: {
           content: { layerStyle: 'glass' },
+        },
+      },
+      toast: {
+        base: {
+          root: {
+            bg: 'transparent',
+            bgGradient: 'to-b',
+            gradientFrom: 'bg/80',
+            gradientTo: 'bg/60',
+            backdropFilter: 'auto',
+            backdropBlur: 'md',
+            backdropSaturate: '200%',
+            borderWidth: 'thin',
+            borderColor: 'fg/10',
+            boxShadow: 'lg',
+            '&[data-type=success]': toToastType('green'),
+            '&[data-type=warning]': toToastType('orange'),
+            '&[data-type=error]': toToastType('red'),
+            '&[data-type=info]': toToastType('blue'),
+          },
         },
       },
       dialog: {
