@@ -1,17 +1,21 @@
 import { Box, Button, Container, Flex, Progress, Text } from '@chakra-ui/react'
+import { useMotionValue } from 'motion/react'
+import { HeroLighting } from '../../pages/main/HeroLighting.jsx'
 
 export function OnboardingStepLayout ({ step, onSkip, errorMessage, actions, children }) {
+  const lightingProgress = useMotionValue(0)
+
   return (
     <Container
       maxW={ { base: 'md', md: 'lg' } }
       py={ 12 }
-      bg="bg"
       minH="100vh"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
       position="relative"
     >
+      <HeroLighting progress={ lightingProgress }/>
       <Box>
         <Flex justifyContent="space-between" alignItems="center" mb={ 4 }>
           <Text fontSize="sm" fontWeight="bold" color="fg.subtle">

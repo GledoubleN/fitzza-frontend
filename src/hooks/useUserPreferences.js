@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { api } from '../api/axios.js'
 
 export const useUserPreferences = () => {
+  const [attempt, setAttempt] = useState(0)
   const [preferences, setPreferences] = useState({
     preferredFits: [],
     preferredStyles: [],
-    errorMessage: '',
+    isFailed: false,
   })
 
   useEffect(() => {
@@ -20,20 +21,18 @@ export const useUserPreferences = () => {
       setPreferences({
         preferredFits: fits.data,
         preferredStyles: styles.data,
-        errorMessage: '',
+        isFailed: false,
       })
     }).catch(() => {
       if (controller.signal.aborted) return
 
-      setPreferences({
-        preferredFits: [],
-        preferredStyles: [],
-        errorMessage: '선호 핏과 스타일을 불러오지 못했어요.',
-      })
+      setPreferences((prev) => ({ ...prev, isFailed: true }))
     })
 
     return () => controller.abort()
-  }, [])
+  }, [attempt])
 
-  return preferences
+  const reload = () => setAttempt((count) => count + 1)
+
+  return { ...preferences, reload }
 }

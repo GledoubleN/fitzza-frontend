@@ -142,9 +142,27 @@ export const ProductPage = () => {
                     <LuHeart fill={ isWished ? 'currentColor' : 'none' }/>
                   </IconButton>
                 </Flex>
-                <Text textStyle={ 'xl' } fontWeight={ 'bold' }>
-                  { product.price != null ? `${ product.price.toLocaleString() }원` : '정보가 없습니다.' }
-                </Text>
+                { product.discountRate > 0 && product.normalPrice != null
+                  ? (
+                    <Stack gap={ 1 }>
+                      <Text textStyle={ 'sm' } color={ 'fg.muted' } textDecoration={ 'line-through' }>
+                        { product.normalPrice.toLocaleString() }원
+                      </Text>
+                      <Flex align={ 'center' } gap={ 2 }>
+                        <Text textStyle={ 'xl' } fontWeight={ 'bold' } color={ 'primary.solid' }>
+                          { product.discountRate }%
+                        </Text>
+                        <Text textStyle={ 'xl' } fontWeight={ 'bold' }>
+                          { product.price != null ? `${ product.price.toLocaleString() }원` : '정보가 없습니다.' }
+                        </Text>
+                      </Flex>
+                    </Stack>
+                    )
+                  : (
+                    <Text textStyle={ 'xl' } fontWeight={ 'bold' }>
+                      { product.price != null ? `${ product.price.toLocaleString() }원` : '정보가 없습니다.' }
+                    </Text>
+                    )}
               </Stack>
               <ProductOptionSelector product={ product }/>
             </Stack>

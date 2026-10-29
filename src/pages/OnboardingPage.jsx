@@ -4,6 +4,7 @@ import { api } from '../api/axios.js'
 import { BodyMeasurementsStep } from '../components/onboarding/BodyMeasurementsStep.jsx'
 import { ClothingSizeStep } from '../components/onboarding/ClothingSizeStep.jsx'
 import { StylePreferencesStep } from '../components/onboarding/StylePreferencesStep.jsx'
+import { findBodyMeasurementRangeError } from '../utils/bodyMeasurements.js'
 
 export default function OnboardingPage () {
   const navigate = useNavigate()
@@ -43,36 +44,12 @@ export default function OnboardingPage () {
 
   const handleNext = () => {
     if (step === 1) {
-      const h = Number(formData.height)
-      const w = Number(formData.weight)
-      const s = Number(formData.shoeSize)
-
-      let hasError = false
-      const newErrors = { height: '', weight: '', shoeSize: '' }
-
-      if (!formData.height) {
-        newErrors.height = '키를 입력해주세요.'
-        hasError = true
-      } else if (h < 130 || h > 210) {
-        newErrors.height = '키는 130cm ~ 210cm 사이로 입력해주세요.'
-        hasError = true
+      const newErrors = {
+        height: formData.height ? findBodyMeasurementRangeError('height', formData.height) : '키를 입력해주세요.',
+        weight: formData.weight ? findBodyMeasurementRangeError('weight', formData.weight) : '몸무게를 입력해주세요.',
+        shoeSize: formData.shoeSize ? findBodyMeasurementRangeError('shoeSize', formData.shoeSize) : '발사이즈를 입력해주세요.',
       }
-
-      if (!formData.weight) {
-        newErrors.weight = '몸무게를 입력해주세요.'
-        hasError = true
-      } else if (w < 30 || w > 120) {
-        newErrors.weight = '몸무게는 30kg ~ 120kg 사이로 입력해주세요.'
-        hasError = true
-      }
-
-      if (!formData.shoeSize) {
-        newErrors.shoeSize = '발사이즈를 입력해주세요.'
-        hasError = true
-      } else if (s < 210 || s > 300) {
-        newErrors.shoeSize = '발사이즈는 210mm ~ 300mm 사이로 입력해주세요.'
-        hasError = true
-      }
+      const hasError = Object.values(newErrors).some(Boolean)
 
       setFieldErrors(newErrors)
 

@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react'
 import {
   Avatar,
   Badge,
-  Box,
   Button,
   Container,
   Flex,
   HStack,
-  IconButton,
   Image,
   Input,
   InputGroup,
@@ -18,6 +16,7 @@ import {
 import { LuMessageCircle, LuPencil, LuSearch, LuThumbsUp } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
+import { FloatingButton } from '../../components/FloatingButton.jsx'
 import { Header } from '../../components/Header.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
@@ -83,7 +82,7 @@ export const CommunityMainPage = () => {
       <Stack direction="column" gap="4" minHeight="100vh" paddingY="4">
         <Header/>
 
-        <Container maxWidth="3xl">
+        <Container maxWidth="5xl">
           <Stack direction="column" gap="4">
             <CommunityTitleBar/>
 
@@ -118,7 +117,7 @@ export const CommunityMainPage = () => {
           </Stack>
         </Container>
 
-        <Container maxWidth="3xl" paddingBottom="20">
+        <Container maxWidth="5xl" paddingBottom="20">
           <Stack direction="column" gap="0" separator={ <Separator/> }>
             { posts.map((post) => (
               <PostItem
@@ -144,20 +143,13 @@ export const CommunityMainPage = () => {
         </Container>
       </Stack>
 
-      <Box position="fixed" bottom="24" left="0" right="0" pointerEvents="none">
-        <Container maxWidth="3xl" display="flex" justifyContent="flex-end">
-          <IconButton
-            rounded="full"
-            size="xl"
-            aria-label="글쓰기"
-            pointerEvents="auto"
-            colorPalette="primary"
-            onClick={ () => navigate('/community/write') }
-          >
-            <LuPencil/>
-          </IconButton>
-        </Container>
-      </Box>
+      <FloatingButton
+        aria-label="글쓰기"
+        color="primary.fg"
+        onClick={ () => navigate('/community/write') }
+      >
+        <LuPencil/>
+      </FloatingButton>
       <TabBar/>
     </>
   )

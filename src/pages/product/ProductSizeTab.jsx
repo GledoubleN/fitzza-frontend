@@ -1,5 +1,6 @@
 import { DataList, Flex, Heading, Icon, Image, Stack, Table, Text } from '@chakra-ui/react'
 import { LuInfo } from 'react-icons/lu'
+import { ProductSizeRecommendation } from './ProductSizeRecommendation.jsx'
 
 const NOTICES = [
   '상세 사이즈는 측정 방법과 위치, 소재에 따라 오차가 발생할 수 있습니다.',
@@ -70,6 +71,7 @@ export const ProductSizeTab = ({ product }) => {
 
   return (
     <Stack gap={ 6 } paddingY={ 4 }>
+      <ProductSizeRecommendation key={ product.productId } productId={ product.productId }/>
       <Stack gap={ 1 }>
         <Heading size={ 'lg' }>AI 실측 사이즈</Heading>
         <Text textStyle={ 'sm' } color={ 'fg.muted' }>상세 페이지를 스캔해 실측정보를 찾아왔어요!</Text>

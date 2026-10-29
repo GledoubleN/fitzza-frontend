@@ -20,6 +20,7 @@ import {
   LuHistory,
   LuMessageSquare,
   LuSettings,
+  LuRotateCw,
 } from 'react-icons/lu';
 import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
@@ -27,10 +28,11 @@ import { VtonGallery } from './profile/VtonGallery.jsx';
 import { api } from '../api/axios.js';
 import { useAuth } from '../contexts/AuthContext.js'
 import { useUserPreferences } from '../hooks/useUserPreferences.js'
+import { findBodyMeasurementRangeError } from '../utils/bodyMeasurements.js'
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
-  const { preferredFits, preferredStyles, errorMessage: preferencesError } = useUserPreferences()
+  const { preferredFits, preferredStyles, isFailed: isPreferencesFailed, reload: reloadPreferences } = useUserPreferences()
   const fitOptions = [{ label: '선택 안함', value: '' }, ...preferredFits]
   const styleOptions = [{ label: '선택 안함', value: '' }, ...preferredStyles]
   const [isEditing, setIsEditing] = useState(false);
@@ -42,7 +44,7 @@ export default function ProfilePage() {
     preferredFit: '',
     style: '',
   });
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState({ text: '', isError: false });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -97,7 +99,14 @@ export default function ProfilePage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    setMessage('');
+    setMessage({ text: '', isError: false });
+
+    const rangeError = findBodyMeasurementRangeError('height', profileData.height)
+      || findBodyMeasurementRangeError('weight', profileData.weight)
+    if (rangeError) {
+      setMessage({ text: rangeError, isError: true });
+      return;
+    }
 
     const payload = {
       height: profileData.height ? Number(profileData.height) : null,
@@ -110,35 +119,23 @@ export default function ProfilePage() {
 
     try {
       await api.patch('/users/me', payload);
-      setMessage('프로필이 성공적으로 저장되었습니다.');
+      setMessage({ text: '프로필이 성공적으로 저장되었습니다.', isError: false });
       setIsEditing(false);
     } catch (err) {
       if (err.response?.status === 400) {
-        setMessage('입력한 데이터의 단위나 범위를 확인해주세요.');
+        setMessage({ text: '입력한 데이터의 단위나 범위를 확인해주세요.', isError: true });
       } else {
-        setMessage('프로필이 저장되었습니다 (테스트 모드).');
+        setMessage({ text: '프로필이 저장되었습니다 (테스트 모드).', isError: false });
         setIsEditing(false);
       }
     }
   };
 
   return (
-    <Box position="relative" minH="100vh" pt={24} pb={28} bg="bg">
-      <Box
-        position="fixed"
-        top={0}
-        left={0}
-        right={0}
-        zIndex={10}
-        bg="bg"
-        py={4}
-        borderBottomWidth="1px"
-        borderColor="border.subtle"
-      >
-        <Header />
-      </Box>
+    <Stack position="relative" minH="100vh" paddingY={4} gap={4} bg="bg">
+      <Header />
 
-      <Container maxW="5xl" mx="auto" px={5}>
+      <Container maxW="5xl" mx="auto" px={5} flex="1">
         <Grid
           templateColumns={{ base: '1fr', lg: '1fr 1.8fr' }}
           gap={6}
@@ -177,18 +174,9 @@ export default function ProfilePage() {
               </Text>
             </Flex>
 
-            { preferencesError && (
-              <Text
-                color="fg.error"
-                textStyle="sm"
-              >
-                { preferencesError }
-              </Text>
-            ) }
-
             {!isEditing ? (
               <Box w="100%">
-                <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted">
+                <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.muted">
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit || '미입력 (건너뜀)'}</Text></Flex>
@@ -277,7 +265,14 @@ export default function ProfilePage() {
                     <Button size="xs" variant="ghost" onClick={() => handleSkipField('style')}>비우기</Button>
                   </HStack>
 
-                  {message && <Text color="blue.500" textStyle="xs" textAlign="center">{message}</Text>}
+                  {isPreferencesFailed && (
+                    <Button size="xs" variant="ghost" alignSelf="flex-start" onClick={reloadPreferences}>
+                      <LuRotateCw />
+                      선택지 다시 불러오기
+                    </Button>
+                  )}
+
+                  {message.text && <Text color={message.isError ? 'fg.error' : 'fg.info'} textStyle="xs" textAlign="center">{message.text}</Text>}
 
                   <HStack mt={1}>
                     <Button type="submit" size="xs" flex="1">저장</Button>
@@ -288,11 +283,11 @@ export default function ProfilePage() {
             )}
 
             <Grid templateColumns="repeat(2, 1fr)" gap={3}>
-              <Box p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted" textAlign="center">
+              <Box p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.muted" textAlign="center">
                 <Text textStyle="xs" color="fg.muted" mb={1}>적립금</Text>
                 <Text textStyle="md" fontWeight="600">7,777원</Text>
               </Box>
-              <Box p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted" textAlign="center">
+              <Box p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.muted" textAlign="center">
                 <Text textStyle="xs" color="fg.muted" mb={1}>쿠폰</Text>
                 <Text textStyle="md" fontWeight="600">11장</Text>
               </Box>
@@ -349,6 +344,6 @@ export default function ProfilePage() {
       </Container>
 
       <TabBar />
-    </Box>
+    </Stack>
   );
 }

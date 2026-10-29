@@ -55,7 +55,10 @@ export function ClothingSizeStep ({ formData, onFieldChange, onSkip, errorMessag
                   <Button
                     key={ size }
                     size="md"
-                    variant={ isSelected ? 'solid' : 'outline' }
+                    variant="outline"
+                    layerStyle={ isSelected ? 'glass' : undefined }
+                    borderColor={ isSelected ? 'fg' : undefined }
+                    fontWeight={ isSelected ? 'bold' : undefined }
                     onClick={ () => handleTopSelect(size) }
                   >
                     { size }
@@ -75,7 +78,10 @@ export function ClothingSizeStep ({ formData, onFieldChange, onSkip, errorMessag
                   <Button
                     key={ size }
                     size="md"
-                    variant={ isSelected ? 'solid' : 'outline' }
+                    variant="outline"
+                    layerStyle={ isSelected ? 'glass' : undefined }
+                    borderColor={ isSelected ? 'fg' : undefined }
+                    fontWeight={ isSelected ? 'bold' : undefined }
                     onClick={ () => handleBottomSelect(size) }
                   >
                     { size }

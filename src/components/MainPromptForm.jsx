@@ -44,7 +44,11 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
       <Textarea
         resize={ 'none' }
         variant={ 'none' }
+        bg={ 'transparent' }
         aria-label={ 'AI에게 추천받을 내용' }
+        paddingX={ { base: 1, md: 3 } }
+        placeholder={ 'AI 스타일리스트한테 물어보세요' }
+        _placeholder={ { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }
         maxLength={ MAX_QUERY_LENGTH }
         rows={ 1 }
         fieldSizing={ 'content' }
