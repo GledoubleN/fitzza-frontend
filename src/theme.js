@@ -59,6 +59,20 @@ const config = defineConfig({
           800: { value: '#066e83' },
           900: { value: '#044f5e' },
         },
+
+        plum: {
+          50: { value: '#f8f5f9' },
+          100: { value: '#efe8f1' },
+          200: { value: '#dfd1e3' },
+          300: { value: '#c7b0cd' },
+          400: { value: '#a786af' },
+          500: { value: '#8a6592' },
+          600: { value: '#6e4c74' },
+          700: { value: '#5b3e60' },
+          800: { value: '#4a3350' },
+          900: { value: '#3e2c43' },
+          950: { value: '#241827' },
+        },
       },
 
       fonts: {
@@ -99,6 +113,16 @@ const config = defineConfig({
           subtle: { value: '{colors.accent.50}' },
           emphasized: { value: '{colors.accent.600}' },
           focusRing: { value: '{colors.accent.500}' },
+        },
+
+        plum: {
+          solid: { value: '{colors.plum.600}' },
+          contrast: { value: '{colors.white}' },
+          fg: { value: '{colors.plum.700}' },
+          muted: { value: '{colors.plum.100}' },
+          subtle: { value: '{colors.plum.50}' },
+          emphasized: { value: '{colors.plum.200}' },
+          focusRing: { value: '{colors.plum.500}' },
         },
 
         pantone: {
