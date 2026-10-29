@@ -98,7 +98,6 @@ export const WorldCupSetupPage = () => {
     <Stack
       paddingY={ 4 }
       minH="100vh"
-      pb={ 32 }
       gap={ 4 }
     >
       <Header />
