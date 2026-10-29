@@ -252,7 +252,7 @@ export const WorldCupSetupPage = () => {
                             position="absolute"
                             inset={ 0 }
                             bg="bg.emphasized"
-                            opacity={ 0.2 }
+                            opacity={ 0.5 }
                           />
                         ) }
 
