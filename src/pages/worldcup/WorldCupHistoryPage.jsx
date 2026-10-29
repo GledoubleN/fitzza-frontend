@@ -150,7 +150,6 @@ export const WorldCupHistoryPage = () => {
                       key={ item.worldcupHistoryId }
                       borderWidth="thin"
                       borderColor="border.subtle"
-                      borderRadius="2xl"
                       p={ 4 }
                       bg="bg.panel"
                       display="flex"
@@ -164,7 +163,6 @@ export const WorldCupHistoryPage = () => {
                       <Box
                         w="20"
                         h="20"
-                        borderRadius="xl"
                         overflow="hidden"
                         bg="bg.subtle"
                         flexShrink={ 0 }
