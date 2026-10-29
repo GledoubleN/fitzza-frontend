@@ -27,6 +27,7 @@ import getLikesResponse from '../data/responses/get-likes.json'
 import postRecommendationsResponse from '../data/responses/post-recommendations.json'
 import getRecommendationsResponse from '../data/responses/get-recommendations.json'
 import getRecommendationsRequestIdResponse from '../data/responses/get-recommendations-requestId.json'
+import getRecommendationsProductIdSizeResponse from '../data/responses/get-recommendations-productId-size.json'
 import getNotificationsResponse from '../data/responses/get-notifications.json'
 import postWorldcupsResponse from '../data/responses/post-worldcups.json'
 import getWorldcupsHistoryResponse from '../data/responses/get-worldcups-history.json'
@@ -198,6 +199,11 @@ export const handlers = [
   http.get(
     `${ api.defaults.baseURL }/recommendations/:requestId`,
     () => HttpResponse.json(getRecommendationsRequestIdResponse),
+  ),
+
+  http.get(
+    `${ api.defaults.baseURL }/recommendations/:productId/size`,
+    () => HttpResponse.json(getRecommendationsProductIdSizeResponse),
   ),
 
   http.delete(
