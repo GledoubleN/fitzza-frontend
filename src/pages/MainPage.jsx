@@ -1,6 +1,7 @@
 import { Box, Container, Stack, Text } from '@chakra-ui/react'
 import { useMotionValue, useScroll, useTransform } from 'motion/react'
 import { Header } from '../components/Header.jsx'
+import { Logo } from '../components/Logo.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
@@ -66,7 +67,7 @@ export const MainPage = () => {
             fontSize="2xl"
             visibility="hidden"
           >
-            FiTZZA
+            <Logo/>
           </Text>
         }
         center={

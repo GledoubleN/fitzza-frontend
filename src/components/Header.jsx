@@ -24,6 +24,7 @@ import { toNotificationPath, toNotificationText, useNotifications } from '../hoo
 import { disablePush } from '../services/pushNotifications.js'
 import { toaster } from './ui/toaster.jsx'
 import { AIPromptCard } from './AIPromptCard.jsx'
+import { Logo } from './Logo.jsx'
 
 const MotionBox = chakra(motion.div)
 
@@ -154,7 +155,7 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
                 fontSize="2xl"
                 fontWeight="bold"
               >
-                <RouterLink to="/">FiTZZA</RouterLink>
+                <RouterLink to="/"><Logo/></RouterLink>
               </Text>
             ) }
           </GridItem>
