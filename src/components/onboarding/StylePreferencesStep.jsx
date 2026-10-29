@@ -1,12 +1,13 @@
 import { useRef } from 'react'
 import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
+import { LuRotateCw } from 'react-icons/lu'
 import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
 import { OnboardingSaveConfirmation } from './OnboardingSaveConfirmation.jsx'
 import { useUserPreferences } from '../../hooks/useUserPreferences.js'
 
 export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMessage, onPrev, onSave, isLoading, isSaved, onConfirm }) {
   const styleSectionRef = useRef(null)
-  const { preferredFits, preferredStyles, errorMessage: preferencesError } = useUserPreferences()
+  const { preferredFits, preferredStyles, isFailed, reload } = useUserPreferences()
   const fitOptions = [{ label: '선택 안함', value: '' }, ...preferredFits]
   const styleOptions = [{ label: '선택 안함', value: '' }, ...preferredStyles]
 
@@ -25,7 +26,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
     <OnboardingStepLayout
       step={ 3 }
       onSkip={ onSkip }
-      errorMessage={ errorMessage || preferencesError }
+      errorMessage={ errorMessage }
       actions={ (
         <Grid templateColumns="minmax(0, 1fr) minmax(0, 3fr)" gap={ 4 }>
           <Button variant="outline" size="md" onClick={ onPrev }>
@@ -42,6 +43,17 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
           선호하는 스타일을 골라주세요
         </Heading>
         <Text fontSize="sm" color="fg.muted">고객님께 딱 맞는 핏과 스타일을 추천해드려요</Text>
+        { isFailed && (
+          <Button
+            variant="ghost"
+            size="xs"
+            mt={ 2 }
+            onClick={ reload }
+          >
+            <LuRotateCw/>
+            선택지 다시 불러오기
+          </Button>
+        ) }
       </Box>
 
       {/* 💡 mb={ 12 }를 추가하여 하단 '저장하기' 버튼과의 간격을 넉넉히 확보합니다 */}
@@ -58,7 +70,10 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
                 <Button
                   key={ item.value }
                   size="md"
-                  variant={ isSelected ? 'solid' : 'outline' }
+                  variant="outline"
+                  layerStyle={ isSelected ? 'glass' : undefined }
+                  borderColor={ isSelected ? 'fg' : undefined }
+                  fontWeight={ isSelected ? 'bold' : undefined }
                   onClick={ () => handleFitSelect(item.value) }
                 >
                   { item.label }
@@ -80,7 +95,10 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
                 <Button
                   key={ item.value }
                   size="md"
-                  variant={ isSelected ? 'solid' : 'outline' }
+                  variant="outline"
+                  layerStyle={ isSelected ? 'glass' : undefined }
+                  borderColor={ isSelected ? 'fg' : undefined }
+                  fontWeight={ isSelected ? 'bold' : undefined }
                   onClick={ () => handleStyleSelect(item.value) }
                 >
                   { item.label }

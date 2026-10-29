@@ -38,7 +38,7 @@ export const OrderListPage = () => {
     <Stack gap={ 4 } paddingY={ 4 } paddingBottom={ 28 } minHeight={ 'vh' } bg={ 'bg' }>
       <Header/>
 
-      <Container maxWidth={ '3xl' }>
+      <Container maxWidth={ '5xl' }>
         <Stack gap={ 4 }>
           <Heading>주문 내역</Heading>
 

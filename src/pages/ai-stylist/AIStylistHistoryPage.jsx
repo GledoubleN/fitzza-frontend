@@ -83,7 +83,7 @@ export const AIStylistHistoryPage = () => {
     <Stack gap={ 4 } paddingY={ 4 } minHeight={ 'vh' }>
       <Header></Header>
 
-      <Container maxWidth={ '3xl' } flex={ 1 }>
+      <Container maxWidth={ '5xl' } flex={ 1 }>
         <Stack gap={ 4 }>
           <Flex align="center" justify="space-between">
               <Text fontSize="lg" fontWeight="semibold">

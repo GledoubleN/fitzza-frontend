@@ -219,7 +219,6 @@ export default function WorldCupPage () {
       currentIndex={ currentIndex }
       matchList={ matchList }
       isSaving={ isSaving }
-      onOpenHistory={ handleOpenHistory }
       onSelect={ handleSelect }
     />
   )

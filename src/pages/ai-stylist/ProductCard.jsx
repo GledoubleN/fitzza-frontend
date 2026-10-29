@@ -1,8 +1,10 @@
 import {
   Badge,
+  Box,
   Button,
   Flex,
   IconButton,
+  LinkOverlay,
   Stack,
   Text,
 } from '@chakra-ui/react'
@@ -50,64 +52,114 @@ export const ProductCard = ({ item, wished, onToggleWish, cartFailure, onCartAdd
   }
 
   return (
-    <ProductSlot direction={ 'column' } gap={ 2 } position={ 'relative' } flexShrink={ 0 } scrollSnapAlign={ 'start' }>
-      <Stack gap={ 1 } flex={ 1 } asChild>
-        <Link to={ `/products/${ item.productId }` }>
-          <ProductImage
-            src={ item.imageUrl }
-            alt={ item.productName }
-            aspectRatio={ 1 }
-            objectFit={ 'contain' }
-            bg={ 'bg.muted' }
-          ></ProductImage>
-          <Text fontSize={ 'sm' } lineClamp={ 1 }>{ item.productName }</Text>
-          <Text fontSize={ 'sm' } fontWeight={ 'bold' }>{ item.price.toLocaleString() }원</Text>
-          {
-            optionLabel &&
-            <Text fontSize={ 'xs' }>{ optionLabel }</Text>
-          }
-          {
-            item.fitPercent != null &&
-            <Badge alignSelf={ 'flex-start' }>핏 { item.fitPercent }%</Badge>
-          }
-          {
-            item.evidence &&
-            <Text fontSize={ 'xs' } color={ 'fg.muted' }>{ item.evidence }</Text>
-          }
-        </Link>
+    <ProductSlot
+      className={ 'group' }
+      direction={ 'column' }
+      gap={ 3 }
+      padding={ 2 }
+      paddingBottom={ 3 }
+      position={ 'relative' }
+      flexShrink={ 0 }
+      scrollSnapAlign={ 'start' }
+      bg={ 'bg.panel' }
+      borderWidth={ 'thin' }
+      borderColor={ 'border.subtle' }
+      boxShadow={ 'sm' }
+      transition={ 'box-shadow 0.25s ease' }
+      _hover={ { boxShadow: 'lg' } }
+    >
+      <Box
+        position={ 'relative' }
+        aspectRatio={ 3 / 4 }
+        overflow={ 'hidden' }
+        bg={ 'bg.muted' }
+      >
+        <ProductImage
+          width={ 'full' }
+          height={ 'full' }
+          objectFit={ 'cover' }
+          src={ item.imageUrl }
+          alt={ item.productName }
+          transition={ 'transform 0.4s ease' }
+          _groupHover={ { transform: 'scale(1.05)' } }
+        />
+        <IconButton
+          position={ 'absolute' }
+          top={ 1 }
+          right={ 1 }
+          zIndex={ 1 }
+          size={ 'sm' }
+          rounded={ 'full' }
+          variant={ 'ghost' }
+          backdropFilter={ 'auto' }
+          _hover={ { bg: 'bg.muted/70', backdropBlur: 'lg' } }
+          aria-label={ wished ? '찜 해제' : '찜하기' }
+          aria-pressed={ wished }
+          color={ wished ? 'primary.solid' : 'fg.muted' }
+          disabled={ wishSaving }
+          onClick={ toggleWish }
+        >
+          <LuHeart fill={ wished ? 'currentColor' : 'none' }/>
+        </IconButton>
+      </Box>
+
+      <Stack
+        gap={ 1 }
+        flex={ 1 }
+      >
+        <Text
+          textStyle={ 'sm' }
+          lineClamp={ 2 }
+          minHeight={ '2lh' }
+        >
+          <LinkOverlay asChild>
+            <Link to={ `/products/${ item.productId }` }>
+              { item.productName }
+            </Link>
+          </LinkOverlay>
+        </Text>
+        <Text
+          textStyle={ { base: 'sm', md: 'md' } }
+          fontWeight={ 'bold' }
+        >
+          { item.price.toLocaleString() } 원
+        </Text>
+        {
+          optionLabel &&
+          <Text textStyle={ 'xs' } color={ 'fg.muted' }>{ optionLabel }</Text>
+        }
+        {
+          item.fitPercent != null &&
+          <Badge alignSelf={ 'flex-start' }>핏 { item.fitPercent }%</Badge>
+        }
+        {
+          item.evidence &&
+          <Text textStyle={ 'xs' } color={ 'fg.muted' }>{ item.evidence }</Text>
+        }
       </Stack>
       {
         cartFailure &&
-        <Text fontSize={ 'xs' } color={ 'fg.error' }>{ cartFailure }</Text>
+        <Text textStyle={ 'xs' } color={ 'fg.error' }>{ cartFailure }</Text>
       }
-      <Button
-        size={ 'xs' }
-        variant={ 'outline' }
-        disabled={ !item.recommendedSize }
-        loading={ saving }
-        onClick={ submit }
+      <Stack
+        gap={ 2 }
+        position={ 'relative' }
+        zIndex={ 1 }
       >
-        장바구니 담기
-      </Button>
-      {
-        onTryOn &&
-        <Button size={ 'xs' } variant={ 'outline' } disabled={ tryingOn } onClick={ onTryOn }>바로 입어보기</Button>
-      }
-      <IconButton
-        position={ 'absolute' }
-        top={ 0 }
-        right={ 0 }
-        size={ 'sm' }
-        variant={ 'ghost' }
-        rounded={ 'full' }
-        aria-label={ wished ? '찜 해제' : '찜하기' }
-        aria-pressed={ wished }
-        color={ wished ? 'fg.error' : 'fg.muted' }
-        disabled={ wishSaving }
-        onClick={ toggleWish }
-      >
-        <LuHeart fill={ wished ? 'currentColor' : 'none' }></LuHeart>
-      </IconButton>
+        <Button
+          size={ 'xs' }
+          variant={ 'outline' }
+          disabled={ !item.recommendedSize }
+          loading={ saving }
+          onClick={ submit }
+        >
+          장바구니 담기
+        </Button>
+        {
+          onTryOn &&
+          <Button size={ 'xs' } variant={ 'outline' } disabled={ tryingOn } onClick={ onTryOn }>바로 입어보기</Button>
+        }
+      </Stack>
       <CartAddedDialog
         open={ added }
         onClose={ () => setAdded(false) }

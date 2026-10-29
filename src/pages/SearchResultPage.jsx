@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
+import { ScrollToTopButton } from '../components/ScrollToTopButton.jsx'
 import { LuChevronDown, LuChevronRight, LuHeart } from 'react-icons/lu'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api/axios.js'
@@ -301,6 +302,8 @@ export const SearchResultPage = () => {
           </Center>
         ) }
       </Container>
+
+      <ScrollToTopButton bottom={ '24' }/>
 
       <TabBar/>
 

@@ -33,8 +33,8 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
 
         {/* 키 입력 */}
         <VStack align="stretch" gap={ 1 }>
-          <Heading fontSize="sm" color="fg.subtle">키</Heading>
-          <InputGroup endAddon="cm" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
+          <Heading fontSize="sm" color="fg">키</Heading>
+          <InputGroup endAddon="cm" endAddonProps={ { color: 'fg', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
               name="height"
               placeholder="178"
@@ -43,6 +43,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
               onKeyDown={ handleKeyDown }
               maxLength={ 3 }
               autoComplete="off"
+              layerStyle="glass"
               size="md"
               borderColor={ fieldErrors?.height ? "fg.error" : undefined }
             />
@@ -54,8 +55,8 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
 
         {/* 몸무게 입력 */}
         <VStack align="stretch" gap={ 1 }>
-          <Heading fontSize="sm" color="fg.subtle">몸무게</Heading>
-          <InputGroup endAddon="kg" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
+          <Heading fontSize="sm" color="fg">몸무게</Heading>
+          <InputGroup endAddon="kg" endAddonProps={ { color: 'fg', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
               name="weight"
               placeholder="75"
@@ -64,6 +65,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
               onKeyDown={ handleKeyDown }
               maxLength={ 3 }
               autoComplete="off"
+              layerStyle="glass"
               size="md"
               borderColor={ fieldErrors?.weight ? "fg.error" : undefined }
             />
@@ -75,8 +77,8 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
 
         {/* 발사이즈 입력 */}
         <VStack align="stretch" gap={ 1 }>
-          <Heading fontSize="sm" color="fg.subtle">발사이즈</Heading>
-          <InputGroup endAddon="mm" endAddonProps={ { color: 'fg.subtle', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
+          <Heading fontSize="sm" color="fg">발사이즈</Heading>
+          <InputGroup endAddon="mm" endAddonProps={ { color: 'fg', textAlign: 'center', width: '48px', justifyContent: 'center' } }>
             <Input
               name="shoeSize"
               placeholder="280"
@@ -85,6 +87,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
               onKeyDown={ handleKeyDown }
               maxLength={ 3 }
               autoComplete="off"
+              layerStyle="glass"
               size="md"
               borderColor={ fieldErrors?.shoeSize ? "fg.error" : undefined }
             />

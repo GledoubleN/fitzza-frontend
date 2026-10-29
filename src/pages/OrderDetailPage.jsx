@@ -22,7 +22,6 @@ import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { api } from '../api/axios.js'
-import { FailureTestButtons } from '../mocks/FailureTestButtons.jsx'
 
 export const orderStatusLabels = {
   PENDING: '주문 접수',
@@ -274,17 +273,6 @@ export const OrderDetail = () => {
                     </HStack>
                   </Card.Body>
                 </Card.Root>
-                { import.meta.env.DEV && isSurveyable && (
-                  <Stack gap={ 4 }>
-                    <FailureTestButtons tests={ [
-                      { label: '저장 실패', method: 'post', path: '/surveys' },
-                      { label: '조회 실패', method: 'get', path: '/surveys/me', onReady: reloadSurveys },
-                    ] }/>
-                    <Text textStyle={ 'xs' } color={ 'fg.muted' }>
-                      저장 실패를 누른 뒤 미작성 상품의 평가를 남기면 한 번 실패해요. 조회 실패는 즉시 확인할 수 있어요.
-                    </Text>
-                  </Stack>
-                ) }
               </Stack>
             </Grid>
           </>

@@ -5,10 +5,9 @@ import {
   Text,
   Center,
   Button,
-  IconButton,
-  Box,
 } from '@chakra-ui/react'
 import { Header } from '../components/Header.jsx'
+import { FloatingButton } from '../components/FloatingButton.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { ProductItem } from '../components/ProductItem.jsx'
 import { useEffect, useState } from 'react'
@@ -128,28 +127,15 @@ export const WishlistPage = () => {
       </Container>
 
       { products.length >= 2 && (
-        <Box
-          position="fixed"
-          bottom={ 24 }
-          right={ { base: 4, lg: 'calc((100vw - {sizes.5xl}) / 2 + {spacing.8})' } }
-          zIndex={ 30 }
+        <FloatingButton
+          bg="fg"
+          bgImage="none"
+          color="bg"
+          aria-label="이상형 월드컵 시작"
+          onClick={ () => navigate('/worldcup/setup') }
         >
-          <IconButton
-            size="lg"
-            rounded="full"
-            bg="bg.panel"
-            color="fg"
-            borderWidth="thin"
-            borderColor="border.subtle"
-            boxShadow="lg"
-            _hover={ { bg: 'bg.subtle', transform: 'scale(1.05)' } }
-            transition="all 0.2s"
-            aria-label="이상형 월드컵 시작"
-            onClick={ () => navigate('/worldcup/setup') }
-          >
-            <LuTrophy />
-          </IconButton>
-        </Box>
+          <LuTrophy />
+        </FloatingButton>
       ) }
 
       <TabBar />

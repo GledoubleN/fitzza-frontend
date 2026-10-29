@@ -4,6 +4,17 @@ import {
   defineConfig,
 } from '@chakra-ui/react'
 
+const toToastType = (palette) => ({
+  bg: 'transparent',
+  bgGradient: 'to-b',
+  gradientFrom: 'bg/80',
+  gradientTo: 'bg/60',
+  color: 'fg',
+  '--toast-trigger-bg': 'colors.bg.muted',
+  '--toast-border-color': 'colors.border',
+  '& > svg': { color: `${ palette }.solid` },
+})
+
 const config = defineConfig({
   theme: {
     tokens: {
@@ -59,12 +70,27 @@ const config = defineConfig({
           800: { value: '#066e83' },
           900: { value: '#044f5e' },
         },
+
+        plum: {
+          50: { value: '#f8f5f9' },
+          100: { value: '#efe8f1' },
+          200: { value: '#dfd1e3' },
+          300: { value: '#c7b0cd' },
+          400: { value: '#a786af' },
+          500: { value: '#8a6592' },
+          600: { value: '#6e4c74' },
+          700: { value: '#5b3e60' },
+          800: { value: '#4a3350' },
+          900: { value: '#3e2c43' },
+          950: { value: '#241827' },
+        },
       },
 
       fonts: {
         heading: { value: '\'Nanum Gothic\', sans-serif' },
         body: { value: '\'Nanum Gothic\', sans-serif' },
         mono: { value: '\'Nanum Gothic Coding\', monospace' },
+        logo: { value: '\'Roboto Slab\', serif' },
       },
     },
 
@@ -100,11 +126,97 @@ const config = defineConfig({
           focusRing: { value: '{colors.accent.500}' },
         },
 
+        plum: {
+          solid: { value: '{colors.plum.600}' },
+          contrast: { value: '{colors.white}' },
+          fg: { value: '{colors.plum.700}' },
+          muted: { value: '{colors.plum.100}' },
+          subtle: { value: '{colors.plum.50}' },
+          emphasized: { value: '{colors.plum.200}' },
+          focusRing: { value: '{colors.plum.500}' },
+        },
+
+        pantone: {
+          lemonIcing: { value: '#f5ebc8' },
+          nimbusCloud: { value: '#d5d5d7' },
+          raindropsOnRoses: { value: '#ead9dc' },
+          cloudDancer: { value: '#f0efeb' },
+          iceMelt: { value: '#d4e4f1' },
+          peachDust: { value: '#f0d9cc' },
+          almostAqua: { value: '#c9d3c0' },
+          orchidTint: { value: '#dcd4dd' },
+        },
+
         background: {
           canvas: { value: '{colors.background.900}' },
           surface: { value: '{colors.background.800}' },
           muted: { value: '{colors.background.700}' },
           emphasized: { value: '{colors.background.600}' },
+        },
+      },
+    },
+
+    layerStyles: {
+      glass: {
+        value: {
+          background: 'transparent',
+          bgGradient: 'to-b',
+          gradientFrom: 'bg/70',
+          gradientTo: 'bg/40',
+          backdropFilter: 'auto',
+          backdropBlur: 'md',
+          backdropSaturate: '200%',
+          backdropBrightness: '110%',
+        },
+      },
+    },
+
+    slotRecipes: {
+      select: {
+        base: {
+          content: { layerStyle: 'glass' },
+        },
+      },
+      menu: {
+        base: {
+          content: { layerStyle: 'glass' },
+        },
+      },
+      popover: {
+        base: {
+          content: {
+            layerStyle: 'glass',
+            '--arrow-background': '{colors.bg/70}',
+          },
+        },
+      },
+      toast: {
+        base: {
+          root: {
+            bg: 'transparent',
+            bgGradient: 'to-b',
+            gradientFrom: 'bg/80',
+            gradientTo: 'bg/60',
+            backdropFilter: 'auto',
+            backdropBlur: 'md',
+            backdropSaturate: '200%',
+            borderWidth: 'thin',
+            borderColor: 'fg/10',
+            boxShadow: 'lg',
+            '&[data-type=success]': toToastType('green'),
+            '&[data-type=warning]': toToastType('orange'),
+            '&[data-type=error]': toToastType('red'),
+            '&[data-type=info]': toToastType('blue'),
+          },
+        },
+      },
+      dialog: {
+        base: {
+          backdrop: {
+            bg: 'bg/30',
+            backdropFilter: 'auto',
+            backdropBlur: 'md',
+          },
         },
       },
     },
