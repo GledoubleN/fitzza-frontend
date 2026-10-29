@@ -192,7 +192,7 @@ export const VtonGallery = ({ preview = false }) => {
         ref={ grid }
         templateColumns={ preview
           ? 'repeat(auto-fill, minmax(max({sizes.24}, calc((100% - 3 * {spacing.4}) / 4)), 1fr))'
-          : 'repeat(auto-fill, minmax(max({sizes.28}, calc((100% - 5 * {spacing.4}) / 6)), 1fr))' }
+          : 'repeat(auto-fill, minmax(max({sizes.28}, calc((100% - 4 * {spacing.4}) / 5)), 1fr))' }
         gap={ 4 }
       >
         {
