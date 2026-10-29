@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../../api/axios.js'
 import { HttpStatusCode } from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { LuCheck, LuChevronLeft, LuHistory } from 'react-icons/lu'
+import { LuCheck, LuChevronLeft } from 'react-icons/lu'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
 
