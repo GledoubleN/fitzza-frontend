@@ -23,7 +23,6 @@ import { ProductImage } from '../components/ProductImage.jsx'
 import { api } from '../api/axios.js'
 import { QuantityStepper } from './product/ProductOptionSelector.jsx'
 import { CartOptionDialog } from './CartOptionDialog.jsx'
-import { FailureTestButtons } from '../mocks/FailureTestButtons.jsx'
 
 const formatPrice = (price) => `${ price.toLocaleString() }원`
 
@@ -34,12 +33,6 @@ const SelectCheckbox = ({ label, checked, disabled, onChange }) => (
     <Checkbox.Label fontWeight={ 'semibold' }>{ label }</Checkbox.Label>
   </Checkbox.Root>
 )
-
-const failureTests = [
-  { label: '다음 수정 실패', method: 'patch', path: '/carts/:cartId' },
-  { label: '다음 다시 불러오기 실패', method: 'get', path: '/carts' },
-  { label: '다음 선택삭제 일부 실패', method: 'delete', path: '/carts/:cartId' },
-]
 
 export const ShoppingCartPage = () => {
   const navigate = useNavigate()
@@ -329,7 +322,6 @@ export const ShoppingCartPage = () => {
                   { selectedItems.length }
                 </Flex>
               </Button>
-              { import.meta.env.DEV && <FailureTestButtons tests={ failureTests }/> }
             </Stack>
           </Grid>
         ) }

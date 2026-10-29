@@ -22,7 +22,6 @@ import { Header } from '../components/Header.jsx'
 import { toaster } from '../components/ui/toaster.jsx'
 import { ProductImage } from '../components/ProductImage.jsx'
 import { api } from '../api/axios.js'
-import { FailureTestButtons } from '../mocks/FailureTestButtons.jsx'
 
 const formatPrice = (price) => `${ price.toLocaleString() }원`
 
@@ -76,25 +75,6 @@ const recipientFields = [
   },
   { name: 'roadAddress', label: '도로명 주소', placeholder: '시,군,구', maxLength: 100, error: '도로명 주소를 입력해 주세요.', isValid: isFilled },
   { name: 'detailAddress', label: '상세주소', placeholder: '동·호수 (선택)', maxLength: 100, optional: true, isValid: () => true },
-]
-
-const orderError = (status, code, message) => (HttpResponse) => HttpResponse.json({ code, message }, { status })
-
-const failureTests = [
-  { label: '다음 주문 서버 오류', method: 'post', path: '/orders' },
-  { label: '다음 주문 연결 끊김', method: 'post', path: '/orders', respond: (HttpResponse) => HttpResponse.error() },
-  {
-    label: '다음 주문 장바구니 변경',
-    method: 'post',
-    path: '/orders',
-    respond: orderError(404, 'CART_NOT_FOUND', '장바구니 항목을 찾을 수 없습니다.'),
-  },
-  {
-    label: '다음 주문 품절',
-    method: 'post',
-    path: '/orders',
-    respond: orderError(400, 'OPTION_NOT_AVAILABLE', '주문할 수 없는 상품 옵션이 포함되어 있습니다.'),
-  },
 ]
 
 const testRecipient = {
@@ -358,11 +338,9 @@ export const CheckoutPage = () => {
               { formatPrice(totalPrice) } 주문하기
             </Button>
             { import.meta.env.DEV && (
-              <FailureTestButtons tests={ failureTests }>
-                <Button variant={ 'outline' } size={ 'xs' } onClick={ () => setRecipient(testRecipient) }>
-                  테스트 정보 채우기
-                </Button>
-              </FailureTestButtons>
+              <Button variant={ 'outline' } size={ 'xs' } alignSelf={ 'flex-start' } onClick={ () => setRecipient(testRecipient) }>
+                테스트 정보 채우기
+              </Button>
             ) }
           </Stack>
         </Grid>

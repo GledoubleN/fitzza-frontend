@@ -17,7 +17,6 @@ import { LuChevronRight } from 'react-icons/lu'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
-import { FailureTestButtons } from '../../mocks/FailureTestButtons.jsx'
 import { toFittingImageUrl } from './toFittingImageUrl.js'
 import { AuroraSpinner } from '../../components/AuroraSpinner.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
@@ -241,21 +240,6 @@ export const VtonGallery = ({ preview = false }) => {
           <Text color={ 'fg.error' }>가상 피팅 기록을 불러오지 못했어요.</Text>
           <Button variant={ 'outline' } size={ 'sm' } onClick={ () => load(fittings.length) }>다시 시도</Button>
         </Stack>
-      }
-
-      {
-        import.meta.env.DEV &&
-        <FailureTestButtons tests={ [
-          {
-            label: '빈 갤러리',
-            method: 'get',
-            path: '/vton',
-            respond: (HttpResponse) => HttpResponse.json({ items: [], totalCount: 0, hasNext: false }),
-            onReady: () => load(),
-          },
-          { label: '다음 목록 불러오기', method: 'get', path: '/vton' },
-          { label: '삭제 실패', method: 'delete', path: '/vton/:fittingId' },
-        ] }/>
       }
 
       <Dialog.Root
