@@ -36,6 +36,8 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
       <IconButton
         type={ 'button' }
         rounded={ 'full' }
+        variant={ 'subtle' }
+        colorPalette={ 'terracotta' }
         aria-label={ '대화 내역' }
         onClick={ () => navigate('/ai-stylist/history') }
       >
@@ -61,6 +63,7 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
       <IconButton
         type={ 'submit' }
         rounded={ 'full' }
+        colorPalette={ 'terracotta' }
         aria-label={ '추천받기' }
       >
         <LuArrowUp/>

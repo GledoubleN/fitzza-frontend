@@ -65,10 +65,10 @@ export const TabBar = () => {
                   paddingX={ 1 }
                   paddingY={ 1 }
                   borderRadius="full"
-                  color={ isActive ? 'fg' : 'fg.muted' }
-                  bg={ isActive ? 'gray.900/3' : 'transparent' }
+                  color={ isActive ? 'terracotta.fg' : 'fg.muted' }
+                  bg={ isActive ? 'terracotta.subtle' : 'transparent' }
                   borderWidth="1px"
-                  borderColor={ isActive ? 'border.subtle' : 'transparent' }
+                  borderColor={ isActive ? 'terracotta.emphasized' : 'transparent' }
                   backdropFilter={ isActive ? 'blur(1px)' : undefined }
                   transition="background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, transform 0.12s ease"
                   _active={ { transform: 'scale(0.9)' } }
