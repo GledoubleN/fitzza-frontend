@@ -3,11 +3,11 @@ import {
   Flex,
   Text,
   IconButton,
-  Center,
   Button,
   Grid,
   GridItem,
   Container,
+  Separator,
   Stack,
 } from '@chakra-ui/react'
 import { LuChevronLeft, LuHistory } from 'react-icons/lu'
@@ -152,22 +152,12 @@ export const WorldCupTournamentPage = ({
                 </Stack>
               </GridItem>
 
-              <GridItem zIndex={ 10 }>
-                <Center
-                  boxShadow="md"
-                  borderRadius="full"
-                  boxSize={ { base: 9, md: 12 } }
-                  bg="bg.panel"
-                  borderWidth="thin"
-                  borderColor="border.subtle"
-                >
-                  <Text
-                    textStyle={ { base: 'xs', md: 'sm' } }
-                    fontWeight="bold"
-                  >
-                    VS
-                  </Text>
-                </Center>
+              <GridItem alignSelf="stretch">
+                <Separator
+                  orientation="vertical"
+                  height="full"
+                  borderColor="fg.muted/30"
+                />
               </GridItem>
 
               <GridItem
