@@ -42,7 +42,7 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
     })
   })
 
-  const docking = useTransform(progress, (value) => transform(value, [0.05, 0.6], [0, 1], { ease: easeInOut }))
+  const docking = useTransform(progress, (value) => transform(value, [0.05, 0.9], [0, 1], { ease: easeInOut }))
   const [isDocked, setIsDocked] = useState(false)
   useMotionValueEvent(docking, 'change', (value) => setIsDocked(value > 0.9))
 
