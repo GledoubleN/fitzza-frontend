@@ -2,7 +2,7 @@ import { Grid, Stack, Text } from '@chakra-ui/react'
 import { ProductItem } from '../../components/ProductItem.jsx'
 
 const CATEGORY_NAMES = {
-  상의: 'Top',
+  상의: 'TOP',
   하의: 'Bottom',
   아우터: 'Outer',
   신발: 'Shoes',
@@ -36,7 +36,7 @@ export const ProductGrid = ({ products }) => {
             gap={ 4 }
           >
             <SectionTitle>
-              Today&apos;s Pick
+              Fit for you
               { category && ` - ${ CATEGORY_NAMES[category] ?? category }` }
             </SectionTitle>
             <Grid
