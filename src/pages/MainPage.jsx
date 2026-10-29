@@ -4,7 +4,6 @@ import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
-import { HttpStatusCode } from 'axios'
 import { useAuth } from '../contexts/AuthContext.js'
 import { HeroLighting } from './main/HeroLighting.jsx'
 import { MainHero } from './main/MainHero.jsx'
@@ -33,22 +32,22 @@ export const MainPage = () => {
     arrivalScrollY.set(Math.max(productGridTop - headerHeight - 16, 1))
   })
 
-  async function loadRecommendedProducts () {
+  useEffect(() => {
+    let cancelled = false
     const request = isSignedIn
       ? api.get('/recommendations/personalized', { params: { size: 50 } })
       : api.get('/products')
+    setProducts([])
 
-    request.then((response) => {
-      if (response.status !== HttpStatusCode.Ok) {
-        return
-      }
+    request
+      .then(({ data }) => {
+        if (!cancelled) setProducts(data.content ?? [])
+      })
+      .catch((error) => {
+        if (!cancelled) console.log(error)
+      })
 
-      setProducts(response.data.content)
-    }).catch(error => console.log(error))
-  }
-
-  useEffect(() => {
-    loadRecommendedProducts()
+    return () => { cancelled = true }
   }, [isSignedIn])
 
   return (
