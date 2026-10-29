@@ -43,7 +43,6 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
         toaster.create({
           title: '찜 목록에서 제외되었습니다.',
           type: 'success',
-          closable: true,
         })
 
         if (onWishlistChange) {
@@ -54,7 +53,6 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
         toaster.create({
           title: '찜 목록에 추가되었습니다.',
           type: 'success',
-          closable: true,
         })
       }
     } catch (error) {
@@ -63,7 +61,6 @@ export const ProductItem = ({ product, isLiked: initialIsLiked, onWishlistChange
       toaster.create({
         title: '요청을 처리하지 못했습니다.',
         type: 'error',
-        closable: true,
       })
     } finally {
       setIsLoading(false)

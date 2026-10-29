@@ -43,7 +43,7 @@ export const WorldCupHistoryPage = () => {
       setHasNextHistory(data.hasNext)
     }).catch(() => {
       if (controller.signal.aborted) return
-      toaster.create({ title: '우승 이력을 불러오지 못했습니다.', type: 'error', closable: true })
+      toaster.create({ title: '우승 이력을 불러오지 못했습니다.', type: 'error' })
     }).finally(() => {
       if (!controller.signal.aborted) setIsLoadingHistory(false)
     })
@@ -64,7 +64,7 @@ export const WorldCupHistoryPage = () => {
       setHistoryPage(page)
       setHasNextHistory(data.hasNext)
     } catch {
-      toaster.create({ title: '우승 이력을 불러오지 못했습니다.', type: 'error', closable: true })
+      toaster.create({ title: '우승 이력을 불러오지 못했습니다.', type: 'error' })
     } finally {
       setIsLoadingMoreHistory(false)
     }

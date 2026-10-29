@@ -65,7 +65,6 @@ export const WorldCupSetupPage = () => {
       toaster.create({
         title: `후보는 최대 ${ MAX_CANDIDATES }개까지만 선택할 수 있습니다.`,
         type: 'warning',
-        closable: true,
       })
       return
     }

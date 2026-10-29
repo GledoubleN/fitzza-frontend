@@ -51,7 +51,6 @@ export const WishlistPage = () => {
       toaster.create({
         title: '찜 목록을 불러오지 못했습니다.',
         type: 'error',
-        closable: true,
       })
     } finally {
       setIsLoading(false)
