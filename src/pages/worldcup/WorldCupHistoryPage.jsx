@@ -214,7 +214,6 @@ export const WorldCupHistoryPage = () => {
               { hasNextHistory && (
                 <Button
                   variant="outline"
-                  borderRadius="xl"
                   loading={ isLoadingMoreHistory }
                   onClick={ loadMore }
                 >

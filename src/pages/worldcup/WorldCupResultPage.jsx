@@ -70,7 +70,6 @@ export const WorldCupResultPage = ({
               <Button
                 size="sm"
                 variant="outline"
-                borderRadius="xl"
                 disabled={ isSaving }
                 onClick={ onOpenHistory }
               >
@@ -182,7 +181,6 @@ export const WorldCupResultPage = ({
                   <Button
                     size="lg"
                     variant="outline"
-                    borderRadius="xl"
                     disabled={ isSaving }
                     onClick={ onRestart }
                   >
@@ -196,7 +194,6 @@ export const WorldCupResultPage = ({
                     size="lg"
                     bg="fg"
                     color="bg"
-                    borderRadius="xl"
                     disabled={ !savedResult || isSaving }
                     _hover={ { opacity: 0.9 } }
                     onClick={ onShare }

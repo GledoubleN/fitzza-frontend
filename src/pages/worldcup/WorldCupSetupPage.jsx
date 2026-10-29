@@ -134,7 +134,6 @@ export const WorldCupSetupPage = () => {
           <Button
             size="sm"
             variant="outline"
-            borderRadius="xl"
             onClick={ () => navigate('/worldcup/history', { state: { fromWorldCup: true } }) }
           >
             <LuHistory/>
