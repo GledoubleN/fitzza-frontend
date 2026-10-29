@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom'
 import { Footer } from '../components/Footer.jsx'
 import { useEffect, useState } from 'react'
 import { api } from '../api/axios.js'
-import { HttpStatusCode } from 'axios'
 import { ProductItem } from '../components/ProductItem.jsx'
 import { SignInRequiredDialog } from '../components/SignInRequiredDialog.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
@@ -30,19 +29,21 @@ export const MainPage = () => {
     navigate('/ai-stylist', { state: { query } })
   }
 
-  async function loadRecommendedProducts () {
-    api.get('/products', {}).then((response) => {
-      if (response.status !== HttpStatusCode.Ok) {
-        return
-      }
-
-      setProducts(response.data.content)
-    }).catch(error => console.log(error))
-  }
-
   useEffect(() => {
-    loadRecommendedProducts()
-  }, [])
+    let cancelled = false
+    const endpoint = isSignedIn ? '/recommendations/personalized' : '/products'
+    setProducts([])
+
+    api.get(endpoint)
+      .then(({ data }) => {
+        if (!cancelled) setProducts(data.content ?? [])
+      })
+      .catch((error) => {
+        if (!cancelled) console.log(error)
+      })
+
+    return () => { cancelled = true }
+  }, [isSignedIn])
 
   return (
     <Grid

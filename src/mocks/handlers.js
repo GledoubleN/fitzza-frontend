@@ -197,6 +197,11 @@ export const handlers = [
   ),
 
   http.get(
+    `${ api.defaults.baseURL }/recommendations/personalized`,
+    () => HttpResponse.json(getProductsResponse),
+  ),
+
+  http.get(
     `${ api.defaults.baseURL }/recommendations/:requestId`,
     () => HttpResponse.json(getRecommendationsRequestIdResponse),
   ),
