@@ -175,7 +175,7 @@ export default function ProfilePage() {
 
             {!isEditing ? (
               <Box w="100%">
-                <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted">
+                <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.muted">
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit || '미입력 (건너뜀)'}</Text></Flex>
@@ -275,11 +275,11 @@ export default function ProfilePage() {
             )}
 
             <Grid templateColumns="repeat(2, 1fr)" gap={3}>
-              <Box p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted" textAlign="center">
+              <Box p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.muted" textAlign="center">
                 <Text textStyle="xs" color="fg.muted" mb={1}>적립금</Text>
                 <Text textStyle="md" fontWeight="600">7,777원</Text>
               </Box>
-              <Box p={3} borderWidth="thin" borderColor="border.subtle" borderRadius="xl" bg="bg.muted" textAlign="center">
+              <Box p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.muted" textAlign="center">
                 <Text textStyle="xs" color="fg.muted" mb={1}>쿠폰</Text>
                 <Text textStyle="md" fontWeight="600">11장</Text>
               </Box>
