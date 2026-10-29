@@ -11,7 +11,6 @@ import {
   IconButton,
   Image,
   Portal,
-  Spinner,
   Stack,
   Text,
   useFileUpload,
@@ -22,9 +21,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { Header } from '../../components/Header.jsx'
 import { ComboCard } from './ComboCard.jsx'
+import { FittingLoading } from './FittingLoading.jsx'
 import { MarkdownMessage } from './MarkdownMessage.jsx'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
+import { RecommendationLoading } from './RecommendationLoading.jsx'
 import { toFittingImageUrl } from '../profile/toFittingImageUrl.js'
 import { listenForPush } from './listenForPush.js'
 import { TabBar } from '../../components/TabBar.jsx'
@@ -443,10 +444,7 @@ export const AIStylistResultPage = () => {
             status === 'loading' &&
             <Card.Root { ...bubbleProps } alignSelf={ 'flex-start' }>
               <Card.Body gap={ 4 }>
-                <Flex align={ 'center' } gap={ 3 }>
-                  <Spinner size={ 'sm' }></Spinner>
-                  <Text>고객님에게 맞는 제품을 찾고 있어요</Text>
-                </Flex>
+                <RecommendationLoading/>
                 <NotificationHint></NotificationHint>
               </Card.Body>
             </Card.Root>
@@ -554,9 +552,7 @@ export const AIStylistResultPage = () => {
                       {
                         fitting.status === 'loading' &&
                         <>
-                          <Flex align={ 'center' } gap={ 3 }>
-                            <Spinner size={ 'sm' }></Spinner>
-                          </Flex>
+                          <FittingLoading/>
                           <NotificationHint></NotificationHint>
                         </>
                       }
