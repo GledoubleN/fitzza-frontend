@@ -6,7 +6,7 @@ import { useUserPreferences } from '../../hooks/useUserPreferences.js'
 
 export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMessage, onPrev, onSave, isLoading, isSaved, onConfirm }) {
   const styleSectionRef = useRef(null)
-  const { preferredFits, preferredStyles, errorMessage: preferencesError } = useUserPreferences()
+  const { preferredFits, preferredStyles } = useUserPreferences()
   const fitOptions = [{ label: '선택 안함', value: '' }, ...preferredFits]
   const styleOptions = [{ label: '선택 안함', value: '' }, ...preferredStyles]
 
@@ -25,7 +25,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
     <OnboardingStepLayout
       step={ 3 }
       onSkip={ onSkip }
-      errorMessage={ errorMessage || preferencesError }
+      errorMessage={ errorMessage }
       actions={ (
         <Grid templateColumns="minmax(0, 1fr) minmax(0, 3fr)" gap={ 4 }>
           <Button variant="outline" size="md" onClick={ onPrev }>

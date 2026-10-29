@@ -5,7 +5,6 @@ export const useUserPreferences = () => {
   const [preferences, setPreferences] = useState({
     preferredFits: [],
     preferredStyles: [],
-    errorMessage: '',
   })
 
   useEffect(() => {
@@ -20,17 +19,8 @@ export const useUserPreferences = () => {
       setPreferences({
         preferredFits: fits.data,
         preferredStyles: styles.data,
-        errorMessage: '',
       })
-    }).catch(() => {
-      if (controller.signal.aborted) return
-
-      setPreferences({
-        preferredFits: [],
-        preferredStyles: [],
-        errorMessage: '선호 핏과 스타일을 불러오지 못했어요.',
-      })
-    })
+    }).catch(() => {})
 
     return () => controller.abort()
   }, [])

@@ -30,7 +30,7 @@ import { useUserPreferences } from '../hooks/useUserPreferences.js'
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
-  const { preferredFits, preferredStyles, errorMessage: preferencesError } = useUserPreferences()
+  const { preferredFits, preferredStyles } = useUserPreferences()
   const fitOptions = [{ label: '선택 안함', value: '' }, ...preferredFits]
   const styleOptions = [{ label: '선택 안함', value: '' }, ...preferredStyles]
   const [isEditing, setIsEditing] = useState(false);
@@ -164,15 +164,6 @@ export default function ProfilePage() {
                 {profileData.email}
               </Text>
             </Flex>
-
-            { preferencesError && (
-              <Text
-                color="fg.error"
-                textStyle="sm"
-              >
-                { preferencesError }
-              </Text>
-            ) }
 
             {!isEditing ? (
               <Box w="100%">
