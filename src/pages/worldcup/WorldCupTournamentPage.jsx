@@ -3,14 +3,13 @@ import {
   Flex,
   Text,
   IconButton,
-  Button,
   Grid,
   GridItem,
   Container,
   Separator,
   Stack,
 } from '@chakra-ui/react'
-import { LuChevronLeft, LuHistory } from 'react-icons/lu'
+import { LuChevronLeft } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
@@ -23,7 +22,6 @@ export const WorldCupTournamentPage = ({
   currentIndex,
   matchList,
   isSaving,
-  onOpenHistory,
   onSelect,
 }) => {
   const navigate = useNavigate()
@@ -67,18 +65,6 @@ export const WorldCupTournamentPage = ({
                     이상형 월드컵 ({ roundTitle })
                   </Text>
                 </Flex>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  borderRadius="xl"
-                  onClick={ onOpenHistory }
-                >
-                  <Box
-                    as={ LuHistory }
-                    boxSize={ 4 }
-                  />
-                  우승 이력 보기
-                </Button>
               </Flex>
 
               <Text

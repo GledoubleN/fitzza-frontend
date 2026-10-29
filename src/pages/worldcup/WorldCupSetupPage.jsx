@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../../api/axios.js'
 import { HttpStatusCode } from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { LuCheck, LuChevronLeft } from 'react-icons/lu'
+import { LuCheck, LuChevronLeft, LuHistory } from 'react-icons/lu'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
 
@@ -109,23 +109,37 @@ export const WorldCupSetupPage = () => {
       >
         <Flex
           align="center"
-          gap={ 4 }
+          justify="space-between"
           mb={ 4 }
         >
+          <Flex
+            align="center"
+            gap={ 4 }
+          >
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label="찜 목록으로 돌아가기"
+              onClick={ () => navigate('/wishlist') }
+            >
+              <LuChevronLeft />
+            </Button>
+            <Text
+              textStyle="lg"
+              fontWeight="bold"
+            >
+              월드컵 후보 선택
+            </Text>
+          </Flex>
           <Button
-            variant="ghost"
             size="sm"
-            aria-label="찜 목록으로 돌아가기"
-            onClick={ () => navigate('/wishlist') }
+            variant="outline"
+            borderRadius="xl"
+            onClick={ () => navigate('/worldcup/history', { state: { fromWorldCup: true } }) }
           >
-            <LuChevronLeft />
+            <LuHistory/>
+            우승 이력 보기
           </Button>
-          <Text
-            textStyle="lg"
-            fontWeight="bold"
-          >
-            월드컵 후보 선택
-          </Text>
         </Flex>
 
         { isLoading && (
