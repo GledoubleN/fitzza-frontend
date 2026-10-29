@@ -27,6 +27,7 @@ import { VtonGallery } from './profile/VtonGallery.jsx';
 import { api } from '../api/axios.js';
 import { useAuth } from '../contexts/AuthContext.js'
 import { useUserPreferences } from '../hooks/useUserPreferences.js'
+import { findBodyMeasurementRangeError } from '../utils/bodyMeasurements.js'
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
@@ -98,6 +99,13 @@ export default function ProfilePage() {
   const handleSave = async (e) => {
     e.preventDefault();
     setMessage({ text: '', isError: false });
+
+    const rangeError = findBodyMeasurementRangeError('height', profileData.height)
+      || findBodyMeasurementRangeError('weight', profileData.weight)
+    if (rangeError) {
+      setMessage({ text: rangeError, isError: true });
+      return;
+    }
 
     const payload = {
       height: profileData.height ? Number(profileData.height) : null,
