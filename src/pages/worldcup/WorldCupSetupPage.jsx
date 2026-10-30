@@ -109,6 +109,8 @@ export const WorldCupSetupPage = () => {
         <Flex
           align="center"
           justify="space-between"
+          wrap="wrap"
+          gap={ 4 }
           mb={ 4 }
         >
           <Flex
@@ -130,14 +132,31 @@ export const WorldCupSetupPage = () => {
               월드컵 후보 선택
             </Text>
           </Flex>
-          <Button
-            size="sm"
-            minWidth="32"
-            variant="outline"
-            onClick={ () => navigate('/worldcup/history', { state: { fromWorldCup: true } }) }
+          <Flex
+            gap={ 2 }
+            marginStart="auto"
           >
-            우승 이력 보기
-          </Button>
+            <Button
+              size="sm"
+              minWidth="16"
+              variant="outline"
+              onClick={ () => navigate('/worldcup/history', { state: { fromWorldCup: true } }) }
+            >
+              이력 보기
+            </Button>
+            { !isLoading && !isError && products.length > 0 && (
+              <Button
+                size="sm"
+                minWidth="32"
+                bg="fg"
+                color="bg"
+                disabled={ selectedProductIds.length < 2 }
+                onClick={ handleStartWorldCup }
+              >
+                { selectedProductIds.length }/{ MAX_CANDIDATES } 개로 시작하기
+              </Button>
+            ) }
+          </Flex>
         </Flex>
 
         { isLoading && (
@@ -170,29 +189,6 @@ export const WorldCupSetupPage = () => {
 
         { !isLoading && !isError && products.length > 0 && (
           <>
-            <Flex
-              justify="space-between"
-              align="center"
-              mb={ 4 }
-            >
-              <Text
-                textStyle="sm"
-                color="fg.muted"
-              >
-                선택된 후보: { selectedProductIds.length } / { MAX_CANDIDATES }개
-              </Text>
-              <Button
-                size="sm"
-                minWidth="32"
-                bg="fg"
-                color="bg"
-                disabled={ selectedProductIds.length < 2 }
-                onClick={ handleStartWorldCup }
-              >
-                { selectedProductIds.length }개로 시작하기
-              </Button>
-            </Flex>
-
             <Grid
               templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
               gap={ 4 }
