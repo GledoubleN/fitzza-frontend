@@ -145,7 +145,6 @@ export const CommunityMainPage = () => {
 
       <FloatingButton
         aria-label="글쓰기"
-        color="primary.fg"
         onClick={ () => navigate('/community/write') }
       >
         <LuPencil/>
