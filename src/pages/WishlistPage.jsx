@@ -128,9 +128,9 @@ export const WishlistPage = () => {
 
       { products.length >= 2 && (
         <FloatingButton
-          bg="fg"
+          bg="terracotta.solid"
           bgImage="none"
-          color="bg"
+          color="terracotta.contrast"
           aria-label="이상형 월드컵 시작"
           onClick={ () => navigate('/worldcup/setup') }
         >
