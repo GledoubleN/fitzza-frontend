@@ -59,8 +59,11 @@ export const WorldCupTournamentPage = ({
                     />
                   </IconButton>
                   <Text
+                    as="button"
                     textStyle="lg"
                     fontWeight="bold"
+                    cursor="pointer"
+                    onClick={ () => navigate('/worldcup/setup') }
                   >
                     월드컵 ({ roundTitle })
                   </Text>

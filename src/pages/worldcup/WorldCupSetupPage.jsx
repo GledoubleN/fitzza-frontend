@@ -129,8 +129,11 @@ export const WorldCupSetupPage = () => {
               <LuChevronLeft />
             </Button>
             <Text
+              as="button"
               textStyle="lg"
               fontWeight="bold"
+              cursor="pointer"
+              onClick={ () => navigate('/wishlist') }
             >
               월드컵 후보 선택
             </Text>
