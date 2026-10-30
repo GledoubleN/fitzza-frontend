@@ -8,7 +8,7 @@ import { CheckoutPage } from './pages/CheckoutPage.jsx'
 import { CommunityMainPage } from "./pages/community/CommunityMainPage.jsx";
 import { CommunityWritePage } from "./pages/community/CommunityWritePage.jsx";
 import { CommunityArticlePage } from "./pages/community/CommunityArticlePage.jsx";
-import { ProductPage } from './pages/ProductPage.jsx'
+import { ProductPage } from './pages/product/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import { VtonGalleryPage } from './pages/profile/VtonGalleryPage.jsx'
 import WorldCupPage from './pages/worldcup/WorldCupPage.jsx'
@@ -25,11 +25,14 @@ import { AIStylistHistoryPage } from './pages/ai-stylist/AIStylistHistoryPage.js
 import { AIStylistFittingRedirectPage } from './pages/ai-stylist/AIStylistFittingRedirectPage.jsx'
 import OnboardingPage from './pages/OnboardingPage.jsx';
 import { RequireSignIn } from './components/RequireSignIn.jsx'
+import { DashboardPage } from './pages/DashboardPage.jsx'
+import { RequireAdmin } from './components/RequireAdmin.jsx'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/admin/dashboard" element={ <RequireAdmin><DashboardPage/></RequireAdmin> }/>
         <Route path="/" element={ <MainPage/> }/>
         <Route path="/shopping-cart" element={ <RequireSignIn><ShoppingCartPage/></RequireSignIn> }/>
         <Route path="/signin" element={ <SignInPage/> }/>
