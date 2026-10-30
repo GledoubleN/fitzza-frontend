@@ -21,6 +21,7 @@ import {
   LuMessageSquare,
   LuSettings,
   LuRotateCw,
+  LuChartColumn,
 } from 'react-icons/lu';
 import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
@@ -43,6 +44,7 @@ export default function ProfilePage() {
     weight: '',
     preferredFit: '',
     style: '',
+    isAdmin: false,
   });
   const [message, setMessage] = useState({ text: '', isError: false });
   const navigate = useNavigate();
@@ -63,6 +65,7 @@ export default function ProfilePage() {
           weight: response.data.weight ?? '',
           preferredFit: response.data.preferredFit || '',
           style: response.data.preferredStyles?.[0] || '',
+          isAdmin: response.data.role === 'ADMIN',
         }));
       }
     } catch (err) {
@@ -327,6 +330,13 @@ export default function ProfilePage() {
                 );
               })}
             </Grid>
+
+            {profileData.isAdmin && (
+              <Button variant="outline" size="sm" width="full" onClick={() => navigate('/admin/dashboard')}>
+                <LuChartColumn />
+                관리자 대시보드
+              </Button>
+            )}
           </Box>
 
           <Box
