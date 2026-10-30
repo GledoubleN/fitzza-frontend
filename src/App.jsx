@@ -8,7 +8,7 @@ import { CheckoutPage } from './pages/CheckoutPage.jsx'
 import { CommunityMainPage } from "./pages/community/CommunityMainPage.jsx";
 import { CommunityWritePage } from "./pages/community/CommunityWritePage.jsx";
 import { CommunityArticlePage } from "./pages/community/CommunityArticlePage.jsx";
-import { ProductPage } from './pages/ProductPage.jsx'
+import { ProductPage } from './pages/product/ProductPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import { VtonGalleryPage } from './pages/profile/VtonGalleryPage.jsx'
 import WorldCupPage from './pages/worldcup/WorldCupPage.jsx'
