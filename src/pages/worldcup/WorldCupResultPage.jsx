@@ -10,7 +10,7 @@ import {
   Container,
   Stack,
 } from '@chakra-ui/react'
-import { LuChevronLeft, LuRotateCcw, LuShare2, LuHistory } from 'react-icons/lu'
+import { LuChevronLeft, LuRotateCcw, LuShare2} from 'react-icons/lu'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
@@ -73,10 +73,6 @@ export const WorldCupResultPage = ({
                 disabled={ isSaving }
                 onClick={ onOpenHistory }
               >
-                <Box
-                  as={ LuHistory }
-                  boxSize={ 4 }
-                />
                 우승 이력 보기
               </Button>
             </Flex>
