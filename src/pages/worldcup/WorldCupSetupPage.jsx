@@ -148,8 +148,8 @@ export const WorldCupSetupPage = () => {
               <Button
                 size="sm"
                 minWidth="32"
-                bg="fg"
-                color="bg"
+                bg="terracotta.solid"
+                color="terracotta.contrast"
                 disabled={ selectedProductIds.length < 2 }
                 onClick={ handleStartWorldCup }
               >

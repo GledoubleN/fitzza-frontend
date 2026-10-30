@@ -192,8 +192,8 @@ export const WorldCupResultPage = ({
                   </Button>
                   <Button
                     size="lg"
-                    bg="fg"
-                    color="bg"
+                    bg="terracotta.solid"
+                    color="terracotta.contrast"
                     disabled={ !savedResult || isSaving }
                     _hover={ { opacity: 0.9 } }
                     onClick={ onShare }
