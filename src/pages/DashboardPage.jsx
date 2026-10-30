@@ -15,7 +15,6 @@ import {
 } from '@chakra-ui/react'
 import { LuChartColumn, LuMessageSquare, LuShoppingBag } from 'react-icons/lu'
 import { Header } from '../components/Header.jsx'
-import { Footer } from '../components/Footer.jsx'
 import { api } from '../api/axios.js'
 
 const periods = [
@@ -281,13 +280,6 @@ export const DashboardPage = () => {
             )) }
           </Tabs.Root>
         </Stack>
-      </Container>
-
-      <Container
-        as="footer"
-        maxWidth="5xl"
-      >
-        <Footer/>
       </Container>
     </Stack>
   )
