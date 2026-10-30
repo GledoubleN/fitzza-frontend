@@ -138,6 +138,24 @@ export const WorldCupTournamentPage = ({
                   >
                     { leftProduct?.productName || leftProduct?.name }
                   </Text>
+                  <Text
+                    textStyle="xs"
+                    color="fg.muted"
+                  >
+                    계절: { leftProduct?.seasonName || leftProduct?.seasonType || leftProduct?.season || '정보 없음' }
+                  </Text>
+                  <Text
+                    textStyle="xs"
+                    color="fg.muted"
+                  >
+                    핏: { leftProduct?.fitType || '정보 없음' }
+                  </Text>
+                  <Text
+                    textStyle="xs"
+                    color="fg.muted"
+                  >
+                    색상: { [...new Set(leftProduct?.options?.map(option => option.color).filter(Boolean) ?? [])].join(', ') || '정보 없음' }
+                  </Text>
                 </Stack>
               </GridItem>
 
@@ -199,6 +217,24 @@ export const WorldCupTournamentPage = ({
                     minHeight="2lh"
                   >
                     { rightProduct?.productName || rightProduct?.name }
+                  </Text>
+                  <Text
+                    textStyle="xs"
+                    color="fg.muted"
+                  >
+                    계절: { rightProduct?.seasonName || rightProduct?.seasonType || rightProduct?.season || '정보 없음' }
+                  </Text>
+                  <Text
+                    textStyle="xs"
+                    color="fg.muted"
+                  >
+                    핏: { rightProduct?.fitType || '정보 없음' }
+                  </Text>
+                  <Text
+                    textStyle="xs"
+                    color="fg.muted"
+                  >
+                    색상: { [...new Set(rightProduct?.options?.map(option => option.color).filter(Boolean) ?? [])].join(', ') || '정보 없음' }
                   </Text>
                 </Stack>
               </GridItem>
