@@ -18,6 +18,7 @@ import { LuX } from 'react-icons/lu'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
+import { TabBar } from '../components/TabBar.jsx'
 import { toaster } from '../components/ui/toaster.jsx'
 import { ProductImage } from '../components/ProductImage.jsx'
 import { api } from '../api/axios.js'
@@ -117,6 +118,7 @@ export const ShoppingCartPage = () => {
             </Stack>
           ) : <Spinner/> }
         </Container>
+        <TabBar/>
       </Stack>
     )
   }
@@ -280,7 +282,7 @@ export const ShoppingCartPage = () => {
               )) }
             </Stack>
 
-            <Stack gap={ 4 } position={ 'sticky' } top={ 4 } bottom={ 0 } paddingTop={ { base: 4, lg: 0 } } paddingBottom={ 4 } bg={ 'bg' }>
+            <Stack gap={ 4 } position={ 'sticky' } top={ 4 } bottom={ 20 } paddingTop={ { base: 4, lg: 0 } } paddingBottom={ 4 } bg={ 'bg' }>
               <Card.Root>
                 <Card.Body>
                   <Stack gap={ 4 }>
@@ -326,6 +328,8 @@ export const ShoppingCartPage = () => {
           </Grid>
         ) }
       </Container>
+
+      <TabBar/>
 
       { editingItem && (
         <CartOptionDialog item={ editingItem } onClose={ () => setEditingItem(null) } onSubmit={ changeOption }/>

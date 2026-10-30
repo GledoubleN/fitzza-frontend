@@ -23,6 +23,7 @@ const sortCollection = createListCollection({
   items: [
     { label: '최신순', value: 'TIME_DESC' },
     { label: '낮은 가격순', value: 'PRICE_ASC' },
+    { label: '높은 가격순', value: 'PRICE_DESC' },
   ],
 })
 

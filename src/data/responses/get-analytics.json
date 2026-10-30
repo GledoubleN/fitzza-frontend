@@ -1,0 +1,392 @@
+{
+  "daily": {
+    "label": "일간",
+    "startDate": "2026-10-23",
+    "endDate": "2026-10-23",
+    "usage": [
+      {
+        "label": "00시",
+        "input": 7200,
+        "output": 4800
+      },
+      {
+        "label": "04시",
+        "input": 4800,
+        "output": 3200
+      },
+      {
+        "label": "08시",
+        "input": 20400,
+        "output": 13600
+      },
+      {
+        "label": "12시",
+        "input": 33600,
+        "output": 22400
+      },
+      {
+        "label": "16시",
+        "input": 28800,
+        "output": 19200
+      },
+      {
+        "label": "20시",
+        "input": 39600,
+        "output": 26400
+      }
+    ],
+    "keywords": [
+      {
+        "name": "출근룩",
+        "count": 128
+      },
+      {
+        "name": "미니멀",
+        "count": 96
+      },
+      {
+        "name": "캐주얼",
+        "count": 84
+      },
+      {
+        "name": "가을 코디",
+        "count": 72
+      },
+      {
+        "name": "데이트룩",
+        "count": 61
+      },
+      {
+        "name": "오버핏",
+        "count": 48
+      }
+    ],
+    "products": [
+      {
+        "name": "Classic Monogram T-Shirt",
+        "brand": "Celine",
+        "count": 92
+      },
+      {
+        "name": "Straight Leg Denim Pants",
+        "brand": "Loewe",
+        "count": 78
+      },
+      {
+        "name": "Embroidered Logo Hoodie",
+        "brand": "Balenciaga",
+        "count": 64
+      },
+      {
+        "name": "B32 Sneaker in Mesh",
+        "brand": "Dior",
+        "count": 53
+      },
+      {
+        "name": "캐시미어 니트",
+        "brand": "Fitzza",
+        "count": 41
+      }
+    ]
+  },
+  "weekly": {
+    "label": "주간",
+    "startDate": "2026-10-19",
+    "endDate": "2026-10-25",
+    "usage": [
+      {
+        "label": "월",
+        "input": 108000,
+        "output": 72000
+      },
+      {
+        "label": "화",
+        "input": 129000,
+        "output": 86000
+      },
+      {
+        "label": "수",
+        "input": 115200,
+        "output": 76800
+      },
+      {
+        "label": "목",
+        "input": 148800,
+        "output": 99200
+      },
+      {
+        "label": "금",
+        "input": 134400,
+        "output": 89600
+      },
+      {
+        "label": "토",
+        "input": 171600,
+        "output": 114400
+      },
+      {
+        "label": "일",
+        "input": 153000,
+        "output": 102000
+      }
+    ],
+    "keywords": [
+      {
+        "name": "캐주얼",
+        "count": 820
+      },
+      {
+        "name": "출근룩",
+        "count": 742
+      },
+      {
+        "name": "미니멀",
+        "count": 610
+      },
+      {
+        "name": "가을 코디",
+        "count": 534
+      },
+      {
+        "name": "데이트룩",
+        "count": 423
+      },
+      {
+        "name": "오버핏",
+        "count": 318
+      }
+    ],
+    "products": [
+      {
+        "name": "Straight Leg Denim Pants",
+        "brand": "Loewe",
+        "count": 620
+      },
+      {
+        "name": "Classic Monogram T-Shirt",
+        "brand": "Celine",
+        "count": 568
+      },
+      {
+        "name": "Embroidered Logo Hoodie",
+        "brand": "Balenciaga",
+        "count": 412
+      },
+      {
+        "name": "B32 Sneaker in Mesh",
+        "brand": "Dior",
+        "count": 356
+      },
+      {
+        "name": "캐시미어 니트",
+        "brand": "Fitzza",
+        "count": 284
+      }
+    ]
+  },
+  "monthly": {
+    "label": "월간",
+    "startDate": "2026-10-01",
+    "endDate": "2026-10-31",
+    "usage": [
+      {
+        "label": "1주",
+        "input": 690000,
+        "output": 460000
+      },
+      {
+        "label": "2주",
+        "input": 828000,
+        "output": 552000
+      },
+      {
+        "label": "3주",
+        "input": 960000,
+        "output": 640000
+      },
+      {
+        "label": "4주",
+        "input": 852000,
+        "output": 568000
+      },
+      {
+        "label": "5주",
+        "input": 588000,
+        "output": 392000
+      }
+    ],
+    "keywords": [
+      {
+        "name": "가을 코디",
+        "count": 3520
+      },
+      {
+        "name": "출근룩",
+        "count": 3240
+      },
+      {
+        "name": "미니멀",
+        "count": 2860
+      },
+      {
+        "name": "캐주얼",
+        "count": 2510
+      },
+      {
+        "name": "데이트룩",
+        "count": 1890
+      },
+      {
+        "name": "오버핏",
+        "count": 1460
+      }
+    ],
+    "products": [
+      {
+        "name": "Embroidered Logo Hoodie",
+        "brand": "Balenciaga",
+        "count": 2680
+      },
+      {
+        "name": "Classic Monogram T-Shirt",
+        "brand": "Celine",
+        "count": 2450
+      },
+      {
+        "name": "Straight Leg Denim Pants",
+        "brand": "Loewe",
+        "count": 2180
+      },
+      {
+        "name": "B32 Sneaker in Mesh",
+        "brand": "Dior",
+        "count": 1640
+      },
+      {
+        "name": "캐시미어 니트",
+        "brand": "Fitzza",
+        "count": 1320
+      }
+    ]
+  },
+  "yearly": {
+    "label": "연간",
+    "startDate": "2026-01-01",
+    "endDate": "2026-12-31",
+    "usage": [
+      {
+        "label": "1월",
+        "input": 1920000,
+        "output": 1280000
+      },
+      {
+        "label": "2월",
+        "input": 2160000,
+        "output": 1440000
+      },
+      {
+        "label": "3월",
+        "input": 2460000,
+        "output": 1640000
+      },
+      {
+        "label": "4월",
+        "input": 2340000,
+        "output": 1560000
+      },
+      {
+        "label": "5월",
+        "input": 2760000,
+        "output": 1840000
+      },
+      {
+        "label": "6월",
+        "input": 3120000,
+        "output": 2080000
+      },
+      {
+        "label": "7월",
+        "input": 2880000,
+        "output": 1920000
+      },
+      {
+        "label": "8월",
+        "input": 3360000,
+        "output": 2240000
+      },
+      {
+        "label": "9월",
+        "input": 3660000,
+        "output": 2440000
+      },
+      {
+        "label": "10월",
+        "input": 3918000,
+        "output": 2612000
+      },
+      {
+        "label": "11월",
+        "input": 3540000,
+        "output": 2360000
+      },
+      {
+        "label": "12월",
+        "input": 4080000,
+        "output": 2720000
+      }
+    ],
+    "keywords": [
+      {
+        "name": "미니멀",
+        "count": 41200
+      },
+      {
+        "name": "출근룩",
+        "count": 36400
+      },
+      {
+        "name": "캐주얼",
+        "count": 32500
+      },
+      {
+        "name": "가을 코디",
+        "count": 28700
+      },
+      {
+        "name": "데이트룩",
+        "count": 21800
+      },
+      {
+        "name": "오버핏",
+        "count": 18400
+      }
+    ],
+    "products": [
+      {
+        "name": "Straight Leg Denim Pants",
+        "brand": "Loewe",
+        "count": 31200
+      },
+      {
+        "name": "Classic Monogram T-Shirt",
+        "brand": "Celine",
+        "count": 28400
+      },
+      {
+        "name": "Embroidered Logo Hoodie",
+        "brand": "Balenciaga",
+        "count": 24600
+      },
+      {
+        "name": "B32 Sneaker in Mesh",
+        "brand": "Dior",
+        "count": 19800
+      },
+      {
+        "name": "캐시미어 니트",
+        "brand": "Fitzza",
+        "count": 16200
+      }
+    ]
+  }
+}
