@@ -60,13 +60,16 @@ export const WorldCupSetupPage = () => {
     }
   }
 
+  const isOverLimit = selectedProductIds.length > MAX_CANDIDATES
+
   const handleToggleSelect = (productId) => {
-    if (!selectedProductIds.includes(productId) && selectedProductIds.length >= MAX_CANDIDATES) {
+    const isSelecting = !selectedProductIds.includes(productId)
+
+    if (isSelecting && selectedProductIds.length === MAX_CANDIDATES) {
       toaster.create({
-        title: `후보는 최대 ${ MAX_CANDIDATES }개까지만 선택할 수 있습니다.`,
+        title: `한 번에 진행할 수 있는 최대 상품은 ${ MAX_CANDIDATES }개 입니다.`,
         type: 'warning',
       })
-      return
     }
 
     setSelectedProductIds((prev) =>
@@ -148,9 +151,11 @@ export const WorldCupSetupPage = () => {
               <Button
                 size="sm"
                 minWidth="32"
-                bg="terracotta.solid"
-                color="terracotta.contrast"
-                disabled={ selectedProductIds.length < 2 }
+                bg={ isOverLimit ? 'terracotta.subtle' : 'terracotta.solid' }
+                color={ isOverLimit ? 'fg.error' : 'terracotta.contrast' }
+                borderColor={ isOverLimit ? 'fg.error' : 'terracotta.solid' }
+                disabled={ selectedProductIds.length < 2 || isOverLimit }
+                _disabled={ isOverLimit ? { opacity: 1 } : undefined }
                 onClick={ handleStartWorldCup }
               >
                 { selectedProductIds.length }/{ MAX_CANDIDATES } 개로 시작하기
