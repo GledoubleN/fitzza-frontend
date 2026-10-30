@@ -213,6 +213,7 @@ export const WorldCupSetupPage = () => {
                       className="group"
                       aria-label={ `${ product.brandName } ${ name }` }
                       aria-pressed={ isSelected }
+                      position="relative"
                       display="flex"
                       flexDirection="column"
                       gap={ 3 }
@@ -222,7 +223,7 @@ export const WorldCupSetupPage = () => {
                       cursor="pointer"
                       bg="bg.panel"
                       borderWidth="thin"
-                      borderColor={ isSelected ? 'fg' : 'border.subtle' }
+                      borderColor={ isSelected ? 'terracotta.solid' : 'border.subtle' }
                       boxShadow="sm"
                       transition="box-shadow 0.25s ease, border-color 0.25s ease"
                       _hover={ { boxShadow: 'lg' } }
@@ -246,26 +247,16 @@ export const WorldCupSetupPage = () => {
                           _groupHover={ { transform: 'scale(1.05)' } }
                         />
 
-                        { isSelected && (
-                          <Box
-                            as="span"
-                            display="block"
-                            position="absolute"
-                            inset={ 0 }
-                            bg="bg.emphasized"
-                            opacity={ 0.5 }
-                          />
-                        ) }
-
                         <Flex
                           as="span"
                           position="absolute"
                           top={ 2 }
                           right={ 2 }
+                          zIndex={ 1 }
                           boxSize={ 6 }
                           borderRadius="full"
-                          bg={ isSelected ? 'fg' : 'bg' }
-                          color={ isSelected ? 'bg' : 'fg.muted' }
+                          bg={ isSelected ? 'terracotta.solid' : 'bg' }
+                          color={ isSelected ? 'terracotta.contrast' : 'fg.muted' }
                           align="center"
                           justify="center"
                           boxShadow="sm"
@@ -312,6 +303,16 @@ export const WorldCupSetupPage = () => {
                           { product.price ? `${ product.price.toLocaleString() } 원` : '' }
                         </Text>
                       </Stack>
+
+                      { isSelected && (
+                        <Box
+                          as="span"
+                          position="absolute"
+                          inset={ 0 }
+                          bg="terracotta.50/30"
+                          pointerEvents="none"
+                        />
+                      ) }
                     </Box>
                   )
                 })
