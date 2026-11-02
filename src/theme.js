@@ -96,6 +96,19 @@ const config = defineConfig({
 
     semanticTokens: {
       colors: {
+        wallpaper: {
+          value: {
+            base: 'color-mix(in srgb, {colors.terracotta.950} 4%, {colors.white})',
+            _dark: 'color-mix(in srgb, {colors.terracotta.100} 4%, {colors.black})',
+          },
+        },
+
+        bg: {
+          DEFAULT: {
+            value: { _light: '{colors.wallpaper}', _dark: '{colors.wallpaper}' },
+          },
+        },
+
         primary: {
           solid: { value: '{colors.primary.500}' },
           contrast: { value: '#ffffff' },
