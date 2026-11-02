@@ -310,7 +310,6 @@ export default function ProfilePage() {
                     variant="outline"
                     borderWidth="thin"
                     borderColor="border.subtle"
-                    borderRadius="xl"
                     height="auto"
                     py={3}
                     px={1}
