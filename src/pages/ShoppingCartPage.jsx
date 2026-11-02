@@ -15,6 +15,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { LuX } from 'react-icons/lu'
+import { formatSize } from '../utils/formatSize.js'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
@@ -226,7 +227,7 @@ export const ShoppingCartPage = () => {
                                 </Text>
                                 { (item.color || item.size) && (
                                   <Text textStyle={ 'sm' } color={ 'fg.muted' }>
-                                    { [item.color, item.size].filter(Boolean).join(' / ') }
+                                    { [item.color, formatSize(item.size)].filter(Boolean).join(' / ') }
                                   </Text>
                                 ) }
                                 { item.available ? (

@@ -1,5 +1,6 @@
 import { DataList, Flex, Heading, Icon, Image, Stack, Table, Text } from '@chakra-ui/react'
 import { LuInfo } from 'react-icons/lu'
+import { formatSize } from '../../utils/formatSize.js'
 import { ProductSizeRecommendation } from './ProductSizeRecommendation.jsx'
 
 const NOTICES = [
@@ -10,7 +11,6 @@ const NOTICES = [
 ]
 
 const unique = (values) => [...new Set(values.filter(Boolean))]
-const formatSize = (size) => /^0\d+$/.test(size) ? String(Number(size)) : size
 
 const TOP_PARTS = ['총장', '어깨너비', '가슴단면', '소매길이', '밑단단면', '소매부리단면', '암홀']
 const RAGLAN_PARTS = ['총장', '가슴단면', '소매부리단면', '전체소매길이', '밑단단면', '암홀']
@@ -67,7 +67,7 @@ export const ProductSizeTab = ({ product }) => {
     { label: '소재', value: product.material },
     { label: '핏', value: product.fitType },
     { label: '색상', value: unique(options.map((option) => option.color)).join(', ') },
-    { label: '사이즈', value: unique(options.map((option) => option.size)).join(', ') },
+    { label: '사이즈', value: unique(options.map((option) => formatSize(option.size))).join(', ') },
   ]
 
   return (
