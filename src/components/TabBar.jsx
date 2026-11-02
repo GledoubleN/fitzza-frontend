@@ -45,9 +45,11 @@ export const TabBar = () => {
         bottom="calc(env(safe-area-inset-bottom, 0px) + {spacing.3})"
         paddingX={ 4 }
         zIndex="docked"
+        pointerEvents="none"
       >
         <Container
           as="nav"
+          pointerEvents="auto"
           paddingX={ 0 }
           maxWidth="xl"
           layerStyle="glass"
