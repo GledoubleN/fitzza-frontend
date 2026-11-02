@@ -269,6 +269,16 @@ export const SignUpPage = () => {
             가입하기
           </Button>
 
+          <Button
+            variant="plain"
+            size="sm"
+            width="full"
+            onClick={() => navigate('/signin')}
+            color="fg.muted"
+          >
+            이미 계정이 있으신가요?
+          </Button>
+
         </Stack>
       </Container>
 
