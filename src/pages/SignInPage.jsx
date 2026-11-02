@@ -13,8 +13,10 @@ import {
   Stack,
 } from '@chakra-ui/react'
 import { LuMail, LuLockKeyhole } from 'react-icons/lu'
+import { useMotionValue } from 'motion/react'
 import { api } from '../api/axios.js'
 import { Header } from '../components/Header.jsx'
+import { HeroLighting } from './main/HeroLighting.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
 import { requestPushPermission } from '../services/pushNotifications.js'
 
@@ -26,6 +28,7 @@ export const SignInPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { setAccessToken } = useAuth()
+  const lightingProgress = useMotionValue(0)
 
   const changeHandler = async (e) => {
     e.preventDefault()
@@ -55,8 +58,8 @@ export const SignInPage = () => {
       minHeight="100vh"
       gap={ 4 }
       paddingY={ 4 }
-      bg="bg"
     >
+      <HeroLighting progress={ lightingProgress }/>
       <Header/>
 
       <Container maxWidth="md" display={ 'flex' } alignItems={ 'center' }>

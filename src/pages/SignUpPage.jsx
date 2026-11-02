@@ -14,8 +14,10 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import { LuMail, LuUser, LuLockKeyhole } from "react-icons/lu";
+import { useMotionValue } from 'motion/react';
 import { useNavigate } from "react-router-dom";
 import { Header } from '../components/Header.jsx';
+import { HeroLighting } from './main/HeroLighting.jsx';
 import { api } from "../api/axios.js";
 
 export const SignUpPage = () => {
@@ -34,6 +36,7 @@ export const SignUpPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const lightingProgress = useMotionValue(0);
   const navigate = useNavigate();
 
   const validateField = (name, value) => {
@@ -161,8 +164,8 @@ export const SignUpPage = () => {
       minHeight="100vh"
       gap={ 4 }
       paddingY={ 4 }
-      bg="bg"
     >
+      <HeroLighting progress={ lightingProgress }/>
       <Header />
 
       <Container maxWidth="md" display={ 'flex' } alignItems={ 'center' }>
