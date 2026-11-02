@@ -53,8 +53,10 @@ export const TabBar = () => {
           paddingX={ 0 }
           maxWidth="xl"
           layerStyle="glass"
+          gradientFrom={ { base: 'terracotta.subtle/80', _dark: 'bg/70' } }
+          gradientTo={ { base: 'terracotta.subtle/60', _dark: 'bg/40' } }
           borderWidth="thin"
-          borderColor="fg/10"
+          borderColor={ { base: 'terracotta.muted', _dark: 'fg/10' } }
           borderRadius="full"
           boxShadow="md"
           transition="transform 0.2s ease"
@@ -74,10 +76,10 @@ export const TabBar = () => {
                     paddingX={ 1 }
                     paddingY={ 1 }
                     borderRadius="full"
-                    color={ isActive ? 'terracotta.contrast' : 'fg.muted' }
+                    color={ isActive ? 'terracotta.contrast' : { base: 'terracotta.950/60', _dark: 'terracotta.100/60' } }
                     bg={ isActive ? 'terracotta.solid/70' : 'transparent' }
-                    borderColor={ isActive ? 'fg/10' : 'transparent' }
-                    boxShadow={ isActive ? 'md' : undefined }
+                    borderColor="transparent"
+                    boxShadow={ isActive ? '0 {spacing.1} {spacing.3} {colors.terracotta.solid/25}' : undefined }
                     backdropFilter={ isActive ? 'auto' : undefined }
                     backdropBlur={ isActive ? 'sm' : undefined }
                     bgImage="none"
