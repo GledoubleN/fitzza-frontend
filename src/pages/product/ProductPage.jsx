@@ -110,8 +110,8 @@ export const ProductPage = () => {
           <GridItem minWidth={ 0 }>
             <ProductImage
               width={ '100%' }
-              aspectRatio={ 'square' }
-              objectFit={ 'contain' }
+              aspectRatio={ '5/6' }
+              objectFit={ 'cover' }
               rounded={ 'l3' }
               bg={ 'bg.muted' }
               src={ product.thumbnailUrl || product.images?.[0] }
