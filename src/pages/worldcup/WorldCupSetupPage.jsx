@@ -154,7 +154,7 @@ export const WorldCupSetupPage = () => {
               <Button
                 size="sm"
                 minWidth="32"
-                bg={ isOverLimit ? 'terracotta.subtle' : 'terracotta.solid' }
+                bg={ isOverLimit ? 'terracotta.subtle' : 'terracotta.solid/70' }
                 color={ isOverLimit ? 'fg.error' : 'terracotta.contrast' }
                 borderColor={ isOverLimit ? 'fg.error' : 'terracotta.solid' }
                 disabled={ selectedProductIds.length < 2 || isOverLimit }
@@ -258,7 +258,7 @@ export const WorldCupSetupPage = () => {
                           zIndex={ 1 }
                           boxSize={ 6 }
                           borderRadius="full"
-                          bg={ isSelected ? 'terracotta.solid' : 'bg' }
+                          bg={ isSelected ? 'terracotta.solid/70' : 'bg' }
                           color={ isSelected ? 'terracotta.contrast' : 'fg.muted' }
                           align="center"
                           justify="center"
@@ -312,7 +312,7 @@ export const WorldCupSetupPage = () => {
                           as="span"
                           position="absolute"
                           inset={ 0 }
-                          bg="terracotta.50/30"
+                          bg="terracotta.subtle/30"
                           pointerEvents="none"
                         />
                       ) }
