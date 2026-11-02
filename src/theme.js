@@ -107,6 +107,9 @@ const config = defineConfig({
           DEFAULT: {
             value: { _light: '{colors.wallpaper}', _dark: '{colors.wallpaper}' },
           },
+          panel: {
+            value: { _light: '{colors.white}', _dark: '{colors.gray.900}' },
+          },
         },
 
         primary: {
