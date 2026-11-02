@@ -164,7 +164,7 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
               </Dialog.Body>
               <Dialog.Footer>
                 <Button variant="outline" flex="1" onClick={ () => setCloseDialogOpen(false) }>취소</Button>
-                <Button flex="1" loading={ closing } onClick={ closePoll }>종료하기</Button>
+                <Button bg="terracotta.solid/70" color="terracotta.contrast" flex="1" loading={ closing } onClick={ closePoll }>종료하기</Button>
               </Dialog.Footer>
             </Dialog.Content>
           </Dialog.Positioner>

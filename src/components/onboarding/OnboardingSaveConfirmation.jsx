@@ -23,6 +23,8 @@ export function OnboardingSaveConfirmation ({ onConfirm }) {
             </Dialog.Body>
             <Dialog.Footer>
               <Button
+                bg="terracotta.solid/70"
+                color="terracotta.contrast"
                 width="full"
                 size="md"
                 onClick={ onConfirm }

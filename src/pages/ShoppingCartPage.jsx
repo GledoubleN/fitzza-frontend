@@ -349,7 +349,7 @@ export const ShoppingCartPage = () => {
               </Dialog.Header>
               <Dialog.Footer>
                 <Button variant={ 'outline' } flex={ 1 } onClick={ () => setFailedDeleteIds([]) }>닫기</Button>
-                <Button flex={ 1 } onClick={ retryFailedDelete }>다시 시도</Button>
+                <Button bg="terracotta.solid/70" color="terracotta.contrast" flex={ 1 } onClick={ retryFailedDelete }>다시 시도</Button>
               </Dialog.Footer>
             </Dialog.Content>
           </Dialog.Positioner>

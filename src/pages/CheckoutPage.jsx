@@ -371,7 +371,7 @@ export const CheckoutPage = () => {
               </Dialog.Body>
               <Dialog.Footer>
                 { orderFailure?.type === 'validation' ? (
-                  <Button flex={ 1 } onClick={ () => {
+                  <Button bg="terracotta.solid/70" color="terracotta.contrast" flex={ 1 } onClick={ () => {
                     scrollToShipping.current = true
                     setOrderFailure(null)
                   } }>확인</Button>
@@ -381,7 +381,7 @@ export const CheckoutPage = () => {
                     { orderFailure?.type === 'cart' ? (
                       <Button flex={ 1 } onClick={ () => navigate('/shopping-cart') }>장바구니로 돌아가기</Button>
                     ) : (
-                      <Button flex={ 1 } onClick={ () => {
+                      <Button bg="terracotta.solid/70" color="terracotta.contrast" flex={ 1 } onClick={ () => {
                         setOrderFailure(null)
                         placeOrder()
                       } }>다시 시도</Button>

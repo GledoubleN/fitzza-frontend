@@ -308,7 +308,7 @@ export const SignUpPage = () => {
                 <Text>회원가입이 완료되었습니다. 로그인해주세요.</Text>
               </Dialog.Body>
               <Dialog.Footer>
-                <Button onClick={handleDialogClose} width="full">
+                <Button bg="terracotta.solid/70" color="terracotta.contrast" onClick={handleDialogClose} width="full">
                   확인
                 </Button>
               </Dialog.Footer>

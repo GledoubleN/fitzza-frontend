@@ -642,7 +642,7 @@ export const AIStylistResultPage = () => {
                 <Dialog.ActionTrigger asChild>
                   <Button variant={ 'outline' }>취소</Button>
                 </Dialog.ActionTrigger>
-                <Button onClick={ startTryOn }>{ photo ? '이 사진으로 입어보기' : '사진 없이 입어보기' }</Button>
+                <Button bg="terracotta.solid/70" color="terracotta.contrast" onClick={ startTryOn }>{ photo ? '이 사진으로 입어보기' : '사진 없이 입어보기' }</Button>
               </Dialog.Footer>
               <Dialog.CloseTrigger asChild>
                 <CloseButton size={ 'sm' }/>
