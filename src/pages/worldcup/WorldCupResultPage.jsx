@@ -15,7 +15,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
-import { getSeasonLabel } from '../../utils/seasonLabel.js'
+import { WorldCupProductDetails } from './WorldCupProductDetails.jsx'
 
 export const WorldCupResultPage = ({
   winnerProduct,
@@ -151,19 +151,7 @@ export const WorldCupResultPage = ({
                   >
                     { winnerProduct.price ? `${ winnerProduct.price.toLocaleString() } 원` : '가격 정보 없음' }
                   </Text>
-                  <Stack
-                    gap={ 1 }
-                    textStyle="sm"
-                    color="fg.muted"
-                  >
-                    <Text>
-                      계절: { getSeasonLabel(winnerProduct.season) }
-                    </Text>
-                    <Text>핏: { winnerProduct.fitType || '정보 없음' }</Text>
-                    <Text>
-                      색상: { [...new Set(winnerProduct.options?.map(option => option.color).filter(Boolean) ?? [])].join(', ') || '정보 없음' }
-                    </Text>
-                  </Stack>
+                  <WorldCupProductDetails product={ winnerProduct }/>
                 </Stack>
 
                 { isSaveFailed && !savedResult && (

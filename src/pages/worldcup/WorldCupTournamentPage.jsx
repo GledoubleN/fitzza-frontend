@@ -8,13 +8,14 @@ import {
   Container,
   Separator,
   Stack,
+  Text,
 } from '@chakra-ui/react'
 import { LuChevronLeft } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
-import { getSeasonLabel } from '../../utils/seasonLabel.js'
+import { WorldCupProductDetails } from './WorldCupProductDetails.jsx'
 
 export const WorldCupTournamentPage = ({
   leftProduct,
@@ -139,24 +140,7 @@ export const WorldCupTournamentPage = ({
                   >
                     { leftProduct?.productName || leftProduct?.name }
                   </Text>
-                  <Text
-                    textStyle="xs"
-                    color="fg.muted"
-                  >
-                    계절: { getSeasonLabel(leftProduct?.season) }
-                  </Text>
-                  <Text
-                    textStyle="xs"
-                    color="fg.muted"
-                  >
-                    핏: { leftProduct?.fitType || '정보 없음' }
-                  </Text>
-                  <Text
-                    textStyle="xs"
-                    color="fg.muted"
-                  >
-                    색상: { [...new Set(leftProduct?.options?.map(option => option.color).filter(Boolean) ?? [])].join(', ') || '정보 없음' }
-                  </Text>
+                  <WorldCupProductDetails product={ leftProduct }/>
                 </Stack>
               </GridItem>
 
@@ -219,24 +203,7 @@ export const WorldCupTournamentPage = ({
                   >
                     { rightProduct?.productName || rightProduct?.name }
                   </Text>
-                  <Text
-                    textStyle="xs"
-                    color="fg.muted"
-                  >
-                    계절: { getSeasonLabel(rightProduct?.season) }
-                  </Text>
-                  <Text
-                    textStyle="xs"
-                    color="fg.muted"
-                  >
-                    핏: { rightProduct?.fitType || '정보 없음' }
-                  </Text>
-                  <Text
-                    textStyle="xs"
-                    color="fg.muted"
-                  >
-                    색상: { [...new Set(rightProduct?.options?.map(option => option.color).filter(Boolean) ?? [])].join(', ') || '정보 없음' }
-                  </Text>
+                  <WorldCupProductDetails product={ rightProduct }/>
                 </Stack>
               </GridItem>
             </Grid>
