@@ -147,9 +147,9 @@ export default function ProfilePage() {
           <Box
             borderWidth="thin"
             borderColor="border.subtle"
-            borderRadius="2xl"
             p={6}
             bg="bg.panel"
+            boxShadow="md"
             display="flex"
             flexDirection="column"
             gap={4}
@@ -179,13 +179,13 @@ export default function ProfilePage() {
 
             {!isEditing ? (
               <Box w="100%">
-                <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.panel" boxShadow="xs">
+                <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" layerStyle="glass" boxShadow="xs">
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit || '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style || '미입력 (건너뜀)'}</Text></Flex>
                 </Stack>
-                <Button mt={3} width="full" variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                <Button mt={3} width="full" variant="outline" size="sm" layerStyle="glass" boxShadow="xs" onClick={() => setIsEditing(true)}>
                   신체 정보 및 스타일 수정
                 </Button>
               </Box>
@@ -286,11 +286,11 @@ export default function ProfilePage() {
             )}
 
             <Grid templateColumns="repeat(2, 1fr)" gap={3}>
-              <Box p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.panel" boxShadow="xs" textAlign="center">
+              <Box p={3} borderWidth="thin" borderColor="border.subtle" layerStyle="glass" boxShadow="xs" textAlign="center">
                 <Text textStyle="xs" color="fg.muted" mb={1}>적립금</Text>
                 <Text textStyle="md" fontWeight="600">7,777원</Text>
               </Box>
-              <Box p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.panel" boxShadow="xs" textAlign="center">
+              <Box p={3} borderWidth="thin" borderColor="border.subtle" layerStyle="glass" boxShadow="xs" textAlign="center">
                 <Text textStyle="xs" color="fg.muted" mb={1}>쿠폰</Text>
                 <Text textStyle="md" fontWeight="600">11장</Text>
               </Box>
@@ -317,9 +317,9 @@ export default function ProfilePage() {
                     flexDirection="column"
                     alignItems="center"
                     justifyContent="center"
-                    bg="bg.panel"
+                    layerStyle="glass"
                     boxShadow="xs"
-                    _hover={{ bg: 'bg.panel' }}
+                    _hover={{ bg: 'transparent' }}
                     onClick={() => item.path && navigate(item.path)}
                   >
                     <Box mb={1} color="fg">
@@ -342,7 +342,6 @@ export default function ProfilePage() {
           <Box
             borderWidth="thin"
             borderColor="border.subtle"
-            borderRadius="2xl"
             p={8}
             bg="bg.panel"
             display="flex"
