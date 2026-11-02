@@ -194,7 +194,7 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
                     <LuBell/>
                     { hasUnread && (
                       <Float placement="top-end" offset="2">
-                        <Circle size="2" bg="fg.error"/>
+                        <Circle size="2" bg="terracotta.solid/70"/>
                       </Float>
                     ) }
                   </IconButton>
@@ -244,7 +244,7 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
                                       >
                                         { toNotificationText(notification) }
                                       </Text>
-                                      { !notification.isRead && <Circle size="2" bg="fg.error" flexShrink={ 0 }/> }
+                                      { !notification.isRead && <Circle size="2" bg="terracotta.solid/70" flexShrink={ 0 }/> }
                                     </Stack>
                                     <Text textStyle="xs" color="fg.subtle">
                                       { formatNotificationTime(notification.createdAt) }
