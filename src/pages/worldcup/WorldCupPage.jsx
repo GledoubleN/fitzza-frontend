@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
+import { Box } from '@chakra-ui/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
+import { AuroraSpinner } from '../../components/AuroraSpinner.jsx'
 import { WorldCupResultPage } from './WorldCupResultPage.jsx'
 import { WorldCupTournamentPage } from './WorldCupTournamentPage.jsx'
 
@@ -29,8 +31,10 @@ export default function WorldCupPage () {
   const [savedResult, setSavedResult] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
   const [isSaveFailed, setIsSaveFailed] = useState(false)
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false)
 
   const latestSaveIdRef = useRef(0)
+  const productDetailsCacheRef = useRef(new Map())
 
   useEffect(() => () => {
     latestSaveIdRef.current += 1
@@ -54,11 +58,36 @@ export default function WorldCupPage () {
     const tournamentState = location.state?.tournamentState
     const products = tournamentState?.matchList ?? shuffle(rawSelectedProducts)
 
-    Promise.all(products.map(async (product) => {
-      try {
+    if (tournamentState?.matchList?.length) {
+      tournamentState.matchList.forEach((product) => {
         const productId = product.productId ?? product.itemId
+        if (productId != null) productDetailsCacheRef.current.set(productId, product)
+      })
+      setMatchList(tournamentState.matchList)
+      setNextRoundList(tournamentState.nextRoundList ?? [])
+      setCurrentIndex(tournamentState.currentIndex ?? 0)
+      setWinnerProduct(null)
+      setSavedResult(null)
+      setIsSaveFailed(false)
+      setIsLoadingProducts(false)
+      setViewMode('tournament')
+      updateRoundTitle(tournamentState.matchList.length)
+      return
+    }
+
+    setIsLoadingProducts(true)
+
+    Promise.all(products.map(async (product) => {
+      const productId = product.productId ?? product.itemId
+      const cachedProduct = productDetailsCacheRef.current.get(productId)
+
+      if (cachedProduct) return { ...product, ...cachedProduct }
+
+      try {
         const response = await api.get(`/products/${ productId }`)
-        return { ...product, ...response.data }
+        const productWithDetails = { ...product, ...response.data }
+        if (productId != null) productDetailsCacheRef.current.set(productId, productWithDetails)
+        return productWithDetails
       } catch {
         return product
       }
@@ -71,6 +100,7 @@ export default function WorldCupPage () {
       setWinnerProduct(null)
       setSavedResult(null)
       setIsSaveFailed(false)
+      setIsLoadingProducts(false)
       setViewMode('tournament')
       updateRoundTitle(productsWithDetails.length)
     })
@@ -206,6 +236,14 @@ export default function WorldCupPage () {
       },
     })
     navigate('/worldcup/history', { state: { fromWorldCup: true } })
+  }
+
+  if (viewMode === 'tournament' && isLoadingProducts) {
+    return (
+      <Box position="relative" minHeight="100vh">
+        <AuroraSpinner label="월드컵 상품 정보를 불러오는 중"/>
+      </Box>
+    )
   }
 
   if (viewMode === 'tournament' && (!leftProduct || !rightProduct)) {
