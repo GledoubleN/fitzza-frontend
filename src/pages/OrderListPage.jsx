@@ -35,7 +35,7 @@ export const OrderListPage = () => {
   }, [page, attempt])
 
   return (
-    <Stack gap={ 4 } paddingY={ 4 } paddingBottom={ 28 } minHeight={ 'vh' } bg={ 'bg' }>
+    <Stack gap={ 4 } paddingY={ 4 } minHeight={ 'vh' } bg={ 'bg' }>
       <Header/>
 
       <Container maxWidth={ '5xl' }>

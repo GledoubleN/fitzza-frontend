@@ -119,7 +119,7 @@ export const CommunityMainPage = () => {
           </Stack>
         </Container>
 
-        <Container maxWidth="5xl" paddingBottom="20">
+        <Container maxWidth="5xl">
           <Stack direction="column" gap="0" separator={ <Separator/> }>
             { posts.map((post) => (
               <PostItem

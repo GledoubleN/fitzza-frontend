@@ -157,7 +157,7 @@ export const OrderDetail = () => {
   const itemsPrice = order?.items.reduce((sum, item) => sum + item.unitPrice * item.orderQty, 0)
 
   return (
-    <Box position={ 'relative' } minHeight={ 'vh' } paddingTop={ 4 } paddingBottom={ 28 } bg={ 'bg' }>
+    <Box position={ 'relative' } minHeight={ 'vh' } paddingTop={ 4 } bg={ 'bg' }>
       <Header/>
       <Container maxWidth={ '5xl' } paddingY={ 4 }>
 

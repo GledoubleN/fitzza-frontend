@@ -105,7 +105,6 @@ export const MainPage = () => {
       <Container
         ref={ productGridRef }
         maxWidth={ '5xl' }
-        paddingBottom={ 8 }
       >
         <ProductGrid products={ products }/>
       </Container>
