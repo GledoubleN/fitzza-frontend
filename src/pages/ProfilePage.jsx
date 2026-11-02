@@ -319,7 +319,7 @@ export default function ProfilePage() {
                     justifyContent="center"
                     bg="bg.panel"
                     boxShadow="xs"
-                    _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
+                    _hover={{ bg: 'bg.panel' }}
                     onClick={() => item.path && navigate(item.path)}
                   >
                     <Box mb={1} color="fg">
