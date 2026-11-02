@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
+import { WorldCupProductDetails } from './WorldCupProductDetails.jsx'
 
 export const WorldCupTournamentPage = ({
   leftProduct,
@@ -141,6 +142,7 @@ export const WorldCupTournamentPage = ({
                   >
                     { leftProduct?.productName || leftProduct?.name }
                   </Text>
+                  <WorldCupProductDetails product={ leftProduct }/>
                 </Stack>
               </GridItem>
 
@@ -203,6 +205,7 @@ export const WorldCupTournamentPage = ({
                   >
                     { rightProduct?.productName || rightProduct?.name }
                   </Text>
+                  <WorldCupProductDetails product={ rightProduct }/>
                 </Stack>
               </GridItem>
             </Grid>

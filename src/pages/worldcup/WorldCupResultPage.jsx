@@ -15,6 +15,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
+import { WorldCupProductDetails } from './WorldCupProductDetails.jsx'
 
 export const WorldCupResultPage = ({
   winnerProduct,
@@ -146,6 +147,7 @@ export const WorldCupResultPage = ({
                   >
                     { winnerProduct.price ? `${ winnerProduct.price.toLocaleString() } 원` : '가격 정보 없음' }
                   </Text>
+                  <WorldCupProductDetails product={ winnerProduct }/>
                 </Stack>
 
                 { isSaveFailed && !savedResult && (
