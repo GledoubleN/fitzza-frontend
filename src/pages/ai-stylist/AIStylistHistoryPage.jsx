@@ -86,24 +86,25 @@ export const AIStylistHistoryPage = () => {
       <Container maxWidth={ '5xl' } flex={ 1 }>
         <Stack gap={ 4 }>
           <Flex align="center" justify="space-between">
-              <Text fontSize="lg" fontWeight="semibold">
-                대화 내역
-              </Text>
+            <Text fontSize="lg" fontWeight="semibold">
+              대화 내역
+            </Text>
           </Flex>
 
           <Stack gap={ 0 } separator={ <Separator/> }>
             { items.map((item) => (
-              <Flex key={ item.requestId } align="center" gap={ 4 } paddingY={ 4 }>
+              <Flex key={ item.requestId } align="center" gap={ 4 } paddingY={2}>
                 <Box
                   asChild
                   flex={ 1 }
                   minWidth={ 0 }
                   paddingY={ 4 }
+                  paddingX={ 3 }
                   borderRadius="md"
                   _hover={ { bg: 'bg.subtle' } }
                 >
                   <RouterLink to={ `/ai-stylist/${ item.requestId }` } state={ { query: item.queryText } }>
-                    <Stack gap={ 4 }>
+                    <Stack gap={ 2 }>
                       <Text truncate>{ item.queryText }</Text>
                       <Text fontSize="sm" color="fg.muted">
                         { formatRecommendationDate(item.createdAt) }
