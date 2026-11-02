@@ -313,29 +313,7 @@ export const CommunityArticlePage = () => {
 
       <Container maxWidth="5xl" flex="1" marginBottom="-4">
         <Stack direction="column" gap="4">
-          <CommunityTitleBar>
-            { isAuthor && (
-              <Menu.Root>
-                <Menu.Trigger asChild>
-                  <IconButton rounded="full" variant="ghost" size="sm" aria-label="게시글 메뉴">
-                    <LuEllipsisVertical/>
-                  </IconButton>
-                </Menu.Trigger>
-                <Portal>
-                  <Menu.Positioner>
-                    <Menu.Content>
-                      <Menu.Item value="edit" onClick={ () => navigate('/community/write', { state: { post } }) }>
-                        수정
-                      </Menu.Item>
-                      <Menu.Item value="delete" color="fg.error" onClick={ () => askDelete({ type: 'post' }) }>
-                        삭제
-                      </Menu.Item>
-                    </Menu.Content>
-                  </Menu.Positioner>
-                </Portal>
-              </Menu.Root>
-            ) }
-          </CommunityTitleBar>
+          <CommunityTitleBar/>
 
           <Stack
             gap="4"
@@ -344,18 +322,41 @@ export const CommunityArticlePage = () => {
             borderColor="border.subtle"
             bg="bg.panel"
           >
-            <Stack gap="0">
-              <HStack gap="4">
-                { post.postType === 'VOTE'
-                  ? <Badge>투표</Badge>
-                  : <Badge>{ CATEGORY_LABELS[post.category] ?? post.category }</Badge> }
-              </HStack>
-              <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
-              <Text color="fg.muted" fontSize="sm">
-                { displayNickname(post.author?.nickname) } · { formatRelativeTime(post.createdAt) }
-                { ` · 조회 ${ post.viewCount }` }
-              </Text>
-            </Stack>
+            <Flex justify="space-between" align="start" gap="4">
+              <Stack gap="0">
+                <HStack gap="4">
+                  { post.postType === 'VOTE'
+                    ? <Badge>투표</Badge>
+                    : <Badge>{ CATEGORY_LABELS[post.category] ?? post.category }</Badge> }
+                </HStack>
+                <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
+                <Text color="fg.muted" fontSize="sm">
+                  { displayNickname(post.author?.nickname) } · { formatRelativeTime(post.createdAt) }
+                  { ` · 조회 ${ post.viewCount }` }
+                </Text>
+              </Stack>
+              { isAuthor && (
+                <Menu.Root>
+                  <Menu.Trigger asChild>
+                    <IconButton rounded="full" variant="ghost" size="sm" aria-label="게시글 메뉴">
+                      <LuEllipsisVertical/>
+                    </IconButton>
+                  </Menu.Trigger>
+                  <Portal>
+                    <Menu.Positioner>
+                      <Menu.Content>
+                        <Menu.Item value="edit" onClick={ () => navigate('/community/write', { state: { post } }) }>
+                          수정
+                        </Menu.Item>
+                        <Menu.Item value="delete" color="fg.error" onClick={ () => askDelete({ type: 'post' }) }>
+                          삭제
+                        </Menu.Item>
+                      </Menu.Content>
+                    </Menu.Positioner>
+                  </Portal>
+                </Menu.Root>
+              ) }
+            </Flex>
 
             <Text whiteSpace="pre-wrap">{ post.content }</Text>
 
