@@ -192,6 +192,7 @@ export const SignUpPage = () => {
                 onBlur={ handleBlur }
                 placeholder="이메일"
                 variant="outline"
+                layerStyle="glass"
                 size="lg"
                 textAlign="left"
                 autoComplete="off"
@@ -218,6 +219,7 @@ export const SignUpPage = () => {
                 onBlur={ handleBlur }
                 placeholder="사용자명"
                 variant="outline"
+                layerStyle="glass"
                 size="lg"
                 textAlign="left"
                 autoComplete="off"
@@ -244,6 +246,7 @@ export const SignUpPage = () => {
                 onBlur={ handleBlur }
                 placeholder="비밀번호"
                 variant="outline"
+                layerStyle="glass"
                 size="lg"
                 textAlign="left"
                 autoComplete="new-password"

@@ -83,6 +83,7 @@ export const SignInPage = () => {
                   setErrorMessage('')
                 } }
                 variant="outline"
+                layerStyle="glass"
                 size="lg"
                 textAlign="left"
               />
@@ -101,6 +102,7 @@ export const SignInPage = () => {
                   setErrorMessage('')
                 } }
                 variant="outline"
+                layerStyle="glass"
                 size="lg"
                 textAlign="left"
               />
