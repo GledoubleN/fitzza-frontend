@@ -53,6 +53,7 @@ export const CommunityArticlePage = () => {
 
   const [post, setPost] = useState(null)
   const [comments, setComments] = useState([])
+  const [allComments, setAllComments] = useState([])
   const [myNickname, setMyNickname] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -77,6 +78,7 @@ export const CommunityArticlePage = () => {
           return
         }
         setComments(response.data)
+        if (supportedOptionId === null) setAllComments(response.data)
         setCommentsFailed(false)
       })
       .catch((error) => {
@@ -106,6 +108,7 @@ export const CommunityArticlePage = () => {
       })
 
     setComments([])
+    setAllComments([])
     setCommentsFailed(false)
     setSupportFilter(null)
     loadComments(null).catch(() => setCommentsFailed(true))
@@ -120,12 +123,14 @@ export const CommunityArticlePage = () => {
       const { type, targetId } = event.detail ?? {}
       if (type !== 'COMMENT' || String(targetId) !== id) return
 
-      loadComments().catch(() => setCommentsFailed(true))
+      loadComments(null)
+        .then(() => supportFilter !== null && loadComments(supportFilter))
+        .catch(() => setCommentsFailed(true))
     }
 
     window.addEventListener(NOTIFICATION_RECEIVED_EVENT, handleNotification)
     return () => window.removeEventListener(NOTIFICATION_RECEIVED_EVENT, handleNotification)
-  }, [id, loadComments])
+  }, [id, loadComments, supportFilter])
 
   const selectSupportFilter = (voteOptionId) => {
     setSupportFilter(voteOptionId)
@@ -232,7 +237,8 @@ export const CommunityArticlePage = () => {
   const deleteComment = async (commentId) => {
     try {
       await api.delete(`/comments/${ commentId }`)
-      await loadComments()
+      await loadComments(null)
+      if (supportFilter !== null) await loadComments(supportFilter)
       setPost((prev) => ({ ...prev, commentCount: prev.commentCount - 1 }))
     } catch (error) {
       notifyError(error, '댓글을 삭제하지 못했어요.')
@@ -294,6 +300,9 @@ export const CommunityArticlePage = () => {
   }
 
   const isAuthor = myNickname !== null && myNickname === post.author?.nickname
+  const hasMyComment = isSignedIn && myNickname !== null && allComments.some((item) =>
+    [item, ...(item.replies ?? [])].some((entry) => !entry.isDeleted && entry.author?.nickname === myNickname),
+  )
   const shared = post.shared
   const sharedProduct = shared?.snapshot?.productName ? shared.snapshot : null
   const sharedItems = shared?.items ?? []
@@ -427,7 +436,12 @@ export const CommunityArticlePage = () => {
             >
               <LuThumbsUp/> { post.likeCount }
             </Button>
-            <Badge variant="plain" size="md" paddingX="0">
+            <Badge
+              variant="plain"
+              size="md"
+              paddingX="0"
+              color={ hasMyComment ? 'accent.emphasized' : 'fg' }
+            >
               <LuMessageCircle/> { post.commentCount }
             </Badge>
           </HStack>
