@@ -8,7 +8,6 @@ import {
   Container,
   Separator,
   Stack,
-  Text,
 } from '@chakra-ui/react'
 import { LuChevronLeft } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
