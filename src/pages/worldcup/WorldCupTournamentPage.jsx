@@ -80,7 +80,9 @@ export const WorldCupTournamentPage = ({
                 fontWeight="medium"
                 color="fg.muted"
               >
-                마음에 드는 상품을 선택해 주세요 ({ Math.floor(currentIndex / 2) + 1 } / { Math.ceil(matchList.length / 2) })
+                { isLoading
+                  ? '정보를 불러오는 중입니다. 잠시만 기다려주세요.'
+                  : `마음에 드는 상품을 선택해 주세요 (${ Math.floor(currentIndex / 2) + 1 } / ${ Math.ceil(matchList.length / 2) })` }
               </Text>
             </Stack>
           </GridItem>
