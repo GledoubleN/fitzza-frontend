@@ -146,7 +146,16 @@ export const ProductOptionSelector = ({ product }) => {
       />
 
       { selectedOptions.map((option) => (
-        <Stack key={ option.optionId } bg={ 'bg.muted' } rounded={ 'l2' } padding={ 4 } gap={ 3 }>
+        <Stack
+          key={ option.optionId }
+          layerStyle={ 'glass' }
+          borderWidth={ 'thin' }
+          borderColor={ 'fg/10' }
+          boxShadow={ 'xs' }
+          rounded={ 'l2' }
+          padding={ 4 }
+          gap={ 3 }
+        >
           <Flex justify={ 'space-between' } align={ 'center' }>
             <Text fontWeight={ 'bold' }>{ getOptionLabel(option) }</Text>
             <IconButton
