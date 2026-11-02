@@ -123,7 +123,7 @@ export const ProductPage = () => {
             gridColumn={ { md: 2 } }
             gridRow={ { md: '1 / span 2' } }
             position={ { md: 'sticky' } }
-            top={ 4 }
+            top={ 24 }
             alignSelf="start"
           >
             <Stack gap={ 4 }>
