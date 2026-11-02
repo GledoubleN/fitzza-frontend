@@ -311,7 +311,7 @@ export const CommunityArticlePage = () => {
     <Stack direction="column" gap="4" minHeight="100vh" paddingTop="4">
       <Header/>
 
-      <Container maxWidth="5xl" flex="1">
+      <Container maxWidth="5xl" flex="1" marginBottom="-4">
         <Stack direction="column" gap="4">
           <CommunityTitleBar>
             { isAuthor && (
