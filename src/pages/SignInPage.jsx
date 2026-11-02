@@ -118,6 +118,14 @@ export const SignInPage = () => {
             loading={ loading }
             size="lg"
             width="full"
+            bg="terracotta.solid/70"
+            bgImage="none"
+            backdropFilter="auto"
+            backdropBlur="sm"
+            color="terracotta.contrast"
+            borderWidth="thin"
+            borderColor="fg/10"
+            boxShadow="md"
           >
             로그인
           </Button>
