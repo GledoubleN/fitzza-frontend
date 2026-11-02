@@ -108,8 +108,8 @@ export const CommunityMainPage = () => {
                   rounded="full"
                   flexShrink="0"
                   variant={ filter === item ? 'solid' : 'outline' }
-                  bg={ filter === item? 'terracotta.solid/70': undefined }
-                  colorPalette={filter=== item ? 'terracotta.contrast' : 'outline'}
+                  bg={ filter === item ? 'terracotta.solid/70' : undefined }
+                  color={ filter === item ? 'terracotta.contrast' : undefined }
                   onClick={ () => selectFilter(item) }
                 >
                   { item.label }
