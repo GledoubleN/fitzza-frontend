@@ -274,8 +274,17 @@ const OptionGrid = ({ items, options, onToggle }) => (
               rounded="md"
               bg="bg.muted"
               borderWidth="md"
-              borderColor={ checked ? 'fg' : 'transparent' }
+              borderColor={ checked ? 'terracotta.solid' : 'transparent' }
             />
+            { checked && (
+              <Box
+                position="absolute"
+                inset="0"
+                rounded="md"
+                bg="terracotta.subtle/30"
+                pointerEvents="none"
+              />
+            ) }
             <Checkbox.Control
               position="absolute"
               top="4"
