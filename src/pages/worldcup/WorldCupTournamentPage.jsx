@@ -7,12 +7,14 @@ import {
   GridItem,
   Container,
   Separator,
+  SkeletonText,
   Stack,
 } from '@chakra-ui/react'
 import { LuChevronLeft } from 'react-icons/lu'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
+import { PantoneAurora } from '../../components/PantoneAurora.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
 import { WorldCupProductDetails } from './WorldCupProductDetails.jsx'
 
@@ -23,6 +25,7 @@ export const WorldCupTournamentPage = ({
   currentIndex,
   matchList,
   isSaving,
+  isLoading,
   onSelect,
 }) => {
   const navigate = useNavigate()
@@ -99,7 +102,7 @@ export const WorldCupTournamentPage = ({
                 gap={ 3 }
                 padding={ 2 }
                 paddingBottom={ 3 }
-                cursor={ isSaving ? 'not-allowed' : 'pointer' }
+                cursor={ isLoading ? 'progress' : isSaving ? 'not-allowed' : 'pointer' }
                 bg="bg.panel"
                 borderWidth="thin"
                 borderColor="border.subtle"
@@ -109,41 +112,53 @@ export const WorldCupTournamentPage = ({
                 onClick={ () => onSelect(leftProduct) }
               >
                 <Box
+                  position="relative"
                   width="full"
                   aspectRatio={ { base: 3 / 4, md: 1 } }
                   overflow="hidden"
                   bg="bg.muted"
                 >
-                  <ProductImage
-                    src={ leftProduct?.thumbnailUrl || leftProduct?.imageUrl }
-                    alt={ leftProduct?.productName || leftProduct?.name }
-                    width="full"
-                    height="full"
-                    objectFit="cover"
-                    transition="transform 0.4s ease"
-                    _groupHover={ { transform: 'scale(1.05)' } }
-                  />
+                  { isLoading ? (
+                    <PantoneAurora delay={ 0 }/>
+                  ) : (
+                    <ProductImage
+                      src={ leftProduct?.thumbnailUrl || leftProduct?.imageUrl }
+                      alt={ leftProduct?.productName || leftProduct?.name }
+                      width="full"
+                      height="full"
+                      objectFit="cover"
+                      transition="transform 0.4s ease"
+                      _groupHover={ { transform: 'scale(1.05)' } }
+                    />
+                  ) }
                 </Box>
-                <Stack gap={ 1 }>
-                  <Text
-                    textStyle="xs"
-                    fontWeight="semibold"
-                    letterSpacing="wide"
-                    textTransform="uppercase"
-                    color="fg.muted"
-                    truncate
-                  >
-                    { leftProduct?.brandName }
-                  </Text>
-                  <Text
-                    textStyle={ { base: 'xs', md: 'md' } }
-                    lineClamp={ 2 }
-                    minHeight="2lh"
-                  >
-                    { leftProduct?.productName || leftProduct?.name }
-                  </Text>
-                  <WorldCupProductDetails product={ leftProduct }/>
-                </Stack>
+                { isLoading ? (
+                  <SkeletonText
+                    noOfLines={ 4 }
+                    gap={ 2 }
+                  />
+                ) : (
+                  <Stack gap={ 1 }>
+                    <Text
+                      textStyle="xs"
+                      fontWeight="semibold"
+                      letterSpacing="wide"
+                      textTransform="uppercase"
+                      color="fg.muted"
+                      truncate
+                    >
+                      { leftProduct?.brandName }
+                    </Text>
+                    <Text
+                      textStyle={ { base: 'xs', md: 'md' } }
+                      lineClamp={ 2 }
+                      minHeight="2lh"
+                    >
+                      { leftProduct?.productName || leftProduct?.name }
+                    </Text>
+                    <WorldCupProductDetails product={ leftProduct }/>
+                  </Stack>
+                ) }
               </GridItem>
 
               <GridItem alignSelf="stretch">
@@ -162,7 +177,7 @@ export const WorldCupTournamentPage = ({
                 gap={ 3 }
                 padding={ 2 }
                 paddingBottom={ 3 }
-                cursor={ isSaving ? 'not-allowed' : 'pointer' }
+                cursor={ isLoading ? 'progress' : isSaving ? 'not-allowed' : 'pointer' }
                 bg="bg.panel"
                 borderWidth="thin"
                 borderColor="border.subtle"
@@ -172,41 +187,53 @@ export const WorldCupTournamentPage = ({
                 onClick={ () => onSelect(rightProduct) }
               >
                 <Box
+                  position="relative"
                   width="full"
                   aspectRatio={ { base: 3 / 4, md: 1 } }
                   overflow="hidden"
                   bg="bg.muted"
                 >
-                  <ProductImage
-                    src={ rightProduct?.thumbnailUrl || rightProduct?.imageUrl }
-                    alt={ rightProduct?.productName || rightProduct?.name }
-                    width="full"
-                    height="full"
-                    objectFit="cover"
-                    transition="transform 0.4s ease"
-                    _groupHover={ { transform: 'scale(1.05)' } }
-                  />
+                  { isLoading ? (
+                    <PantoneAurora delay={ -1.5 }/>
+                  ) : (
+                    <ProductImage
+                      src={ rightProduct?.thumbnailUrl || rightProduct?.imageUrl }
+                      alt={ rightProduct?.productName || rightProduct?.name }
+                      width="full"
+                      height="full"
+                      objectFit="cover"
+                      transition="transform 0.4s ease"
+                      _groupHover={ { transform: 'scale(1.05)' } }
+                    />
+                  ) }
                 </Box>
-                <Stack gap={ 1 }>
-                  <Text
-                    textStyle="xs"
-                    fontWeight="semibold"
-                    letterSpacing="wide"
-                    textTransform="uppercase"
-                    color="fg.muted"
-                    truncate
-                  >
-                    { rightProduct?.brandName }
-                  </Text>
-                  <Text
-                    textStyle={ { base: 'xs', md: 'md' } }
-                    lineClamp={ 2 }
-                    minHeight="2lh"
-                  >
-                    { rightProduct?.productName || rightProduct?.name }
-                  </Text>
-                  <WorldCupProductDetails product={ rightProduct }/>
-                </Stack>
+                { isLoading ? (
+                  <SkeletonText
+                    noOfLines={ 4 }
+                    gap={ 2 }
+                  />
+                ) : (
+                  <Stack gap={ 1 }>
+                    <Text
+                      textStyle="xs"
+                      fontWeight="semibold"
+                      letterSpacing="wide"
+                      textTransform="uppercase"
+                      color="fg.muted"
+                      truncate
+                    >
+                      { rightProduct?.brandName }
+                    </Text>
+                    <Text
+                      textStyle={ { base: 'xs', md: 'md' } }
+                      lineClamp={ 2 }
+                      minHeight="2lh"
+                    >
+                      { rightProduct?.productName || rightProduct?.name }
+                    </Text>
+                    <WorldCupProductDetails product={ rightProduct }/>
+                  </Stack>
+                ) }
               </GridItem>
             </Grid>
           </GridItem>
