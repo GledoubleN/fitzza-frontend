@@ -190,7 +190,7 @@ export const WorldCupResultPage = ({
                   </Button>
                   <Button
                     size="lg"
-                    bg="terracotta.solid"
+                    bg="terracotta.solid/70"
                     color="terracotta.contrast"
                     disabled={ !savedResult || isSaving }
                     _hover={ { opacity: 0.9 } }
