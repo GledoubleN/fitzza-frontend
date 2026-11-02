@@ -179,6 +179,8 @@ export const ProductOptionSelector = ({ product }) => {
 
       <Button
         size={ 'lg' }
+        bg={ 'terracotta.solid/70' }
+        color={ 'terracotta.contrast' }
         disabled={ totalQuantity === 0 }
         loading={ isSubmitting }
         onClick={ addToCart }
