@@ -196,7 +196,6 @@ export const ProductPage = () => {
                 </Tabs.Content>
               </Tabs.Root>
 
-              {/* 넓은 화면에서는 맨 위로 버튼을 상세 정보 열 안쪽 아래에 붙인다. */ }
               { isScrolled && (
                 <Flex
                   display={ { base: 'none', md: 'flex' } }
@@ -207,7 +206,18 @@ export const ProductPage = () => {
                   align={ 'flex-end' }
                 >
                   <IconButton
+                    size={ 'xl' }
                     rounded={ 'full' }
+                    bg={ 'terracotta.solid/70' }
+                    bgImage={ 'none' }
+                    backdropFilter={ 'auto' }
+                    backdropBlur={ 'sm' }
+                    color={ 'terracotta.contrast' }
+                    borderWidth={ 'thin' }
+                    borderColor={ 'fg/10' }
+                    boxShadow={ 'md' }
+                    transition={ 'box-shadow 0.2s ease, scale 0.2s ease' }
+                    _hover={ { boxShadow: 'lg', scale: '1.05' } }
                     aria-label={ '맨 위로' }
                     onClick={ () => window.scrollTo({ top: 0, behavior: 'smooth' }) }
                   >
@@ -220,7 +230,6 @@ export const ProductPage = () => {
         </Grid>
       </Container>
 
-      {/* 이 화면에는 하단 탭 바가 없어 기본값보다 아래에 둔다. */ }
       <Box display={ { md: 'none' } }>
         <ScrollToTopButton bottom={ '8' }/>
       </Box>
