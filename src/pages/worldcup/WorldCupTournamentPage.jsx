@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
+import { getSeasonLabel } from '../../utils/seasonLabel.js'
 
 export const WorldCupTournamentPage = ({
   leftProduct,
@@ -142,7 +143,7 @@ export const WorldCupTournamentPage = ({
                     textStyle="xs"
                     color="fg.muted"
                   >
-                    계절: { leftProduct?.seasonName || leftProduct?.seasonType || leftProduct?.season || '정보 없음' }
+                    계절: { getSeasonLabel(leftProduct?.season) }
                   </Text>
                   <Text
                     textStyle="xs"
@@ -222,7 +223,7 @@ export const WorldCupTournamentPage = ({
                     textStyle="xs"
                     color="fg.muted"
                   >
-                    계절: { rightProduct?.seasonName || rightProduct?.seasonType || rightProduct?.season || '정보 없음' }
+                    계절: { getSeasonLabel(rightProduct?.season) }
                   </Text>
                   <Text
                     textStyle="xs"

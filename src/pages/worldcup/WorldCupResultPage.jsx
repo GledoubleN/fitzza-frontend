@@ -15,6 +15,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
+import { getSeasonLabel } from '../../utils/seasonLabel.js'
 
 export const WorldCupResultPage = ({
   winnerProduct,
@@ -156,7 +157,7 @@ export const WorldCupResultPage = ({
                     color="fg.muted"
                   >
                     <Text>
-                      계절: { winnerProduct.seasonName || winnerProduct.seasonType || winnerProduct.season || '정보 없음' }
+                      계절: { getSeasonLabel(winnerProduct.season) }
                     </Text>
                     <Text>핏: { winnerProduct.fitType || '정보 없음' }</Text>
                     <Text>
