@@ -27,8 +27,8 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
   const voted = poll.myVoteOptionId !== null && poll.myVoteOptionId !== undefined
   const showResult = voted || poll.closed
   const resultOf = (voteOptionId) => poll.options.find((option) => option.voteOptionId === voteOptionId)
+  const winningCount = Math.max(0, ...poll.options.map((option) => option.count))
   const myLabel = voteOptions.find((option) => option.voteOptionId === poll.myVoteOptionId)?.label
-
   const vote = async (voteOptionId) => {
     if (!isSignedIn) {
       onRequireSignIn()
@@ -78,6 +78,8 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
           const result = resultOf(option.voteOptionId)
           const mine = poll.myVoteOptionId === option.voteOptionId
           const percent = Math.round((result?.ratio ?? 0) * 100)
+          const won = winningCount > 0 && result?.count === winningCount
+          const highlighted = poll.closed ? won : mine
 
           return (
             <Stack key={ option.voteOptionId } gap="4">
@@ -111,9 +113,9 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
               ) }
               <Button
                 size="sm"
-                variant={ mine ? 'solid' : 'outline' }
-                bg={ mine ? 'terracotta.solid/70' : undefined }
-                color={ mine ? 'terracotta.contrast' : undefined }
+                variant={ highlighted ? 'solid' : poll.closed ? 'subtle' : 'outline' }
+                bg={ highlighted ? 'terracotta.solid/70' : undefined }
+                color={ highlighted ? 'terracotta.contrast' : poll.closed ? 'fg.muted' : undefined }
                 fontWeight="bold"
                 disabled={ showResult || (submittingId !== null && submittingId !== option.voteOptionId) }
                 _disabled={ { opacity: '1', cursor: 'default' } }
