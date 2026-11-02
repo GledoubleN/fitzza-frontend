@@ -112,6 +112,8 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
               <Button
                 size="sm"
                 variant={ mine ? 'solid' : 'outline' }
+                bg={ mine ? 'terracotta.solid/70' : undefined }
+                color={ mine ? 'terracotta.contrast' : undefined }
                 fontWeight="bold"
                 disabled={ showResult || (submittingId !== null && submittingId !== option.voteOptionId) }
                 _disabled={ { opacity: '1', cursor: 'default' } }

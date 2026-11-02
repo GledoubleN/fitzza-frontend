@@ -421,7 +421,7 @@ export const CommunityArticlePage = () => {
               variant="plain"
               size="sm"
               paddingX="0"
-              color={ post.liked ? 'primary.fg' : 'fg' }
+              color={ post.liked ? 'terracotta.solid' : 'fg' }
               aria-pressed={ post.liked }
               onClick={ togglePostLike }
             >
@@ -442,6 +442,8 @@ export const CommunityArticlePage = () => {
                   size="xs"
                   rounded="full"
                   flexShrink="0"
+                  bg={  supportFilter === option.voteOptionId ?  'terracotta.solid/70' : undefined }
+                  color={  supportFilter === option.voteOptionId ?  'terracotta.contrast' : undefined }
                   variant={ supportFilter === option.voteOptionId ? 'solid' : 'outline' }
                   aria-pressed={ supportFilter === option.voteOptionId }
                   onClick={ () => selectSupportFilter(option.voteOptionId) }
@@ -479,7 +481,11 @@ export const CommunityArticlePage = () => {
                 value={ comment }
                 onChange={ (e) => setComment(e.target.value) }
               />
-              <Button type="submit" flexShrink="0" disabled={ !comment.trim() }>
+              <Button type="submit" flexShrink="0" disabled={ !comment.trim() }
+                bg={  'terracotta.solid/70' }
+                color={  'terracotta.contrast' }
+                variant={ 'solid' }
+              >
                 등록
               </Button>
             </HStack>
