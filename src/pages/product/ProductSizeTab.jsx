@@ -10,6 +10,7 @@ const NOTICES = [
 ]
 
 const unique = (values) => [...new Set(values.filter(Boolean))]
+const formatSize = (size) => /^0\d+$/.test(size) ? String(Number(size)) : size
 
 const TOP_PARTS = ['총장', '어깨너비', '가슴단면', '소매길이', '밑단단면', '소매부리단면', '암홀']
 const RAGLAN_PARTS = ['총장', '가슴단면', '소매부리단면', '전체소매길이', '밑단단면', '암홀']
@@ -101,7 +102,7 @@ export const ProductSizeTab = ({ product }) => {
                 <Table.Row bg={ 'bg.muted' }>
                   <Table.ColumnHeader textAlign={ 'center' }>사이즈</Table.ColumnHeader>
                   { sizes.map((size) => (
-                    <Table.ColumnHeader key={ size } textAlign={ 'center' }>{ size }</Table.ColumnHeader>
+                    <Table.ColumnHeader key={ size } textAlign={ 'center' }>{ formatSize(size) }</Table.ColumnHeader>
                   )) }
                 </Table.Row>
               </Table.Header>
