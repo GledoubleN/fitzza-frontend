@@ -62,7 +62,7 @@ const toFittingState = (detail) => {
 const toProductKey = (products) => products.map((product) => product.productId).sort().join()
 
 const toFittingLabel = (products, { items = [], combos = [] }) => {
-  if (!products.length) return '추천 상품'
+  if (!products.length) return ''
 
   const productKey = toProductKey(products)
   const comboIndex = combos.findIndex((combo) => toProductKey(combo.items) === productKey)
@@ -548,7 +548,7 @@ export const AIStylistResultPage = () => {
                 fittings.map((fitting) => (
                   <Card.Root key={ fitting.id } { ...bubbleProps } alignSelf={ 'flex-start' }>
                     <Card.Body gap={ 3 }>
-                      <Text fontWeight={ 'bold' }>{ fitting.label } 가상 피팅</Text>
+                      <Text fontWeight={ 'bold' }>{ fitting.label ? `${ fitting.label } 가상 피팅` : fitting.status === 'loading' ? '가상 피팅 진행 중' : '가상 피팅' }</Text>
                       {
                         fitting.status === 'loading' &&
                         <>
@@ -571,7 +571,7 @@ export const AIStylistResultPage = () => {
                       {
                         fitting.status === 'done' &&
                         <>
-                          <Image src={ fitting.imageUrl } alt={ `${ fitting.label } 가상 피팅 결과` } bg={ 'bg.muted' }></Image>
+                          <Image src={ fitting.imageUrl } alt={ fitting.label ? `${ fitting.label } 가상 피팅 결과` : '가상 피팅 결과' } bg={ 'bg.muted' }></Image>
                           <Text fontSize={ 'sm' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
                           <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ () => shareFitting(fitting) }>
                             공유하기
