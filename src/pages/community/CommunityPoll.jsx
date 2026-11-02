@@ -28,7 +28,7 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
   const showResult = voted || poll.closed
   const resultOf = (voteOptionId) => poll.options.find((option) => option.voteOptionId === voteOptionId)
   const winningCount = Math.max(0, ...poll.options.map((option) => option.count))
-  const myLabel = voteOptions.find((option) => option.voteOptionId === poll.myVoteOptionId)?.label
+
   const vote = async (voteOptionId) => {
     if (!isSignedIn) {
       onRequireSignIn()
@@ -140,7 +140,6 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
           { poll.closed
             ? `투표 종료 · 총 ${ poll.total }명 참여`
             : `투표중${ poll.voteEndAt ? ` ${ formatRemaining(poll.voteEndAt) }` : '' }` }
-          { myLabel && ` · 내 선택 ${ myLabel }` }
         </Text>
         { isAuthor && !poll.closed && (
           <Button size="xs" variant="outline" onClick={ () => setCloseDialogOpen(true) }>투표 종료하기</Button>
