@@ -224,7 +224,7 @@ export const WorldCupSetupPage = () => {
                       paddingBottom={ 3 }
                       textAlign="left"
                       cursor="pointer"
-                      bg="bg.panel"
+                      layerStyle="glass"
                       borderWidth="thin"
                       borderColor={ isSelected ? 'terracotta.solid' : 'border.subtle' }
                       boxShadow="sm"
