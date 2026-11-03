@@ -169,7 +169,6 @@ const PostItem = ({ post, onClick }) => {
       textAlign="start"
       width="full"
       cursor="pointer"
-      _hover={ { bg: 'bg.subtle' } }
       onClick={ onClick }
     >
       <Stack direction="column" gap="2" flex="1" minWidth="0">
