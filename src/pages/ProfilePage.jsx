@@ -32,7 +32,9 @@ import { toaster } from '../components/ui/toaster.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
 import { useUserPreferences } from '../hooks/useUserPreferences.js'
 import { findBodyMeasurementRangeError } from '../utils/bodyMeasurements.js'
-import { topSizes, bottomSizes } from '../components/onboarding/clothingSizes.js'
+
+const TOP_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL']
+const BOTTOM_SIZES = ['24', '25', '26', '27', '28', '29', '30', '32', '34', '36', '38']
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
@@ -40,8 +42,8 @@ export default function ProfilePage() {
   const fitOptions = [{ label: '선택 안함', value: '' }, ...preferredFits]
   const styleOptions = [{ label: '선택 안함', value: '' }, ...preferredStyles]
   const toSizeOptions = (sizes) => [{ label: '선택 안함', value: '' }, ...sizes.map((size) => ({ label: size, value: size }))]
-  const topSizeOptions = toSizeOptions(topSizes)
-  const bottomSizeOptions = toSizeOptions(bottomSizes)
+  const topSizeOptions = toSizeOptions(TOP_SIZES)
+  const bottomSizeOptions = toSizeOptions(BOTTOM_SIZES)
   const findLabel = (options, value) => options.find((option) => option.value === value)?.label ?? value
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({

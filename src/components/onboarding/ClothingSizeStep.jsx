@@ -1,7 +1,11 @@
 import { useRef } from 'react'
 import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
 import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
-import { topSizes, bottomSizes } from './clothingSizes.js'
+
+const topSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL']
+const bottomSizes = [
+  '24', '25', '26', '27', '28', '29', '30', '32', '34', '36', '38'
+]
 
 export function ClothingSizeStep ({ formData, onFieldChange, onSkip, errorMessage, onPrev, onNext }) {
   const bottomSectionRef = useRef(null)
@@ -27,7 +31,7 @@ export function ClothingSizeStep ({ formData, onFieldChange, onSkip, errorMessag
           <Button variant="outline" size="md" onClick={ onPrev }>
             이전
           </Button>
-          <Button bg="terracotta.solid/70" color="terracotta.contrast" size="md" onClick={ onNext }>다음</Button>
+          <Button colorPalette="primary" size="md" onClick={ onNext }>다음</Button>
         </Grid>
       ) }
     >
