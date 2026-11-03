@@ -20,7 +20,7 @@ export function BodyMeasurementsStep ({ formData, onFieldChange, onSkip, errorMe
       errorMessage={ errorMessage }
       actions={ (
         <Grid templateColumns="1fr" gap={ 4 }>
-          <Button colorPalette="primary" size="md" onClick={ onNext }>다음</Button>
+          <Button bg="terracotta.solid/70" color="terracotta.contrast" size="md" onClick={ onNext }>다음</Button>
         </Grid>
       ) }
     >

@@ -31,7 +31,7 @@ export function ClothingSizeStep ({ formData, onFieldChange, onSkip, errorMessag
           <Button variant="outline" size="md" onClick={ onPrev }>
             이전
           </Button>
-          <Button colorPalette="primary" size="md" onClick={ onNext }>다음</Button>
+          <Button bg="terracotta.solid/70" color="terracotta.contrast" size="md" onClick={ onNext }>다음</Button>
         </Grid>
       ) }
     >

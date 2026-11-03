@@ -32,7 +32,7 @@ export function StylePreferencesStep ({ formData, onFieldChange, onSkip, errorMe
           <Button variant="outline" size="md" onClick={ onPrev }>
             이전
           </Button>
-          <Button colorPalette="primary" size="md" loading={ isLoading } loadingText="저장 중..." onClick={ onSave }>
+          <Button bg="terracotta.solid/70" color="terracotta.contrast" size="md" loading={ isLoading } loadingText="저장 중..." onClick={ onSave }>
             저장하기
           </Button>
         </Grid>
