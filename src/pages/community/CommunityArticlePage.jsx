@@ -316,13 +316,7 @@ export const CommunityArticlePage = () => {
         <Stack direction="column" gap="4">
           <CommunityTitleBar/>
 
-          <Stack
-            gap="4"
-            padding="4"
-            borderWidth="thin"
-            borderColor="border.subtle"
-            bg="bg.panel"
-          >
+          <Stack gap="4">
             <Flex justify="space-between" align="start" gap="4">
               <Stack gap="0">
                 <HStack gap="4">
