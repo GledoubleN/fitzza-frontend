@@ -30,6 +30,24 @@ const FILTERS = [
   ...CATEGORIES.map(({ value, label }) => ({ label, params: { category: value, postType: 'NORMAL' } })),
 ]
 
+const ACTIVE_FILTER_PROPS = {
+  bg: 'terracotta.solid/70',
+  bgImage: 'none',
+  backdropFilter: 'auto',
+  backdropBlur: 'sm',
+  color: 'terracotta.contrast',
+  borderColor: 'fg/10',
+  boxShadow: 'md',
+  _hover: { bg: 'terracotta.solid/70', boxShadow: 'lg' },
+}
+
+const INACTIVE_FILTER_PROPS = {
+  layerStyle: 'glass',
+  borderColor: 'border.subtle',
+  boxShadow: 'sm',
+  _hover: { bg: 'transparent', boxShadow: 'lg' },
+}
+
 export const CommunityMainPage = () => {
   const navigate = useNavigate()
 
@@ -99,16 +117,17 @@ export const CommunityMainPage = () => {
               </InputGroup>
             </form>
 
-            <HStack gap="2" overflowX="auto">
+            <HStack gap="2" overflowX="auto" padding="2" margin="-2">
               { FILTERS.map((item) => (
                 <Button
                   key={ item.label }
                   size="sm"
                   rounded="full"
                   flexShrink="0"
-                  variant={ filter === item ? 'solid' : 'outline' }
-                  bg={ filter === item ? 'terracotta.solid/70' : undefined }
-                  color={ filter === item ? 'terracotta.contrast' : undefined }
+                  variant="outline"
+                  borderWidth="thin"
+                  transition="box-shadow 0.25s ease"
+                  { ...(filter === item ? ACTIVE_FILTER_PROPS : INACTIVE_FILTER_PROPS) }
                   onClick={ () => selectFilter(item) }
                 >
                   { item.label }
