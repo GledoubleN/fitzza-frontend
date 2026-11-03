@@ -274,7 +274,7 @@ export default function ProfilePage() {
                   )}
 
                   <HStack mt={1}>
-                    <Button type="submit" size="xs" flex="1">저장</Button>
+                    <Button type="submit" size="xs" flex="1" colorPalette="terracotta" bg="terracotta.solid/70">저장</Button>
                     <Button size="xs" variant="outline" flex="1" onClick={() => setIsEditing(false)}>취소</Button>
                   </HStack>
                 </Stack>
