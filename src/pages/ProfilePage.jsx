@@ -179,7 +179,20 @@ export default function ProfilePage() {
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit ? findLabel(preferredFits, profileData.preferredFit) : '미입력 (건너뜀)'}</Text></Flex>
                   <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style ? findLabel(preferredStyles, profileData.style) : '미입력 (건너뜀)'}</Text></Flex>
                 </Stack>
-                <Button mt={3} width="full" variant="outline" size="sm" layerStyle="glass" boxShadow="xs" onClick={() => setIsEditing(true)}>
+                <Button
+                  mt={3}
+                  width="full"
+                  size="sm"
+                  bg="terracotta.solid/70"
+                  bgImage="none"
+                  backdropFilter="auto"
+                  backdropBlur="sm"
+                  color="terracotta.contrast"
+                  borderWidth="thin"
+                  borderColor="fg/10"
+                  boxShadow="md"
+                  onClick={() => setIsEditing(true)}
+                >
                   신체 정보 및 스타일 수정
                 </Button>
               </Box>
