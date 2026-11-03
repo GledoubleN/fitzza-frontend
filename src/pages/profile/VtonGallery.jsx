@@ -210,7 +210,7 @@ export const VtonGallery = ({ preview = false }) => {
               gap={ 3 }
               textAlign={ 'start' }
               rounded={ 'none' }
-              bg={ 'bg.panel' }
+              layerStyle={ 'glass' }
               borderWidth={ 'thin' }
               borderColor={ 'border.subtle' }
               boxShadow={ 'sm' }
