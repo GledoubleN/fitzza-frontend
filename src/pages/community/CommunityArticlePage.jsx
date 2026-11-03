@@ -13,7 +13,6 @@ import {
   Input,
   Menu,
   Portal,
-  Separator,
   Stack,
   Text,
 } from '@chakra-ui/react'
@@ -317,139 +316,146 @@ export const CommunityArticlePage = () => {
           <CommunityTitleBar/>
 
           <Stack gap="4">
-            <Flex justify="space-between" align="start" gap="4">
-              <Stack gap="0">
-                <HStack gap="4">
-                  { post.postType === 'VOTE'
-                    ? <Badge>투표</Badge>
-                    : <Badge>{ CATEGORY_LABELS[post.category] ?? post.category }</Badge> }
-                </HStack>
-                <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
-                <Text color="fg.muted" fontSize="sm">
-                  { displayNickname(post.author?.nickname) } · { formatRelativeTime(post.createdAt) }
-                  { ` · 조회 ${ post.viewCount }` }
-                </Text>
-              </Stack>
-              { isAuthor && (
-                <Menu.Root>
-                  <Menu.Trigger asChild>
-                    <IconButton rounded="full" variant="ghost" size="sm" aria-label="게시글 메뉴">
-                      <LuEllipsisVertical/>
-                    </IconButton>
-                  </Menu.Trigger>
-                  <Portal>
-                    <Menu.Positioner>
-                      <Menu.Content>
-                        <Menu.Item value="edit" onClick={ () => navigate('/community/write', { state: { post } }) }>
-                          수정
-                        </Menu.Item>
-                        <Menu.Item value="delete" color="fg.error" onClick={ () => askDelete({ type: 'post' }) }>
-                          삭제
-                        </Menu.Item>
-                      </Menu.Content>
-                    </Menu.Positioner>
-                  </Portal>
-                </Menu.Root>
-              ) }
-            </Flex>
+            <Stack
+              gap="4"
+              padding="4"
+              layerStyle="glass"
+              borderWidth="thin"
+              borderColor="border.subtle"
+              boxShadow="sm"
+            >
+              <Flex justify="space-between" align="start" gap="4">
+                <Stack gap="0">
+                  <HStack gap="4">
+                    { post.postType === 'VOTE'
+                      ? <Badge>투표</Badge>
+                      : <Badge>{ CATEGORY_LABELS[post.category] ?? post.category }</Badge> }
+                  </HStack>
+                  <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
+                  <Text color="fg.muted" fontSize="sm">
+                    { displayNickname(post.author?.nickname) } · { formatRelativeTime(post.createdAt) }
+                    { ` · 조회 ${ post.viewCount }` }
+                  </Text>
+                </Stack>
+                { isAuthor && (
+                  <Menu.Root>
+                    <Menu.Trigger asChild>
+                      <IconButton rounded="full" variant="ghost" size="sm" aria-label="게시글 메뉴">
+                        <LuEllipsisVertical/>
+                      </IconButton>
+                    </Menu.Trigger>
+                    <Portal>
+                      <Menu.Positioner>
+                        <Menu.Content>
+                          <Menu.Item value="edit" onClick={ () => navigate('/community/write', { state: { post } }) }>
+                            수정
+                          </Menu.Item>
+                          <Menu.Item value="delete" color="fg.error" onClick={ () => askDelete({ type: 'post' }) }>
+                            삭제
+                          </Menu.Item>
+                        </Menu.Content>
+                      </Menu.Positioner>
+                    </Portal>
+                  </Menu.Root>
+                ) }
+              </Flex>
 
-            <Text whiteSpace="pre-wrap">{ post.content }</Text>
+              <Text whiteSpace="pre-wrap">{ post.content }</Text>
 
-            { shared && (
-              <Card.Root variant="subtle" size="sm">
-                <Card.Body gap="4">
-                  <Text fontWeight="semibold" fontSize="sm">{ SHARED_TITLES[shared.type] }</Text>
-                  { shared.type === 'FITTING' && shared.snapshot?.imageUrl && (
-                    <Image
-                      src={ shared.snapshot.imageUrl }
-                      alt=""
-                      maxHeight="sm"
-                      width="fit-content"
-                      rounded="md"
-                      bg="bg.muted"
-                    />
-                  ) }
-                  { sharedProduct && (
-                    <Flex
-                      as="button"
-                      gap="4"
-                      align="center"
-                      textAlign="start"
-                      onClick={ () => navigate(`/products/${ sharedProduct.productId }`) }
-                    >
-                      <ProductImage
-                        src={ sharedProduct.imageUrl }
+              { shared && (
+                <Card.Root variant="subtle" size="sm">
+                  <Card.Body gap="4">
+                    <Text fontWeight="semibold" fontSize="sm">{ SHARED_TITLES[shared.type] }</Text>
+                    { shared.type === 'FITTING' && shared.snapshot?.imageUrl && (
+                      <Image
+                        src={ shared.snapshot.imageUrl }
                         alt=""
-                        boxSize="16"
-                        objectFit="cover"
-                        rounded="sm"
+                        maxHeight="sm"
+                        width="fit-content"
+                        rounded="md"
                         bg="bg.muted"
                       />
-                      <Stack gap="0" flex="1" minWidth="0">
-                        <Text fontSize="xs" color="fg.muted">{ sharedProduct.brandName }</Text>
-                        <Text fontSize="sm" lineClamp="1">{ sharedProduct.productName }</Text>
-                      </Stack>
-                      <Text fontSize="sm">{ sharedProduct.price?.toLocaleString() }원</Text>
-                    </Flex>
-                  ) }
-                  { shared.snapshot?.summary && (
-                    <Text fontSize="sm" color="fg.muted">{ shared.snapshot.summary }</Text>
-                  ) }
-                  { sharedItems.map((item) => (
-                    <Flex
-                      key={ item.productId }
-                      as="button"
-                      gap="4"
-                      align="center"
-                      textAlign="start"
-                      onClick={ () => navigate(`/products/${ item.productId }`) }
-                    >
-                      <ProductImage src={ item.imageUrl } alt="" boxSize="12" objectFit="cover" rounded="sm" bg="bg.muted"/>
-                      <Text flex="1" fontSize="sm" lineClamp="1">{ item.productName }</Text>
-                      <Text fontSize="sm">{ item.price?.toLocaleString() }원</Text>
-                    </Flex>
-                  )) }
-                  { shared.type === 'COMBO' && shared.snapshot?.price && (
-                    <Text fontSize="sm" fontWeight="bold" alignSelf="flex-end">
-                      합계 { shared.snapshot.price.toLocaleString() }원
-                    </Text>
-                  ) }
-                </Card.Body>
-              </Card.Root>
-            ) }
+                    ) }
+                    { sharedProduct && (
+                      <Flex
+                        as="button"
+                        gap="4"
+                        align="center"
+                        textAlign="start"
+                        onClick={ () => navigate(`/products/${ sharedProduct.productId }`) }
+                      >
+                        <ProductImage
+                          src={ sharedProduct.imageUrl }
+                          alt=""
+                          boxSize="16"
+                          objectFit="cover"
+                          rounded="sm"
+                          bg="bg.muted"
+                        />
+                        <Stack gap="0" flex="1" minWidth="0">
+                          <Text fontSize="xs" color="fg.muted">{ sharedProduct.brandName }</Text>
+                          <Text fontSize="sm" lineClamp="1">{ sharedProduct.productName }</Text>
+                        </Stack>
+                        <Text fontSize="sm">{ sharedProduct.price?.toLocaleString() }원</Text>
+                      </Flex>
+                    ) }
+                    { shared.snapshot?.summary && (
+                      <Text fontSize="sm" color="fg.muted">{ shared.snapshot.summary }</Text>
+                    ) }
+                    { sharedItems.map((item) => (
+                      <Flex
+                        key={ item.productId }
+                        as="button"
+                        gap="4"
+                        align="center"
+                        textAlign="start"
+                        onClick={ () => navigate(`/products/${ item.productId }`) }
+                      >
+                        <ProductImage src={ item.imageUrl } alt="" boxSize="12" objectFit="cover" rounded="sm" bg="bg.muted"/>
+                        <Text flex="1" fontSize="sm" lineClamp="1">{ item.productName }</Text>
+                        <Text fontSize="sm">{ item.price?.toLocaleString() }원</Text>
+                      </Flex>
+                    )) }
+                    { shared.type === 'COMBO' && shared.snapshot?.price && (
+                      <Text fontSize="sm" fontWeight="bold" alignSelf="flex-end">
+                        합계 { shared.snapshot.price.toLocaleString() }원
+                      </Text>
+                    ) }
+                  </Card.Body>
+                </Card.Root>
+              ) }
 
-            { post.postType === 'VOTE' && (
-              <CommunityPoll
-                postId={ post.postId }
-                voteOptions={ post.voteOptions }
-                isAuthor={ isAuthor }
-                isSignedIn={ isSignedIn }
-                onRequireSignIn={ requireSignIn }
-              />
-            ) }
+              { post.postType === 'VOTE' && (
+                <CommunityPoll
+                  postId={ post.postId }
+                  voteOptions={ post.voteOptions }
+                  isAuthor={ isAuthor }
+                  isSignedIn={ isSignedIn }
+                  onRequireSignIn={ requireSignIn }
+                />
+              ) }
 
-            <HStack gap="4">
-              <Button
-                variant="plain"
-                size="sm"
-                paddingX="0"
-                color={ post.liked ? 'terracotta.solid' : 'fg' }
-                aria-pressed={ post.liked }
-                onClick={ togglePostLike }
-              >
-                <LuThumbsUp/> { post.likeCount }
-              </Button>
-              <Badge
-                variant="plain"
-                size="md"
-                paddingX="0"
-                color={ hasMyComment ? 'accent.emphasized' : 'fg' }
-              >
-                <LuMessageCircle/> { post.commentCount }
-              </Badge>
-            </HStack>
-
-            <Separator/>
+              <HStack gap="4">
+                <Button
+                  variant="plain"
+                  size="sm"
+                  paddingX="0"
+                  color={ post.liked ? 'terracotta.solid' : 'fg' }
+                  aria-pressed={ post.liked }
+                  onClick={ togglePostLike }
+                >
+                  <LuThumbsUp/> { post.likeCount }
+                </Button>
+                <Badge
+                  variant="plain"
+                  size="md"
+                  paddingX="0"
+                  color={ hasMyComment ? 'accent.emphasized' : 'fg' }
+                >
+                  <LuMessageCircle/> { post.commentCount }
+                </Badge>
+              </HStack>
+            </Stack>
 
             { post.postType === 'VOTE' && (
               <HStack gap="2" overflowX="auto" padding="2" margin="-2">
