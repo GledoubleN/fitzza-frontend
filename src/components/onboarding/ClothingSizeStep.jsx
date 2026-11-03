@@ -1,11 +1,7 @@
 import { useRef } from 'react'
 import { Box, Button, Heading, Text, VStack, Grid } from '@chakra-ui/react'
 import { OnboardingStepLayout } from './OnboardingStepLayout.jsx'
-
-export const topSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL']
-export const bottomSizes = [
-  '24', '25', '26', '27', '28', '29', '30', '32', '34', '36', '38'
-]
+import { topSizes, bottomSizes } from './clothingSizes.js'
 
 export function ClothingSizeStep ({ formData, onFieldChange, onSkip, errorMessage, onPrev, onNext }) {
   const bottomSectionRef = useRef(null)

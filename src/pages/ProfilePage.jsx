@@ -32,7 +32,7 @@ import { toaster } from '../components/ui/toaster.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
 import { useUserPreferences } from '../hooks/useUserPreferences.js'
 import { findBodyMeasurementRangeError } from '../utils/bodyMeasurements.js'
-import { topSizes, bottomSizes } from '../components/onboarding/ClothingSizeStep.jsx'
+import { topSizes, bottomSizes } from '../components/onboarding/clothingSizes.js'
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
