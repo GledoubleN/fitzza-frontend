@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Badge, Box, Button, HStack, Input, Stack, Text } from '@chakra-ui/react'
+import { Badge, Button, HStack, Input, Stack, Text } from '@chakra-ui/react'
 import { LuThumbsUp } from 'react-icons/lu'
 import { displayNickname, formatRelativeTime } from './communityFormat.js'
 
@@ -55,71 +55,63 @@ export const CommunityArticleCommentItem = ({
 
   return (
     <Stack direction="column" gap="4" paddingLeft={ isReply ? '8' : '0' }>
-      <Box
-        padding="3"
-        layerStyle="glass"
-        borderWidth="thin"
-        borderColor="border.subtle"
-        boxShadow="xs"
-      >
-        { isDeleted ? (
-          <Text fontSize="sm" color="fg.muted">삭제된 댓글입니다</Text>
-        ) : (
-          <Stack direction="column" gap="0">
-            <HStack gap="4" fontSize="sm" wrap="wrap">
-              <Text fontWeight="bold">{ displayNickname(author?.nickname) }</Text>
-              { author?.nickname && author.nickname === postAuthorNickname && <Badge size="sm">작성자</Badge> }
-              { supportedOption && <Badge size="sm">{ supportedOption.label } 추천</Badge> }
-              <Text color="fg.muted" fontSize="xs">· { formatRelativeTime(createdAt) }</Text>
-            </HStack>
+      { isDeleted ? (
+        <Text fontSize="sm" color="fg.muted">삭제된 댓글입니다</Text>
+      ) : (
+        <Stack direction="column" gap="0">
+          <HStack gap="4" fontSize="sm" wrap="wrap">
+            <Text fontWeight="bold">{ displayNickname(author?.nickname) }</Text>
+            { author?.nickname && author.nickname === postAuthorNickname && <Badge size="sm">작성자</Badge> }
+            { supportedOption && <Badge size="sm">{ supportedOption.label } 추천</Badge> }
+            <Text color="fg.muted" fontSize="xs">· { formatRelativeTime(createdAt) }</Text>
+          </HStack>
 
-            { editing ? (
-              <form onSubmit={ submitEdit }>
-                <HStack gap="4">
-                  <Input
-                    size="sm"
-                    maxLength={ COMMENT_MAX_LENGTH }
-                    aria-label="댓글 수정"
-                    value={ editText }
-                    onChange={ (e) => setEditText(e.target.value) }
-                  />
-                  <Button type="submit" size="sm" flexShrink="0" disabled={ !editText.trim() }>
-                    저장
-                  </Button>
-                  <Button size="sm" variant="ghost" flexShrink="0" onClick={ () => setEditing(false) }>
-                    취소
-                  </Button>
-                </HStack>
-              </form>
-            ) : (
-              <Text fontSize="sm" whiteSpace="pre-wrap">{ content }</Text>
+          { editing ? (
+            <form onSubmit={ submitEdit }>
+              <HStack gap="4">
+                <Input
+                  size="sm"
+                  maxLength={ COMMENT_MAX_LENGTH }
+                  aria-label="댓글 수정"
+                  value={ editText }
+                  onChange={ (e) => setEditText(e.target.value) }
+                />
+                <Button type="submit" size="sm" flexShrink="0" disabled={ !editText.trim() }>
+                  저장
+                </Button>
+                <Button size="sm" variant="ghost" flexShrink="0" onClick={ () => setEditing(false) }>
+                  취소
+                </Button>
+              </HStack>
+            </form>
+          ) : (
+            <Text fontSize="sm" whiteSpace="pre-wrap">{ content }</Text>
+          ) }
+
+          <HStack gap="4">
+            <Button
+              { ...actionProps }
+              color={ liked ? 'terracotta.solid' : 'fg.muted' }
+              aria-pressed={ liked }
+              onClick={ () => onLike(comment) }
+            >
+              <LuThumbsUp/> 좋아요 { likeCount }
+            </Button>
+            { !isReply && canReply && (
+              <Button { ...actionProps } fontWeight="bold" onClick={ () => setReplying((value) => !value) }>답글</Button>
             ) }
-
-            <HStack gap="4">
-              <Button
-                { ...actionProps }
-                color={ liked ? 'terracotta.solid' : 'fg.muted' }
-                aria-pressed={ liked }
-                onClick={ () => onLike(comment) }
-              >
-                <LuThumbsUp/> 좋아요 { likeCount }
-              </Button>
-              { !isReply && canReply && (
-                <Button { ...actionProps } fontWeight="bold" onClick={ () => setReplying((value) => !value) }>답글</Button>
-              ) }
-              { isMine && !editing && (
-                <>
-                  <Button { ...actionProps } onClick={ () => {
-                    setEditText(content)
-                    setEditing(true)
-                  } }>수정</Button>
-                  <Button { ...actionProps } onClick={ () => onDelete(commentId) }>삭제</Button>
-                </>
-              ) }
-            </HStack>
-          </Stack>
-        ) }
-      </Box>
+            { isMine && !editing && (
+              <>
+                <Button { ...actionProps } onClick={ () => {
+                  setEditText(content)
+                  setEditing(true)
+                } }>수정</Button>
+                <Button { ...actionProps } onClick={ () => onDelete(commentId) }>삭제</Button>
+              </>
+            ) }
+          </HStack>
+        </Stack>
+      ) }
 
       { replying && canReply && (
         <form onSubmit={ submitReply }>

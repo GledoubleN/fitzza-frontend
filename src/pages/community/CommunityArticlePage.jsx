@@ -457,29 +457,28 @@ export const CommunityArticlePage = () => {
               </HStack>
             </Stack>
 
-            { post.postType === 'VOTE' && (
-              <HStack gap="2" overflowX="auto" padding="2" margin="-2">
-                { [{ voteOptionId: null, label: '전체' }, ...post.voteOptions].map((option) => (
-                  <Button
-                    key={ option.voteOptionId ?? 'all' }
-                    size="xs"
-                    rounded="full"
-                    flexShrink="0"
-                    variant="outline"
-                    borderWidth="thin"
-                    transition="box-shadow 0.25s ease"
-                    { ...(supportFilter === option.voteOptionId ? ACTIVE_FILTER_PROPS : INACTIVE_FILTER_PROPS) }
-                    aria-pressed={ supportFilter === option.voteOptionId }
-                    onClick={ () => selectSupportFilter(option.voteOptionId) }
-                  >
-                    { option.voteOptionId === null ? option.label : `${ option.label } 추천` }
-                  </Button>
-                )) }
-              </HStack>
-            ) }
-
             <CommunityArticleCommentList
               comments={ comments }
+              filters={ post.postType === 'VOTE' && (
+                <HStack gap="2" overflowX="auto" padding="2" margin="-2">
+                  { [{ voteOptionId: null, label: '전체' }, ...post.voteOptions].map((option) => (
+                    <Button
+                      key={ option.voteOptionId ?? 'all' }
+                      size="xs"
+                      rounded="full"
+                      flexShrink="0"
+                      variant="outline"
+                      borderWidth="thin"
+                      transition="box-shadow 0.25s ease"
+                      { ...(supportFilter === option.voteOptionId ? ACTIVE_FILTER_PROPS : INACTIVE_FILTER_PROPS) }
+                      aria-pressed={ supportFilter === option.voteOptionId }
+                      onClick={ () => selectSupportFilter(option.voteOptionId) }
+                    >
+                      { option.voteOptionId === null ? option.label : `${ option.label } 추천` }
+                    </Button>
+                  )) }
+                </HStack>
+              ) }
               failed={ commentsFailed }
               emptyText={ supportFilter === null ? undefined : '이 선택지를 지지하는 댓글이 아직 없어요.' }
               postAuthorNickname={ post.author?.nickname }
