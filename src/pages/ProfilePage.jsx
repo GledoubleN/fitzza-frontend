@@ -186,7 +186,7 @@ export default function ProfilePage() {
               <Box as="form" onSubmit={handleSave} w="100%">
                 <Stack gap={3}>
                   <HStack>
-                    <Text textStyle="xs" w="28%" color="fg.muted">키(cm)</Text>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">키(cm)</Text>
                     <Input
                       name="height"
                       value={profileData.height}
@@ -200,7 +200,7 @@ export default function ProfilePage() {
                   </HStack>
 
                   <HStack>
-                    <Text textStyle="xs" w="28%" color="fg.muted">체중(kg)</Text>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">체중(kg)</Text>
                     <Input
                       name="weight"
                       value={profileData.weight}
@@ -214,7 +214,7 @@ export default function ProfilePage() {
                   </HStack>
 
                   <HStack position="relative" zIndex={2}>
-                    <Text textStyle="xs" w="28%" color="fg.muted">선호 핏</Text>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">선호 핏</Text>
                     <Select.Root
                       collection={createListCollection({ items: fitOptions })}
                       size="xs"
@@ -236,7 +236,7 @@ export default function ProfilePage() {
                   </HStack>
 
                   <HStack position="relative" zIndex={1}>
-                    <Text textStyle="xs" w="28%" color="fg.muted">스타일</Text>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">스타일</Text>
                     <Select.Root
                       collection={createListCollection({ items: styleOptions })}
                       size="xs"
