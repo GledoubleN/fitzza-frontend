@@ -108,10 +108,8 @@ export default function ProfilePage() {
     const payload = {
       height: profileData.height ? Number(profileData.height) : null,
       weight: profileData.weight ? Number(profileData.weight) : null,
-      gender: null,
       preferredFit: profileData.preferredFit || null,
       preferredStyles: profileData.style ? [profileData.style] : [],
-      shoeSize: null,
     };
 
     try {
