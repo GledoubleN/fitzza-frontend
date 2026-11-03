@@ -61,12 +61,29 @@ const toFittingState = (detail) => {
 
 const toProductKey = (products) => products.map((product) => product.productId).sort().join()
 
+const toImagePath = (url) => url ? new URL(url, window.location.origin).pathname : ''
+
+const hasSameImages = (products, comboItems) => products.every((product) => comboItems.some(
+  (item) => item.productId === product.productId && toImagePath(item.imageUrl) === toImagePath(product.imageUrl),
+))
+
+const findFittingCombo = (products, combos) => {
+  const productKey = toProductKey(products)
+  const sameProductCombos = combos.filter((combo) => toProductKey(combo.items) === productKey)
+  if (sameProductCombos.length <= 1) return sameProductCombos[0]
+
+  const sameImageCombos = sameProductCombos.filter((combo) => hasSameImages(products, combo.items))
+  return sameImageCombos.length === 1 ? sameImageCombos[0] : null
+}
+
 const toFittingLabel = (products, { items = [], combos = [] }) => {
   if (!products.length) return '추천 상품'
 
+  const combo = findFittingCombo(products, combos)
+  if (combo) return `코디 ${ combos.indexOf(combo) + 1 }`
+  if (combo === null) return '추천 코디'
+
   const productKey = toProductKey(products)
-  const comboIndex = combos.findIndex((combo) => toProductKey(combo.items) === productKey)
-  if (comboIndex >= 0) return `코디 ${ comboIndex + 1 }`
 
   const item = items.find((item) => toProductKey([item]) === productKey)
   return item?.productName ?? products.map((product) => product.productName).join(', ')
