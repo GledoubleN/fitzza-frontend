@@ -84,6 +84,11 @@ export const WorldCupResultPage = ({
               templateColumns={ { base: '1fr', md: '{sizes.sm} 1fr' } }
               gap={ 8 }
               alignItems="center"
+              padding={ 6 }
+              layerStyle="glass"
+              borderWidth="thin"
+              borderColor="border.subtle"
+              boxShadow="sm"
             >
               <Box
                 className="group"
