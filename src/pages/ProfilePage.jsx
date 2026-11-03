@@ -32,12 +32,16 @@ import { toaster } from '../components/ui/toaster.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
 import { useUserPreferences } from '../hooks/useUserPreferences.js'
 import { findBodyMeasurementRangeError } from '../utils/bodyMeasurements.js'
+import { topSizes, bottomSizes } from '../components/onboarding/ClothingSizeStep.jsx'
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
   const { preferredFits, preferredStyles, isFailed: isPreferencesFailed, reload: reloadPreferences } = useUserPreferences()
   const fitOptions = [{ label: '선택 안함', value: '' }, ...preferredFits]
   const styleOptions = [{ label: '선택 안함', value: '' }, ...preferredStyles]
+  const toSizeOptions = (sizes) => [{ label: '선택 안함', value: '' }, ...sizes.map((size) => ({ label: size, value: size }))]
+  const topSizeOptions = toSizeOptions(topSizes)
+  const bottomSizeOptions = toSizeOptions(bottomSizes)
   const findLabel = (options, value) => options.find((option) => option.value === value)?.label ?? value
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -47,6 +51,8 @@ export default function ProfilePage() {
     weight: '',
     preferredFit: '',
     style: '',
+    topSize: '',
+    bottomSize: '',
     isAdmin: false,
   });
   const navigate = useNavigate();
@@ -67,6 +73,8 @@ export default function ProfilePage() {
           weight: response.data.weight ?? '',
           preferredFit: response.data.preferredFit || '',
           style: response.data.preferredStyles?.[0] || '',
+          topSize: response.data.topSize || '',
+          bottomSize: response.data.bottomSize || '',
           isAdmin: response.data.role === 'ADMIN',
         }));
       }
@@ -110,6 +118,8 @@ export default function ProfilePage() {
       weight: profileData.weight ? Number(profileData.weight) : null,
       preferredFit: profileData.preferredFit || null,
       preferredStyles: profileData.style ? [profileData.style] : [],
+      topSize: profileData.topSize || null,
+      bottomSize: profileData.bottomSize || null,
     };
 
     try {
@@ -223,6 +233,58 @@ export default function ProfilePage() {
                       maxLength={3}
                       autoComplete="off"
                     />
+                  </HStack>
+
+                  <HStack>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">상의 사이즈</Text>
+                    <Select.Root
+                      collection={createListCollection({ items: topSizeOptions })}
+                      size="xs"
+                      width="full"
+                      value={profileData.topSize ? [profileData.topSize] : ['']}
+                      onValueChange={(e) => setProfileData({ ...profileData, topSize: e.value[0] || '' })}
+                    >
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="상의 사이즈 선택" />
+                      </Select.Trigger>
+                      <Portal>
+                        <Select.Positioner>
+                          <Select.Content maxH="44" overflowY="auto">
+                            {topSizeOptions.map((item) => (
+                              <Select.Item key={item.value} item={item}>
+                                {item.label}
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select.Positioner>
+                      </Portal>
+                    </Select.Root>
+                  </HStack>
+
+                  <HStack>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">하의 사이즈</Text>
+                    <Select.Root
+                      collection={createListCollection({ items: bottomSizeOptions })}
+                      size="xs"
+                      width="full"
+                      value={profileData.bottomSize ? [profileData.bottomSize] : ['']}
+                      onValueChange={(e) => setProfileData({ ...profileData, bottomSize: e.value[0] || '' })}
+                    >
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="하의 사이즈 선택" />
+                      </Select.Trigger>
+                      <Portal>
+                        <Select.Positioner>
+                          <Select.Content maxH="44" overflowY="auto">
+                            {bottomSizeOptions.map((item) => (
+                              <Select.Item key={item.value} item={item}>
+                                {item.label}
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select.Positioner>
+                      </Portal>
+                    </Select.Root>
                   </HStack>
 
                   <HStack>
