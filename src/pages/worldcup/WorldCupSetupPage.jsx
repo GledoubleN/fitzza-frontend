@@ -146,6 +146,11 @@ export const WorldCupSetupPage = () => {
               size="sm"
               minWidth="16"
               variant="outline"
+              layerStyle="glass"
+              borderColor="border.subtle"
+              boxShadow="sm"
+              transition="box-shadow 0.25s ease"
+              _hover={ { bg: 'transparent', boxShadow: 'lg' } }
               onClick={ () => navigate('/worldcup/history', { state: { fromWorldCup: true } }) }
             >
               이력 보기
@@ -155,8 +160,15 @@ export const WorldCupSetupPage = () => {
                 size="sm"
                 minWidth="32"
                 bg={ isOverLimit ? 'terracotta.subtle' : 'terracotta.solid/70' }
+                bgImage="none"
+                backdropFilter="auto"
+                backdropBlur="sm"
                 color={ isOverLimit ? 'fg.error' : 'terracotta.contrast' }
-                borderColor={ isOverLimit ? 'fg.error' : 'terracotta.solid' }
+                borderWidth="thin"
+                borderColor={ isOverLimit ? 'fg.error' : 'fg/10' }
+                boxShadow="md"
+                transition="box-shadow 0.25s ease"
+                _hover={ { bg: isOverLimit ? 'terracotta.subtle' : 'terracotta.solid/70', boxShadow: 'lg' } }
                 disabled={ selectedProductIds.length < 2 || isOverLimit }
                 _disabled={ isOverLimit ? { opacity: 1 } : undefined }
                 onClick={ handleStartWorldCup }
