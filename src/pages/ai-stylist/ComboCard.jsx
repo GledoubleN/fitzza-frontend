@@ -6,6 +6,7 @@ import { toaster } from '../../components/ui/toaster.jsx'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductRow } from './ProductRow.jsx'
 import { addRecommendedOptionToCart } from './recommendedOption.js'
+import { FLOATING_BUTTON_PROPS, GLASS_BUTTON_PROPS } from './buttonStyles.js'
 
 const OPTION_NOT_FOUND_MESSAGE = '추천 옵션이 없어 담지 못했어요. 상품 페이지에서 담아주세요.'
 const CART_FAILED_MESSAGE = '담지 못했어요. 다시 눌러주세요.'
@@ -95,9 +96,9 @@ export const ComboCard = ({ combo, index, wishedProductIds, onToggleWish, onTryO
           }
         </ProductRow>
         <Grid templateColumns={ '1fr 1fr' } gap={ 2 }>
-          <Button variant={ 'outline' } gridColumn={ 'span 2' } disabled={ tryingOn } onClick={ onTryOn }>바로 입어보기</Button>
-          <Button variant={ 'outline' } onClick={ share }>공유하기</Button>
-          <Button disabled={ !hasAllRecommendedSizes } loading={ saving } onClick={ addAllToCart }>전체 장바구니 담기</Button>
+          <Button { ...GLASS_BUTTON_PROPS } gridColumn={ 'span 2' } disabled={ tryingOn } onClick={ onTryOn }>바로 입어보기</Button>
+          <Button { ...GLASS_BUTTON_PROPS } onClick={ share }>공유하기</Button>
+          <Button { ...FLOATING_BUTTON_PROPS } disabled={ !hasAllRecommendedSizes } loading={ saving } onClick={ addAllToCart }>전체 장바구니 담기</Button>
         </Grid>
         <CartAddedDialog
           open={ added }
