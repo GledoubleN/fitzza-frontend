@@ -186,10 +186,10 @@ export default function ProfilePage() {
             {!isEditing ? (
               <Box w="100%">
                 <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" layerStyle="glass" boxShadow="xs">
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력 (건너뜀)'}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력 (건너뜀)'}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit ? findLabel(preferredFits, profileData.preferredFit) : '미입력 (건너뜀)'}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style ? findLabel(preferredStyles, profileData.style) : '미입력 (건너뜀)'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit ? findLabel(preferredFits, profileData.preferredFit) : '미입력'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style ? findLabel(preferredStyles, profileData.style) : '미입력'}</Text></Flex>
                 </Stack>
                 <Button
                   mt={3}
