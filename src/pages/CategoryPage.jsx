@@ -61,20 +61,23 @@ export const CategoryPage = () => {
             templateColumns={ '1fr 4fr' }
             gap={ '4' }
           >
-            <GridItem>
+            <GridItem
+              alignSelf={ 'start' }
+              padding={ '4' }
+              layerStyle={ 'glass' }
+              borderWidth={ 'thin' }
+              borderColor={ 'border.subtle' }
+              boxShadow={ 'sm' }
+            >
               <Stack gap={ '4' }>
                 {
                   categories.map((category) => (
                     <Button
                       key={ category.name }
-                      variant={ 'outline' }
+                      variant={ selected?.name === category.name
+                        ? 'subtle'
+                        : 'ghost' }
                       justifyContent={ 'flex-start' }
-                      layerStyle={ 'glass' }
-                      borderWidth={ 'thin' }
-                      borderColor={ selected?.name === category.name ? 'terracotta.solid' : 'border.subtle' }
-                      boxShadow={ 'sm' }
-                      transition={ 'box-shadow 0.25s ease' }
-                      _hover={ { bg: 'transparent', boxShadow: 'lg' } }
                       onClick={ () => setSelected(category) }
                     >
                       { category.name }
@@ -83,19 +86,20 @@ export const CategoryPage = () => {
                 }
               </Stack>
             </GridItem>
-            <GridItem>
+            <GridItem
+              alignSelf={ 'start' }
+              padding={ '4' }
+              layerStyle={ 'glass' }
+              borderWidth={ 'thin' }
+              borderColor={ 'border.subtle' }
+              boxShadow={ 'sm' }
+            >
               <Stack gap={ '4' }>
                 <Stack key={ selected?.name } gap={ 4 }>
                   <Button
-                    variant={ 'outline' }
+                    variant={ 'ghost' }
                     width={ 'full' }
                     justifyContent={ 'space-between' }
-                    layerStyle={ 'glass' }
-                    borderWidth={ 'thin' }
-                    borderColor={ 'border.subtle' }
-                    boxShadow={ 'sm' }
-                    transition={ 'box-shadow 0.25s ease' }
-                    _hover={ { bg: 'transparent', boxShadow: 'lg' } }
                     onClick={ () => search(selected.code) }
                   >
                     <Heading size={ 'md' }>{ selected?.name }</Heading>
@@ -113,14 +117,8 @@ export const CategoryPage = () => {
                       selected?.children.map((subcategory) => (
                         <Button
                           key={ subcategory.name }
-                          variant={ 'outline' }
+                          variant={ 'ghost' }
                           justifyContent={ 'space-between' }
-                          layerStyle={ 'glass' }
-                          borderWidth={ 'thin' }
-                          borderColor={ 'border.subtle' }
-                          boxShadow={ 'sm' }
-                          transition={ 'box-shadow 0.25s ease' }
-                          _hover={ { bg: 'transparent', boxShadow: 'lg' } }
                           onClick={ () => search(
                             `${ subcategory.code }`) }
                         >
