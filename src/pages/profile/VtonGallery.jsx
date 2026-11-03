@@ -264,7 +264,7 @@ export const VtonGallery = ({ preview = false }) => {
                 {
                   selected &&
                   <Grid templateColumns={ { base: '1fr', md: '3fr 2fr' } } gap={ 4 } alignItems={ 'start' }>
-                    <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } borderRadius={ 'xl' } overflow={ 'hidden' }>
+                    <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } overflow={ 'hidden' }>
                       <FittingThumbnail fitting={ selected }></FittingThumbnail>
                     </AspectRatio>
                     <Stack gap={ 4 }>
@@ -280,7 +280,7 @@ export const VtonGallery = ({ preview = false }) => {
                             onClick={ () => navigate(`/products/${ product.productId }`) }
                           >
                             <Box width={ 12 } flexShrink={ 0 }>
-                              <AspectRatio ratio={ 1 } borderRadius={ 'md' } overflow={ 'hidden' } bg={ 'bg.muted' }>
+                              <AspectRatio ratio={ 1 }  overflow={ 'hidden' } bg={ 'bg.muted' }>
                                 <ProductImage src={ product.imageUrl } alt={ product.productName }></ProductImage>
                               </AspectRatio>
                             </Box>
