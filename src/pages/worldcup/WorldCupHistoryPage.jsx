@@ -151,13 +151,14 @@ export const WorldCupHistoryPage = () => {
                       borderWidth="thin"
                       borderColor="border.subtle"
                       p={ 4 }
-                      bg="bg.panel"
+                      layerStyle="glass"
+                      boxShadow="sm"
                       display="flex"
                       alignItems="center"
                       gap={ 4 }
                       cursor="pointer"
-                      _hover={ { borderColor: 'border.emphasized', transform: 'translateY(calc(-1 * {spacing.1}))' } }
-                      transition="all 0.2s"
+                      _hover={ { boxShadow: 'lg' } }
+                      transition="box-shadow 0.25s ease"
                       onClick={ () => productId && navigate(`/products/${ productId }`) }
                     >
                       <Box
