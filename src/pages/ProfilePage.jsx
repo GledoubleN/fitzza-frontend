@@ -93,13 +93,6 @@ export default function ProfilePage() {
     }
   };
 
-  const handleSkipField = (fieldName) => {
-    setProfileData({
-      ...profileData,
-      [fieldName]: '',
-    });
-  };
-
   const handleSave = async (e) => {
     e.preventDefault();
     setMessage({ text: '', isError: false });
@@ -204,7 +197,6 @@ export default function ProfilePage() {
                       maxLength={3}
                       autoComplete="off"
                     />
-                    <Button size="xs" variant="ghost" colorPalette="gray" onClick={() => handleSkipField('height')}>건너뛰기</Button>
                   </HStack>
 
                   <HStack>
@@ -219,7 +211,6 @@ export default function ProfilePage() {
                       maxLength={3}
                       autoComplete="off"
                     />
-                    <Button size="xs" variant="ghost" colorPalette="gray" onClick={() => handleSkipField('weight')}>건너뛰기</Button>
                   </HStack>
 
                   <HStack position="relative" zIndex={2}>
@@ -242,7 +233,6 @@ export default function ProfilePage() {
                         ))}
                       </Select.Content>
                     </Select.Root>
-                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('preferredFit')}>비우기</Button>
                   </HStack>
 
                   <HStack position="relative" zIndex={1}>
@@ -265,7 +255,6 @@ export default function ProfilePage() {
                         ))}
                       </Select.Content>
                     </Select.Root>
-                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('style')}>비우기</Button>
                   </HStack>
 
                   {isPreferencesFailed && (
