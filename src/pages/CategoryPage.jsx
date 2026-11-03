@@ -18,6 +18,24 @@ import { TabBar } from '../components/TabBar.jsx'
 import { api } from '../api/axios.js'
 import { HttpStatusCode } from 'axios'
 
+const CATEGORY_PROPS = {
+  layerStyle: 'glass',
+  borderColor: 'border.subtle',
+  boxShadow: 'sm',
+  _hover: { bg: 'transparent', boxShadow: 'lg' },
+}
+
+const SELECTED_CATEGORY_PROPS = {
+  bg: 'terracotta.solid/70',
+  bgImage: 'none',
+  backdropFilter: 'auto',
+  backdropBlur: 'sm',
+  color: 'terracotta.contrast',
+  borderColor: 'fg/10',
+  boxShadow: 'md',
+  _hover: { bg: 'terracotta.solid/70', boxShadow: 'lg' },
+}
+
 export const CategoryPage = () => {
   const navigate = useNavigate()
   const [categories, setCategories] = useState([])
@@ -74,10 +92,11 @@ export const CategoryPage = () => {
                   categories.map((category) => (
                     <Button
                       key={ category.name }
-                      variant={ selected?.name === category.name
-                        ? 'subtle'
-                        : 'ghost' }
+                      variant={ 'outline' }
                       justifyContent={ 'flex-start' }
+                      borderWidth={ 'thin' }
+                      transition={ 'box-shadow 0.25s ease' }
+                      { ...(selected?.name === category.name ? SELECTED_CATEGORY_PROPS : CATEGORY_PROPS) }
                       onClick={ () => setSelected(category) }
                     >
                       { category.name }
@@ -97,9 +116,15 @@ export const CategoryPage = () => {
               <Stack gap={ '4' }>
                 <Stack key={ selected?.name } gap={ 4 }>
                   <Button
-                    variant={ 'ghost' }
+                    variant={ 'outline' }
                     width={ 'full' }
                     justifyContent={ 'space-between' }
+                    layerStyle={ 'glass' }
+                    borderWidth={ 'thin' }
+                    borderColor={ 'border.subtle' }
+                    boxShadow={ 'sm' }
+                    transition={ 'box-shadow 0.25s ease' }
+                    _hover={ { bg: 'transparent', boxShadow: 'lg' } }
                     onClick={ () => search(selected.code) }
                   >
                     <Heading size={ 'md' }>{ selected?.name }</Heading>
@@ -117,8 +142,14 @@ export const CategoryPage = () => {
                       selected?.children.map((subcategory) => (
                         <Button
                           key={ subcategory.name }
-                          variant={ 'ghost' }
+                          variant={ 'outline' }
                           justifyContent={ 'space-between' }
+                          layerStyle={ 'glass' }
+                          borderWidth={ 'thin' }
+                          borderColor={ 'border.subtle' }
+                          boxShadow={ 'sm' }
+                          transition={ 'box-shadow 0.25s ease' }
+                          _hover={ { bg: 'transparent', boxShadow: 'lg' } }
                           onClick={ () => search(
                             `${ subcategory.code }`) }
                         >
