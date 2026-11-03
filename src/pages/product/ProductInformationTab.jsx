@@ -11,6 +11,10 @@ export const ProductInformationTab = ({ product }) => {
         <ProductImage
           key={ image }
           width={ '100%' }
+          maxWidth={ 'md' }
+          marginX={ 'auto' }
+          aspectRatio={ '5/6' }
+          objectFit={ 'cover' }
           src={ image }
           alt={ product.productName }
         ></ProductImage>
