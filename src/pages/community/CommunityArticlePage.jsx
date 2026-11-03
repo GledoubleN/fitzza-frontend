@@ -31,6 +31,7 @@ import { CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } fr
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 import { CommunityConfirmDialog } from './CommunityConfirmDialog.jsx'
 import { NOTIFICATION_RECEIVED_EVENT } from '../../hooks/useNotifications.js'
+import { ACTIVE_FILTER_PROPS, INACTIVE_FILTER_PROPS } from './filterChipStyles.js'
 
 const COMMENT_MAX_LENGTH = 500
 
@@ -457,16 +458,17 @@ export const CommunityArticlePage = () => {
             <Separator/>
 
             { post.postType === 'VOTE' && (
-              <HStack gap="2" overflowX="auto">
+              <HStack gap="2" overflowX="auto" padding="2" margin="-2">
                 { [{ voteOptionId: null, label: '전체' }, ...post.voteOptions].map((option) => (
                   <Button
                     key={ option.voteOptionId ?? 'all' }
                     size="xs"
                     rounded="full"
                     flexShrink="0"
-                    bg={  supportFilter === option.voteOptionId ?  'terracotta.solid/70' : undefined }
-                    color={  supportFilter === option.voteOptionId ?  'terracotta.contrast' : undefined }
-                    variant={ supportFilter === option.voteOptionId ? 'solid' : 'outline' }
+                    variant="outline"
+                    borderWidth="thin"
+                    transition="box-shadow 0.25s ease"
+                    { ...(supportFilter === option.voteOptionId ? ACTIVE_FILTER_PROPS : INACTIVE_FILTER_PROPS) }
                     aria-pressed={ supportFilter === option.voteOptionId }
                     onClick={ () => selectSupportFilter(option.voteOptionId) }
                   >

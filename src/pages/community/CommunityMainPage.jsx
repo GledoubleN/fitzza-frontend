@@ -21,6 +21,7 @@ import { ProductImage } from '../../components/ProductImage.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { CATEGORIES, CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } from './communityFormat.js'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
+import { ACTIVE_FILTER_PROPS, INACTIVE_FILTER_PROPS } from './filterChipStyles.js'
 
 const PAGE_SIZE = 20
 
@@ -29,24 +30,6 @@ const FILTERS = [
   { label: '투표', params: { postType: 'VOTE' } },
   ...CATEGORIES.map(({ value, label }) => ({ label, params: { category: value, postType: 'NORMAL' } })),
 ]
-
-const ACTIVE_FILTER_PROPS = {
-  bg: 'terracotta.solid/70',
-  bgImage: 'none',
-  backdropFilter: 'auto',
-  backdropBlur: 'sm',
-  color: 'terracotta.contrast',
-  borderColor: 'fg/10',
-  boxShadow: 'md',
-  _hover: { bg: 'terracotta.solid/70', boxShadow: 'lg' },
-}
-
-const INACTIVE_FILTER_PROPS = {
-  layerStyle: 'glass',
-  borderColor: 'border.subtle',
-  boxShadow: 'sm',
-  _hover: { bg: 'transparent', boxShadow: 'lg' },
-}
 
 export const CommunityMainPage = () => {
   const navigate = useNavigate()
