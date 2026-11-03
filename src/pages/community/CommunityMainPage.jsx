@@ -7,6 +7,7 @@ import {
   Flex,
   HStack,
   Image,
+  Separator,
   Input,
   InputGroup,
   Stack,
@@ -121,7 +122,16 @@ export const CommunityMainPage = () => {
         </Container>
 
         <Container maxWidth="5xl">
-          <Stack direction="column" gap="4">
+          <Stack
+            direction="column"
+            gap="0"
+            separator={ <Separator/> }
+            paddingX="4"
+            layerStyle="glass"
+            borderWidth="thin"
+            borderColor="border.subtle"
+            boxShadow="sm"
+          >
             { posts.map((post) => (
               <PostItem
                 key={ post.postId }
@@ -165,17 +175,11 @@ const PostItem = ({ post, onClick }) => {
     <Flex
       as="button"
       gap="3"
-      padding="4"
+      paddingY="4"
       align="flex-start"
       textAlign="start"
       width="full"
       cursor="pointer"
-      layerStyle="glass"
-      borderWidth="thin"
-      borderColor="border.subtle"
-      boxShadow="sm"
-      transition="box-shadow 0.25s ease"
-      _hover={ { boxShadow: 'lg' } }
       onClick={ onClick }
     >
       <Stack direction="column" gap="2" flex="1" minWidth="0">
