@@ -210,7 +210,7 @@ export const VtonGallery = ({ preview = false }) => {
               gap={ 3 }
               textAlign={ 'start' }
               rounded={ 'none' }
-              bg={ 'bg.panel' }
+              layerStyle={ 'glass' }
               borderWidth={ 'thin' }
               borderColor={ 'border.subtle' }
               boxShadow={ 'sm' }
@@ -218,7 +218,7 @@ export const VtonGallery = ({ preview = false }) => {
               _hover={ { boxShadow: 'lg' } }
               onClick={ () => setSelected(fitting) }
             >
-              <AspectRatio ratio={ 3 / 4 } overflow={ 'hidden' } bg={ 'bg.muted' }>
+              <AspectRatio ratio={ 2 / 3 } overflow={ 'hidden' } bg={ 'bg.muted' }>
                 <FittingThumbnail fitting={ fitting }></FittingThumbnail>
               </AspectRatio>
               <Stack gap={ 1 }>
@@ -252,7 +252,7 @@ export const VtonGallery = ({ preview = false }) => {
         <Portal>
           <Dialog.Backdrop/>
           <Dialog.Positioner>
-            <Dialog.Content marginX={ 4 }>
+            <Dialog.Content marginX={ 4 } bg={ 'bg' }>
               <Dialog.Header flexWrap={ 'wrap' } alignItems={ 'center' } columnGap={ 4 } paddingEnd={ 12 }>
                 <Dialog.Title>{ selected && toFittingTitle(selected) }</Dialog.Title>
                 <Stack gap={ 0 }>
@@ -264,7 +264,7 @@ export const VtonGallery = ({ preview = false }) => {
                 {
                   selected &&
                   <Grid templateColumns={ { base: '1fr', md: '3fr 2fr' } } gap={ 4 } alignItems={ 'start' }>
-                    <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } borderRadius={ 'xl' } overflow={ 'hidden' }>
+                    <AspectRatio ratio={ 2 / 3 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } overflow={ 'hidden' }>
                       <FittingThumbnail fitting={ selected }></FittingThumbnail>
                     </AspectRatio>
                     <Stack gap={ 4 }>
@@ -280,7 +280,7 @@ export const VtonGallery = ({ preview = false }) => {
                             onClick={ () => navigate(`/products/${ product.productId }`) }
                           >
                             <Box width={ 12 } flexShrink={ 0 }>
-                              <AspectRatio ratio={ 1 } borderRadius={ 'md' } overflow={ 'hidden' } bg={ 'bg.muted' }>
+                              <AspectRatio ratio={ 1 }  overflow={ 'hidden' } bg={ 'bg.muted' }>
                                 <ProductImage src={ product.imageUrl } alt={ product.productName }></ProductImage>
                               </AspectRatio>
                             </Box>

@@ -50,7 +50,7 @@ export const RequireAdmin = ({ children }) => {
                 <Dialog.Title>관리자만 접속할 수 있습니다.</Dialog.Title>
               </Dialog.Header>
               <Dialog.Footer>
-                <Button onClick={ goHome }>확인</Button>
+                <Button bg="terracotta.solid/70" color="terracotta.contrast" onClick={ goHome }>확인</Button>
               </Dialog.Footer>
             </Dialog.Content>
           </Dialog.Positioner>

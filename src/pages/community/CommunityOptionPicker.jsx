@@ -131,7 +131,15 @@ export const CommunityOptionPicker = ({ source, options, onToggle, onDone }) => 
           <Text fontWeight="bold">{ options.length } / { MAX_VOTE_OPTIONS }</Text>
           <Text fontSize="xs" color="fg.muted">최대 { MAX_VOTE_OPTIONS }개</Text>
         </Stack>
-        <Button flex="1" size="lg" onClick={ onDone }>선택 완료</Button>
+        <Button
+          flex="1"
+          size="lg"
+          bg="terracotta.solid/70"
+          color="terracotta.contrast"
+          onClick={ onDone }
+        >
+          선택 완료
+        </Button>
       </Flex>
     </Stack>
   )
@@ -266,9 +274,25 @@ const OptionGrid = ({ items, options, onToggle }) => (
               rounded="md"
               bg="bg.muted"
               borderWidth="md"
-              borderColor={ checked ? 'fg' : 'transparent' }
+              borderColor={ checked ? 'terracotta.solid' : 'transparent' }
             />
-            <Checkbox.Control position="absolute" top="4" right="4" rounded="full" bg={ checked ? undefined : 'bg' }/>
+            { checked && (
+              <Box
+                position="absolute"
+                inset="0"
+                rounded="md"
+                bg="terracotta.subtle/30"
+                pointerEvents="none"
+              />
+            ) }
+            <Checkbox.Control
+              position="absolute"
+              top="4"
+              right="4"
+              rounded="full"
+              bg={ checked ? undefined : 'bg' }
+              _checked={ { bg: 'terracotta.solid/70', borderColor: 'transparent', color: 'terracotta.contrast' } }
+            />
           </Box>
           <Checkbox.Label fontSize="sm" lineClamp="1">{ item.name }</Checkbox.Label>
           <Text fontSize="sm" fontWeight="bold">{ item.price?.toLocaleString() }원</Text>

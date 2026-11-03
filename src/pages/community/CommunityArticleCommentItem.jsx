@@ -91,7 +91,7 @@ export const CommunityArticleCommentItem = ({
           <HStack gap="4">
             <Button
               { ...actionProps }
-              color={ liked ? 'primary.fg' : 'fg.muted' }
+              color={ liked ? 'terracotta.solid' : 'fg.muted' }
               aria-pressed={ liked }
               onClick={ () => onLike(comment) }
             >

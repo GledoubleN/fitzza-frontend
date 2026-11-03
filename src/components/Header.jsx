@@ -24,6 +24,7 @@ import { toNotificationPath, toNotificationText, useNotifications } from '../hoo
 import { disablePush } from '../services/pushNotifications.js'
 import { toaster } from './ui/toaster.jsx'
 import { AIPromptCard } from './AIPromptCard.jsx'
+import { Logo } from './Logo.jsx'
 
 const MotionBox = chakra(motion.div)
 
@@ -154,7 +155,7 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
                 fontSize="2xl"
                 fontWeight="bold"
               >
-                <RouterLink to="/">FiTZZA</RouterLink>
+                <RouterLink to="/"><Logo/></RouterLink>
               </Text>
             ) }
           </GridItem>
@@ -176,7 +177,16 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
             gridColumn={ '3' }
             alignContent={ 'center' }
           >
-            <Stack direction={ 'row' } gap={ 4 } align="center">
+            <Stack
+              direction={ 'row' }
+              gap={ 1 }
+              align="center"
+              padding={ 1 }
+              layerStyle="glass"
+              borderWidth="thin"
+              borderColor="border"
+              borderRadius="full"
+            >
               <Popover.Root
                 open={ isNotificationOpen }
                 onOpenChange={ (event) => {
@@ -193,7 +203,7 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
                     <LuBell/>
                     { hasUnread && (
                       <Float placement="top-end" offset="2">
-                        <Circle size="2" bg="fg.error"/>
+                        <Circle size="2" bg="terracotta.solid/70"/>
                       </Float>
                     ) }
                   </IconButton>
@@ -243,7 +253,7 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
                                       >
                                         { toNotificationText(notification) }
                                       </Text>
-                                      { !notification.isRead && <Circle size="2" bg="fg.error" flexShrink={ 0 }/> }
+                                      { !notification.isRead && <Circle size="2" bg="terracotta.solid/70" flexShrink={ 0 }/> }
                                     </Stack>
                                     <Text textStyle="xs" color="fg.subtle">
                                       { formatNotificationTime(notification.createdAt) }

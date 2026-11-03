@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { Box } from '@chakra-ui/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.js'
 import { toaster } from '../../components/ui/toaster.jsx'
-import { AuroraSpinner } from '../../components/AuroraSpinner.jsx'
 import { WorldCupResultPage } from './WorldCupResultPage.jsx'
 import { WorldCupTournamentPage } from './WorldCupTournamentPage.jsx'
 
@@ -14,6 +12,15 @@ const shuffle = (array) => {
     ;[result[i], result[j]] = [result[j], result[i]]
   }
   return result
+}
+
+const toRoundTitle = (length) => {
+  if (length <= 2) return '결승'
+  if (length <= 4) return '4강'
+  if (length <= 8) return '8강'
+  if (length <= 16) return '16강'
+  if (length <= 32) return '32강'
+  return '64강'
 }
 
 export default function WorldCupPage () {
@@ -103,14 +110,7 @@ export default function WorldCupPage () {
     return () => { ignore = true }
   }, [location.state])
 
-  const updateRoundTitle = (length) => {
-    if (length <= 2) setRoundTitle('결승')
-    else if (length <= 4) setRoundTitle('4강')
-    else if (length <= 8) setRoundTitle('8강')
-    else if (length <= 16) setRoundTitle('16강')
-    else if (length <= 32) setRoundTitle('32강')
-    else setRoundTitle('64강')
-  }
+  const updateRoundTitle = (length) => setRoundTitle(toRoundTitle(length))
 
   const hasBye = matchList.length % 2 !== 0 && currentIndex === matchList.length - 1
   const byeProduct = hasBye ? matchList[matchList.length - 1] : null
@@ -235,9 +235,13 @@ export default function WorldCupPage () {
 
   if (isLoadingProducts) {
     return (
-      <Box position="relative" minHeight="100vh">
-        <AuroraSpinner label="월드컵 상품 정보를 불러오는 중"/>
-      </Box>
+      <WorldCupTournamentPage
+        isLoading
+        roundTitle={ toRoundTitle(rawSelectedProducts.length) }
+        currentIndex={ 0 }
+        matchList={ rawSelectedProducts }
+        onSelect={ () => {} }
+      />
     )
   }
 

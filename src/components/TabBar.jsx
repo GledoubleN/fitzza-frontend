@@ -33,65 +33,78 @@ const items = [
 
 export const TabBar = () => {
   return (
-    <Box
-      paddingX={ 4 }
-      position="sticky"
-      bottom="calc(env(safe-area-inset-bottom, 0px) + 12px)"
-      zIndex="docked"
-    >
-      <Container
-        as="nav"
-        paddingX={ 0 }
-        maxWidth="xl"
-        layerStyle="glass"
-        borderWidth="thin"
-        borderColor="fg/10"
-        borderRadius="full"
-        boxShadow="md"
-        transition="transform 0.2s ease"
+    <>
+      <Box
+        height="20"
+        flexShrink={ 0 }
+      />
+
+      <Box
+        position="fixed"
+        insetX={ 0 }
+        bottom="calc(env(safe-area-inset-bottom, 0px) + {spacing.3})"
+        paddingX={ 4 }
+        zIndex="docked"
+        pointerEvents="none"
       >
-        <Grid
-          templateColumns={ 'repeat(5, 1fr)' }
-          paddingX={ 1 }
-          paddingY={ 1 }
+        <Container
+          as="nav"
+          pointerEvents="auto"
+          paddingX={ 0 }
+          maxWidth="xl"
+          layerStyle="glass"
+          borderWidth="thin"
+          borderColor="border"
+          borderRadius="full"
+          boxShadow="md"
+          transition="transform 0.2s ease"
         >
-          { items.map(({ to, label, icon, end }) => (
-            <NavLink key={ to } to={ to } end={ end } style={ { flex: 1 } }>
-              { ({ isActive }) => (
-                <Flex
-                  direction="column"
-                  align="center"
-                  gap={ 1 }
-                  paddingX={ 1 }
-                  paddingY={ 1 }
-                  borderRadius="full"
-                  color={ isActive ? 'fg' : 'fg.muted' }
-                  bg={ isActive ? 'gray.900/3' : 'transparent' }
-                  borderWidth="1px"
-                  borderColor={ isActive ? 'border.subtle' : 'transparent' }
-                  backdropFilter={ isActive ? 'blur(1px)' : undefined }
-                  transition="background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, transform 0.12s ease"
-                  _active={ { transform: 'scale(0.9)' } }
-                >
-                  <Icon
-                    as={ icon }
-                    boxSize={ 6 }
-                    strokeWidth={ isActive ? 2.5 : 2 }
-                    transform={ isActive ? 'scale(1.05)' : 'scale(1)' }
-                    animation={ isActive
-                      ? `${ pop } 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)`
-                      : undefined }
-                  />
-                  <Text fontSize="xs" whiteSpace="nowrap"
-                        fontWeight={ isActive ? 'semibold' : 'medium' }>
-                    { label }
-                  </Text>
-                </Flex>
-              ) }
-            </NavLink>
-          )) }
-        </Grid>
-      </Container>
-    </Box>
+          <Grid
+            templateColumns={ 'repeat(5, 1fr)' }
+            paddingX={ 1 }
+            paddingY={ 1 }
+          >
+            { items.map(({ to, label, icon, end }) => (
+              <NavLink key={ to } to={ to } end={ end } style={ { flex: 1 } }>
+                { ({ isActive }) => (
+                  <Flex
+                    direction="column"
+                    align="center"
+                    gap={ 1 }
+                    paddingX={ 1 }
+                    paddingY={ 1 }
+                    borderRadius="full"
+                    color={ isActive ? 'terracotta.contrast' : { base: 'terracotta.950/60', _dark: 'terracotta.100/60' } }
+                    bg={ isActive ? 'terracotta.solid/70' : 'transparent' }
+                    borderColor="transparent"
+                    boxShadow={ isActive ? '0 {spacing.1} {spacing.3} {colors.terracotta.solid/25}' : undefined }
+                    backdropFilter={ isActive ? 'auto' : undefined }
+                    backdropBlur={ isActive ? 'sm' : undefined }
+                    bgImage="none"
+                    borderWidth="thin"
+                    transition="background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, transform 0.12s ease"
+                    _active={ { transform: 'scale(0.9)' } }
+                  >
+                    <Icon
+                      as={ icon }
+                      boxSize={ 6 }
+                      strokeWidth={ isActive ? 2.5 : 2 }
+                      transform={ isActive ? 'scale(1.05)' : 'scale(1)' }
+                      animation={ isActive
+                        ? `${ pop } 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)`
+                        : undefined }
+                    />
+                    <Text fontSize="xs" whiteSpace="nowrap"
+                          fontWeight={ isActive ? 'semibold' : 'medium' }>
+                      { label }
+                    </Text>
+                  </Flex>
+                ) }
+              </NavLink>
+            )) }
+          </Grid>
+        </Container>
+      </Box>
+    </>
   )
 }

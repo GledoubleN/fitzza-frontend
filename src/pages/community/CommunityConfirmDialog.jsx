@@ -21,7 +21,7 @@ export const CommunityConfirmDialog = ({ open, title, description, confirmLabel,
           ) }
           <Dialog.Footer>
             <Button variant="outline" flex="1" onClick={ onClose }>취소</Button>
-            <Button flex="1" loading={ loading } onClick={ onConfirm }>{ confirmLabel }</Button>
+            <Button bg="terracotta.solid/70" color="terracotta.contrast" flex="1" loading={ loading } onClick={ onConfirm }>{ confirmLabel }</Button>
           </Dialog.Footer>
         </Dialog.Content>
       </Dialog.Positioner>

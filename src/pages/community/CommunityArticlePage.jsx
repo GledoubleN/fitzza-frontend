@@ -13,7 +13,6 @@ import {
   Input,
   Menu,
   Portal,
-  Separator,
   Stack,
   Text,
 } from '@chakra-ui/react'
@@ -31,6 +30,7 @@ import { CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } fr
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
 import { CommunityConfirmDialog } from './CommunityConfirmDialog.jsx'
 import { NOTIFICATION_RECEIVED_EVENT } from '../../hooks/useNotifications.js'
+import { ACTIVE_FILTER_PROPS, INACTIVE_FILTER_PROPS } from './filterChipStyles.js'
 
 const COMMENT_MAX_LENGTH = 500
 
@@ -53,6 +53,7 @@ export const CommunityArticlePage = () => {
 
   const [post, setPost] = useState(null)
   const [comments, setComments] = useState([])
+  const [allComments, setAllComments] = useState([])
   const [myNickname, setMyNickname] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -77,6 +78,7 @@ export const CommunityArticlePage = () => {
           return
         }
         setComments(response.data)
+        if (supportedOptionId === null) setAllComments(response.data)
         setCommentsFailed(false)
       })
       .catch((error) => {
@@ -106,6 +108,7 @@ export const CommunityArticlePage = () => {
       })
 
     setComments([])
+    setAllComments([])
     setCommentsFailed(false)
     setSupportFilter(null)
     loadComments(null).catch(() => setCommentsFailed(true))
@@ -120,12 +123,14 @@ export const CommunityArticlePage = () => {
       const { type, targetId } = event.detail ?? {}
       if (type !== 'COMMENT' || String(targetId) !== id) return
 
-      loadComments().catch(() => setCommentsFailed(true))
+      loadComments(null)
+        .then(() => supportFilter !== null && loadComments(supportFilter))
+        .catch(() => setCommentsFailed(true))
     }
 
     window.addEventListener(NOTIFICATION_RECEIVED_EVENT, handleNotification)
     return () => window.removeEventListener(NOTIFICATION_RECEIVED_EVENT, handleNotification)
-  }, [id, loadComments])
+  }, [id, loadComments, supportFilter])
 
   const selectSupportFilter = (voteOptionId) => {
     setSupportFilter(voteOptionId)
@@ -232,7 +237,8 @@ export const CommunityArticlePage = () => {
   const deleteComment = async (commentId) => {
     try {
       await api.delete(`/comments/${ commentId }`)
-      await loadComments()
+      await loadComments(null)
+      if (supportFilter !== null) await loadComments(supportFilter)
       setPost((prev) => ({ ...prev, commentCount: prev.commentCount - 1 }))
     } catch (error) {
       notifyError(error, '댓글을 삭제하지 못했어요.')
@@ -294,6 +300,9 @@ export const CommunityArticlePage = () => {
   }
 
   const isAuthor = myNickname !== null && myNickname === post.author?.nickname
+  const hasMyComment = isSignedIn && myNickname !== null && allComments.some((item) =>
+    [item, ...(item.replies ?? [])].some((entry) => !entry.isDeleted && entry.author?.nickname === myNickname),
+  )
   const shared = post.shared
   const sharedProduct = shared?.snapshot?.productName ? shared.snapshot : null
   const sharedItems = shared?.items ?? []
@@ -302,169 +311,186 @@ export const CommunityArticlePage = () => {
     <Stack direction="column" gap="4" minHeight="100vh" paddingTop="4">
       <Header/>
 
-      <Container maxWidth="5xl" flex="1">
+      <Container maxWidth="5xl" flex="1" marginBottom="-4">
         <Stack direction="column" gap="4">
-          <CommunityTitleBar>
-            { isAuthor && (
-              <Menu.Root>
-                <Menu.Trigger asChild>
-                  <IconButton rounded="full" variant="ghost" size="sm" aria-label="게시글 메뉴">
-                    <LuEllipsisVertical/>
-                  </IconButton>
-                </Menu.Trigger>
-                <Portal>
-                  <Menu.Positioner>
-                    <Menu.Content>
-                      <Menu.Item value="edit" onClick={ () => navigate('/community/write', { state: { post } }) }>
-                        수정
-                      </Menu.Item>
-                      <Menu.Item value="delete" color="fg.error" onClick={ () => askDelete({ type: 'post' }) }>
-                        삭제
-                      </Menu.Item>
-                    </Menu.Content>
-                  </Menu.Positioner>
-                </Portal>
-              </Menu.Root>
-            ) }
-          </CommunityTitleBar>
+          <CommunityTitleBar/>
 
-          <Stack gap="0">
-            <HStack gap="4">
-              { post.postType === 'VOTE'
-                ? <Badge>투표</Badge>
-                : <Badge>{ CATEGORY_LABELS[post.category] ?? post.category }</Badge> }
-            </HStack>
-            <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
-            <Text color="fg.muted" fontSize="sm">
-              { displayNickname(post.author?.nickname) } · { formatRelativeTime(post.createdAt) }
-              { ` · 조회 ${ post.viewCount }` }
-            </Text>
-          </Stack>
-
-          <Text whiteSpace="pre-wrap">{ post.content }</Text>
-
-          { shared && (
-            <Card.Root variant="subtle" size="sm">
-              <Card.Body gap="4">
-                <Text fontWeight="semibold" fontSize="sm">{ SHARED_TITLES[shared.type] }</Text>
-                { shared.type === 'FITTING' && shared.snapshot?.imageUrl && (
-                  <Image
-                    src={ shared.snapshot.imageUrl }
-                    alt=""
-                    maxHeight="sm"
-                    width="fit-content"
-                    rounded="md"
-                    bg="bg.muted"
-                  />
-                ) }
-                { sharedProduct && (
-                  <Flex
-                    as="button"
-                    gap="4"
-                    align="center"
-                    textAlign="start"
-                    onClick={ () => navigate(`/products/${ sharedProduct.productId }`) }
-                  >
-                    <ProductImage
-                      src={ sharedProduct.imageUrl }
-                      alt=""
-                      boxSize="16"
-                      objectFit="cover"
-                      rounded="sm"
-                      bg="bg.muted"
-                    />
-                    <Stack gap="0" flex="1" minWidth="0">
-                      <Text fontSize="xs" color="fg.muted">{ sharedProduct.brandName }</Text>
-                      <Text fontSize="sm" lineClamp="1">{ sharedProduct.productName }</Text>
-                    </Stack>
-                    <Text fontSize="sm">{ sharedProduct.price?.toLocaleString() }원</Text>
-                  </Flex>
-                ) }
-                { shared.snapshot?.summary && (
-                  <Text fontSize="sm" color="fg.muted">{ shared.snapshot.summary }</Text>
-                ) }
-                { sharedItems.map((item) => (
-                  <Flex
-                    key={ item.productId }
-                    as="button"
-                    gap="4"
-                    align="center"
-                    textAlign="start"
-                    onClick={ () => navigate(`/products/${ item.productId }`) }
-                  >
-                    <ProductImage src={ item.imageUrl } alt="" boxSize="12" objectFit="cover" rounded="sm" bg="bg.muted"/>
-                    <Text flex="1" fontSize="sm" lineClamp="1">{ item.productName }</Text>
-                    <Text fontSize="sm">{ item.price?.toLocaleString() }원</Text>
-                  </Flex>
-                )) }
-                { shared.type === 'COMBO' && shared.snapshot?.price && (
-                  <Text fontSize="sm" fontWeight="bold" alignSelf="flex-end">
-                    합계 { shared.snapshot.price.toLocaleString() }원
-                  </Text>
-                ) }
-              </Card.Body>
-            </Card.Root>
-          ) }
-
-          { post.postType === 'VOTE' && (
-            <CommunityPoll
-              postId={ post.postId }
-              voteOptions={ post.voteOptions }
-              isAuthor={ isAuthor }
-              isSignedIn={ isSignedIn }
-              onRequireSignIn={ requireSignIn }
-            />
-          ) }
-
-          <HStack gap="4">
-            <Button
-              variant="plain"
-              size="sm"
-              paddingX="0"
-              color={ post.liked ? 'primary.fg' : 'fg' }
-              aria-pressed={ post.liked }
-              onClick={ togglePostLike }
+          <Stack gap="4">
+            <Stack
+              gap="4"
+              padding="4"
+              layerStyle="glass"
+              borderWidth="thin"
+              borderColor="border.subtle"
+              boxShadow="sm"
             >
-              <LuThumbsUp/> { post.likeCount }
-            </Button>
-            <Badge variant="plain" size="md" paddingX="0">
-              <LuMessageCircle/> { post.commentCount }
-            </Badge>
-          </HStack>
+              <Flex justify="space-between" align="start" gap="4">
+                <Stack gap="0">
+                  <HStack gap="4">
+                    { post.postType === 'VOTE'
+                      ? <Badge>투표</Badge>
+                      : <Badge>{ CATEGORY_LABELS[post.category] ?? post.category }</Badge> }
+                  </HStack>
+                  <Text fontSize={ { base: 'xl', md: '2xl' } } fontWeight="bold">{ post.title }</Text>
+                  <Text color="fg.muted" fontSize="sm">
+                    { displayNickname(post.author?.nickname) } · { formatRelativeTime(post.createdAt) }
+                    { ` · 조회 ${ post.viewCount }` }
+                  </Text>
+                </Stack>
+                { isAuthor && (
+                  <Menu.Root>
+                    <Menu.Trigger asChild>
+                      <IconButton rounded="full" variant="ghost" size="sm" aria-label="게시글 메뉴">
+                        <LuEllipsisVertical/>
+                      </IconButton>
+                    </Menu.Trigger>
+                    <Portal>
+                      <Menu.Positioner>
+                        <Menu.Content>
+                          <Menu.Item value="edit" onClick={ () => navigate('/community/write', { state: { post } }) }>
+                            수정
+                          </Menu.Item>
+                          <Menu.Item value="delete" color="fg.error" onClick={ () => askDelete({ type: 'post' }) }>
+                            삭제
+                          </Menu.Item>
+                        </Menu.Content>
+                      </Menu.Positioner>
+                    </Portal>
+                  </Menu.Root>
+                ) }
+              </Flex>
 
-          <Separator/>
+              <Text whiteSpace="pre-wrap">{ post.content }</Text>
 
-          { post.postType === 'VOTE' && (
-            <HStack gap="2" overflowX="auto">
-              { [{ voteOptionId: null, label: '전체' }, ...post.voteOptions].map((option) => (
+              { shared && (
+                <Card.Root variant="subtle" size="sm">
+                  <Card.Body gap="4">
+                    <Text fontWeight="semibold" fontSize="sm">{ SHARED_TITLES[shared.type] }</Text>
+                    { shared.type === 'FITTING' && shared.snapshot?.imageUrl && (
+                      <Image
+                        src={ shared.snapshot.imageUrl }
+                        alt=""
+                        maxHeight="sm"
+                        width="fit-content"
+                        rounded="md"
+                        bg="bg.muted"
+                      />
+                    ) }
+                    { sharedProduct && (
+                      <Flex
+                        as="button"
+                        gap="4"
+                        align="center"
+                        textAlign="start"
+                        onClick={ () => navigate(`/products/${ sharedProduct.productId }`) }
+                      >
+                        <ProductImage
+                          src={ sharedProduct.imageUrl }
+                          alt=""
+                          boxSize="16"
+                          objectFit="cover"
+                          rounded="sm"
+                          bg="bg.muted"
+                        />
+                        <Stack gap="0" flex="1" minWidth="0">
+                          <Text fontSize="xs" color="fg.muted">{ sharedProduct.brandName }</Text>
+                          <Text fontSize="sm" lineClamp="1">{ sharedProduct.productName }</Text>
+                        </Stack>
+                        <Text fontSize="sm">{ sharedProduct.price?.toLocaleString() }원</Text>
+                      </Flex>
+                    ) }
+                    { shared.snapshot?.summary && (
+                      <Text fontSize="sm" color="fg.muted">{ shared.snapshot.summary }</Text>
+                    ) }
+                    { sharedItems.map((item) => (
+                      <Flex
+                        key={ item.productId }
+                        as="button"
+                        gap="4"
+                        align="center"
+                        textAlign="start"
+                        onClick={ () => navigate(`/products/${ item.productId }`) }
+                      >
+                        <ProductImage src={ item.imageUrl } alt="" boxSize="12" objectFit="cover" rounded="sm" bg="bg.muted"/>
+                        <Text flex="1" fontSize="sm" lineClamp="1">{ item.productName }</Text>
+                        <Text fontSize="sm">{ item.price?.toLocaleString() }원</Text>
+                      </Flex>
+                    )) }
+                    { shared.type === 'COMBO' && shared.snapshot?.price && (
+                      <Text fontSize="sm" fontWeight="bold" alignSelf="flex-end">
+                        합계 { shared.snapshot.price.toLocaleString() }원
+                      </Text>
+                    ) }
+                  </Card.Body>
+                </Card.Root>
+              ) }
+
+              { post.postType === 'VOTE' && (
+                <CommunityPoll
+                  postId={ post.postId }
+                  voteOptions={ post.voteOptions }
+                  isAuthor={ isAuthor }
+                  isSignedIn={ isSignedIn }
+                  onRequireSignIn={ requireSignIn }
+                />
+              ) }
+
+              <HStack gap="4">
                 <Button
-                  key={ option.voteOptionId ?? 'all' }
-                  size="xs"
-                  rounded="full"
-                  flexShrink="0"
-                  variant={ supportFilter === option.voteOptionId ? 'solid' : 'outline' }
-                  aria-pressed={ supportFilter === option.voteOptionId }
-                  onClick={ () => selectSupportFilter(option.voteOptionId) }
+                  variant="plain"
+                  size="sm"
+                  paddingX="0"
+                  color={ post.liked ? 'terracotta.solid' : 'fg' }
+                  aria-pressed={ post.liked }
+                  onClick={ togglePostLike }
                 >
-                  { option.voteOptionId === null ? option.label : `${ option.label } 추천` }
+                  <LuThumbsUp/> { post.likeCount }
                 </Button>
-              )) }
-            </HStack>
-          ) }
+                <Badge
+                  variant="plain"
+                  size="md"
+                  paddingX="0"
+                  color={ hasMyComment ? 'accent.emphasized' : 'fg' }
+                >
+                  <LuMessageCircle/> { post.commentCount }
+                </Badge>
+              </HStack>
+            </Stack>
 
-          <CommunityArticleCommentList
-            comments={ comments }
-            failed={ commentsFailed }
-            emptyText={ supportFilter === null ? undefined : '이 선택지를 지지하는 댓글이 아직 없어요.' }
-            postAuthorNickname={ post.author?.nickname }
-            myNickname={ myNickname }
-            voteOptions={ post.voteOptions }
-            onLike={ toggleCommentLike }
-            canReply={ supportFilter === null }
-            onReply={ submitComment }
-            onUpdate={ updateComment }
-            onDelete={ (commentId) => askDelete({ type: 'comment', commentId }) }
-          />
+            <CommunityArticleCommentList
+              comments={ comments }
+              filters={ post.postType === 'VOTE' && (
+                <HStack gap="2" overflowX="auto" padding="2" margin="-2">
+                  { [{ voteOptionId: null, label: '전체' }, ...post.voteOptions].map((option) => (
+                    <Button
+                      key={ option.voteOptionId ?? 'all' }
+                      size="xs"
+                      rounded="full"
+                      flexShrink="0"
+                      variant="outline"
+                      borderWidth="thin"
+                      transition="box-shadow 0.25s ease"
+                      { ...(supportFilter === option.voteOptionId ? ACTIVE_FILTER_PROPS : INACTIVE_FILTER_PROPS) }
+                      aria-pressed={ supportFilter === option.voteOptionId }
+                      onClick={ () => selectSupportFilter(option.voteOptionId) }
+                    >
+                      { option.voteOptionId === null ? option.label : `${ option.label } 추천` }
+                    </Button>
+                  )) }
+                </HStack>
+              ) }
+              failed={ commentsFailed }
+              emptyText={ supportFilter === null ? undefined : '이 선택지를 지지하는 댓글이 아직 없어요.' }
+              postAuthorNickname={ post.author?.nickname }
+              myNickname={ myNickname }
+              voteOptions={ post.voteOptions }
+              onLike={ toggleCommentLike }
+              canReply={ supportFilter === null }
+              onReply={ submitComment }
+              onUpdate={ updateComment }
+              onDelete={ (commentId) => askDelete({ type: 'comment', commentId }) }
+            />
+          </Stack>
         </Stack>
       </Container>
 
@@ -479,7 +505,11 @@ export const CommunityArticlePage = () => {
                 value={ comment }
                 onChange={ (e) => setComment(e.target.value) }
               />
-              <Button type="submit" flexShrink="0" disabled={ !comment.trim() }>
+              <Button type="submit" flexShrink="0" disabled={ !comment.trim() }
+                bg={  'terracotta.solid/70' }
+                color={  'terracotta.contrast' }
+                variant={ 'solid' }
+              >
                 등록
               </Button>
             </HStack>

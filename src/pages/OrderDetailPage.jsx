@@ -158,7 +158,7 @@ export const OrderDetail = () => {
   const itemsPrice = order?.items.reduce((sum, item) => sum + item.unitPrice * item.orderQty, 0)
 
   return (
-    <Box position={ 'relative' } minHeight={ 'vh' } paddingTop={ 4 } paddingBottom={ 28 } bg={ 'bg' }>
+    <Box position={ 'relative' } minHeight={ 'vh' } paddingTop={ 4 } bg={ 'bg' }>
       <Header/>
       <Container maxWidth={ '5xl' } paddingY={ 4 }>
 
@@ -294,7 +294,7 @@ export const OrderDetail = () => {
               <Dialog.Footer>
                 <Button flex={ 1 } variant={ 'outline' } disabled={ isSurveySaving } onClick={ () => setSurveyError(null) }>닫기</Button>
                 { surveyError?.canRetry && (
-                  <Button flex={ 1 } loading={ isSurveySaving } disabled={ isSurveySaving } onClick={ () => submitSurvey(surveyError.orderItemId, surveyError.sizeFeedback) }>
+                  <Button bg="terracotta.solid/70" color="terracotta.contrast" flex={ 1 } loading={ isSurveySaving } disabled={ isSurveySaving } onClick={ () => submitSurvey(surveyError.orderItemId, surveyError.sizeFeedback) }>
                     다시 시도하기
                   </Button>
                 ) }

@@ -27,7 +27,7 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
   const voted = poll.myVoteOptionId !== null && poll.myVoteOptionId !== undefined
   const showResult = voted || poll.closed
   const resultOf = (voteOptionId) => poll.options.find((option) => option.voteOptionId === voteOptionId)
-  const myLabel = voteOptions.find((option) => option.voteOptionId === poll.myVoteOptionId)?.label
+  const winningCount = Math.max(0, ...poll.options.map((option) => option.count))
 
   const vote = async (voteOptionId) => {
     if (!isSignedIn) {
@@ -78,6 +78,8 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
           const result = resultOf(option.voteOptionId)
           const mine = poll.myVoteOptionId === option.voteOptionId
           const percent = Math.round((result?.ratio ?? 0) * 100)
+          const won = winningCount > 0 && result?.count === winningCount
+          const highlighted = poll.closed ? won : mine
 
           return (
             <Stack key={ option.voteOptionId } gap="4">
@@ -111,7 +113,9 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
               ) }
               <Button
                 size="sm"
-                variant={ mine ? 'solid' : 'outline' }
+                variant={ highlighted ? 'solid' : poll.closed ? 'subtle' : 'outline' }
+                bg={ highlighted ? 'terracotta.solid/70' : undefined }
+                color={ highlighted ? 'terracotta.contrast' : poll.closed ? 'fg.muted' : undefined }
                 fontWeight="bold"
                 disabled={ showResult || (submittingId !== null && submittingId !== option.voteOptionId) }
                 _disabled={ { opacity: '1', cursor: 'default' } }
@@ -136,7 +140,6 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
           { poll.closed
             ? `투표 종료 · 총 ${ poll.total }명 참여`
             : `투표중${ poll.voteEndAt ? ` ${ formatRemaining(poll.voteEndAt) }` : '' }` }
-          { myLabel && ` · 내 선택 ${ myLabel }` }
         </Text>
         { isAuthor && !poll.closed && (
           <Button size="xs" variant="outline" onClick={ () => setCloseDialogOpen(true) }>투표 종료하기</Button>
@@ -161,7 +164,7 @@ export const CommunityPoll = ({ postId, voteOptions, isAuthor, isSignedIn, onReq
               </Dialog.Body>
               <Dialog.Footer>
                 <Button variant="outline" flex="1" onClick={ () => setCloseDialogOpen(false) }>취소</Button>
-                <Button flex="1" loading={ closing } onClick={ closePoll }>종료하기</Button>
+                <Button bg="terracotta.solid/70" color="terracotta.contrast" flex="1" loading={ closing } onClick={ closePoll }>종료하기</Button>
               </Dialog.Footer>
             </Dialog.Content>
           </Dialog.Positioner>

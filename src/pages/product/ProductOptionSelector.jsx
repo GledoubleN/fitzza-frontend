@@ -147,7 +147,16 @@ export const ProductOptionSelector = ({ product }) => {
       />
 
       { selectedOptions.map((option) => (
-        <Stack key={ option.optionId } bg={ 'bg.muted' } rounded={ 'l2' } padding={ 4 } gap={ 3 }>
+        <Stack
+          key={ option.optionId }
+          layerStyle={ 'glass' }
+          borderWidth={ 'thin' }
+          borderColor={ 'fg/10' }
+          boxShadow={ 'xs' }
+          rounded={ 'l2' }
+          padding={ 4 }
+          gap={ 3 }
+        >
           <Flex justify={ 'space-between' } align={ 'center' }>
             <Text fontWeight={ 'bold' }>{ getOptionLabel(option) }</Text>
             <IconButton
@@ -180,6 +189,8 @@ export const ProductOptionSelector = ({ product }) => {
 
       <Button
         size={ 'lg' }
+        bg={ 'terracotta.solid/70' }
+        color={ 'terracotta.contrast' }
         disabled={ totalQuantity === 0 }
         loading={ isSubmitting }
         onClick={ addToCart }

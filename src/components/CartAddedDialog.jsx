@@ -23,7 +23,7 @@ export const CartAddedDialog = ({ open, onClose, description }) => {
             {/*<Dialog.Body>{ description }</Dialog.Body>*/}
             <Dialog.Footer>
               <Button variant={ 'outline' } flex={ 1 } onClick={ onClose }>계속 쇼핑</Button>
-              <Button flex={ 1 } onClick={ () => navigate('/shopping-cart') }>장바구니 보기</Button>
+              <Button bg="terracotta.solid/70" color="terracotta.contrast" flex={ 1 } onClick={ () => navigate('/shopping-cart') }>장바구니 보기</Button>
             </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Positioner>

@@ -83,6 +83,8 @@ export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
             <Dialog.Footer>
               <Button variant={ 'outline' } flex={ 1 } onClick={ onClose }>취소</Button>
               <Button
+                bg="terracotta.solid/70"
+                color="terracotta.contrast"
                 flex={ 1 }
                 disabled={ !selectedOption || isSoldOut || selectedOption.optionId === item.optionId }
                 loading={ isSubmitting }

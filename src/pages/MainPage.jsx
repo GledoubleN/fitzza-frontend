@@ -1,8 +1,9 @@
 import { Box, Container, Stack, Text } from '@chakra-ui/react'
 import { useMotionValue, useScroll, useTransform } from 'motion/react'
 import { Header } from '../components/Header.jsx'
+import { Logo } from '../components/Logo.jsx'
 import { TabBar } from '../components/TabBar.jsx'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
 import { useAuth } from '../contexts/AuthContext.js'
 import { HeroLighting } from './main/HeroLighting.jsx'
@@ -25,6 +26,10 @@ export const MainPage = () => {
   const arrivalScrollY = useMotionValue(1)
   const progress = useTransform(() => Math.min(Math.max(scrollY.get() / arrivalScrollY.get(), 0), 1))
   const headerBackgroundOpacity = useTransform(progress, [0.6, 0.85], [0, 1])
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   useMeasure(() => {
     const productGridTop = productGridRef.current.getBoundingClientRect().top + window.scrollY
@@ -66,7 +71,7 @@ export const MainPage = () => {
             fontSize="2xl"
             visibility="hidden"
           >
-            FiTZZA
+            <Logo/>
           </Text>
         }
         center={
@@ -100,7 +105,6 @@ export const MainPage = () => {
       <Container
         ref={ productGridRef }
         maxWidth={ '5xl' }
-        paddingBottom={ 8 }
       >
         <ProductGrid products={ products }/>
       </Container>

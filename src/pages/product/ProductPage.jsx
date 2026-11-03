@@ -110,8 +110,10 @@ export const ProductPage = () => {
           <GridItem minWidth={ 0 }>
             <ProductImage
               width={ '100%' }
-              aspectRatio={ 'square' }
-              objectFit={ 'contain' }
+              maxWidth={ 'md' }
+              marginX={ 'auto' }
+              aspectRatio={ '5/6' }
+              objectFit={ 'cover' }
               rounded={ 'l3' }
               bg={ 'bg.muted' }
               src={ product.thumbnailUrl || product.images?.[0] }
@@ -123,7 +125,7 @@ export const ProductPage = () => {
             gridColumn={ { md: 2 } }
             gridRow={ { md: '1 / span 2' } }
             position={ { md: 'sticky' } }
-            top={ 4 }
+            top={ 24 }
             alignSelf="start"
           >
             <Stack gap={ 4 }>
@@ -179,8 +181,13 @@ export const ProductPage = () => {
                 </Card.Body>
               </Card.Root>
 
-              <Tabs.Root defaultValue={ 'information' } fitted lazyMount>
-                <Tabs.List>
+              <Tabs.Root
+                defaultValue={ 'information' }
+                colorPalette={ 'terracotta' }
+                fitted
+                lazyMount
+              >
+                <Tabs.List css={ { '& [data-selected]': { '--indicator-color': '{colors.terracotta.solid/70}' } } }>
                   <Tabs.Trigger value={ 'information' }>정보</Tabs.Trigger>
                   <Tabs.Trigger value={ 'size' }>사이즈</Tabs.Trigger>
                   <Tabs.Trigger value={ 'review' }>후기</Tabs.Trigger>
@@ -196,7 +203,6 @@ export const ProductPage = () => {
                 </Tabs.Content>
               </Tabs.Root>
 
-              {/* 넓은 화면에서는 맨 위로 버튼을 상세 정보 열 안쪽 아래에 붙인다. */ }
               { isScrolled && (
                 <Flex
                   display={ { base: 'none', md: 'flex' } }
@@ -207,7 +213,18 @@ export const ProductPage = () => {
                   align={ 'flex-end' }
                 >
                   <IconButton
+                    size={ 'xl' }
                     rounded={ 'full' }
+                    bg={ 'terracotta.solid/70' }
+                    bgImage={ 'none' }
+                    backdropFilter={ 'auto' }
+                    backdropBlur={ 'sm' }
+                    color={ 'terracotta.contrast' }
+                    borderWidth={ 'thin' }
+                    borderColor={ 'fg/10' }
+                    boxShadow={ 'md' }
+                    transition={ 'box-shadow 0.2s ease, scale 0.2s ease' }
+                    _hover={ { boxShadow: 'lg', scale: '1.05' } }
                     aria-label={ '맨 위로' }
                     onClick={ () => window.scrollTo({ top: 0, behavior: 'smooth' }) }
                   >
@@ -220,7 +237,6 @@ export const ProductPage = () => {
         </Grid>
       </Container>
 
-      {/* 이 화면에는 하단 탭 바가 없어 기본값보다 아래에 둔다. */ }
       <Box display={ { md: 'none' } }>
         <ScrollToTopButton bottom={ '8' }/>
       </Box>

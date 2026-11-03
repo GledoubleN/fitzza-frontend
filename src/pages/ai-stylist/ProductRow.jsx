@@ -2,6 +2,7 @@ import { Box, Flex, IconButton } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu'
 import { ProductSlot } from './ProductCard.jsx'
+import { GLASS_BUTTON_PROPS } from './buttonStyles.js'
 
 // 상품 카드를 가로로 나열하고, 넘길 수 있는 방향에만 넘기기 버튼을 띄웁니다.
 export const ProductRow = ({ children }) => {
@@ -71,10 +72,8 @@ export const ProductRow = ({ children }) => {
           >
             <IconButton
               size={ 'sm' }
-              variant={ 'outline' }
+              { ...GLASS_BUTTON_PROPS }
               rounded={ 'full' }
-              bg={ 'bg.panel' }
-              boxShadow={ 'md' }
               pointerEvents={ 'auto' }
               aria-label={ button.label }
               onClick={ () => scroll(button.direction) }
