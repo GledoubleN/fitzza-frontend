@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Button, Card, Flex, Heading, Spinner, Stack, Text } from '@chakra-ui/react'
 import { api } from '../../api/axios.js'
 import { useAuth } from '../../contexts/AuthContext.js'
+import { formatSize } from '../../utils/formatSize.js'
 
 export const ProductSizeRecommendation = ({ productId }) => {
   const { isSignedIn } = useAuth()
@@ -58,7 +59,7 @@ export const ProductSizeRecommendation = ({ productId }) => {
           <Stack gap={ 4 }>
             { recommendation?.recommendedSize && (
               <Flex align={ 'center' } gap={ 4 } wrap={ 'wrap' }>
-                <Text textStyle={ 'xl' } fontWeight={ 'bold' }>{ recommendation.recommendedSize }</Text>
+                <Text textStyle={ 'xl' } fontWeight={ 'bold' }>{ formatSize(recommendation.recommendedSize) }</Text>
                 { recommendation.fitPercent != null && (
                   <Text color={ 'fg.muted' }>적합도 { recommendation.fitPercent }%</Text>
                 ) }

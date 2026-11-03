@@ -1,5 +1,6 @@
 import { DataList, Flex, Heading, Icon, Image, Stack, Table, Text } from '@chakra-ui/react'
 import { LuInfo } from 'react-icons/lu'
+import { formatSize } from '../../utils/formatSize.js'
 import { ProductSizeRecommendation } from './ProductSizeRecommendation.jsx'
 
 const NOTICES = [
@@ -66,7 +67,7 @@ export const ProductSizeTab = ({ product }) => {
     { label: '소재', value: product.material },
     { label: '핏', value: product.fitType },
     { label: '색상', value: unique(options.map((option) => option.color)).join(', ') },
-    { label: '사이즈', value: unique(options.map((option) => option.size)).join(', ') },
+    { label: '사이즈', value: unique(options.map((option) => formatSize(option.size))).join(', ') },
   ]
 
   return (
@@ -101,7 +102,7 @@ export const ProductSizeTab = ({ product }) => {
                 <Table.Row bg={ 'bg.muted' }>
                   <Table.ColumnHeader textAlign={ 'center' }>사이즈</Table.ColumnHeader>
                   { sizes.map((size) => (
-                    <Table.ColumnHeader key={ size } textAlign={ 'center' }>{ size }</Table.ColumnHeader>
+                    <Table.ColumnHeader key={ size } textAlign={ 'center' }>{ formatSize(size) }</Table.ColumnHeader>
                   )) }
                 </Table.Row>
               </Table.Header>

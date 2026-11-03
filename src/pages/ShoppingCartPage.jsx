@@ -21,6 +21,7 @@ import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { toaster } from '../components/ui/toaster.jsx'
 import { ProductImage } from '../components/ProductImage.jsx'
+import { formatSize } from '../utils/formatSize.js'
 import { api } from '../api/axios.js'
 import { QuantityStepper } from './product/ProductOptionSelector.jsx'
 import { CartOptionDialog } from './CartOptionDialog.jsx'
@@ -226,7 +227,7 @@ export const ShoppingCartPage = () => {
                                 </Text>
                                 { (item.color || item.size) && (
                                   <Text textStyle={ 'sm' } color={ 'fg.muted' }>
-                                    { [item.color, item.size].filter(Boolean).join(' / ') }
+                                    { [item.color, formatSize(item.size)].filter(Boolean).join(' / ') }
                                   </Text>
                                 ) }
                                 { item.available ? (

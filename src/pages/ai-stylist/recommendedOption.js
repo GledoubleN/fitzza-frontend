@@ -1,10 +1,11 @@
 import { api } from '../../api/axios.js'
+import { formatSize } from '../../utils/formatSize.js'
 
 const TIMEOUT = { timeout: 10000 }
 
 const isAvailable = (option) => option.available !== false
 
-export const toRecommendedOptionLabel = (item) => [item.color, item.recommendedSize].filter(Boolean).join('/')
+export const toRecommendedOptionLabel = (item) => [item.color, formatSize(item.recommendedSize)].filter(Boolean).join('/')
 
 export const addRecommendedOptionToCart = async (item) => {
   const { data } = await api.get(`/products/${ encodeURIComponent(item.productId) }`, TIMEOUT)
