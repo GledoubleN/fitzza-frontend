@@ -8,5 +8,7 @@
   "preferredStyles": [
     "CASUAL"
   ],
-  "shoeSize": 270
+  "shoeSize": 270,
+  "topSize": "M",
+  "bottomSize": "30"
 }
