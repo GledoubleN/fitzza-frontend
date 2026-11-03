@@ -17,8 +17,11 @@ export const FloatingButton = ({ bottom = '24', align = 'flex-end', ...buttonPro
       <IconButton
         size="xl"
         rounded="full"
-        layerStyle="glass"
-        color="fg"
+        bg="terracotta.solid/70"
+        bgImage="none"
+        backdropFilter={"auto"}
+        backdropBlur={"sm"}
+        color="terracotta.contrast"
         borderWidth="thin"
         borderColor="fg/10"
         boxShadow="md"

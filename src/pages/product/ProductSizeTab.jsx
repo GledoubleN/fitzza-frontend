@@ -1,6 +1,43 @@
-import { DataList, Flex, Heading, Icon, Image, Stack, Table, Text } from '@chakra-ui/react'
+import { Button, DataList, Flex, Heading, Icon, Image, Stack, Table, Text } from '@chakra-ui/react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { LuInfo } from 'react-icons/lu'
+import { formatSize } from '../../utils/formatSize.js'
 import { ProductSizeRecommendation } from './ProductSizeRecommendation.jsx'
+
+const COLLAPSED_LINE_COUNT = 3
+
+const ExpandableText = ({ children }) => {
+  const textRef = useRef(null)
+  const [isOverflowing, setIsOverflowing] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  useLayoutEffect(() => {
+    const text = textRef.current
+    setIsOverflowing(text.scrollHeight > text.clientHeight)
+  }, [children])
+
+  return (
+    <Stack gap={ 1 } align={ 'start' }>
+      <Text
+        ref={ textRef }
+        lineClamp={ isExpanded ? undefined : COLLAPSED_LINE_COUNT }
+      >
+        { children }
+      </Text>
+      { isOverflowing && (
+        <Button
+          variant={ 'plain' }
+          size={ 'xs' }
+          paddingX={ 0 }
+          color={ 'fg.muted' }
+          onClick={ () => setIsExpanded(!isExpanded) }
+        >
+          { isExpanded ? '접기' : '더보기' }
+        </Button>
+      ) }
+    </Stack>
+  )
+}
 
 const NOTICES = [
   '상세 사이즈는 측정 방법과 위치, 소재에 따라 오차가 발생할 수 있습니다.',
@@ -66,7 +103,7 @@ export const ProductSizeTab = ({ product }) => {
     { label: '소재', value: product.material },
     { label: '핏', value: product.fitType },
     { label: '색상', value: unique(options.map((option) => option.color)).join(', ') },
-    { label: '사이즈', value: unique(options.map((option) => option.size)).join(', ') },
+    { label: '사이즈', value: unique(options.map((option) => formatSize(option.size))).join(', ') },
   ]
 
   return (
@@ -101,7 +138,7 @@ export const ProductSizeTab = ({ product }) => {
                 <Table.Row bg={ 'bg.muted' }>
                   <Table.ColumnHeader textAlign={ 'center' }>사이즈</Table.ColumnHeader>
                   { sizes.map((size) => (
-                    <Table.ColumnHeader key={ size } textAlign={ 'center' }>{ size }</Table.ColumnHeader>
+                    <Table.ColumnHeader key={ size } textAlign={ 'center' }>{ formatSize(size) }</Table.ColumnHeader>
                   )) }
                 </Table.Row>
               </Table.Header>
@@ -144,7 +181,9 @@ export const ProductSizeTab = ({ product }) => {
         { details.map((detail) => (
           <DataList.Item key={ detail.label } paddingTop={ 4 } borderTop={ 'sm' } borderColor={ 'border' }>
             <DataList.ItemLabel>{ detail.label }</DataList.ItemLabel>
-            <DataList.ItemValue fontWeight={ 'bold' }>{ detail.value || '정보가 없습니다.' }</DataList.ItemValue>
+            <DataList.ItemValue fontWeight={ 'bold' }>
+              <ExpandableText>{ detail.value || '정보가 없습니다.' }</ExpandableText>
+            </DataList.ItemValue>
           </DataList.Item>
         )) }
       </DataList.Root>

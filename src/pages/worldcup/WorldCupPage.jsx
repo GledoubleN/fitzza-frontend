@@ -14,23 +14,36 @@ const shuffle = (array) => {
   return result
 }
 
+const toRoundTitle = (length) => {
+  if (length <= 2) return '결승'
+  if (length <= 4) return '4강'
+  if (length <= 8) return '8강'
+  if (length <= 16) return '16강'
+  if (length <= 32) return '32강'
+  return '64강'
+}
+
 export default function WorldCupPage () {
   const location = useLocation()
   const navigate = useNavigate()
 
   const rawSelectedProducts = location.state?.selectedProducts || []
 
-  const [viewMode, setViewMode] = useState('tournament')
+  const [viewMode, setViewMode] = useState(location.state?.winnerProduct ? 'result' : 'tournament')
   const [matchList, setMatchList] = useState([])
   const [nextRoundList, setNextRoundList] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [roundTitle, setRoundTitle] = useState('월드컵')
-  const [winnerProduct, setWinnerProduct] = useState(null)
-  const [savedResult, setSavedResult] = useState(null)
+  const [winnerProduct, setWinnerProduct] = useState(location.state?.winnerProduct ?? null)
+  const [savedResult, setSavedResult] = useState(location.state?.savedResult ?? null)
   const [isSaving, setIsSaving] = useState(false)
   const [isSaveFailed, setIsSaveFailed] = useState(false)
+  const [isLoadingProducts, setIsLoadingProducts] = useState(
+    !location.state?.winnerProduct && rawSelectedProducts.length >= 2
+  )
 
   const latestSaveIdRef = useRef(0)
+  const productDetailsCacheRef = useRef(new Map())
 
   useEffect(() => () => {
     latestSaveIdRef.current += 1
@@ -38,6 +51,7 @@ export default function WorldCupPage () {
 
   useEffect(() => {
     if (location.state?.winnerProduct) {
+      setIsLoadingProducts(false)
       setWinnerProduct(location.state.winnerProduct)
       setSavedResult(location.state.savedResult)
       setIsSaveFailed(!location.state.savedResult)
@@ -46,30 +60,57 @@ export default function WorldCupPage () {
     }
 
     if (rawSelectedProducts.length < 2) {
+      setIsLoadingProducts(false)
       navigate('/worldcup/setup')
       return
     }
 
-    const tournamentState = location.state?.tournamentState
-    const shuffled = tournamentState?.matchList ?? shuffle(rawSelectedProducts)
-    setMatchList(shuffled)
-    setNextRoundList(tournamentState?.nextRoundList ?? [])
-    setCurrentIndex(tournamentState?.currentIndex ?? 0)
+    let ignore = false
+    const products = shuffle(rawSelectedProducts)
+
+    setViewMode('tournament')
     setWinnerProduct(null)
     setSavedResult(null)
     setIsSaveFailed(false)
-    setViewMode('tournament')
-    updateRoundTitle(shuffled.length)
+    setIsLoadingProducts(true)
+
+    Promise.all(products.map(async (product) => {
+      const productId = product.productId ?? product.itemId
+      const cachedProduct = productDetailsCacheRef.current.get(productId)
+
+      if (cachedProduct) return { ...product, ...cachedProduct }
+
+      try {
+        const response = await api.get(`/products/${ productId }`, { timeout: 10000 })
+        const productDetails = {
+          ...(response.data.season != null && { season: response.data.season }),
+          ...(response.data.fitType != null && { fitType: response.data.fitType }),
+          ...(response.data.options != null && { options: response.data.options }),
+        }
+        const productWithDetails = { ...product, ...productDetails }
+        if (productId != null) productDetailsCacheRef.current.set(productId, productDetails)
+        return productWithDetails
+      } catch {
+        return product
+      }
+    })).then((productsWithDetails) => {
+      if (ignore) return
+
+      setMatchList(productsWithDetails)
+      setNextRoundList([])
+      setCurrentIndex(0)
+      setWinnerProduct(null)
+      setSavedResult(null)
+      setIsSaveFailed(false)
+      setIsLoadingProducts(false)
+      setViewMode('tournament')
+      updateRoundTitle(productsWithDetails.length)
+    })
+
+    return () => { ignore = true }
   }, [location.state])
 
-  const updateRoundTitle = (length) => {
-    if (length <= 2) setRoundTitle('결승')
-    else if (length <= 4) setRoundTitle('4강')
-    else if (length <= 8) setRoundTitle('8강')
-    else if (length <= 16) setRoundTitle('16강')
-    else if (length <= 32) setRoundTitle('32강')
-    else setRoundTitle('64강')
-  }
+  const updateRoundTitle = (length) => setRoundTitle(toRoundTitle(length))
 
   const hasBye = matchList.length % 2 !== 0 && currentIndex === matchList.length - 1
   const byeProduct = hasBye ? matchList[matchList.length - 1] : null
@@ -163,6 +204,11 @@ export default function WorldCupPage () {
   }
 
   const handleRestart = () => {
+    setViewMode('tournament')
+    setWinnerProduct(null)
+    setSavedResult(null)
+    setIsSaveFailed(false)
+    setIsLoadingProducts(true)
     navigate(location.pathname, {
       replace: true,
       state: { selectedProducts: rawSelectedProducts },
@@ -182,14 +228,21 @@ export default function WorldCupPage () {
   }
 
   const handleOpenHistory = () => {
-    navigate(location.pathname, {
-      replace: true,
-      state: {
-        ...location.state,
-        tournamentState: { matchList, nextRoundList, currentIndex },
-      },
-    })
+    if (isLoadingProducts) return
+
     navigate('/worldcup/history', { state: { fromWorldCup: true } })
+  }
+
+  if (isLoadingProducts) {
+    return (
+      <WorldCupTournamentPage
+        isLoading
+        roundTitle={ toRoundTitle(rawSelectedProducts.length) }
+        currentIndex={ 0 }
+        matchList={ rawSelectedProducts }
+        onSelect={ () => {} }
+      />
+    )
   }
 
   if (viewMode === 'tournament' && (!leftProduct || !rightProduct)) {

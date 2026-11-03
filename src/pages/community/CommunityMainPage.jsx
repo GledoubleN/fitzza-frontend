@@ -7,9 +7,9 @@ import {
   Flex,
   HStack,
   Image,
+  Separator,
   Input,
   InputGroup,
-  Separator,
   Stack,
   Text,
 } from '@chakra-ui/react'
@@ -22,6 +22,7 @@ import { ProductImage } from '../../components/ProductImage.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { CATEGORIES, CATEGORY_LABELS, displayNickname, errorMessage, formatRelativeTime } from './communityFormat.js'
 import { CommunityTitleBar } from './CommunityTitleBar.jsx'
+import { ACTIVE_FILTER_PROPS, INACTIVE_FILTER_PROPS } from './filterChipStyles.js'
 
 const PAGE_SIZE = 20
 
@@ -100,14 +101,17 @@ export const CommunityMainPage = () => {
               </InputGroup>
             </form>
 
-            <HStack gap="2" overflowX="auto">
+            <HStack gap="2" overflowX="auto" padding="2" margin="-2">
               { FILTERS.map((item) => (
                 <Button
                   key={ item.label }
                   size="sm"
                   rounded="full"
                   flexShrink="0"
-                  variant={ filter === item ? 'solid' : 'outline' }
+                  variant="outline"
+                  borderWidth="thin"
+                  transition="box-shadow 0.25s ease"
+                  { ...(filter === item ? ACTIVE_FILTER_PROPS : INACTIVE_FILTER_PROPS) }
                   onClick={ () => selectFilter(item) }
                 >
                   { item.label }
@@ -117,8 +121,17 @@ export const CommunityMainPage = () => {
           </Stack>
         </Container>
 
-        <Container maxWidth="5xl" paddingBottom="20">
-          <Stack direction="column" gap="0" separator={ <Separator/> }>
+        <Container maxWidth="5xl">
+          <Stack
+            direction="column"
+            gap="0"
+            separator={ <Separator/> }
+            paddingX="4"
+            layerStyle="glass"
+            borderWidth="thin"
+            borderColor="border.subtle"
+            boxShadow="sm"
+          >
             { posts.map((post) => (
               <PostItem
                 key={ post.postId }
@@ -145,7 +158,6 @@ export const CommunityMainPage = () => {
 
       <FloatingButton
         aria-label="글쓰기"
-        color="primary.fg"
         onClick={ () => navigate('/community/write') }
       >
         <LuPencil/>
@@ -168,7 +180,6 @@ const PostItem = ({ post, onClick }) => {
       textAlign="start"
       width="full"
       cursor="pointer"
-      _hover={ { bg: 'bg.subtle' } }
       onClick={ onClick }
     >
       <Stack direction="column" gap="2" flex="1" minWidth="0">

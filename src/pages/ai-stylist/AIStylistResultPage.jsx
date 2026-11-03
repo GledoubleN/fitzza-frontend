@@ -30,6 +30,7 @@ import { toFittingImageUrl } from '../profile/toFittingImageUrl.js'
 import { listenForPush } from './listenForPush.js'
 import { TabBar } from '../../components/TabBar.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
+import { GLASS_BUTTON_PROPS } from './buttonStyles.js'
 
 const FAIL_MESSAGE = '추천을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'
 // 응답이 오지 않는 요청은 10초 뒤 실패로 처리해 화면이 재시도 안내까지 갈 수 있게 합니다.
@@ -61,12 +62,29 @@ const toFittingState = (detail) => {
 
 const toProductKey = (products) => products.map((product) => product.productId).sort().join()
 
+const toImagePath = (url) => url ? new URL(url, window.location.origin).pathname : ''
+
+const hasSameImages = (products, comboItems) => products.every((product) => comboItems.some(
+  (item) => item.productId === product.productId && toImagePath(item.imageUrl) === toImagePath(product.imageUrl),
+))
+
+const findFittingCombo = (products, combos) => {
+  const productKey = toProductKey(products)
+  const sameProductCombos = combos.filter((combo) => toProductKey(combo.items) === productKey)
+  if (sameProductCombos.length <= 1) return sameProductCombos[0]
+
+  const sameImageCombos = sameProductCombos.filter((combo) => hasSameImages(products, combo.items))
+  return sameImageCombos.length === 1 ? sameImageCombos[0] : null
+}
+
 const toFittingLabel = (products, { items = [], combos = [] }) => {
-  if (!products.length) return '추천 상품'
+  if (!products.length) return ''
+
+  const combo = findFittingCombo(products, combos)
+  if (combo) return `코디 ${ combos.indexOf(combo) + 1 }`
+  if (combo === null) return '추천 코디'
 
   const productKey = toProductKey(products)
-  const comboIndex = combos.findIndex((combo) => toProductKey(combo.items) === productKey)
-  if (comboIndex >= 0) return `코디 ${ comboIndex + 1 }`
 
   const item = items.find((item) => toProductKey([item]) === productKey)
   return item?.productName ?? products.map((product) => product.productName).join(', ')
@@ -423,7 +441,7 @@ export const AIStylistResultPage = () => {
         <Stack gap={ 4 }>
           <Flex align={ 'center' } gap={ 3 }>
             <IconButton
-              variant={ 'outline' }
+              { ...GLASS_BUTTON_PROPS }
               rounded={ 'full' }
               aria-label={ '대화 내역' }
               onClick={ () => navigate('/ai-stylist/history') }
@@ -548,7 +566,7 @@ export const AIStylistResultPage = () => {
                 fittings.map((fitting) => (
                   <Card.Root key={ fitting.id } { ...bubbleProps } alignSelf={ 'flex-start' }>
                     <Card.Body gap={ 3 }>
-                      <Text fontWeight={ 'bold' }>{ fitting.label } 가상 피팅</Text>
+                      <Text fontWeight={ 'bold' }>{ fitting.label ? `${ fitting.label } 가상 피팅` : fitting.status === 'loading' ? '가상 피팅 진행 중' : '가상 피팅' }</Text>
                       {
                         fitting.status === 'loading' &&
                         <>
@@ -571,7 +589,7 @@ export const AIStylistResultPage = () => {
                       {
                         fitting.status === 'done' &&
                         <>
-                          <Image src={ fitting.imageUrl } alt={ `${ fitting.label } 가상 피팅 결과` } bg={ 'bg.muted' }></Image>
+                          <Image src={ fitting.imageUrl } alt={ fitting.label ? `${ fitting.label } 가상 피팅 결과` : '가상 피팅 결과' } maxWidth={ 'md' } bg={ 'bg.muted' }></Image>
                           <Text fontSize={ 'sm' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
                           <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ () => shareFitting(fitting) }>
                             공유하기
@@ -642,7 +660,7 @@ export const AIStylistResultPage = () => {
                 <Dialog.ActionTrigger asChild>
                   <Button variant={ 'outline' }>취소</Button>
                 </Dialog.ActionTrigger>
-                <Button onClick={ startTryOn }>{ photo ? '이 사진으로 입어보기' : '사진 없이 입어보기' }</Button>
+                <Button bg="terracotta.solid/70" color="terracotta.contrast" onClick={ startTryOn }>{ photo ? '이 사진으로 입어보기' : '사진 없이 입어보기' }</Button>
               </Dialog.Footer>
               <Dialog.CloseTrigger asChild>
                 <CloseButton size={ 'sm' }/>

@@ -3,6 +3,7 @@ import { easeInOut, mix, motion, transform, useMotionValue, useMotionValueEvent,
 import { useRef, useState } from 'react'
 import { LuChevronDown } from 'react-icons/lu'
 import { AIPromptCard } from '../../components/AIPromptCard.jsx'
+import { Logo } from '../../components/Logo.jsx'
 import { LOGO_TEXT_PROPS } from './logoTextProps.js'
 import { useMeasure } from './useMeasure.js'
 
@@ -88,7 +89,7 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
               cursor="pointer"
               onClick={ () => window.scrollTo({ top: 0, behavior: 'smooth' }) }
             >
-              FiTZZA
+              <Logo/>
             </chakra.button>
           </Text>
         </MotionBox>

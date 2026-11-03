@@ -13,19 +13,31 @@ import {
   Stack,
 } from '@chakra-ui/react'
 import { LuMail, LuLockKeyhole } from 'react-icons/lu'
+import { useMotionValue } from 'motion/react'
 import { api } from '../api/axios.js'
 import { Header } from '../components/Header.jsx'
+import { HeroLighting } from './main/HeroLighting.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
 import { requestPushPermission } from '../services/pushNotifications.js'
+import { BodyInfoPromptDialog } from '../components/BodyInfoPromptDialog.jsx'
 
 export const SignInPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [isBodyInfoPromptOpen, setIsBodyInfoPromptOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const { setAccessToken } = useAuth()
+  const lightingProgress = useMotionValue(0)
+
+  const goBack = () => navigate(location.state?.from ?? '/', { replace: true })
+
+  const isBodyInfoMissing = async () => {
+    const { data } = await api.get('/users/me')
+    return data?.height == null || data?.weight == null
+  }
 
   const changeHandler = async (e) => {
     e.preventDefault()
@@ -40,8 +52,13 @@ export const SignInPage = () => {
       await requestPushPermission().catch(() => {})
 
       setAccessToken(token)
-      navigate(location.state?.from ?? '/', { replace: true })
 
+      if (await isBodyInfoMissing().catch(() => false)) {
+        setIsBodyInfoPromptOpen(true)
+        return
+      }
+
+      goBack()
     } catch (err) {
       setErrorMessage(err.response?.data?.message || '로그인 중 오류가 발생했습니다. 다시 시도해 주세요.')
     } finally {
@@ -55,8 +72,8 @@ export const SignInPage = () => {
       minHeight="100vh"
       gap={ 4 }
       paddingY={ 4 }
-      bg="bg"
     >
+      <HeroLighting progress={ lightingProgress }/>
       <Header/>
 
       <Container maxWidth="md" display={ 'flex' } alignItems={ 'center' }>
@@ -80,6 +97,7 @@ export const SignInPage = () => {
                   setErrorMessage('')
                 } }
                 variant="outline"
+                layerStyle="glass"
                 size="lg"
                 textAlign="left"
               />
@@ -98,6 +116,7 @@ export const SignInPage = () => {
                   setErrorMessage('')
                 } }
                 variant="outline"
+                layerStyle="glass"
                 size="lg"
                 textAlign="left"
               />
@@ -113,6 +132,14 @@ export const SignInPage = () => {
             loading={ loading }
             size="lg"
             width="full"
+            bg="terracotta.solid/70"
+            bgImage="none"
+            backdropFilter="auto"
+            backdropBlur="sm"
+            color="terracotta.contrast"
+            borderWidth="thin"
+            borderColor="fg/10"
+            boxShadow="md"
           >
             로그인
           </Button>
@@ -129,6 +156,12 @@ export const SignInPage = () => {
 
         </Stack>
       </Container>
+
+      <BodyInfoPromptDialog
+        open={ isBodyInfoPromptOpen }
+        onLater={ goBack }
+        onGo={ () => navigate('/profile', { replace: true }) }
+      />
     </Grid>
   )
 }

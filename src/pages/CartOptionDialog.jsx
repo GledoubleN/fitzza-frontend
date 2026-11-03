@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Dialog, Portal, Spinner, Stack, Text, createListCollection } from '@chakra-ui/react'
 import { api } from '../api/axios.js'
+import { formatSize } from '../utils/formatSize.js'
 import { OptionSelect } from './product/ProductOptionSelector.jsx'
 
 export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
@@ -25,7 +26,7 @@ export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
   })
   const sizeCollection = createListCollection({
     items: sizeOptions.map((option) => ({
-      label: option.available === false ? `${ option.size } (품절)` : option.size,
+      label: option.available === false ? `${ formatSize(option.size) } (품절)` : formatSize(option.size),
       value: String(option.optionId),
       disabled: option.available === false,
     })),
@@ -82,6 +83,8 @@ export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
             <Dialog.Footer>
               <Button variant={ 'outline' } flex={ 1 } onClick={ onClose }>취소</Button>
               <Button
+                bg="terracotta.solid/70"
+                color="terracotta.contrast"
                 flex={ 1 }
                 disabled={ !selectedOption || isSoldOut || selectedOption.optionId === item.optionId }
                 loading={ isSubmitting }

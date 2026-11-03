@@ -15,6 +15,7 @@ import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { addRecommendedOptionToCart, toRecommendedOptionLabel } from './recommendedOption.js'
+import { GLASS_BUTTON_PROPS } from './buttonStyles.js'
 
 // 상품 카드 한 칸의 크기. 줄 너비의 2/5를 차지해 다음 카드가 걸쳐 보이게 하되, 너무 작거나 커지지 않게 범위를 둡니다.
 // ProductCard가 이 칸을 쓰고, ProductRow의 넘기기 버튼도 사진 높이를 맞추는 데 같은 칸을 씁니다.
@@ -61,7 +62,7 @@ export const ProductCard = ({ item, wished, onToggleWish, cartFailure, onCartAdd
       position={ 'relative' }
       flexShrink={ 0 }
       scrollSnapAlign={ 'start' }
-      bg={ 'bg.panel' }
+      layerStyle={ 'glass' }
       borderWidth={ 'thin' }
       borderColor={ 'border.subtle' }
       boxShadow={ 'sm' }
@@ -148,8 +149,7 @@ export const ProductCard = ({ item, wished, onToggleWish, cartFailure, onCartAdd
       >
         <Button
           size={ 'xs' }
-          variant={ 'outline' }
-          disabled={ !item.recommendedSize }
+          { ...GLASS_BUTTON_PROPS }
           loading={ saving }
           onClick={ submit }
         >
@@ -157,7 +157,7 @@ export const ProductCard = ({ item, wished, onToggleWish, cartFailure, onCartAdd
         </Button>
         {
           onTryOn &&
-          <Button size={ 'xs' } variant={ 'outline' } disabled={ tryingOn } onClick={ onTryOn }>바로 입어보기</Button>
+          <Button size={ 'xs' } { ...GLASS_BUTTON_PROPS } disabled={ tryingOn } onClick={ onTryOn }>바로 입어보기</Button>
         }
       </Stack>
       <CartAddedDialog

@@ -225,7 +225,7 @@ export const CommunityWritePage = () => {
                     <Card.Root key={ optionKey(option) } size="sm" variant="outline">
                       <Card.Body>
                         <Flex align="center" gap="4">
-                          <Circle size="6" bg="fg" color="bg" fontSize="xs" fontWeight="bold" flexShrink="0">
+                          <Circle size="6" bg="terracotta.solid/70" color="terracotta.contrast" fontSize="xs" fontWeight="bold" flexShrink="0">
                             { VOTE_LABELS[index] }
                           </Circle>
                           <ProductImage
@@ -343,7 +343,14 @@ export const CommunityWritePage = () => {
               </Text>
 
               <Stack position="sticky" bottom="0" bg="bg" paddingY="4" marginTop="auto">
-                <Button size="lg" disabled={ !canSubmit } loading={ submitting } onClick={ submit }>
+                <Button
+                  size="lg"
+                  bg="terracotta.solid/70"
+                  color="terracotta.contrast"
+                  disabled={ !canSubmit }
+                  loading={ submitting }
+                  onClick={ submit }
+                >
                   { isEditing ? '수정하기' : '작성하기' }
                 </Button>
               </Stack>

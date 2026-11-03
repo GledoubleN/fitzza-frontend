@@ -6,9 +6,10 @@ import { useAuth } from '../../contexts/AuthContext.js'
 import { toaster } from '../../components/ui/toaster.jsx'
 import { CartAddedDialog } from '../../components/CartAddedDialog.jsx'
 import { SignInRequiredDialog } from '../../components/SignInRequiredDialog.jsx'
+import { formatSize } from '../../utils/formatSize.js'
 
 // 옵션 구조는 명세에 열려 있어 { optionId, color, size, available }로 가정한다.
-const getOptionLabel = (option) => [option.color, option.size].filter(Boolean).join(' / ')
+const getOptionLabel = (option) => [option.color, formatSize(option.size)].filter(Boolean).join(' / ')
 
 export const OptionSelect = ({ label, collection, ...props }) => (
   <Select.Root collection={ collection } width={ '100%' } { ...props }>
@@ -79,7 +80,7 @@ export const ProductOptionSelector = ({ product }) => {
   })
   const sizeCollection = createListCollection({
     items: sizeOptions.map((option) => ({
-      label: option.available === false ? `${ option.size } (품절)` : option.size,
+      label: option.available === false ? `${ formatSize(option.size) } (품절)` : formatSize(option.size),
       value: String(option.optionId),
       disabled: option.available === false,
     })),
@@ -146,7 +147,16 @@ export const ProductOptionSelector = ({ product }) => {
       />
 
       { selectedOptions.map((option) => (
-        <Stack key={ option.optionId } bg={ 'bg.muted' } rounded={ 'l2' } padding={ 4 } gap={ 3 }>
+        <Stack
+          key={ option.optionId }
+          layerStyle={ 'glass' }
+          borderWidth={ 'thin' }
+          borderColor={ 'fg/10' }
+          boxShadow={ 'xs' }
+          rounded={ 'l2' }
+          padding={ 4 }
+          gap={ 3 }
+        >
           <Flex justify={ 'space-between' } align={ 'center' }>
             <Text fontWeight={ 'bold' }>{ getOptionLabel(option) }</Text>
             <IconButton
@@ -179,6 +189,8 @@ export const ProductOptionSelector = ({ product }) => {
 
       <Button
         size={ 'lg' }
+        bg={ 'terracotta.solid/70' }
+        color={ 'terracotta.contrast' }
         disabled={ totalQuantity === 0 }
         loading={ isSubmitting }
         onClick={ addToCart }

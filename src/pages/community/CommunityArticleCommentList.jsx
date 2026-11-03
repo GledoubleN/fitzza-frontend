@@ -1,15 +1,26 @@
 import { Stack, Text } from '@chakra-ui/react'
 import { CommunityArticleCommentItem } from './CommunityArticleCommentItem.jsx'
 
-export const CommunityArticleCommentList = ({ comments, failed, emptyText = '첫 댓글을 남겨보세요.', ...itemProps }) => {
+export const CommunityArticleCommentList = ({ comments, failed, filters, emptyText = '첫 댓글을 남겨보세요.', ...itemProps }) => {
   const count = comments.reduce(
     (sum, comment) => sum + [comment, ...comment.replies].filter((item) => !item.isDeleted).length,
     0,
   )
 
   return (
-    <Stack direction="column" gap="4">
-      <Text fontWeight="semibold">댓글 { !failed && count }</Text>
+    <Stack
+      direction="column"
+      gap="4"
+      padding="4"
+      layerStyle="glass"
+      borderWidth="thin"
+      borderColor="border.subtle"
+      boxShadow="sm"
+    >
+      <Stack gap="3">
+        <Text fontWeight="semibold">댓글 { !failed && count }</Text>
+        { filters }
+      </Stack>
       { failed && (
         <Text color="fg.error" fontSize="sm">댓글을 불러오지 못했어요.</Text>
       ) }

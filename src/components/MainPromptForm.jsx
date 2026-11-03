@@ -1,5 +1,5 @@
 import { Grid, IconButton, Textarea } from '@chakra-ui/react'
-import { LuArrowUp, LuSparkle } from 'react-icons/lu'
+import { LuArrowLeft, LuSparkle } from 'react-icons/lu'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -36,6 +36,10 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
       <IconButton
         type={ 'button' }
         rounded={ 'full' }
+        bg={ 'terracotta.solid/70' }
+        backdropFilter={ 'auto' }
+        backdropBlur={ 'sm' }
+        color={ 'terracotta.contrast' }
         aria-label={ '대화 내역' }
         onClick={ () => navigate('/ai-stylist/history') }
       >
@@ -61,9 +65,13 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
       <IconButton
         type={ 'submit' }
         rounded={ 'full' }
+        bg={ 'terracotta.solid/70' }
+        backdropFilter={ 'auto' }
+        backdropBlur={ 'sm' }
+        color={ 'terracotta.contrast' }
         aria-label={ '추천받기' }
       >
-        <LuArrowUp/>
+        <LuArrowLeft/>
       </IconButton>
     </Grid>
   )

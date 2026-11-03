@@ -22,6 +22,7 @@ import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { api } from '../api/axios.js'
+import { formatSize } from '../utils/formatSize.js'
 
 export const orderStatusLabels = {
   PENDING: '주문 접수',
@@ -157,7 +158,7 @@ export const OrderDetail = () => {
   const itemsPrice = order?.items.reduce((sum, item) => sum + item.unitPrice * item.orderQty, 0)
 
   return (
-    <Box position={ 'relative' } minHeight={ 'vh' } paddingTop={ 4 } paddingBottom={ 28 } bg={ 'bg' }>
+    <Box position={ 'relative' } minHeight={ 'vh' } paddingTop={ 4 } bg={ 'bg' }>
       <Header/>
       <Container maxWidth={ '5xl' } paddingY={ 4 }>
 
@@ -211,7 +212,7 @@ export const OrderDetail = () => {
                             ) }
                             { (item.color || item.size) && (
                               <Text textStyle={ 'xs' } color={ 'fg.muted' }>
-                                { [item.color, item.size].filter(Boolean).join(' / ') }
+                                { [item.color, formatSize(item.size)].filter(Boolean).join(' / ') }
                               </Text>
                             ) }
                             <Text textStyle={ 'xs' } color={ 'fg.muted' }>수량 { item.orderQty }개</Text>
@@ -293,7 +294,7 @@ export const OrderDetail = () => {
               <Dialog.Footer>
                 <Button flex={ 1 } variant={ 'outline' } disabled={ isSurveySaving } onClick={ () => setSurveyError(null) }>닫기</Button>
                 { surveyError?.canRetry && (
-                  <Button flex={ 1 } loading={ isSurveySaving } disabled={ isSurveySaving } onClick={ () => submitSurvey(surveyError.orderItemId, surveyError.sizeFeedback) }>
+                  <Button bg="terracotta.solid/70" color="terracotta.contrast" flex={ 1 } loading={ isSurveySaving } disabled={ isSurveySaving } onClick={ () => submitSurvey(surveyError.orderItemId, surveyError.sizeFeedback) }>
                     다시 시도하기
                   </Button>
                 ) }

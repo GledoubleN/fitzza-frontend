@@ -10,11 +10,12 @@ import {
   Container,
   Stack,
 } from '@chakra-ui/react'
-import { LuChevronLeft, LuRotateCcw, LuShare2, LuHistory } from 'react-icons/lu'
+import { LuChevronLeft, LuRotateCcw, LuShare2} from 'react-icons/lu'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { Header } from '../../components/Header.jsx'
 import { TabBar } from '../../components/TabBar.jsx'
 import { ProductImage } from '../../components/ProductImage.jsx'
+import { WorldCupProductDetails } from './WorldCupProductDetails.jsx'
 
 export const WorldCupResultPage = ({
   winnerProduct,
@@ -70,13 +71,14 @@ export const WorldCupResultPage = ({
               <Button
                 size="sm"
                 variant="outline"
+                layerStyle="glass"
+                borderColor="border.subtle"
+                boxShadow="sm"
+                transition="box-shadow 0.25s ease"
+                _hover={ { bg: 'transparent', boxShadow: 'lg' } }
                 disabled={ isSaving }
                 onClick={ onOpenHistory }
               >
-                <Box
-                  as={ LuHistory }
-                  boxSize={ 4 }
-                />
                 우승 이력 보기
               </Button>
             </Flex>
@@ -87,6 +89,11 @@ export const WorldCupResultPage = ({
               templateColumns={ { base: '1fr', md: '{sizes.sm} 1fr' } }
               gap={ 8 }
               alignItems="center"
+              padding={ 6 }
+              layerStyle="glass"
+              borderWidth="thin"
+              borderColor="border.subtle"
+              boxShadow="sm"
             >
               <Box
                 className="group"
@@ -150,6 +157,7 @@ export const WorldCupResultPage = ({
                   >
                     { winnerProduct.price ? `${ winnerProduct.price.toLocaleString() } 원` : '가격 정보 없음' }
                   </Text>
+                  <WorldCupProductDetails product={ winnerProduct }/>
                 </Stack>
 
                 { isSaveFailed && !savedResult && (
@@ -192,8 +200,8 @@ export const WorldCupResultPage = ({
                   </Button>
                   <Button
                     size="lg"
-                    bg="fg"
-                    color="bg"
+                    bg="terracotta.solid/70"
+                    color="terracotta.contrast"
                     disabled={ !savedResult || isSaving }
                     _hover={ { opacity: 0.9 } }
                     onClick={ onShare }

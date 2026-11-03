@@ -12,13 +12,14 @@ import {
   HStack,
   createListCollection,
   Select,
+  Portal,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import {
   LuUser,
   LuPackage,
-  LuHistory,
-  LuMessageSquare,
+  LuSparkle,
+  LuTrophy,
   LuSettings,
   LuRotateCw,
   LuChartColumn,
@@ -27,26 +28,36 @@ import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { VtonGallery } from './profile/VtonGallery.jsx';
 import { api } from '../api/axios.js';
+import { toaster } from '../components/ui/toaster.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
 import { useUserPreferences } from '../hooks/useUserPreferences.js'
 import { findBodyMeasurementRangeError } from '../utils/bodyMeasurements.js'
+
+const TOP_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL']
+const BOTTOM_SIZES = ['24', '25', '26', '27', '28', '29', '30', '32', '34', '36', '38']
 
 export default function ProfilePage() {
   const { setAccessToken } = useAuth()
   const { preferredFits, preferredStyles, isFailed: isPreferencesFailed, reload: reloadPreferences } = useUserPreferences()
   const fitOptions = [{ label: '선택 안함', value: '' }, ...preferredFits]
   const styleOptions = [{ label: '선택 안함', value: '' }, ...preferredStyles]
+  const toSizeOptions = (sizes) => [{ label: '선택 안함', value: '' }, ...sizes.map((size) => ({ label: size, value: size }))]
+  const topSizeOptions = toSizeOptions(TOP_SIZES)
+  const bottomSizeOptions = toSizeOptions(BOTTOM_SIZES)
+  const findLabel = (options, value) => options.find((option) => option.value === value)?.label ?? value
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
     nickname: '테스트사용자',
     email: 'test@fitzza.com',
     height: '',
     weight: '',
+    shoeSize: '',
     preferredFit: '',
     style: '',
+    topSize: '',
+    bottomSize: '',
     isAdmin: false,
   });
-  const [message, setMessage] = useState({ text: '', isError: false });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,8 +74,11 @@ export default function ProfilePage() {
           email: response.data.email || prev.email,
           height: response.data.height ?? '',
           weight: response.data.weight ?? '',
+          shoeSize: response.data.shoeSize ?? '',
           preferredFit: response.data.preferredFit || '',
           style: response.data.preferredStyles?.[0] || '',
+          topSize: response.data.topSize || '',
+          bottomSize: response.data.bottomSize || '',
           isAdmin: response.data.role === 'ADMIN',
         }));
       }
@@ -93,42 +107,36 @@ export default function ProfilePage() {
     }
   };
 
-  const handleSkipField = (fieldName) => {
-    setProfileData({
-      ...profileData,
-      [fieldName]: '',
-    });
-  };
-
   const handleSave = async (e) => {
     e.preventDefault();
-    setMessage({ text: '', isError: false });
 
     const rangeError = findBodyMeasurementRangeError('height', profileData.height)
       || findBodyMeasurementRangeError('weight', profileData.weight)
+      || findBodyMeasurementRangeError('shoeSize', profileData.shoeSize)
     if (rangeError) {
-      setMessage({ text: rangeError, isError: true });
+      toaster.create({ type: 'error', title: rangeError });
       return;
     }
 
     const payload = {
       height: profileData.height ? Number(profileData.height) : null,
       weight: profileData.weight ? Number(profileData.weight) : null,
-      gender: null,
+      shoeSize: profileData.shoeSize ? Number(profileData.shoeSize) : null,
       preferredFit: profileData.preferredFit || null,
       preferredStyles: profileData.style ? [profileData.style] : [],
-      shoeSize: null,
+      topSize: profileData.topSize || null,
+      bottomSize: profileData.bottomSize || null,
     };
 
     try {
       await api.patch('/users/me', payload);
-      setMessage({ text: '프로필이 성공적으로 저장되었습니다.', isError: false });
+      toaster.create({ type: 'success', title: '프로필이 성공적으로 저장되었습니다.' });
       setIsEditing(false);
     } catch (err) {
       if (err.response?.status === 400) {
-        setMessage({ text: '입력한 데이터의 단위나 범위를 확인해주세요.', isError: true });
+        toaster.create({ type: 'error', title: '입력한 데이터의 단위나 범위를 확인해주세요.' });
       } else {
-        setMessage({ text: '프로필이 저장되었습니다 (테스트 모드).', isError: false });
+        toaster.create({ type: 'success', title: '프로필이 저장되었습니다 (테스트 모드).' });
         setIsEditing(false);
       }
     }
@@ -147,9 +155,9 @@ export default function ProfilePage() {
           <Box
             borderWidth="thin"
             borderColor="border.subtle"
-            borderRadius="2xl"
             p={6}
             bg="bg.panel"
+            boxShadow="md"
             display="flex"
             flexDirection="column"
             gap={4}
@@ -179,13 +187,26 @@ export default function ProfilePage() {
 
             {!isEditing ? (
               <Box w="100%">
-                <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.muted">
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력 (건너뜀)'}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력 (건너뜀)'}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit || '미입력 (건너뜀)'}</Text></Flex>
-                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style || '미입력 (건너뜀)'}</Text></Flex>
+                <Stack gap={2} p={3} borderWidth="thin" borderColor="border.subtle" layerStyle="glass" boxShadow="xs">
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">키</Text><Text textStyle="xs" fontWeight="600">{profileData.height ? `${profileData.height} cm` : '미입력'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">체중</Text><Text textStyle="xs" fontWeight="600">{profileData.weight ? `${profileData.weight} kg` : '미입력'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 핏</Text><Text textStyle="xs" fontWeight="600">{profileData.preferredFit ? findLabel(preferredFits, profileData.preferredFit) : '미입력'}</Text></Flex>
+                  <Flex justify="space-between"><Text textStyle="xs" color="fg.muted">선호 스타일</Text><Text textStyle="xs" fontWeight="600">{profileData.style ? findLabel(preferredStyles, profileData.style) : '미입력'}</Text></Flex>
                 </Stack>
-                <Button mt={3} width="full" variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                <Button
+                  mt={3}
+                  width="full"
+                  size="sm"
+                  bg="terracotta.solid/70"
+                  bgImage="none"
+                  backdropFilter="auto"
+                  backdropBlur="sm"
+                  color="terracotta.contrast"
+                  borderWidth="thin"
+                  borderColor="fg/10"
+                  boxShadow="md"
+                  onClick={() => setIsEditing(true)}
+                >
                   신체 정보 및 스타일 수정
                 </Button>
               </Box>
@@ -193,7 +214,7 @@ export default function ProfilePage() {
               <Box as="form" onSubmit={handleSave} w="100%">
                 <Stack gap={3}>
                   <HStack>
-                    <Text textStyle="xs" w="28%" color="fg.muted">키(cm)</Text>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">키(cm)</Text>
                     <Input
                       name="height"
                       value={profileData.height}
@@ -204,11 +225,10 @@ export default function ProfilePage() {
                       maxLength={3}
                       autoComplete="off"
                     />
-                    <Button size="xs" variant="ghost" colorPalette="gray" onClick={() => handleSkipField('height')}>건너뛰기</Button>
                   </HStack>
 
                   <HStack>
-                    <Text textStyle="xs" w="28%" color="fg.muted">체중(kg)</Text>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">체중(kg)</Text>
                     <Input
                       name="weight"
                       value={profileData.weight}
@@ -219,11 +239,76 @@ export default function ProfilePage() {
                       maxLength={3}
                       autoComplete="off"
                     />
-                    <Button size="xs" variant="ghost" colorPalette="gray" onClick={() => handleSkipField('weight')}>건너뛰기</Button>
                   </HStack>
 
-                  <HStack position="relative" zIndex={2}>
-                    <Text textStyle="xs" w="28%" color="fg.muted">선호 핏</Text>
+                  <HStack>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">발 사이즈(mm)</Text>
+                    <Input
+                      name="shoeSize"
+                      value={profileData.shoeSize}
+                      onChange={handleNumberChange}
+                      onKeyDown={handleKeyDown}
+                      placeholder="숫자 입력"
+                      size="xs"
+                      maxLength={3}
+                      autoComplete="off"
+                    />
+                  </HStack>
+
+                  <HStack>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">상의 사이즈</Text>
+                    <Select.Root
+                      collection={createListCollection({ items: topSizeOptions })}
+                      size="xs"
+                      width="full"
+                      value={profileData.topSize ? [profileData.topSize] : ['']}
+                      onValueChange={(e) => setProfileData({ ...profileData, topSize: e.value[0] || '' })}
+                    >
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="상의 사이즈 선택" />
+                      </Select.Trigger>
+                      <Portal>
+                        <Select.Positioner>
+                          <Select.Content maxH="44" overflowY="auto">
+                            {topSizeOptions.map((item) => (
+                              <Select.Item key={item.value} item={item}>
+                                {item.label}
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select.Positioner>
+                      </Portal>
+                    </Select.Root>
+                  </HStack>
+
+                  <HStack>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">하의 사이즈</Text>
+                    <Select.Root
+                      collection={createListCollection({ items: bottomSizeOptions })}
+                      size="xs"
+                      width="full"
+                      value={profileData.bottomSize ? [profileData.bottomSize] : ['']}
+                      onValueChange={(e) => setProfileData({ ...profileData, bottomSize: e.value[0] || '' })}
+                    >
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="하의 사이즈 선택" />
+                      </Select.Trigger>
+                      <Portal>
+                        <Select.Positioner>
+                          <Select.Content maxH="44" overflowY="auto">
+                            {bottomSizeOptions.map((item) => (
+                              <Select.Item key={item.value} item={item}>
+                                {item.label}
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select.Positioner>
+                      </Portal>
+                    </Select.Root>
+                  </HStack>
+
+                  <HStack>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">선호 핏</Text>
                     <Select.Root
                       collection={createListCollection({ items: fitOptions })}
                       size="xs"
@@ -234,19 +319,22 @@ export default function ProfilePage() {
                       <Select.Trigger>
                         <Select.ValueText placeholder="선호 핏 선택" />
                       </Select.Trigger>
-                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {fitOptions.map((item) => (
-                          <Select.Item key={item.value} item={item}>
-                            {item.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
+                      <Portal>
+                        <Select.Positioner>
+                          <Select.Content maxH="44" overflowY="auto">
+                            {fitOptions.map((item) => (
+                              <Select.Item key={item.value} item={item}>
+                                {item.label}
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select.Positioner>
+                      </Portal>
                     </Select.Root>
-                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('preferredFit')}>비우기</Button>
                   </HStack>
 
-                  <HStack position="relative" zIndex={1}>
-                    <Text textStyle="xs" w="28%" color="fg.muted">스타일</Text>
+                  <HStack>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">스타일</Text>
                     <Select.Root
                       collection={createListCollection({ items: styleOptions })}
                       size="xs"
@@ -257,15 +345,18 @@ export default function ProfilePage() {
                       <Select.Trigger>
                         <Select.ValueText placeholder="선호 스타일 선택" />
                       </Select.Trigger>
-                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {styleOptions.map((item) => (
-                          <Select.Item key={item.value} item={item}>
-                            {item.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
+                      <Portal>
+                        <Select.Positioner>
+                          <Select.Content maxH="44" overflowY="auto">
+                            {styleOptions.map((item) => (
+                              <Select.Item key={item.value} item={item}>
+                                {item.label}
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select.Positioner>
+                      </Portal>
                     </Select.Root>
-                    <Button size="xs" variant="ghost" onClick={() => handleSkipField('style')}>비우기</Button>
                   </HStack>
 
                   {isPreferencesFailed && (
@@ -275,10 +366,8 @@ export default function ProfilePage() {
                     </Button>
                   )}
 
-                  {message.text && <Text color={message.isError ? 'fg.error' : 'fg.info'} textStyle="xs" textAlign="center">{message.text}</Text>}
-
                   <HStack mt={1}>
-                    <Button type="submit" size="xs" flex="1">저장</Button>
+                    <Button type="submit" size="xs" flex="1" colorPalette="terracotta" bg="terracotta.solid/70">저장</Button>
                     <Button size="xs" variant="outline" flex="1" onClick={() => setIsEditing(false)}>취소</Button>
                   </HStack>
                 </Stack>
@@ -286,11 +375,11 @@ export default function ProfilePage() {
             )}
 
             <Grid templateColumns="repeat(2, 1fr)" gap={3}>
-              <Box p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.muted" textAlign="center">
+              <Box p={3} borderWidth="thin" borderColor="border.subtle" layerStyle="glass" boxShadow="xs" textAlign="center">
                 <Text textStyle="xs" color="fg.muted" mb={1}>적립금</Text>
                 <Text textStyle="md" fontWeight="600">7,777원</Text>
               </Box>
-              <Box p={3} borderWidth="thin" borderColor="border.subtle" bg="bg.muted" textAlign="center">
+              <Box p={3} borderWidth="thin" borderColor="border.subtle" layerStyle="glass" boxShadow="xs" textAlign="center">
                 <Text textStyle="xs" color="fg.muted" mb={1}>쿠폰</Text>
                 <Text textStyle="md" fontWeight="600">11장</Text>
               </Box>
@@ -299,8 +388,8 @@ export default function ProfilePage() {
             <Grid templateColumns="repeat(4, 1fr)" gap={2}>
               {[
                 { label: '주문', icon: LuPackage, path: '/orders' },
-                { label: '추천내역', icon: LuHistory, path: '/ai-stylist/history' },
-                { label: '커뮤니티', icon: LuMessageSquare },
+                { label: '추천내역', icon: LuSparkle, path: '/ai-stylist/history' },
+                { label: '월드컵', icon: LuTrophy, path: '/worldcup/history' },
                 { label: '설정', icon: LuSettings },
               ].map((item) => {
                 const IconComponent = item.icon;
@@ -310,7 +399,6 @@ export default function ProfilePage() {
                     variant="outline"
                     borderWidth="thin"
                     borderColor="border.subtle"
-                    borderRadius="xl"
                     height="auto"
                     py={3}
                     px={1}
@@ -318,8 +406,9 @@ export default function ProfilePage() {
                     flexDirection="column"
                     alignItems="center"
                     justifyContent="center"
-                    bg="bg.muted"
-                    _hover={{ bg: 'bg.subtle', borderColor: 'fg.muted' }}
+                    layerStyle="glass"
+                    boxShadow="xs"
+                    _hover={{ bg: 'transparent' }}
                     onClick={() => item.path && navigate(item.path)}
                   >
                     <Box mb={1} color="fg">
@@ -332,7 +421,17 @@ export default function ProfilePage() {
             </Grid>
 
             {profileData.isAdmin && (
-              <Button variant="outline" size="sm" width="full" onClick={() => navigate('/admin/dashboard')}>
+              <Button
+                variant="outline"
+                size="sm"
+                width="full"
+                borderWidth="thin"
+                borderColor="border.subtle"
+                layerStyle="glass"
+                boxShadow="xs"
+                _hover={{ bg: 'transparent' }}
+                onClick={() => navigate('/admin/dashboard')}
+              >
                 <LuChartColumn />
                 관리자 대시보드
               </Button>
@@ -342,9 +441,9 @@ export default function ProfilePage() {
           <Box
             borderWidth="thin"
             borderColor="border.subtle"
-            borderRadius="2xl"
             p={8}
             bg="bg.panel"
+            boxShadow="md"
             display="flex"
             flexDirection="column"
           >

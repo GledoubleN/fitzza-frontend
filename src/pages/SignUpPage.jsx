@@ -14,8 +14,10 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import { LuMail, LuUser, LuLockKeyhole } from "react-icons/lu";
+import { useMotionValue } from 'motion/react';
 import { useNavigate } from "react-router-dom";
 import { Header } from '../components/Header.jsx';
+import { HeroLighting } from './main/HeroLighting.jsx';
 import { api } from "../api/axios.js";
 
 export const SignUpPage = () => {
@@ -34,6 +36,7 @@ export const SignUpPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const lightingProgress = useMotionValue(0);
   const navigate = useNavigate();
 
   const validateField = (name, value) => {
@@ -161,8 +164,8 @@ export const SignUpPage = () => {
       minHeight="100vh"
       gap={ 4 }
       paddingY={ 4 }
-      bg="bg"
     >
+      <HeroLighting progress={ lightingProgress }/>
       <Header />
 
       <Container maxWidth="md" display={ 'flex' } alignItems={ 'center' }>
@@ -189,6 +192,7 @@ export const SignUpPage = () => {
                 onBlur={ handleBlur }
                 placeholder="이메일"
                 variant="outline"
+                layerStyle="glass"
                 size="lg"
                 textAlign="left"
                 autoComplete="off"
@@ -215,6 +219,7 @@ export const SignUpPage = () => {
                 onBlur={ handleBlur }
                 placeholder="사용자명"
                 variant="outline"
+                layerStyle="glass"
                 size="lg"
                 textAlign="left"
                 autoComplete="off"
@@ -241,6 +246,7 @@ export const SignUpPage = () => {
                 onBlur={ handleBlur }
                 placeholder="비밀번호"
                 variant="outline"
+                layerStyle="glass"
                 size="lg"
                 textAlign="left"
                 autoComplete="new-password"
@@ -265,8 +271,26 @@ export const SignUpPage = () => {
             loading={ loading }
             size="lg"
             width="full"
+            bg="terracotta.solid/70"
+            bgImage="none"
+            backdropFilter="auto"
+            backdropBlur="sm"
+            color="terracotta.contrast"
+            borderWidth="thin"
+            borderColor="fg/10"
+            boxShadow="md"
           >
             가입하기
+          </Button>
+
+          <Button
+            variant="plain"
+            size="sm"
+            width="full"
+            onClick={() => navigate('/signin')}
+            color="fg.muted"
+          >
+            이미 계정이 있으신가요?
           </Button>
 
         </Stack>
@@ -284,7 +308,7 @@ export const SignUpPage = () => {
                 <Text>회원가입이 완료되었습니다. 로그인해주세요.</Text>
               </Dialog.Body>
               <Dialog.Footer>
-                <Button onClick={handleDialogClose} width="full">
+                <Button bg="terracotta.solid/70" color="terracotta.contrast" onClick={handleDialogClose} width="full">
                   확인
                 </Button>
               </Dialog.Footer>

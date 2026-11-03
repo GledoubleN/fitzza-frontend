@@ -60,13 +60,16 @@ export const WorldCupSetupPage = () => {
     }
   }
 
+  const isOverLimit = selectedProductIds.length > MAX_CANDIDATES
+
   const handleToggleSelect = (productId) => {
-    if (!selectedProductIds.includes(productId) && selectedProductIds.length >= MAX_CANDIDATES) {
+    const isSelecting = !selectedProductIds.includes(productId)
+
+    if (isSelecting && selectedProductIds.length === MAX_CANDIDATES) {
       toaster.create({
-        title: `후보는 최대 ${ MAX_CANDIDATES }개까지만 선택할 수 있습니다.`,
+        title: `한 번에 진행할 수 있는 최대 상품은 ${ MAX_CANDIDATES }개 입니다.`,
         type: 'warning',
       })
-      return
     }
 
     setSelectedProductIds((prev) =>
@@ -109,6 +112,8 @@ export const WorldCupSetupPage = () => {
         <Flex
           align="center"
           justify="space-between"
+          wrap="wrap"
+          gap={ 4 }
           mb={ 4 }
         >
           <Flex
@@ -124,20 +129,54 @@ export const WorldCupSetupPage = () => {
               <LuChevronLeft />
             </Button>
             <Text
+              as="button"
               textStyle="lg"
               fontWeight="bold"
+              cursor="pointer"
+              onClick={ () => navigate('/wishlist') }
             >
               월드컵 후보 선택
             </Text>
           </Flex>
-          <Button
-            size="sm"
-            minWidth="32"
-            variant="outline"
-            onClick={ () => navigate('/worldcup/history', { state: { fromWorldCup: true } }) }
+          <Flex
+            gap={ 2 }
+            marginStart="auto"
           >
-            우승 이력 보기
-          </Button>
+            <Button
+              size="sm"
+              minWidth="16"
+              variant="outline"
+              layerStyle="glass"
+              borderColor="border.subtle"
+              boxShadow="sm"
+              transition="box-shadow 0.25s ease"
+              _hover={ { bg: 'transparent', boxShadow: 'lg' } }
+              onClick={ () => navigate('/worldcup/history', { state: { fromWorldCup: true } }) }
+            >
+              이력 보기
+            </Button>
+            { !isLoading && !isError && products.length > 0 && (
+              <Button
+                size="sm"
+                minWidth="32"
+                bg={ isOverLimit ? 'terracotta.subtle' : 'terracotta.solid/70' }
+                bgImage="none"
+                backdropFilter="auto"
+                backdropBlur="sm"
+                color={ isOverLimit ? 'fg.error' : 'terracotta.contrast' }
+                borderWidth="thin"
+                borderColor={ isOverLimit ? 'fg.error' : 'fg/10' }
+                boxShadow="md"
+                transition="box-shadow 0.25s ease"
+                _hover={ { bg: isOverLimit ? 'terracotta.subtle' : 'terracotta.solid/70', boxShadow: 'lg' } }
+                disabled={ selectedProductIds.length < 2 || isOverLimit }
+                _disabled={ isOverLimit ? { opacity: 1 } : undefined }
+                onClick={ handleStartWorldCup }
+              >
+                { selectedProductIds.length }/{ MAX_CANDIDATES } 개로 시작하기
+              </Button>
+            ) }
+          </Flex>
         </Flex>
 
         { isLoading && (
@@ -170,29 +209,6 @@ export const WorldCupSetupPage = () => {
 
         { !isLoading && !isError && products.length > 0 && (
           <>
-            <Flex
-              justify="space-between"
-              align="center"
-              mb={ 4 }
-            >
-              <Text
-                textStyle="sm"
-                color="fg.muted"
-              >
-                선택된 후보: { selectedProductIds.length } / { MAX_CANDIDATES }개
-              </Text>
-              <Button
-                size="sm"
-                minWidth="32"
-                bg="fg"
-                color="bg"
-                disabled={ selectedProductIds.length < 2 }
-                onClick={ handleStartWorldCup }
-              >
-                { selectedProductIds.length }개로 시작하기
-              </Button>
-            </Flex>
-
             <Grid
               templateColumns={ 'repeat(auto-fill, minmax(max(100px, calc((100% - {spacing.4} * 4) / 5)), 1fr))' }
               gap={ 4 }
@@ -212,6 +228,7 @@ export const WorldCupSetupPage = () => {
                       className="group"
                       aria-label={ `${ product.brandName } ${ name }` }
                       aria-pressed={ isSelected }
+                      position="relative"
                       display="flex"
                       flexDirection="column"
                       gap={ 3 }
@@ -219,9 +236,9 @@ export const WorldCupSetupPage = () => {
                       paddingBottom={ 3 }
                       textAlign="left"
                       cursor="pointer"
-                      bg="bg.panel"
+                      layerStyle="glass"
                       borderWidth="thin"
-                      borderColor={ isSelected ? 'fg' : 'border.subtle' }
+                      borderColor={ isSelected ? 'terracotta.solid' : 'border.subtle' }
                       boxShadow="sm"
                       transition="box-shadow 0.25s ease, border-color 0.25s ease"
                       _hover={ { boxShadow: 'lg' } }
@@ -245,26 +262,16 @@ export const WorldCupSetupPage = () => {
                           _groupHover={ { transform: 'scale(1.05)' } }
                         />
 
-                        { isSelected && (
-                          <Box
-                            as="span"
-                            display="block"
-                            position="absolute"
-                            inset={ 0 }
-                            bg="bg.emphasized"
-                            opacity={ 0.5 }
-                          />
-                        ) }
-
                         <Flex
                           as="span"
                           position="absolute"
                           top={ 2 }
                           right={ 2 }
+                          zIndex={ 1 }
                           boxSize={ 6 }
                           borderRadius="full"
-                          bg={ isSelected ? 'fg' : 'bg' }
-                          color={ isSelected ? 'bg' : 'fg.muted' }
+                          bg={ isSelected ? 'terracotta.solid/70' : 'bg' }
+                          color={ isSelected ? 'terracotta.contrast' : 'fg.muted' }
                           align="center"
                           justify="center"
                           boxShadow="sm"
@@ -311,6 +318,16 @@ export const WorldCupSetupPage = () => {
                           { product.price ? `${ product.price.toLocaleString() } 원` : '' }
                         </Text>
                       </Stack>
+
+                      { isSelected && (
+                        <Box
+                          as="span"
+                          position="absolute"
+                          inset={ 0 }
+                          bg="terracotta.subtle/30"
+                          pointerEvents="none"
+                        />
+                      ) }
                     </Box>
                   )
                 })

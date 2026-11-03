@@ -21,6 +21,7 @@ import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { toaster } from '../components/ui/toaster.jsx'
 import { ProductImage } from '../components/ProductImage.jsx'
+import { formatSize } from '../utils/formatSize.js'
 import { api } from '../api/axios.js'
 import { QuantityStepper } from './product/ProductOptionSelector.jsx'
 import { CartOptionDialog } from './CartOptionDialog.jsx'
@@ -226,7 +227,7 @@ export const ShoppingCartPage = () => {
                                 </Text>
                                 { (item.color || item.size) && (
                                   <Text textStyle={ 'sm' } color={ 'fg.muted' }>
-                                    { [item.color, item.size].filter(Boolean).join(' / ') }
+                                    { [item.color, formatSize(item.size)].filter(Boolean).join(' / ') }
                                   </Text>
                                 ) }
                                 { item.available ? (
@@ -349,7 +350,7 @@ export const ShoppingCartPage = () => {
               </Dialog.Header>
               <Dialog.Footer>
                 <Button variant={ 'outline' } flex={ 1 } onClick={ () => setFailedDeleteIds([]) }>닫기</Button>
-                <Button flex={ 1 } onClick={ retryFailedDelete }>다시 시도</Button>
+                <Button bg="terracotta.solid/70" color="terracotta.contrast" flex={ 1 } onClick={ retryFailedDelete }>다시 시도</Button>
               </Dialog.Footer>
             </Dialog.Content>
           </Dialog.Positioner>
