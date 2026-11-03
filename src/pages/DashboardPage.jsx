@@ -144,7 +144,6 @@ export const DashboardPage = () => {
         <Stack gap={ 8 }>
           <Stack gap={ 4 }>
             <Flex align="center" gap={ 4 } wrap="wrap">
-              <Badge bg="primary.subtle" color="primary.fg">ADMIN</Badge>
               { import.meta.env.VITE_ENABLE_MOCKING === 'true' && (
                 <Badge bg="bg.muted" color="fg.muted">예시 데이터</Badge>
               ) }
