@@ -589,7 +589,7 @@ export const AIStylistResultPage = () => {
                       {
                         fitting.status === 'done' &&
                         <>
-                          <Image src={ fitting.imageUrl } alt={ fitting.label ? `${ fitting.label } 가상 피팅 결과` : '가상 피팅 결과' } bg={ 'bg.muted' }></Image>
+                          <Image src={ fitting.imageUrl } alt={ fitting.label ? `${ fitting.label } 가상 피팅 결과` : '가상 피팅 결과' } maxWidth={ 'xs' } bg={ 'bg.muted' }></Image>
                           <Text fontSize={ 'sm' } color={ 'fg.muted' }>AI 생성 이미지 · 실제와 다를 수 있어요</Text>
                           <Button variant={ 'outline' } alignSelf={ 'flex-start' } onClick={ () => shareFitting(fitting) }>
                             공유하기
