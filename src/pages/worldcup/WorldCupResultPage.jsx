@@ -71,6 +71,11 @@ export const WorldCupResultPage = ({
               <Button
                 size="sm"
                 variant="outline"
+                layerStyle="glass"
+                borderColor="border.subtle"
+                boxShadow="sm"
+                transition="box-shadow 0.25s ease"
+                _hover={ { bg: 'transparent', boxShadow: 'lg' } }
                 disabled={ isSaving }
                 onClick={ onOpenHistory }
               >
