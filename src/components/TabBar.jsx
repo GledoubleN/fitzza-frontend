@@ -53,10 +53,8 @@ export const TabBar = () => {
           paddingX={ 0 }
           maxWidth="xl"
           layerStyle="glass"
-          gradientFrom={ { base: 'terracotta.subtle/80', _dark: 'bg/70' } }
-          gradientTo={ { base: 'terracotta.subtle/60', _dark: 'bg/40' } }
           borderWidth="thin"
-          borderColor={ { base: 'terracotta.muted', _dark: 'fg/10' } }
+          borderColor="border"
           borderRadius="full"
           boxShadow="md"
           transition="transform 0.2s ease"
