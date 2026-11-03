@@ -4,7 +4,7 @@ import { AuroraSpinner } from '../../components/AuroraSpinner.jsx'
 export const FittingLoading = () => (
   <Box
     position={ 'relative' }
-    width={ 'xs' }
+    width={ 'md' }
     maxWidth={ 'full' }
     aspectRatio={ 2 / 3 }
     overflow={ 'hidden' }
