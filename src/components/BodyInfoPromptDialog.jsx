@@ -11,7 +11,10 @@ export const BodyInfoPromptDialog = ({ open, onLater, onGo }) => (
       <Dialog.Backdrop/>
       <Dialog.Positioner>
         <Dialog.Content>
-          <Dialog.Body paddingTop={ 6 }>
+          <Dialog.Body
+            paddingTop={ 6 }
+            textAlign={ 'center' }
+          >
             키와 몸무게 정보가 있으면 더 정확한 추천을 받을 수 있어요
           </Dialog.Body>
           <Dialog.Footer>
