@@ -4,9 +4,9 @@
   "height": 175,
   "weight": 68,
   "gender": "보통",
-  "preferredFit": "레귤러",
+  "preferredFit": "REGULAR",
   "preferredStyles": [
-    "캐주얼"
+    "CASUAL"
   ],
   "shoeSize": 270
 }
