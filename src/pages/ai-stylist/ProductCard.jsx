@@ -150,7 +150,6 @@ export const ProductCard = ({ item, wished, onToggleWish, cartFailure, onCartAdd
         <Button
           size={ 'xs' }
           { ...GLASS_BUTTON_PROPS }
-          disabled={ !item.recommendedSize }
           loading={ saving }
           onClick={ submit }
         >

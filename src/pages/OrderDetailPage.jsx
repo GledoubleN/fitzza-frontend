@@ -22,6 +22,7 @@ import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { api } from '../api/axios.js'
+import { formatSize } from '../utils/formatSize.js'
 
 export const orderStatusLabels = {
   PENDING: '주문 접수',
@@ -211,7 +212,7 @@ export const OrderDetail = () => {
                             ) }
                             { (item.color || item.size) && (
                               <Text textStyle={ 'xs' } color={ 'fg.muted' }>
-                                { [item.color, item.size].filter(Boolean).join(' / ') }
+                                { [item.color, formatSize(item.size)].filter(Boolean).join(' / ') }
                               </Text>
                             ) }
                             <Text textStyle={ 'xs' } color={ 'fg.muted' }>수량 { item.orderQty }개</Text>

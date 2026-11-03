@@ -27,8 +27,6 @@ export const ComboCard = ({ combo, index, wishedProductIds, onToggleWish, onTryO
     ))
   }
 
-  const hasAllRecommendedSizes = combo.items.every((item) => item.recommendedSize)
-
   const addAllToCart = async () => {
     setSaving(true)
     const pending = combo.items.filter((item) => !addedProductIds.includes(item.productId))
@@ -98,7 +96,7 @@ export const ComboCard = ({ combo, index, wishedProductIds, onToggleWish, onTryO
         <Grid templateColumns={ '1fr 1fr' } gap={ 2 }>
           <Button { ...GLASS_BUTTON_PROPS } gridColumn={ 'span 2' } disabled={ tryingOn } onClick={ onTryOn }>바로 입어보기</Button>
           <Button { ...GLASS_BUTTON_PROPS } onClick={ share }>공유하기</Button>
-          <Button { ...FLOATING_BUTTON_PROPS } disabled={ !hasAllRecommendedSizes } loading={ saving } onClick={ addAllToCart }>전체 장바구니 담기</Button>
+          <Button { ...FLOATING_BUTTON_PROPS } loading={ saving } onClick={ addAllToCart }>전체 장바구니 담기</Button>
         </Grid>
         <CartAddedDialog
           open={ added }

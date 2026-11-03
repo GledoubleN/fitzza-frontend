@@ -1,0 +1,1 @@
+export const formatSize = (size) => size?.replace(/^0+(?=[0-9A-Z]+$)/, '')
