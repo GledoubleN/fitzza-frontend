@@ -12,6 +12,7 @@ import {
   HStack,
   createListCollection,
   Select,
+  Portal,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -213,7 +214,7 @@ export default function ProfilePage() {
                     />
                   </HStack>
 
-                  <HStack position="relative" zIndex={2}>
+                  <HStack>
                     <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">선호 핏</Text>
                     <Select.Root
                       collection={createListCollection({ items: fitOptions })}
@@ -225,17 +226,21 @@ export default function ProfilePage() {
                       <Select.Trigger>
                         <Select.ValueText placeholder="선호 핏 선택" />
                       </Select.Trigger>
-                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {fitOptions.map((item) => (
-                          <Select.Item key={item.value} item={item}>
-                            {item.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
+                      <Portal>
+                        <Select.Positioner>
+                          <Select.Content maxH="44" overflowY="auto">
+                            {fitOptions.map((item) => (
+                              <Select.Item key={item.value} item={item}>
+                                {item.label}
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select.Positioner>
+                      </Portal>
                     </Select.Root>
                   </HStack>
 
-                  <HStack position="relative" zIndex={1}>
+                  <HStack>
                     <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">스타일</Text>
                     <Select.Root
                       collection={createListCollection({ items: styleOptions })}
@@ -247,13 +252,17 @@ export default function ProfilePage() {
                       <Select.Trigger>
                         <Select.ValueText placeholder="선호 스타일 선택" />
                       </Select.Trigger>
-                      <Select.Content position="absolute" maxH="180px" overflowY="auto" zIndex={99}>
-                        {styleOptions.map((item) => (
-                          <Select.Item key={item.value} item={item}>
-                            {item.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
+                      <Portal>
+                        <Select.Positioner>
+                          <Select.Content maxH="44" overflowY="auto">
+                            {styleOptions.map((item) => (
+                              <Select.Item key={item.value} item={item}>
+                                {item.label}
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select.Positioner>
+                      </Portal>
                     </Select.Root>
                   </HStack>
 
