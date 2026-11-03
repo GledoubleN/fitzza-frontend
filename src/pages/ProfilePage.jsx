@@ -419,7 +419,17 @@ export default function ProfilePage() {
             </Grid>
 
             {profileData.isAdmin && (
-              <Button variant="outline" size="sm" width="full" onClick={() => navigate('/admin/dashboard')}>
+              <Button
+                variant="outline"
+                size="sm"
+                width="full"
+                borderWidth="thin"
+                borderColor="border.subtle"
+                layerStyle="glass"
+                boxShadow="xs"
+                _hover={{ bg: 'transparent' }}
+                onClick={() => navigate('/admin/dashboard')}
+              >
                 <LuChartColumn />
                 관리자 대시보드
               </Button>
