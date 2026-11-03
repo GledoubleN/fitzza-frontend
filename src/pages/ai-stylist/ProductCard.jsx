@@ -149,7 +149,6 @@ export const ProductCard = ({ item, wished, onToggleWish, cartFailure, onCartAdd
         <Button
           size={ 'xs' }
           variant={ 'outline' }
-          disabled={ !item.recommendedSize }
           loading={ saving }
           onClick={ submit }
         >
