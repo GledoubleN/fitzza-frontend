@@ -16,12 +16,6 @@ const DESKTOP_PIECES = [
   { x: 0.79, y: 0.76, width: '11vw', rotate: 7 },
 ]
 
-const MOBILE_PIECES = [
-  { x: 0.24, y: 0.2, width: '28vw', rotate: -6 },
-  { x: 0.76, y: 0.19, width: '26vw', rotate: 7 },
-  { x: 0.5, y: 0.66, width: '26vw', rotate: -3, isFeatured: true },
-]
-
 const HIDDEN_FROM_PROGRESS = 0.3
 
 const Polaroid = ({ product, piece, isInteractive }) => (
@@ -45,7 +39,7 @@ const Polaroid = ({ product, piece, isInteractive }) => (
 )
 
 export const MoodboardCollage = ({ products, progress }) => {
-  const pieces = useBreakpointValue({ base: MOBILE_PIECES, md: DESKTOP_PIECES }) ?? []
+  const pieces = useBreakpointValue({ base: [], md: DESKTOP_PIECES }) ?? []
   const [isInteractive, setIsInteractive] = useState(true)
 
   useMotionValueEvent(progress, 'change', (value) => setIsInteractive(value < HIDDEN_FROM_PROGRESS))
