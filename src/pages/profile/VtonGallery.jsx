@@ -218,7 +218,7 @@ export const VtonGallery = ({ preview = false }) => {
               _hover={ { boxShadow: 'lg' } }
               onClick={ () => setSelected(fitting) }
             >
-              <AspectRatio ratio={ 3 / 4 } overflow={ 'hidden' } bg={ 'bg.muted' }>
+              <AspectRatio ratio={ 2 / 3 } overflow={ 'hidden' } bg={ 'bg.muted' }>
                 <FittingThumbnail fitting={ fitting }></FittingThumbnail>
               </AspectRatio>
               <Stack gap={ 1 }>
@@ -264,7 +264,7 @@ export const VtonGallery = ({ preview = false }) => {
                 {
                   selected &&
                   <Grid templateColumns={ { base: '1fr', md: '3fr 2fr' } } gap={ 4 } alignItems={ 'start' }>
-                    <AspectRatio ratio={ 3 / 4 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } overflow={ 'hidden' }>
+                    <AspectRatio ratio={ 2 / 3 } width={ 'full' } maxWidth={ 'xs' } marginX={ 'auto' } overflow={ 'hidden' }>
                       <FittingThumbnail fitting={ selected }></FittingThumbnail>
                     </AspectRatio>
                     <Stack gap={ 4 }>
