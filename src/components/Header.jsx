@@ -177,7 +177,18 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
             gridColumn={ '3' }
             alignContent={ 'center' }
           >
-            <Stack direction={ 'row' } gap={ 4 } align="center">
+            <Stack
+              direction={ 'row' }
+              gap={ 1 }
+              align="center"
+              padding={ 1 }
+              layerStyle="glass"
+              gradientFrom={ { base: 'terracotta.subtle/80', _dark: 'bg/70' } }
+              gradientTo={ { base: 'terracotta.subtle/60', _dark: 'bg/40' } }
+              borderWidth="thin"
+              borderColor={ { base: 'terracotta.muted', _dark: 'fg/10' } }
+              borderRadius="full"
+            >
               <Popover.Root
                 open={ isNotificationOpen }
                 onOpenChange={ (event) => {
