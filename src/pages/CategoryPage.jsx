@@ -67,10 +67,14 @@ export const CategoryPage = () => {
                   categories.map((category) => (
                     <Button
                       key={ category.name }
-                      variant={ selected?.name === category.name
-                        ? 'subtle'
-                        : 'ghost' }
+                      variant={ 'outline' }
                       justifyContent={ 'flex-start' }
+                      layerStyle={ 'glass' }
+                      borderWidth={ 'thin' }
+                      borderColor={ selected?.name === category.name ? 'terracotta.solid' : 'border.subtle' }
+                      boxShadow={ 'sm' }
+                      transition={ 'box-shadow 0.25s ease' }
+                      _hover={ { bg: 'transparent', boxShadow: 'lg' } }
                       onClick={ () => setSelected(category) }
                     >
                       { category.name }
@@ -83,9 +87,15 @@ export const CategoryPage = () => {
               <Stack gap={ '4' }>
                 <Stack key={ selected?.name } gap={ 4 }>
                   <Button
-                    variant={ 'ghost' }
+                    variant={ 'outline' }
                     width={ 'full' }
                     justifyContent={ 'space-between' }
+                    layerStyle={ 'glass' }
+                    borderWidth={ 'thin' }
+                    borderColor={ 'border.subtle' }
+                    boxShadow={ 'sm' }
+                    transition={ 'box-shadow 0.25s ease' }
+                    _hover={ { bg: 'transparent', boxShadow: 'lg' } }
                     onClick={ () => search(selected.code) }
                   >
                     <Heading size={ 'md' }>{ selected?.name }</Heading>
@@ -103,8 +113,14 @@ export const CategoryPage = () => {
                       selected?.children.map((subcategory) => (
                         <Button
                           key={ subcategory.name }
-                          variant={ 'ghost' }
+                          variant={ 'outline' }
                           justifyContent={ 'space-between' }
+                          layerStyle={ 'glass' }
+                          borderWidth={ 'thin' }
+                          borderColor={ 'border.subtle' }
+                          boxShadow={ 'sm' }
+                          transition={ 'box-shadow 0.25s ease' }
+                          _hover={ { bg: 'transparent', boxShadow: 'lg' } }
                           onClick={ () => search(
                             `${ subcategory.code }`) }
                         >
