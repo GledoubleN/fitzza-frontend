@@ -252,7 +252,7 @@ export const VtonGallery = ({ preview = false }) => {
         <Portal>
           <Dialog.Backdrop/>
           <Dialog.Positioner>
-            <Dialog.Content marginX={ 4 }>
+            <Dialog.Content marginX={ 4 } bg={ 'bg' }>
               <Dialog.Header flexWrap={ 'wrap' } alignItems={ 'center' } columnGap={ 4 } paddingEnd={ 12 }>
                 <Dialog.Title>{ selected && toFittingTitle(selected) }</Dialog.Title>
                 <Stack gap={ 0 }>
