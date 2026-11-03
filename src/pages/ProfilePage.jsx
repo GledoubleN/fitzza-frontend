@@ -28,6 +28,7 @@ import { Header } from '../components/Header.jsx';
 import { TabBar } from '../components/TabBar.jsx';
 import { VtonGallery } from './profile/VtonGallery.jsx';
 import { api } from '../api/axios.js';
+import { toaster } from '../components/ui/toaster.jsx'
 import { useAuth } from '../contexts/AuthContext.js'
 import { useUserPreferences } from '../hooks/useUserPreferences.js'
 import { findBodyMeasurementRangeError } from '../utils/bodyMeasurements.js'
@@ -47,7 +48,6 @@ export default function ProfilePage() {
     style: '',
     isAdmin: false,
   });
-  const [message, setMessage] = useState({ text: '', isError: false });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -96,12 +96,11 @@ export default function ProfilePage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    setMessage({ text: '', isError: false });
 
     const rangeError = findBodyMeasurementRangeError('height', profileData.height)
       || findBodyMeasurementRangeError('weight', profileData.weight)
     if (rangeError) {
-      setMessage({ text: rangeError, isError: true });
+      toaster.create({ type: 'error', title: rangeError });
       return;
     }
 
@@ -116,13 +115,13 @@ export default function ProfilePage() {
 
     try {
       await api.patch('/users/me', payload);
-      setMessage({ text: '프로필이 성공적으로 저장되었습니다.', isError: false });
+      toaster.create({ type: 'success', title: '프로필이 성공적으로 저장되었습니다.' });
       setIsEditing(false);
     } catch (err) {
       if (err.response?.status === 400) {
-        setMessage({ text: '입력한 데이터의 단위나 범위를 확인해주세요.', isError: true });
+        toaster.create({ type: 'error', title: '입력한 데이터의 단위나 범위를 확인해주세요.' });
       } else {
-        setMessage({ text: '프로필이 저장되었습니다 (테스트 모드).', isError: false });
+        toaster.create({ type: 'success', title: '프로필이 저장되었습니다 (테스트 모드).' });
         setIsEditing(false);
       }
     }
@@ -272,8 +271,6 @@ export default function ProfilePage() {
                       선택지 다시 불러오기
                     </Button>
                   )}
-
-                  {message.text && <Text color={message.isError ? 'fg.error' : 'fg.info'} textStyle="xs" textAlign="center">{message.text}</Text>}
 
                   <HStack mt={1}>
                     <Button type="submit" size="xs" flex="1">저장</Button>
