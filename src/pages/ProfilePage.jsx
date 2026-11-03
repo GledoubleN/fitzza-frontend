@@ -49,6 +49,7 @@ export default function ProfilePage() {
     email: 'test@fitzza.com',
     height: '',
     weight: '',
+    shoeSize: '',
     preferredFit: '',
     style: '',
     topSize: '',
@@ -71,6 +72,7 @@ export default function ProfilePage() {
           email: response.data.email || prev.email,
           height: response.data.height ?? '',
           weight: response.data.weight ?? '',
+          shoeSize: response.data.shoeSize ?? '',
           preferredFit: response.data.preferredFit || '',
           style: response.data.preferredStyles?.[0] || '',
           topSize: response.data.topSize || '',
@@ -108,6 +110,7 @@ export default function ProfilePage() {
 
     const rangeError = findBodyMeasurementRangeError('height', profileData.height)
       || findBodyMeasurementRangeError('weight', profileData.weight)
+      || findBodyMeasurementRangeError('shoeSize', profileData.shoeSize)
     if (rangeError) {
       toaster.create({ type: 'error', title: rangeError });
       return;
@@ -116,6 +119,7 @@ export default function ProfilePage() {
     const payload = {
       height: profileData.height ? Number(profileData.height) : null,
       weight: profileData.weight ? Number(profileData.weight) : null,
+      shoeSize: profileData.shoeSize ? Number(profileData.shoeSize) : null,
       preferredFit: profileData.preferredFit || null,
       preferredStyles: profileData.style ? [profileData.style] : [],
       topSize: profileData.topSize || null,
@@ -226,6 +230,20 @@ export default function ProfilePage() {
                     <Input
                       name="weight"
                       value={profileData.weight}
+                      onChange={handleNumberChange}
+                      onKeyDown={handleKeyDown}
+                      placeholder="숫자 입력"
+                      size="xs"
+                      maxLength={3}
+                      autoComplete="off"
+                    />
+                  </HStack>
+
+                  <HStack>
+                    <Text textStyle="xs" w="28%" flexShrink={0} whiteSpace="nowrap" color="fg.muted">발 사이즈(mm)</Text>
+                    <Input
+                      name="shoeSize"
+                      value={profileData.shoeSize}
                       onChange={handleNumberChange}
                       onKeyDown={handleKeyDown}
                       placeholder="숫자 입력"
