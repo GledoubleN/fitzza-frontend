@@ -39,7 +39,7 @@ const SummaryCard = ({ icon, label, value, unit, detail }) => (
     <Card.Body gap={ 4 } padding={ 8 }>
       <Flex align="center" justify="space-between" gap={ 4 }>
         <Text color="fg.muted" fontWeight="medium">{ label }</Text>
-        <Box color="primary.fg" fontSize="xl">{ icon }</Box>
+        <Box color="terracotta.fg" fontSize="xl">{ icon }</Box>
       </Flex>
       <Text fontSize="3xl" fontWeight="bold" fontVariantNumeric="tabular-nums">
         { formatNumber(value) }
@@ -69,8 +69,8 @@ const RankingCard = ({ title, description, items, unit }) => (
               boxSize={ 8 }
               flexShrink={ 0 }
               borderRadius="lg"
-              bg={ index === 0 ? 'primary.subtle' : 'bg.muted' }
-              color={ index === 0 ? 'primary.fg' : 'fg.muted' }
+              bg={ index === 0 ? 'terracotta.subtle' : 'bg.muted' }
+              color={ index === 0 ? 'terracotta.fg' : 'fg.muted' }
               fontWeight="bold"
             >
               { index + 1 }
@@ -89,7 +89,7 @@ const RankingCard = ({ title, description, items, unit }) => (
                 <Box
                   height="full"
                   width={ `${ item.count / items[0].count * 100 }%` }
-                  bg={ index === 0 ? 'primary.solid' : 'secondary.emphasized' }
+                  bg={ index === 0 ? 'terracotta.solid' : 'secondary.emphasized' }
                   borderRadius="full"
                 />
               </Box>
@@ -239,7 +239,7 @@ export const DashboardPage = () => {
                                     title={ `입력 ${ formatNumber(item.input) } / 출력 ${ formatNumber(item.output) }` }
                                   >
                                     <Box flex={ item.output } bg="secondary.emphasized"/>
-                                    <Box flex={ item.input } bg="primary.solid"/>
+                                    <Box flex={ item.input } bg="terracotta.solid"/>
                                   </Stack>
                                 </Flex>
                                 <Text fontSize="xs" color="fg.muted">{ item.label }</Text>
@@ -249,7 +249,7 @@ export const DashboardPage = () => {
                         </Box>
                         <Flex justify="center" gap={ 8 } marginTop={ 8 } fontSize="sm">
                           <Flex align="center" gap={ 4 }>
-                            <Box boxSize={ 4 } bg="primary.solid" borderRadius="sm"/>
+                            <Box boxSize={ 4 } bg="terracotta.solid" borderRadius="sm"/>
                             <Text>입력 토큰</Text>
                           </Flex>
                           <Flex align="center" gap={ 4 }>
