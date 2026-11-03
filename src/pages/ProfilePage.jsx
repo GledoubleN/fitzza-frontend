@@ -443,6 +443,7 @@ export default function ProfilePage() {
             borderColor="border.subtle"
             p={8}
             bg="bg.panel"
+            boxShadow="md"
             display="flex"
             flexDirection="column"
           >
