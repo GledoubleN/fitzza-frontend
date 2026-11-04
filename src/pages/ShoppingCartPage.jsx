@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react'
 import { LuX } from 'react-icons/lu'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { toaster } from '../components/ui/toaster.jsx'
@@ -221,31 +221,41 @@ export const ShoppingCartPage = () => {
                                 <Checkbox.HiddenInput aria-label={ `${ item.productName ?? '상품' } 선택` }/>
                                 <Checkbox.Control _checked={ CHECKED_CONTROL_STYLE }/>
                               </Checkbox.Root>
-                              <ProductImage
-                                width={ '20' }
-                                aspectRatio={ 3 / 4 }
-                                objectFit={ 'cover' }
-                                rounded={ 'l2' }
-                                bg={ 'bg.muted' }
-                                src={ item.imageUrl }
-                                alt={ item.productName }
-                                opacity={ item.available ? 1 : 0.5 }
-                              />
-                              <Stack gap={ 0 } minWidth={ 0 } flex={ 1 }>
-                                <Text fontWeight={ 'semibold' } truncate>
-                                  { item.productName ?? '판매가 종료된 상품이에요.' }
-                                </Text>
-                                { (item.color || item.size) && (
-                                  <Text textStyle={ 'sm' } color={ 'fg.muted' }>
-                                    { [item.color, formatSize(item.size)].filter(Boolean).join(' / ') }
-                                  </Text>
-                                ) }
-                                { item.available ? (
-                                  <Text textStyle={ 'sm' }>{ formatPrice(item.unitPrice) }</Text>
-                                ) : (
-                                  <Text textStyle={ 'sm' } color={ 'fg.error' }>구매 불가</Text>
-                                ) }
-                              </Stack>
+                              <Flex
+                                asChild
+                                gap={ 4 }
+                                align={ 'start' }
+                                minWidth={ 0 }
+                                flex={ 1 }
+                              >
+                                <RouterLink to={ `/products/${ item.productId }` }>
+                                  <ProductImage
+                                    width={ '20' }
+                                    aspectRatio={ 3 / 4 }
+                                    objectFit={ 'cover' }
+                                    rounded={ 'l2' }
+                                    bg={ 'bg.muted' }
+                                    src={ item.imageUrl }
+                                    alt={ item.productName }
+                                    opacity={ item.available ? 1 : 0.5 }
+                                  />
+                                  <Stack gap={ 0 } minWidth={ 0 } flex={ 1 }>
+                                    <Text fontWeight={ 'semibold' } truncate>
+                                      { item.productName ?? '판매가 종료된 상품이에요.' }
+                                    </Text>
+                                    { (item.color || item.size) && (
+                                      <Text textStyle={ 'sm' } color={ 'fg.muted' }>
+                                        { [item.color, formatSize(item.size)].filter(Boolean).join(' / ') }
+                                      </Text>
+                                    ) }
+                                    { item.available ? (
+                                      <Text textStyle={ 'sm' }>{ formatPrice(item.unitPrice) }</Text>
+                                    ) : (
+                                      <Text textStyle={ 'sm' } color={ 'fg.error' }>구매 불가</Text>
+                                    ) }
+                                  </Stack>
+                                </RouterLink>
+                              </Flex>
                               <IconButton
                                 variant={ 'ghost' }
                                 size={ 'xs' }
