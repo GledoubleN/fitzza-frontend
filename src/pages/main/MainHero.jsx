@@ -1,5 +1,5 @@
 import { Box, chakra, Flex, Icon, Text } from '@chakra-ui/react'
-import { easeInOut, mix, motion, transform, useMotionValue, useMotionValueEvent, useTransform } from 'motion/react'
+import { motion, useMotionValueEvent, useTransform } from 'motion/react'
 import { useRef, useState } from 'react'
 import { LuChevronDown } from 'react-icons/lu'
 import { AIPromptCard } from '../../components/AIPromptCard.jsx'
@@ -21,21 +21,26 @@ const toViewportRect = (element) => {
   return { left, top, width, height }
 }
 
-const useMorph = (rects, docking, pick, fallback) => useTransform(() => {
-  const current = rects.get()
-  const progress = docking.get()
-  return current ? pick(current, progress) : fallback
-})
+const toTransform = (x, y, scale = 1) => `translate(${ x }px, ${ y }px) scale(${ scale })`
+
+const toOffsetTransform = (from, to, scale) => toTransform(to.left - from.left, to.top - from.top, scale)
+
+const RESTING_TRANSFORM = toTransform(0, 0)
+
+const DOCK_FROM_PROGRESS = 0.2
+
+const DOCK_TRANSITION = { duration: 0.4, ease: 'easeInOut' }
 
 export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
   const logoRef = useRef(null)
   const promptAnchorRef = useRef(null)
-  const rects = useMotionValue(null)
+  const [rects, setRects] = useState(null)
+  const [isDocked, setIsDocked] = useState(false)
 
   useMeasure(() => {
     if (!logoRef.current || !logoSlotRef.current || !promptSlotRef.current) return
 
-    rects.set({
+    setRects({
       logo: toRect(logoRef.current),
       logoSlot: toViewportRect(logoSlotRef.current),
       prompt: toRect(promptAnchorRef.current),
@@ -43,17 +48,17 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
     })
   })
 
-  const docking = useTransform(progress, (value) => transform(value, [0.05, 0.9], [0, 1], { ease: easeInOut }))
-  const [isDocked, setIsDocked] = useState(false)
-  useMotionValueEvent(docking, 'change', (value) => setIsDocked(value > 0.9))
+  const isPastDockPoint = useTransform(progress, (value) => value > DOCK_FROM_PROGRESS)
+  useMotionValueEvent(isPastDockPoint, 'change', setIsDocked)
 
-  const logoX = useMorph(rects, docking, ({ logo, logoSlot }, k) => mix(0, logoSlot.left - logo.left, k), 0)
-  const logoY = useMorph(rects, docking, ({ logo, logoSlot }, k) => mix(0, logoSlot.top - logo.top, k), 0)
-  const logoScale = useMorph(rects, docking, ({ logo, logoSlot }, k) => mix(1, logoSlot.width / logo.width, k), 1)
-
-  const promptX = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(0, promptSlot.left - prompt.left, k), 0)
-  const promptY = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(0, promptSlot.top - prompt.top, k), 0)
-  const promptWidth = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(prompt.width, promptSlot.width, k), '100%')
+  const isMoved = rects !== null && isDocked
+  const logoTransform = isMoved
+    ? toOffsetTransform(rects.logo, rects.logoSlot, rects.logoSlot.width / rects.logo.width)
+    : RESTING_TRANSFORM
+  const promptTransform = isMoved
+    ? toOffsetTransform(rects.prompt, rects.promptSlot)
+    : RESTING_TRANSFORM
+  const promptWidth = rects === null ? '100%' : isDocked ? rects.promptSlot.width : rects.prompt.width
 
   const introOpacity = useTransform(progress, [0, 0.25], [1, 0])
 
@@ -78,7 +83,10 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
       >
         <MotionBox
           ref={ logoRef }
-          style={ { x: logoX, y: logoY, scale: logoScale, transformOrigin: '0 0' } }
+          initial={ false }
+          animate={ { transform: logoTransform } }
+          transition={ DOCK_TRANSITION }
+          style={ { transformOrigin: '0 0' } }
           pointerEvents="auto"
         >
           <Text
@@ -106,7 +114,9 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
             position="absolute"
             top="0"
             left="0"
-            style={ { x: promptX, y: promptY, width: promptWidth } }
+            initial={ false }
+            animate={ { transform: promptTransform, width: promptWidth } }
+            transition={ DOCK_TRANSITION }
             pointerEvents="auto"
           >
             <AIPromptCard hasShadow={ !isDocked }/>
