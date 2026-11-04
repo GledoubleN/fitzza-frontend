@@ -29,6 +29,8 @@ const RESTING_TRANSFORM = toTransform(0, 0)
 
 const DOCK_FROM_PROGRESS = 0.4
 
+const UNDOCK_BELOW_PROGRESS = 0.35
+
 const DOCK_TRANSITION = { duration: 0.7, ease: 'easeInOut' }
 
 const INSTANT_TRANSITION = { duration: 0 }
@@ -52,8 +54,9 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
     })
   })
 
-  const isPastDockPoint = useTransform(progress, (value) => value > DOCK_FROM_PROGRESS)
-  useMotionValueEvent(isPastDockPoint, 'change', setIsDocked)
+  useMotionValueEvent(progress, 'change', (value) => {
+    setIsDocked((wasDocked) => wasDocked ? value > UNDOCK_BELOW_PROGRESS : value > DOCK_FROM_PROGRESS)
+  })
 
   const isMoved = rects !== null && isDocked
   const logoTransform = isMoved
