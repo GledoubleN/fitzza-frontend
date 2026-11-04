@@ -188,6 +188,7 @@ export const ShoppingCartPage = () => {
                 />
                 <Button
                   variant={ 'outline' }
+                  bg={ 'bg.panel' }
                   size={ 'sm' }
                   disabled={ selectedItems.length === 0 || isUpdating }
                   onClick={ () => removeItems(selectedItems.map((item) => item.cartId), true) }
