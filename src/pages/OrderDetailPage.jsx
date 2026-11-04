@@ -71,6 +71,7 @@ const SizeSurvey = ({ feedback, onSubmit }) => {
             key={ value }
             size={ 'xs' }
             variant={ selected === value ? 'solid' : 'outline' }
+            { ...(selected === value && TERRACOTTA_PROPS) }
             aria-pressed={ selected === value }
             disabled={ isSubmitting }
             onClick={ () => setSelected(value) }
