@@ -304,6 +304,8 @@ export const ShoppingCartPage = () => {
               </Card.Root>
 
               <Button
+                bg={ 'terracotta.solid/70' }
+                color={ 'terracotta.contrast' }
                 size={ 'lg' }
                 width={ 'full' }
                 disabled={ selectedItems.length === 0 || isUpdating || isLoadFailed }
