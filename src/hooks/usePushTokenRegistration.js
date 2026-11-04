@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { api } from '../api/axios.js'
 import { enablePush, isPushConfigured } from '../services/pushNotifications.js'
 
-export const usePushNotifications = (isSignedIn) => {
+export const usePushTokenRegistration = (isSignedIn) => {
   const [error, setError] = useState('')
   const [previousSignedIn, setPreviousSignedIn] = useState(isSignedIn)
   const session = useRef(0)
