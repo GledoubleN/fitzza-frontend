@@ -61,7 +61,9 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
   return (
     <MotionBox
       position="fixed"
-      inset="0"
+      top="0"
+      insetX="0"
+      height="100svh"
       zIndex="banner"
       pointerEvents="none"
     >

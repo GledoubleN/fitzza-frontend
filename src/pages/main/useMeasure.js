@@ -4,12 +4,17 @@ export const useMeasure = (measure, trigger) => {
   const onMeasure = useEffectEvent(measure)
 
   useEffect(() => {
-    onMeasure()
+    const handleResize = () => onMeasure()
+    handleResize()
 
-    const resizeObserver = new ResizeObserver(() => onMeasure())
+    const resizeObserver = new ResizeObserver(handleResize)
     resizeObserver.observe(document.body)
-    document.fonts?.ready.then(() => onMeasure())
+    window.addEventListener('resize', handleResize)
+    document.fonts?.ready.then(handleResize)
 
-    return () => resizeObserver.disconnect()
+    return () => {
+      resizeObserver.disconnect()
+      window.removeEventListener('resize', handleResize)
+    }
   }, [trigger])
 }
