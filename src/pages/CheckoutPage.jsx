@@ -334,7 +334,14 @@ export const CheckoutPage = () => {
               </Card.Body>
             </Card.Root>
 
-            <Button size={ 'lg' } width={ 'full' } loading={ isOrdering } onClick={ placeOrder }>
+            <Button
+              bg={ 'terracotta.solid/70' }
+              color={ 'terracotta.contrast' }
+              size={ 'lg' }
+              width={ 'full' }
+              loading={ isOrdering }
+              onClick={ placeOrder }
+            >
               { formatPrice(totalPrice) } 주문하기
             </Button>
             { import.meta.env.DEV && (
