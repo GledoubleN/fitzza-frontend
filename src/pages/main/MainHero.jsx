@@ -1,5 +1,5 @@
 import { Box, chakra, Flex, Icon, Text } from '@chakra-ui/react'
-import { motion, useMotionValueEvent, useTransform } from 'motion/react'
+import { motion, useMotionValueEvent, useReducedMotion, useTransform } from 'motion/react'
 import { useRef, useState } from 'react'
 import { LuChevronDown } from 'react-icons/lu'
 import { AIPromptCard } from '../../components/AIPromptCard.jsx'
@@ -31,11 +31,15 @@ const DOCK_FROM_PROGRESS = 0.4
 
 const DOCK_TRANSITION = { duration: 0.7, ease: 'easeInOut' }
 
+const INSTANT_TRANSITION = { duration: 0 }
+
 export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
   const logoRef = useRef(null)
   const promptAnchorRef = useRef(null)
   const [rects, setRects] = useState(null)
   const [isDocked, setIsDocked] = useState(false)
+  const isStill = useReducedMotion()
+  const dockTransition = isStill ? INSTANT_TRANSITION : DOCK_TRANSITION
 
   useMeasure(() => {
     if (!logoRef.current || !logoSlotRef.current || !promptSlotRef.current) return
@@ -85,7 +89,7 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
           ref={ logoRef }
           initial={ false }
           animate={ { transform: logoTransform } }
-          transition={ DOCK_TRANSITION }
+          transition={ dockTransition }
           style={ { transformOrigin: '0 0' } }
           pointerEvents="auto"
         >
@@ -116,7 +120,7 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
             left="0"
             initial={ false }
             animate={ { transform: promptTransform, width: promptWidth } }
-            transition={ DOCK_TRANSITION }
+            transition={ dockTransition }
             pointerEvents="auto"
           >
             <AIPromptCard hasShadow={ !isDocked }/>
