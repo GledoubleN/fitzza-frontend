@@ -81,6 +81,7 @@ const SizeSurvey = ({ feedback, onSubmit }) => {
         )) }
         <Button
           { ...TERRACOTTA_PROPS }
+          marginStart={ 'auto' }
           size={ 'xs' }
           disabled={ !selected }
           loading={ isSubmitting }
