@@ -19,6 +19,7 @@ export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
     return () => { ignore = true }
   }, [item.productId])
 
+  const hasSize = (options ?? []).some((option) => option.size)
   const colors = [...new Set((options ?? []).map((option) => option.color).filter(Boolean))]
   const sizeOptions = (options ?? []).filter((option) => colors.length === 0 || option.color === color)
   const colorCollection = createListCollection({
@@ -31,7 +32,10 @@ export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
       disabled: option.available === false,
     })),
   })
-  const selectedOption = sizeOptions.find((option) => option.size === size)
+  const selectedOption = hasSize
+    ? sizeOptions.find((option) => option.size === size)
+    : sizeOptions[0]
+  const optionToChoose = hasSize ? '사이즈를' : '색상을'
   const isSoldOut = selectedOption?.available === false
 
   const submit = async () => {
@@ -63,18 +67,20 @@ export const CartOptionDialog = ({ item, onClose, onSubmit }) => {
                       onValueChange={ (event) => setColor(event.value[0] ?? '') }
                     />
                   ) }
-                  <OptionSelect
-                    label={ '사이즈' }
-                    collection={ sizeCollection }
-                    disabled={ sizeOptions.length === 0 }
-                    value={ selectedOption ? [String(selectedOption.optionId)] : [] }
-                    onValueChange={ (event) => setSize(
-                      sizeOptions.find((option) => String(option.optionId) === event.value[0])?.size ?? '',
-                    ) }
-                  />
+                  { (hasSize || colors.length === 0) && (
+                    <OptionSelect
+                      label={ '사이즈' }
+                      collection={ sizeCollection }
+                      disabled={ sizeOptions.length === 0 }
+                      value={ selectedOption ? [String(selectedOption.optionId)] : [] }
+                      onValueChange={ (event) => setSize(
+                        sizeOptions.find((option) => String(option.optionId) === event.value[0])?.size ?? '',
+                      ) }
+                    />
+                  ) }
                   { (!selectedOption || isSoldOut) && (
                     <Text textStyle={ 'sm' } color={ 'fg.error' }>
-                      { isSoldOut ? '품절된 상품입니다. 다른 사이즈를 선택해 주세요.' : '사이즈를 선택해 주세요.' }
+                      { isSoldOut ? `품절된 상품입니다. 다른 ${ optionToChoose } 선택해 주세요.` : `${ optionToChoose } 선택해 주세요.` }
                     </Text>
                   ) }
                 </Stack>

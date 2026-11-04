@@ -75,15 +75,19 @@ export const ProductOptionSelector = ({ product }) => {
   const sizeOptions = colors.length > 0
     ? options.filter((option) => option.color === color)
     : options
+  const hasSize = options.some((option) => option.size)
+  const toOptionItem = (option, label) => ({
+    label: option.available === false ? `${ label } (품절)` : label,
+    value: String(option.optionId),
+    disabled: option.available === false,
+  })
   const colorCollection = createListCollection({
-    items: colors.map((item) => ({ label: item, value: item })),
+    items: hasSize
+      ? colors.map((item) => ({ label: item, value: item }))
+      : options.map((option) => toOptionItem(option, option.color)),
   })
   const sizeCollection = createListCollection({
-    items: sizeOptions.map((option) => ({
-      label: option.available === false ? `${ formatSize(option.size) } (품절)` : formatSize(option.size),
-      value: String(option.optionId),
-      disabled: option.available === false,
-    })),
+    items: sizeOptions.map((option) => toOptionItem(option, formatSize(option.size))),
   })
   const selectedOptions = options.filter((option) => quantities[option.optionId])
   const totalQuantity = selectedOptions.reduce((sum, option) => sum + quantities[option.optionId], 0)
@@ -95,6 +99,8 @@ export const ProductOptionSelector = ({ product }) => {
       quantity > 0 ? { ...rest, [optionId]: quantity } : rest
     ))
   }
+
+  const addOption = (optionId) => optionId && setQuantity(optionId, quantities[optionId] ?? 1)
 
   const addToCart = async () => {
     if (!isSignedIn) {
@@ -133,18 +139,20 @@ export const ProductOptionSelector = ({ product }) => {
         <OptionSelect
           label={ '색상' }
           collection={ colorCollection }
-          value={ color ? [color] : [] }
-          onValueChange={ (event) => setColor(event.value[0] ?? '') }
+          value={ hasSize && color ? [color] : [] }
+          onValueChange={ (event) => hasSize ? setColor(event.value[0] ?? '') : addOption(event.value[0]) }
         />
       ) }
       {/* 고를 때마다 선택 목록에 추가하고 값은 비워 둔다. */ }
-      <OptionSelect
-        label={ '사이즈' }
-        collection={ sizeCollection }
-        disabled={ sizeOptions.length === 0 }
-        value={ [] }
-        onValueChange={ (event) => event.value[0] && setQuantity(event.value[0], quantities[event.value[0]] ?? 1) }
-      />
+      { (hasSize || colors.length === 0) && (
+        <OptionSelect
+          label={ '사이즈' }
+          collection={ sizeCollection }
+          disabled={ sizeOptions.length === 0 }
+          value={ [] }
+          onValueChange={ (event) => addOption(event.value[0]) }
+        />
+      ) }
 
       { selectedOptions.map((option) => (
         <Stack
