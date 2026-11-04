@@ -221,8 +221,9 @@ export const ShoppingCartPage = () => {
                                 <Checkbox.Control _checked={ CHECKED_CONTROL_STYLE }/>
                               </Checkbox.Root>
                               <ProductImage
-                                boxSize={ '20' }
-                                objectFit={ 'contain' }
+                                width={ '20' }
+                                aspectRatio={ 3 / 4 }
+                                objectFit={ 'cover' }
                                 rounded={ 'l2' }
                                 bg={ 'bg.muted' }
                                 src={ item.imageUrl }
