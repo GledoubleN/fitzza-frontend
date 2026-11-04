@@ -31,7 +31,7 @@ const DOCK_FROM_PROGRESS = 0.4
 
 const UNDOCK_BELOW_PROGRESS = 0.35
 
-const DOCK_TRANSITION = { duration: 0.7, ease: 'easeInOut' }
+const DOCK_TRANSITION = { duration: 0.4, ease: 'easeInOut' }
 
 const INSTANT_TRANSITION = { duration: 0 }
 
