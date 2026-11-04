@@ -41,6 +41,8 @@ export const maskPhone = (phone) => {
 
 const sizeFeedbackLabels = { SMALL: '작아요', FIT: '잘 맞아요', BIG: '커요' }
 
+const TERRACOTTA_PROPS = { bg: 'terracotta.solid/70', color: 'terracotta.contrast' }
+
 const fetchSurveys = (items) => api
   .get('/surveys/me', { params: { orderItemIds: items.map((item) => item.orderItemId).join(',') } })
   .then((response) => Object.fromEntries(response.data.map((survey) => [survey.orderItemId, survey.sizeFeedback])))
@@ -76,7 +78,13 @@ const SizeSurvey = ({ feedback, onSubmit }) => {
             { label }
           </Button>
         )) }
-        <Button size={ 'xs' } colorPalette={ 'primary' } disabled={ !selected } loading={ isSubmitting } onClick={ submit }>
+        <Button
+          { ...TERRACOTTA_PROPS }
+          size={ 'xs' }
+          disabled={ !selected }
+          loading={ isSubmitting }
+          onClick={ submit }
+        >
           평가 남기기
         </Button>
       </Flex>
@@ -179,7 +187,7 @@ export const OrderDetail = () => {
           <>
             <Flex align={ 'center' } gap={ 4 } marginBottom={ 8 }>
               <Text textStyle={ 'xs' } color={ 'fg.muted' }>주문번호 { order.orderNum }</Text>
-              <Badge colorPalette={ order.orderStatus === 'CANCELED' ? 'secondary' : 'primary' }>
+              <Badge { ...(order.orderStatus === 'CANCELED' ? { colorPalette: 'secondary' } : TERRACOTTA_PROPS) }>
                 { orderStatusLabels[order.orderStatus] ?? order.orderStatus }
               </Badge>
             </Flex>
