@@ -51,10 +51,9 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
   const logoY = useMorph(rects, docking, ({ logo, logoSlot }, k) => mix(0, logoSlot.top - logo.top, k), 0)
   const logoScale = useMorph(rects, docking, ({ logo, logoSlot }, k) => mix(1, logoSlot.width / logo.width, k), 1)
 
-  const promptLeft = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(prompt.left, promptSlot.left, k), 0)
-  const promptTop = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(prompt.top, promptSlot.top, k), 0)
-  const promptWidth = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(prompt.width, promptSlot.width, k), 0)
-  const promptOpacity = useTransform(() => rects.get() ? 1 : 0)
+  const promptX = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(0, promptSlot.left - prompt.left, k), 0)
+  const promptY = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(0, promptSlot.top - prompt.top, k), 0)
+  const promptWidth = useMorph(rects, docking, ({ prompt, promptSlot }, k) => mix(prompt.width, promptSlot.width, k), '100%')
 
   const introOpacity = useTransform(progress, [0, 0.25], [1, 0])
 
@@ -98,19 +97,22 @@ export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
 
         <Box
           ref={ promptAnchorRef }
+          position="relative"
           width="full"
           maxWidth="2xl"
           height="12"
-        />
+        >
+          <MotionBox
+            position="absolute"
+            top="0"
+            left="0"
+            style={ { x: promptX, y: promptY, width: promptWidth } }
+            pointerEvents="auto"
+          >
+            <AIPromptCard hasShadow={ !isDocked }/>
+          </MotionBox>
+        </Box>
       </Flex>
-
-      <MotionBox
-        position="absolute"
-        style={ { left: promptLeft, top: promptTop, width: promptWidth, opacity: promptOpacity } }
-        pointerEvents="auto"
-      >
-        <AIPromptCard hasShadow={ !isDocked }/>
-      </MotionBox>
 
       <MotionBox
         position="absolute"
