@@ -54,6 +54,9 @@ const Light = ({ light, index, time, mouse, isStill }) => {
       rounded="full"
       bgImage={ `radial-gradient(circle, {colors.${ light.color }} 30%, transparent 70%)` }
       opacity={ { base: INTENSITY.light, _dark: INTENSITY.dark } }
+      filter="auto"
+      blur="3xl"
+      saturate="160%"
       style={ { x, y } }
     />
   )
