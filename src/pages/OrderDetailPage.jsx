@@ -41,7 +41,7 @@ export const maskPhone = (phone) => {
 
 const sizeFeedbackLabels = { SMALL: '작아요', FIT: '잘 맞아요', BIG: '커요' }
 
-const TERRACOTTA_PROPS = { bg: 'terracotta.solid/70', color: 'terracotta.contrast' }
+export const TERRACOTTA_PROPS = { bg: 'terracotta.solid/70', color: 'terracotta.contrast' }
 
 const fetchSurveys = (items) => api
   .get('/surveys/me', { params: { orderItemIds: items.map((item) => item.orderItemId).join(',') } })

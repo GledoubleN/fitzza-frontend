@@ -5,7 +5,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { api } from '../api/axios.js'
-import { formatPrice, orderStatusLabels } from './OrderDetailPage.jsx'
+import { formatPrice, orderStatusLabels, TERRACOTTA_PROPS } from './OrderDetailPage.jsx'
 
 const formatDate = (dateTime) => new Date(dateTime).toLocaleDateString('ko-KR')
 
@@ -58,7 +58,7 @@ export const OrderListPage = () => {
                     <Stack gap={ 0 } minWidth={ 0 } flex={ 1 }>
                       <Flex gap={ 4 } align={ 'center' }>
                         <Text textStyle={ 'sm' } fontWeight={ 'semibold' }>{ formatDate(order.createdAt) }</Text>
-                        <Badge colorPalette={ order.orderStatus === 'CANCELED' ? 'secondary' : 'primary' }>
+                        <Badge { ...(order.orderStatus === 'CANCELED' ? { colorPalette: 'secondary' } : TERRACOTTA_PROPS) }>
                           { orderStatusLabels[order.orderStatus] ?? order.orderStatus }
                         </Badge>
                       </Flex>
