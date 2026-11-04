@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react'
 import { LuX } from 'react-icons/lu'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { Header } from '../components/Header.jsx'
 import { TabBar } from '../components/TabBar.jsx'
 import { toaster } from '../components/ui/toaster.jsx'
@@ -28,10 +28,17 @@ import { CartOptionDialog } from './CartOptionDialog.jsx'
 
 const formatPrice = (price) => `${ price.toLocaleString() }원`
 
+const CHECKED_CONTROL_STYLE = { bg: 'terracotta.solid/70', borderColor: 'transparent' }
+
 const SelectCheckbox = ({ label, checked, disabled, onChange }) => (
-  <Checkbox.Root checked={ checked } disabled={ disabled } onCheckedChange={ (event) => onChange(!!event.checked) }>
+  <Checkbox.Root
+    colorPalette={ 'terracotta' }
+    checked={ checked }
+    disabled={ disabled }
+    onCheckedChange={ (event) => onChange(!!event.checked) }
+  >
     <Checkbox.HiddenInput/>
-    <Checkbox.Control/>
+    <Checkbox.Control _checked={ CHECKED_CONTROL_STYLE }/>
     <Checkbox.Label fontWeight={ 'semibold' }>{ label }</Checkbox.Label>
   </Checkbox.Root>
 )
@@ -181,6 +188,7 @@ export const ShoppingCartPage = () => {
                 />
                 <Button
                   variant={ 'outline' }
+                  bg={ 'bg.panel' }
                   size={ 'sm' }
                   disabled={ selectedItems.length === 0 || isUpdating }
                   onClick={ () => removeItems(selectedItems.map((item) => item.cartId), true) }
@@ -205,37 +213,49 @@ export const ShoppingCartPage = () => {
                           <Stack key={ item.cartId } gap={ 4 }>
                             <Flex gap={ 4 } align={ 'start' }>
                               <Checkbox.Root
+                                colorPalette={ 'terracotta' }
                                 checked={ item.available && !unselectedIds.has(item.cartId) }
                                 disabled={ !item.available }
                                 onCheckedChange={ (event) => toggleItems([item], !!event.checked) }
                               >
                                 <Checkbox.HiddenInput aria-label={ `${ item.productName ?? '상품' } 선택` }/>
-                                <Checkbox.Control/>
+                                <Checkbox.Control _checked={ CHECKED_CONTROL_STYLE }/>
                               </Checkbox.Root>
-                              <ProductImage
-                                boxSize={ '20' }
-                                objectFit={ 'contain' }
-                                rounded={ 'l2' }
-                                bg={ 'bg.muted' }
-                                src={ item.imageUrl }
-                                alt={ item.productName }
-                                opacity={ item.available ? 1 : 0.5 }
-                              />
-                              <Stack gap={ 0 } minWidth={ 0 } flex={ 1 }>
-                                <Text fontWeight={ 'semibold' } truncate>
-                                  { item.productName ?? '판매가 종료된 상품이에요.' }
-                                </Text>
-                                { (item.color || item.size) && (
-                                  <Text textStyle={ 'sm' } color={ 'fg.muted' }>
-                                    { [item.color, formatSize(item.size)].filter(Boolean).join(' / ') }
-                                  </Text>
-                                ) }
-                                { item.available ? (
-                                  <Text textStyle={ 'sm' }>{ formatPrice(item.unitPrice) }</Text>
-                                ) : (
-                                  <Text textStyle={ 'sm' } color={ 'fg.error' }>구매 불가</Text>
-                                ) }
-                              </Stack>
+                              <Flex
+                                asChild
+                                gap={ 4 }
+                                align={ 'start' }
+                                minWidth={ 0 }
+                                flex={ 1 }
+                              >
+                                <RouterLink to={ `/products/${ item.productId }` }>
+                                  <ProductImage
+                                    width={ '20' }
+                                    aspectRatio={ 3 / 4 }
+                                    objectFit={ 'cover' }
+                                    rounded={ 'l2' }
+                                    bg={ 'bg.muted' }
+                                    src={ item.imageUrl }
+                                    alt={ item.productName }
+                                    opacity={ item.available ? 1 : 0.5 }
+                                  />
+                                  <Stack gap={ 0 } minWidth={ 0 } flex={ 1 }>
+                                    <Text fontWeight={ 'semibold' } truncate>
+                                      { item.productName ?? '판매가 종료된 상품이에요.' }
+                                    </Text>
+                                    { (item.color || item.size) && (
+                                      <Text textStyle={ 'sm' } color={ 'fg.muted' }>
+                                        { [item.color, formatSize(item.size)].filter(Boolean).join(' / ') }
+                                      </Text>
+                                    ) }
+                                    { item.available ? (
+                                      <Text textStyle={ 'sm' }>{ formatPrice(item.unitPrice) }</Text>
+                                    ) : (
+                                      <Text textStyle={ 'sm' } color={ 'fg.error' }>구매 불가</Text>
+                                    ) }
+                                  </Stack>
+                                </RouterLink>
+                              </Flex>
                               <IconButton
                                 variant={ 'ghost' }
                                 size={ 'xs' }
@@ -304,6 +324,8 @@ export const ShoppingCartPage = () => {
               </Card.Root>
 
               <Button
+                bg={ 'terracotta.solid/70' }
+                color={ 'terracotta.contrast' }
                 size={ 'lg' }
                 width={ 'full' }
                 disabled={ selectedItems.length === 0 || isUpdating || isLoadFailed }
