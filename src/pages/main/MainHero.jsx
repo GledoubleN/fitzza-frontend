@@ -27,9 +27,9 @@ const toOffsetTransform = (from, to, scale) => toTransform(to.left - from.left, 
 
 const RESTING_TRANSFORM = toTransform(0, 0)
 
-const DOCK_FROM_PROGRESS = 0.2
+const DOCK_FROM_PROGRESS = 0.4
 
-const DOCK_TRANSITION = { duration: 0.4, ease: 'easeInOut' }
+const DOCK_TRANSITION = { duration: 0.7, ease: 'easeInOut' }
 
 export const MainHero = ({ progress, logoSlotRef, promptSlotRef }) => {
   const logoRef = useRef(null)
