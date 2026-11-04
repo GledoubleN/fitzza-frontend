@@ -28,10 +28,17 @@ import { CartOptionDialog } from './CartOptionDialog.jsx'
 
 const formatPrice = (price) => `${ price.toLocaleString() }원`
 
+const CHECKED_CONTROL_STYLE = { bg: 'terracotta.solid/70', borderColor: 'transparent' }
+
 const SelectCheckbox = ({ label, checked, disabled, onChange }) => (
-  <Checkbox.Root checked={ checked } disabled={ disabled } onCheckedChange={ (event) => onChange(!!event.checked) }>
+  <Checkbox.Root
+    colorPalette={ 'terracotta' }
+    checked={ checked }
+    disabled={ disabled }
+    onCheckedChange={ (event) => onChange(!!event.checked) }
+  >
     <Checkbox.HiddenInput/>
-    <Checkbox.Control/>
+    <Checkbox.Control _checked={ CHECKED_CONTROL_STYLE }/>
     <Checkbox.Label fontWeight={ 'semibold' }>{ label }</Checkbox.Label>
   </Checkbox.Root>
 )
@@ -205,12 +212,13 @@ export const ShoppingCartPage = () => {
                           <Stack key={ item.cartId } gap={ 4 }>
                             <Flex gap={ 4 } align={ 'start' }>
                               <Checkbox.Root
+                                colorPalette={ 'terracotta' }
                                 checked={ item.available && !unselectedIds.has(item.cartId) }
                                 disabled={ !item.available }
                                 onCheckedChange={ (event) => toggleItems([item], !!event.checked) }
                               >
                                 <Checkbox.HiddenInput aria-label={ `${ item.productName ?? '상품' } 선택` }/>
-                                <Checkbox.Control/>
+                                <Checkbox.Control _checked={ CHECKED_CONTROL_STYLE }/>
                               </Checkbox.Root>
                               <ProductImage
                                 boxSize={ '20' }
