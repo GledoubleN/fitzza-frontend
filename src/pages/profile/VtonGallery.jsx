@@ -184,7 +184,14 @@ export const VtonGallery = ({ preview = false }) => {
           <Text color={ 'fg.muted' } textAlign={ 'center' }>
             아직 입어본 옷이 없어요. 메인 화면에서 AI 스타일리스트에게 추천받은 상품으로 입어볼 수 있어요.
           </Text>
-          <Button variant={ 'outline' } size={ 'sm' } onClick={ () => navigate('/') }>추천받기</Button>
+          <Button
+            bg={ 'terracotta.solid/70' }
+            color={ 'terracotta.contrast' }
+            size={ 'sm' }
+            onClick={ () => navigate('/') }
+          >
+            추천받기
+          </Button>
         </Stack>
       }
 

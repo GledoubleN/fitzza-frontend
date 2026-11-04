@@ -139,7 +139,14 @@ const OrderComplete = ({ order }) => {
         </Card.Root>
 
         <Stack gap={ 4 } width={ 'full' }>
-          <Button size={ 'lg' } onClick={ () => navigate(`/orders/${ order.orderId }`) }>주문 상세 보기</Button>
+          <Button
+            bg={ 'terracotta.solid/70' }
+            color={ 'terracotta.contrast' }
+            size={ 'lg' }
+            onClick={ () => navigate(`/orders/${ order.orderId }`) }
+          >
+            주문 상세 보기
+          </Button>
           <Button size={ 'lg' } variant={ 'outline' } onClick={ () => navigate('/') }>계속 쇼핑하기</Button>
         </Stack>
       </Stack>
@@ -334,7 +341,14 @@ export const CheckoutPage = () => {
               </Card.Body>
             </Card.Root>
 
-            <Button size={ 'lg' } width={ 'full' } loading={ isOrdering } onClick={ placeOrder }>
+            <Button
+              bg={ 'terracotta.solid/70' }
+              color={ 'terracotta.contrast' }
+              size={ 'lg' }
+              width={ 'full' }
+              loading={ isOrdering }
+              onClick={ placeOrder }
+            >
               { formatPrice(totalPrice) } 주문하기
             </Button>
             { import.meta.env.DEV && (
