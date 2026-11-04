@@ -243,7 +243,7 @@ export const OrderDetail = () => {
                 </PanelCard>
               </Stack>
 
-              <Stack gap={ 8 } position={ { lg: 'sticky' } } top={ 4 }>
+              <Stack gap={ 8 } position={ { lg: 'sticky' } } top={ 24 }>
                 <PanelCard title={ '주문 금액' }>
                   <HStack justify={ 'space-between' } textStyle={ 'xs' }>
                     <Text color={ 'fg.muted' }>상품 금액</Text>
