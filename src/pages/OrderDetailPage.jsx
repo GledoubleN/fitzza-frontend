@@ -250,7 +250,7 @@ export const OrderDetail = () => {
                   <Separator/>
                   <HStack justify={ 'space-between' }>
                     <Text fontWeight={ 'bold' } textStyle={ 'sm' }>총 주문 금액</Text>
-                    <Text fontWeight={ 'bold' } textStyle={ 'md' } color={ 'primary.solid' }>
+                    <Text fontWeight={ 'bold' } textStyle={ 'md' } color={ 'fg' }>
                       { formatPrice(order.totalPrice) }
                     </Text>
                   </HStack>
