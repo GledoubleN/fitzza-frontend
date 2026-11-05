@@ -1,6 +1,6 @@
 import { chakra } from '@chakra-ui/react'
-import { motion, useMotionValue, useReducedMotion, useSpring, useTime, useTransform } from 'motion/react'
-import { useEffect } from 'react'
+import { motion, useMotionValue, useMotionValueEvent, useReducedMotion, useSpring, useTime, useTransform } from 'motion/react'
+import { useEffect, useState } from 'react'
 
 const MotionBox = chakra(motion.div)
 
@@ -68,6 +68,9 @@ export const HeroLighting = ({ progress }) => {
   const mouse = useMousePosition()
   const opacity = useTransform(progress, [0, 0.5], [1, 0])
   const scale = useTransform(progress, [0, 0.5], [1, 1.4])
+  const [isVisible, setIsVisible] = useState(true)
+
+  useMotionValueEvent(progress, 'change', (value) => setIsVisible(value < 0.5))
 
   return (
     <MotionBox
@@ -78,7 +81,7 @@ export const HeroLighting = ({ progress }) => {
       style={ { opacity, scale } }
     >
       {
-        LIGHTS.map((light, index) => (
+        isVisible && LIGHTS.map((light, index) => (
           <Light
             key={ light.color }
             light={ light }
