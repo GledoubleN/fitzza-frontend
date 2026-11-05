@@ -18,9 +18,9 @@
     </radialGradient>
   </defs>
   <style>
-    .border { stroke: #ecd0bf; }
+    .border { stroke: #b05540; stroke-opacity: 0.7; }
     @media (prefers-color-scheme: dark) {
-      .border { stroke: #60302a; }
+      .border { stroke: #c46a4b; }
     }
   </style>
   <rect x="2" y="2" width="60" height="60" rx="9" fill="#f4f4f5"/>
