@@ -100,16 +100,9 @@ export const Header = ({ ref, maxWidth = '7xl', logo, center, backgroundOpacity 
 
     setIsSigningOut(true)
 
-    try {
-      await disablePush()
-    } catch (error) {
-      setIsSigningOut(false)
-      toaster.create({
-        type: 'error',
-        title: error.message || '푸시 알림을 해제하지 못했습니다. 다시 시도해주세요.',
-      })
-      return
-    }
+    await disablePush().catch((error) => {
+      console.log(error)
+    })
 
     api.post('/auth/signout').catch((error) => {
       console.log(error)

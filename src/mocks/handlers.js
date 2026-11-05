@@ -223,6 +223,11 @@ export const handlers = [
     () => HttpResponse.json(getNotificationsResponse),
   ),
 
+  http.delete(
+    `${ api.defaults.baseURL }/notifications/tokens`,
+    () => new HttpResponse(null, { status: 204 }),
+  ),
+
   http.patch(
     `${ api.defaults.baseURL }/notifications/:notificationId`,
     () => new HttpResponse(null, { status: 200 }),
