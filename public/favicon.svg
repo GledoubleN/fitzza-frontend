@@ -23,11 +23,11 @@
       .border { stroke: #c46a4b; }
     }
   </style>
-  <rect x="2" y="2" width="60" height="60" rx="9" fill="#f4f4f5"/>
-  <rect x="2" y="2" width="60" height="60" rx="9" fill="url(#raindropsOnRoses)"/>
-  <rect x="2" y="2" width="60" height="60" rx="9" fill="url(#orchidTint)"/>
-  <rect x="2" y="2" width="60" height="60" rx="9" fill="url(#iceMelt)"/>
-  <rect x="2" y="2" width="60" height="60" rx="9" fill="url(#lemonIcing)"/>
+  <rect x="3" y="3" width="58" height="58" rx="8" fill="#f4f4f5"/>
+  <rect x="3" y="3" width="58" height="58" rx="8" fill="url(#raindropsOnRoses)"/>
+  <rect x="3" y="3" width="58" height="58" rx="8" fill="url(#orchidTint)"/>
+  <rect x="3" y="3" width="58" height="58" rx="8" fill="url(#iceMelt)"/>
+  <rect x="3" y="3" width="58" height="58" rx="8" fill="url(#lemonIcing)"/>
   <rect x="2" y="2" width="60" height="60" rx="9" fill="none" class="border" stroke-width="2"/>
   <path d="M18.47 51V46.92L22.1 46.21V21.82L18.47 21.1V17H45.53V26.31H40.3L40.01 22.26H28.92V31.62H40.82V36.87H28.92V46.21L32.55 46.92V51Z" fill="#181818"/>
 </svg>
