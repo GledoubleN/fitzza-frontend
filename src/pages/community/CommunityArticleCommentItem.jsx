@@ -76,7 +76,14 @@ export const CommunityArticleCommentItem = ({
                   value={ editText }
                   onChange={ (e) => setEditText(e.target.value) }
                 />
-                <Button type="submit" size="sm" flexShrink="0" disabled={ !editText.trim() }>
+                <Button
+                  type="submit"
+                  size="sm"
+                  bg="terracotta.solid/70"
+                  color="terracotta.contrast"
+                  flexShrink="0"
+                  disabled={ !editText.trim() }
+                >
                   저장
                 </Button>
                 <Button size="sm" variant="ghost" flexShrink="0" onClick={ () => setEditing(false) }>

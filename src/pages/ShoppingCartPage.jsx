@@ -303,7 +303,7 @@ export const ShoppingCartPage = () => {
               )) }
             </Stack>
 
-            <Stack gap={ 4 } position={ 'sticky' } top={ 4 } bottom={ 20 } paddingTop={ { base: 4, lg: 0 } } paddingBottom={ 4 } bg={ 'bg' }>
+            <Stack gap={ 4 } position={ 'sticky' } top={ 24 } bottom={ 20 } paddingTop={ { base: 4, lg: 0 } } paddingBottom={ 4 } bg={ 'bg' }>
               <Card.Root>
                 <Card.Body>
                   <Stack gap={ 4 }>
