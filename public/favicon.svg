@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="aurora" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ead9dc"/>
+      <stop offset="50%" stop-color="#f5ebc8"/>
+      <stop offset="100%" stop-color="#d4e4f1"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="80%" cy="20%" r="60%">
+      <stop offset="0%" stop-color="#dcd4dd" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#dcd4dd" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <style>
+    .border { stroke: #ecd0bf; }
+    @media (prefers-color-scheme: dark) {
+      .border { stroke: #60302a; }
+    }
+  </style>
+  <rect x="2" y="2" width="60" height="60" rx="9" fill="url(#aurora)" class="border" stroke-width="2"/>
+  <rect x="2" y="2" width="60" height="60" rx="9" fill="url(#glow)"/>
+  <path d="M18.47 51V46.92L22.1 46.21V21.82L18.47 21.1V17H45.53V26.31H40.3L40.01 22.26H28.92V31.62H40.82V36.87H28.92V46.21L32.55 46.92V51Z" fill="#181818"/>
+</svg>
