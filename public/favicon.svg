@@ -25,5 +25,5 @@
   <rect x="1.5" y="1.5" width="61" height="61" rx="9.5" fill="url(#orchidTint)"/>
   <rect x="1.5" y="1.5" width="61" height="61" rx="9.5" fill="url(#iceMelt)"/>
   <rect x="1.5" y="1.5" width="61" height="61" rx="9.5" fill="url(#lemonIcing)"/>
-  <path d="M18.47 51V46.92L22.1 46.21V21.82L18.47 21.1V17H45.53V26.31H40.3L40.01 22.26H28.92V31.62H40.82V36.87H28.92V46.21L32.55 46.92V51Z" fill="#b05540" fill-opacity="0.7" stroke="#ffffff" stroke-opacity="0.7" stroke-width="0.8" filter="url(#glassShadow)"/>
+  <path d="M18.47 51V46.92L22.1 46.21V21.82L18.47 21.1V17H45.53V26.31H40.3L40.01 22.26H28.92V31.62H40.82V36.87H28.92V46.21L32.55 46.92V51Z" fill="#b05540" fill-opacity="0.7" stroke="#f7f6f6" stroke-opacity="0.8" stroke-width="1" filter="url(#glassShadow)"/>
 </svg>
