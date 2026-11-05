@@ -6,6 +6,7 @@ import {
   isSupported,
   onMessage,
 } from 'firebase/messaging'
+import { api } from '../api/axios.js'
 
 const config = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -119,6 +120,17 @@ export const disablePush = async () => {
     if (!registration) return
 
     const messaging = await loadMessaging()
+
+    if (window.Notification?.permission === 'granted') {
+      const token = await getToken(messaging, {
+        vapidKey,
+        serviceWorkerRegistration: registration,
+      })
+
+      await api.delete('/notifications/tokens', { data: { token } }).catch((error) => {
+        console.log(error)
+      })
+    }
 
     await deleteToken(messaging)
 
