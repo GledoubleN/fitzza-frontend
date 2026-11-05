@@ -35,6 +35,7 @@ export const MainPromptForm = ({ onSubmitQuery }) => {
     >
       <IconButton
         type={ 'button' }
+        alignSelf={ 'start' }
         rounded={ 'full' }
         bg={ 'terracotta.solid/70' }
         backdropFilter={ 'auto' }
